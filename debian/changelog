@@ -1,0 +1,17 @@
+cuprumbrowser (0.2) May23; urgency=low
+
+  * Initial release (LP: #231731)
+
+  What's new in WebKitGTK+ 2.6.2?
+
+  - SSLv3 is now disabled to protect us against POODLE vulnerability.
+  - TLS errors are no longer ignored by default.
+  - Fix the remote web inspector.
+  - Fix rendering of buttons, selections and lists with recent GTK+
+    versions.
+  - Improve performance of timers scheduled after a delay in
+    microseconds.
+  - Fix WebKitSettings:enable-smooth-scrolling to actually enable
+    smooth scrolling.
+  - Fix the build with drag and drop support disabled.
+ -- ZhangRuili <zhangrl_os@sari.ac.cn>  Sat, 1 Nov 2014 16:50:08 +0800

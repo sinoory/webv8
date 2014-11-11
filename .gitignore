@@ -1,0 +1,9 @@
+bin/
+*.pyc
+*.swp
+*.swo
+*.swn
+.svn/
+
+CMakeFiles/
+.tmp_cpu_num
