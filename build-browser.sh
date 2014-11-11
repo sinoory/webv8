@@ -20,11 +20,10 @@ cat /proc/cpuinfo | grep "cpu cores" | while read cpu cores dot cpu_num
 do
   	     echo $cpu_num >.tmp_cpu_num
 done
-CPU_NUM=`cat .tmp_cpu_num`
+cat .tmp_cpu_num && CPU_NUM=`cat .tmp_cpu_num` || CPU_NUM=1
 CPU_NUM=$[CPU_NUM+CPU_NUM]
 
 if [ -z $2 ];then
-	#none
 	echo
 else
 	if [ $2 -lt $CPU_NUM ]
