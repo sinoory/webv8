@@ -254,9 +254,41 @@ int main(int argc, char *argv[])
 
         for (i = 0; uriArguments[i]; i++)
             createBrowserWindow(uriArguments[i], webkitSettings);
-    } else
-	createBrowserWindow("http://www.baidu.com/", webkitSettings);
-//	createBrowserWindow("/home/zgh/CuprumBrowser/WebKitBrowser/WebKitBuild/Release/bin/resources/index.html",NULL);
+    } else { 
+        //createBrowserWindow("http://www.baidu.com/", webkitSettings);
+        //createBrowserWindow("/home/zgh/CuprumBrowser/WebKitBrowser/WebKitBuild/Release/bin/resources/index.html",NULL);
+        gchar *uri;
+        gchar *strval;
+        int ivalue;
+        g_object_get(webkitSettings,
+                 key[PROP_ON_STARTUP], &ivalue,
+                 NULL);
+
+        //default url:::  http://nfs-cloud.cn:81/appCenter/open/softcenter
+        /*Depending on_startup radiobutton to loading corresponding url. sunhaiming add */
+        switch (ivalue) {
+        case 0:
+            uri = "http://about:blank/";
+            break;
+        case 1:
+            uri = "http://nfs-cloud.cn:81/appCenter/open/softcenter";
+            break;
+        case 2:  
+            g_object_get(webkitSettings,
+                     key[PROP_HOME_PAGE], &strval,
+                     NULL);
+            if (!g_strcmp0(strval, "")) {
+                uri = "http://nfs-cloud.cn:81/appCenter/open/softcenter";
+            } else {
+                uri = strval;
+            }
+            break;
+        default:
+            printf("error, read PROP_ON_STARTUP  ivalue = %i\n", ivalue);
+            break;
+        }
+        createBrowserWindow(uri, webkitSettings);
+    }
 
     g_clear_object(&webkitSettings);
 

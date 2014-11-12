@@ -69,7 +69,7 @@ String executablePathOfWebProcess()
 
 String executablePathOfPluginProcess()
 {
-    return findWebKitProcess("WebKitPluginProcess2");
+    return findWebKitProcess("WebKitPluginProcess");
 }
 
 #if ENABLE(NETWORK_PROCESS)

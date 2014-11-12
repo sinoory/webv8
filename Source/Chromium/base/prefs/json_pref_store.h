@@ -69,7 +69,9 @@ class BASE_PREFS_EXPORT JsonPrefStore : public base::ImportantFileWriter::DataSe
 
   void GetInteger(const std::string& path, int* out_value);
 
+  void GetDouble(const std::string& path, double* out_value);
 
+  void SetDouble(const std::string& path, double in_value);
 
   void SetInteger(const std::string& path, int in_value);
   

@@ -68,7 +68,7 @@ struct _BrowserWindow {
     WebKitDownload *download;
     //by sunh end
     GtkWidget *statusLabel;
-    GtkWidget *settingsDialog;
+    GtkWidget *settingsWindow; //by sunhaiming
     WebKitWebView *webView;
     GtkWidget *downloadsBar;
     BrowserSearchBar *searchBar;
@@ -93,8 +93,11 @@ struct _BrowserWindowClass {
 //static const char *defaultWindowTitle = "WebKitGTK+ MiniBrowser";
 static const char *defaultWindowTitle = "Cuprum Browser";
 static const char *miniBrowserAboutScheme = "minibrowser-about";
-static const gdouble minimumZoomLevel = 0.5;
-static const gdouble maximumZoomLevel = 3;
+/*minimumZoomLevel and maximumZoomLevel should be initialized depending on zoom_factor[]. sunhaiming add.*/
+//static const gdouble minimumZoomLevel = 0.5;   
+//static const gdouble maximumZoomLevel = 3;
+static  gdouble minimumZoomLevel;   
+static  gdouble maximumZoomLevel;
 static const gdouble zoomStep = 1.2;
 static gint windowCount = 0;
 
@@ -226,15 +229,16 @@ static void goForwardCallback(BrowserWindow *window)
 
 static void settingsCallback(BrowserWindow *window)
 {
-    if (window->settingsDialog) {
-        gtk_window_present(GTK_WINDOW(window->settingsDialog));
+    if (window->settingsWindow) {
+        gtk_window_present(GTK_WINDOW(window->settingsWindow));
         return;
     }
+    WebKitSettings *settings = webkit_web_view_get_settings(window->webView);
+    settings->parent_uriEntry = window->uriEntry;  //Save to settings, so we can use later. sunhaimig add.
 
-    window->settingsDialog = browser_settings_dialog_new(webkit_web_view_get_settings(window->webView));
-    gtk_window_set_transient_for(GTK_WINDOW(window->settingsDialog), GTK_WINDOW(window));
-    g_object_add_weak_pointer(G_OBJECT(window->settingsDialog), (gpointer *)&window->settingsDialog);
-    gtk_widget_show(window->settingsDialog);
+    window->settingsWindow = browser_settings_window_new(settings); 
+    gtk_window_set_transient_for(GTK_WINDOW(window->settingsWindow), GTK_WINDOW(window));
+    g_object_add_weak_pointer(G_OBJECT(window->settingsWindow), (gpointer *)&window->settingsWindow);
 }
 
 static void webViewURIChanged(WebKitWebView *webView, GParamSpec *pspec, BrowserWindow *window)
@@ -974,6 +978,11 @@ static void browser_window_init(BrowserWindow *window)
 static void browserWindowConstructed(GObject *gObject)
 {
     BrowserWindow *window = BROWSER_WINDOW(gObject);
+
+    WebKitSettings *settings = webkit_web_view_get_settings(window->webView);
+    /*init minimumZoomLevel, maximumZoomLevel  sunhaiming add.*/
+    minimumZoomLevel = zoom_factor[0];
+    maximumZoomLevel = zoom_factor[settings->pageZoomNum - 1];
 
 //    browserWindowUpdateZoomActions(window);
 

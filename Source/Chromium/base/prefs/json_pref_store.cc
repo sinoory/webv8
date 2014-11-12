@@ -321,6 +321,10 @@ bool JsonPrefStore::GetBoolean(const std::string& path) {
   return bool_value;
 }*/
 
+void JsonPrefStore::GetDouble(const std::string& path, double* out_value) {
+   prefs_->GetDouble(path, out_value);
+}
+
 void JsonPrefStore::GetInteger(const std::string& path, int* out_value) {
    prefs_->GetInteger(path, out_value);
 }
@@ -333,6 +337,9 @@ void JsonPrefStore::GetString(const std::string& path, std::string* out_value) {
   prefs_->GetString(path, out_value);
 }
 
+void JsonPrefStore::SetDouble(const std::string& path, double in_value) {
+   prefs_->SetDouble(path, in_value);
+}
 
 void JsonPrefStore::SetInteger(const std::string& path, int in_value) {
    prefs_->SetInteger(path, in_value);

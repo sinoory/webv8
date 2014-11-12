@@ -49,16 +49,17 @@
 
 using namespace WebKit;
 
+
 struct _WebKitSettingsPrivate {
     _WebKitSettingsPrivate()
         : preferences(WebPreferences::create(String(), "WebKit2.", "WebKit2."))
     {
-        defaultFontFamily = preferences->standardFontFamily().utf8();
+        defaultFontFamily = preferences->standardFontFamily().utf8();   
         monospaceFontFamily = preferences->fixedFontFamily().utf8();
         serifFontFamily = preferences->serifFontFamily().utf8();
         sansSerifFontFamily = preferences->sansSerifFontFamily().utf8();
         cursiveFontFamily = preferences->cursiveFontFamily().utf8();
-        fantasyFontFamily = preferences->fantasyFontFamily().utf8();
+        fantasyFontFamily = preferences->fantasyFontFamily().utf8(); 
         pictographFontFamily = preferences->pictographFontFamily().utf8();
         defaultCharset = preferences->defaultTextEncodingName().utf8();
         IsStartState = true;
@@ -77,7 +78,29 @@ struct _WebKitSettingsPrivate {
     bool allowModalDialogs;
     bool zoomTextOnly;
     scoped_ptr<JsonPrefStore> user_pref_store_;
-    bool IsStartState;  //Use this flag to avoid calling user_pref_store_ which has not been initialized when on start state. 
+    bool IsStartState;  //Use this flag to avoid calling user_pref_store_ which has not been initialized when on start state.
+
+    bool muchTabWarning;
+    bool showHomepageButton;
+    bool showBookmarkbar;
+    bool showTitlebarAndMenubar;
+    bool showFullscreen;
+    bool pageContentCache;
+    bool clearBrowseRecord;
+    bool clearDownloadRecord;
+    bool clearCookieAndOthers;
+    bool clearCachedImagesAndFiles;
+    bool clearPasswords;
+    bool certificateRevocation;
+    uint32_t onStartup;
+    uint32_t openNewpage;
+    uint32_t historySetting;
+    uint32_t cookieSetting; 
+    uint32_t trackLocation;
+    uint32_t mediaAccess;
+    CString homepage;
+    double pageZoom;
+  
 };
 
 /**
@@ -99,74 +122,72 @@ struct _WebKitSettingsPrivate {
 
 WEBKIT_DEFINE_TYPE(WebKitSettings, webkit_settings, G_TYPE_OBJECT)
 
-enum {
-    PROP_0,
-
-    PROP_ENABLE_JAVASCRIPT,
-    PROP_AUTO_LOAD_IMAGES,
-    PROP_LOAD_ICONS_IGNORING_IMAGE_LOAD_SETTING,
-    PROP_ENABLE_OFFLINE_WEB_APPLICATION_CACHE,
-    PROP_ENABLE_HTML5_LOCAL_STORAGE,
-    PROP_ENABLE_HTML5_DATABASE,
-    PROP_ENABLE_XSS_AUDITOR,
-    PROP_ENABLE_FRAME_FLATTENING,
-    PROP_ENABLE_PLUGINS,
-    PROP_ENABLE_JAVA,
-    PROP_JAVASCRIPT_CAN_OPEN_WINDOWS_AUTOMATICALLY,
-    PROP_ENABLE_HYPERLINK_AUDITING,
-    PROP_DEFAULT_FONT_FAMILY,
-    PROP_MONOSPACE_FONT_FAMILY,
-    PROP_SERIF_FONT_FAMILY,
-    PROP_SANS_SERIF_FONT_FAMILY,
-    PROP_CURSIVE_FONT_FAMILY,
-    PROP_FANTASY_FONT_FAMILY,
-    PROP_PICTOGRAPH_FONT_FAMILY,
-    PROP_DEFAULT_FONT_SIZE,
-    PROP_DEFAULT_MONOSPACE_FONT_SIZE,
-    PROP_MINIMUM_FONT_SIZE,
-    PROP_DEFAULT_CHARSET,
-    PROP_ENABLE_PRIVATE_BROWSING,
-    PROP_ENABLE_DEVELOPER_EXTRAS,
-    PROP_ENABLE_RESIZABLE_TEXT_AREAS,
-    PROP_ENABLE_TABS_TO_LINKS,
-    PROP_ENABLE_DNS_PREFETCHING,
-    PROP_ENABLE_CARET_BROWSING,
-    PROP_ENABLE_FULLSCREEN,
-    PROP_PRINT_BACKGROUNDS,
-    PROP_ENABLE_WEBAUDIO,
-    PROP_ENABLE_WEBGL,
-    PROP_ALLOW_MODAL_DIALOGS,
-    PROP_ZOOM_TEXT_ONLY,
-    PROP_JAVASCRIPT_CAN_ACCESS_CLIPBOARD,
-    PROP_MEDIA_PLAYBACK_REQUIRES_USER_GESTURE,
-    PROP_MEDIA_PLAYBACK_ALLOWS_INLINE,
-    PROP_DRAW_COMPOSITING_INDICATORS,
-    PROP_ENABLE_SITE_SPECIFIC_QUIRKS,
-    PROP_ENABLE_PAGE_CACHE,
-    PROP_USER_AGENT,
-    PROP_ENABLE_SMOOTH_SCROLLING,
-    PROP_ENABLE_ACCELERATED_2D_CANVAS,
-    PROP_ENABLE_WRITE_CONSOLE_MESSAGES_TO_STDOUT,
-    PROP_ENABLE_MEDIA_STREAM,
-    PROP_ENABLE_SPATIAL_NAVIGATION,
-    PROP_ENABLE_MEDIASOURCE
-};
-
 //Use property name of each settings preference as keyname for json.
-const std::string key[] = {"", "enable-javascript", "auto-load-images", "load-icons-ignoring-image-load-setting", "enable-offline-web-application-cache",
-                           "enable-html5-local-storage", "enable-html5-database", "enable-xss-auditor", "enable-frame-flattening", 
-                           "enable-plugins", "enable-java", "javascript-can-open-windows-automatically", "enable-hyperlink-auditing", 
-                           "default-font-family", "monospace-font-family", "serif-font-family", "sans-serif-font-family", 
-                           "cursive-font-family", "fantasy-font-family", "pictograph-font-family", "default-font-size", 
-                           "default-monospace-font-size", "minimum-font-size", "default-charset", "enable-private-browsing", 
-                           "enable-developer-extras", "enable-resizable-text-areas", "enable-tabs-to-links", "enable-dns-prefetching", 
-                           "enable-caret-browsing", "enable-fullscreen", "print-backgrounds", "enable-webaudio", 
-                           "enable-webgl", "allow-modal-dialogs", "zoom-text-only", "javascript-can-access-clipboard", 
+const gchar* key[]   =    {"", "load-icons-ignoring-image-load-setting", "enable-offline-web-application-cache", "enable-html5-local-storage", 
+                           "enable-html5-database", "enable-xss-auditor", "enable-frame-flattening", "enable-plugins", 
+                           "enable-java", "javascript-can-open-windows-automatically", "enable-hyperlink-auditing", "monospace-font-family", 
+                           "serif-font-family", "sans-serif-font-family", "cursive-font-family", "fantasy-font-family", 
+                           "pictograph-font-family", "default-monospace-font-size", "minimum-font-size", "default-charset", 
+                           "enable-private-browsing", "enable-developer-extras", "enable-resizable-text-areas", "enable-tabs-to-links", 
+                           "enable-dns-prefetching", "enable-caret-browsing", "enable-fullscreen", "print-backgrounds", 
+                           "enable-webaudio", "enable-webgl", "allow-modal-dialogs",  "javascript-can-access-clipboard", 
                            "media-playback-requires-user-gesture", "media-playback-allows-inline", "draw-compositing-indicators", "enable-site-specific-quirks", 
                            "enable-page-cache", "user-agent", "enable-smooth-scrolling", "enable-accelerated-2d-canvas",
-                           "enable-write-console-messages-to-stdout", "enable-media-stream", "enable-spatial-navigation", "enable-mediasource" 
+                           "enable-write-console-messages-to-stdout", "enable-media-stream", "enable-spatial-navigation", "enable-mediasource",
+                           "", "much-tab-warning", "show-homepage-button", "show-bookmarkbar", "show-titlebar-and-menubar",
+                           "show-fullscreen", "zoom-text-only", "auto-load-images", "enable-javascript", 
+                           "page-content-cache", "clear-browse-record", "clear-download-record", "clear-cookie-and-others", 
+                           "clear-cached-images-and-files", "clear-passwords", "certificate-revocation", "",
+                           "", "on-startup", "open-newpage",  "default-font-size", "history-setting",
+                           "cookie-setting", "track-location", "media-access", "",
+                           "", "home-page", "default-font-family", "", 
+                           "", "page-zoom", ""
+
                           };
 
+const gchar* font[]  =    {"sans-serif", "AR PL UKai CN", "AR PL UKai HK", "AR PL UKai TW",
+                            "AR PL UKai TW MBE", "AR PL UMing CN", "AR PL UMing HK", "AR PL UMing TW",
+                            "AR PL UMing TW MBE", "Droid Sans", "文泉驿微米黑", "文泉驿正黑",
+                            "文泉驿点阵正黑", "文泉驿等宽微米黑", "文泉驿等宽正黑", "方正书宋_GBK",
+                            "方正仿宋_GBK", "方正姚体_GBK", "方正宋体S-超大字符集", "方正小标宋_GBK",
+                            "方正楷体_GBK", "方正细黑——_GBK", "方正行楷_GBK", "方正超粗黑_GBK",
+                            "方正隶书_GBK", "方正魏碑_GBK", "方正黑体_GBK", "serif",
+                            "monospace", "Abyssinica SIL", "Bitstream Charter", "Century Schoolbook L",
+                            "Courier 10 pitch", "DejaVu Sans", "DejaVu Sans Mono", "DejaVu Serif",
+                            "Dingbats", "Droid Sans Mono", "Droid Serif", "FreeMono",
+                            "FreeSans", "FreeSerif", "Garuda", "kacstArt",
+                            "kacstBook", "kacstDecorative", "kacstDigital", "kacstFarsi",
+                            "kacstLetter", "kacstNaskh", "kacstOffice", "kacstOne",
+                            "kacstPen", "kacstPoster", "kacstQurn", "kacstScreen",
+                            "kacstTitle", "kacstTitleL", "Kedage", "Khmer OS",
+                            "Khmer OS System", "Kinnari", "LKLUG", "Liberation Mono",
+                            "Liberation Sans", "Liberation Sans Narrow", "Liberation Serif",
+                            "Lohit Bengali", "Lohit Gujarati", "Lohit Hindi", "Lohit Punjabi",
+                            "Lohit Tamil", "MT Extra", "Mallige", "Meera",
+                            "Mukti Narrow", "NanumGothic", "NanumMyeongjo", "Nimbus Mono L",
+                            "Nimbus Roman No9 L", "Nimbus Sans L", "Norasi", "OpenSymbol",
+                            "Padauk", "Padauk Book", "Phetsarath OT", "Pothana2000", 
+                            "Purisa", "Rachana", "Rekha", "Saab", 
+                            "Sawasdee", "Standard Symbols L", "Symbol", "TakaoPGothic",
+                            "Tibetan Machine Uni", "Tlwg Typist", "Tlwg Typo", "TlwgMono",
+                            "TlwgTypewriter", "URW Bookman L", "URW Chancery L", "URW Gothic L",
+                            "URW Palladio L", "Ubuntu", "Ubuntu Condensed", "Ubuntu Mono",
+                            "Umpush", "Vemana2000", "Waree", "Webdings",
+                            "Wingdings", "Wingdings 2", "Wingdings 3", "gargi",
+                            "mry_KacstQurn", "ori1Uni", "方正宋体S-超大字符集(SIP)"  
+           
+                          };
+
+
+const  guint32 font_size[] = {9, 12, 16, 20, 24 
+                           
+                             };
+
+
+const gdouble zoom_factor[] = {0.25, 0.33, 0.5, 0.67, 0.75, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0,
+                               2.5, 3.0, 4.0, 5.0  
+                                 
+                              };
 
 static void webKitSettingsConstructed(GObject* object)
 {
@@ -175,6 +196,9 @@ static void webKitSettingsConstructed(GObject* object)
     WebPreferences* prefs = WEBKIT_SETTINGS(object)->priv->preferences.get();
     prefs->setShouldRespectImageOrientation(true);
     settings->priv->IsStartState = false;
+    settings->fontNum = sizeof(font)/sizeof(font[0]);
+    settings->fontSizeNum = sizeof(font_size)/sizeof(font_size[0]);
+    settings->pageZoomNum = sizeof(zoom_factor)/sizeof(zoom_factor[0]);
 }
 
 static void webKitSettingsSetProperty(GObject* object, guint propId, const GValue* value, GParamSpec* paramSpec)
@@ -182,12 +206,6 @@ static void webKitSettingsSetProperty(GObject* object, guint propId, const GValu
     WebKitSettings* settings = WEBKIT_SETTINGS(object);
 
     switch (propId) {
-    case PROP_ENABLE_JAVASCRIPT:
-        webkit_settings_set_enable_javascript(settings, g_value_get_boolean(value));
-        break;
-    case PROP_AUTO_LOAD_IMAGES:
-        webkit_settings_set_auto_load_images(settings, g_value_get_boolean(value));
-        break;
     case PROP_LOAD_ICONS_IGNORING_IMAGE_LOAD_SETTING:
         webkit_settings_set_load_icons_ignoring_image_load_setting(settings, g_value_get_boolean(value));
         break;
@@ -332,6 +350,73 @@ static void webKitSettingsSetProperty(GObject* object, guint propId, const GValu
     case PROP_ENABLE_MEDIASOURCE:
         webkit_settings_set_enable_mediasource(settings, g_value_get_boolean(value));
         break;
+    case PROP_MUCH_TAB_WARNING:
+        webkit_settings_set_much_tab_warning(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_SHOW_HOMEPAGE_BUTTON:
+        webkit_settings_set_show_homepage_button(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_SHOW_BOOKMARKBAR:
+        webkit_settings_set_show_bookmarkbar(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_SHOW_TITLEBAR_AND_MENUBAR:
+        webkit_settings_set_show_titlebar_and_menubar(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_SHOW_FULLSCREEN:
+        webkit_settings_set_show_fullscreen(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_PAGE_CONTENT_CACHE:
+        webkit_settings_set_page_content_cache(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_CLEAR_BROWSE_RECORD:
+        webkit_settings_set_clear_browse_record(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_CLEAR_DOWNLOAD_RECORD:
+        webkit_settings_set_clear_download_record(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_CLEAR_COOKIE_AND_OTHERS:
+        webkit_settings_set_clear_cookie_and_others(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_CLEAR_CACHED_IMAGES_AND_FILES:
+        webkit_settings_set_clear_cached_images_and_files(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_CLEAR_PASSWORDS:
+        webkit_settings_set_clear_passwords(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_CERTIFICATE_REVOCATION:
+        webkit_settings_set_certificate_revocation(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_ON_STARTUP:
+        webkit_settings_set_on_startup(settings, g_value_get_uint(value));   
+        break;
+    case PROP_OPEN_NEWPAGE:
+        webkit_settings_set_open_newpage(settings, g_value_get_uint(value));   
+        break;
+    case PROP_AUTO_LOAD_IMAGES:
+        webkit_settings_set_auto_load_images(settings, g_value_get_boolean(value));
+        break;
+    case PROP_ENABLE_JAVASCRIPT:
+        webkit_settings_set_enable_javascript(settings, g_value_get_boolean(value));
+        break;
+    case PROP_HISTORY_SETTING:
+        webkit_settings_set_history_setting(settings, g_value_get_uint(value));   
+        break;
+    case PROP_COOKIE_SETTING:
+        webkit_settings_set_cookie_setting(settings, g_value_get_uint(value));   
+        break;
+    case PROP_TRACK_LOCATION:
+        webkit_settings_set_track_location(settings, g_value_get_uint(value));   
+        break;
+    case PROP_MEDIA_ACCESS:
+        webkit_settings_set_media_access(settings, g_value_get_uint(value));   
+        break;
+    case PROP_HOME_PAGE:
+        webkit_settings_set_home_page(settings,  g_value_get_string(value));   
+        break;
+    case PROP_PAGE_ZOOM:
+        webkit_settings_set_page_zoom(settings, g_value_get_double(value));   
+        break;
+
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
         break;
@@ -343,12 +428,6 @@ static void webKitSettingsGetProperty(GObject* object, guint propId, GValue* val
     WebKitSettings* settings = WEBKIT_SETTINGS(object);
 
     switch (propId) {
-    case PROP_ENABLE_JAVASCRIPT:
-        g_value_set_boolean(value, webkit_settings_get_enable_javascript(settings));
-        break;
-    case PROP_AUTO_LOAD_IMAGES:
-        g_value_set_boolean(value, webkit_settings_get_auto_load_images(settings));
-        break;
     case PROP_LOAD_ICONS_IGNORING_IMAGE_LOAD_SETTING:
         g_value_set_boolean(value, webkit_settings_get_load_icons_ignoring_image_load_setting(settings));
         break;
@@ -487,6 +566,72 @@ static void webKitSettingsGetProperty(GObject* object, guint propId, GValue* val
     case PROP_ENABLE_MEDIASOURCE:
         g_value_set_boolean(value, webkit_settings_get_enable_mediasource(settings));
         break;
+    case PROP_MUCH_TAB_WARNING:
+        g_value_set_boolean(value, webkit_settings_get_much_tab_warning(settings));
+        break;
+    case PROP_SHOW_HOMEPAGE_BUTTON:
+        g_value_set_boolean(value, webkit_settings_get_show_homepage_button(settings));
+        break;
+    case PROP_SHOW_BOOKMARKBAR:
+        g_value_set_boolean(value, webkit_settings_get_show_bookmarkbar(settings));
+        break;
+    case PROP_SHOW_TITLEBAR_AND_MENUBAR:
+        g_value_set_boolean(value, webkit_settings_get_show_titlebar_and_menubar(settings));
+        break;
+    case PROP_SHOW_FULLSCREEN:
+        g_value_set_boolean(value, webkit_settings_get_show_fullscreen(settings));
+        break;
+    case PROP_PAGE_CONTENT_CACHE:
+        g_value_set_boolean(value, webkit_settings_get_page_content_cache(settings));
+        break;
+    case PROP_CLEAR_BROWSE_RECORD:
+        g_value_set_boolean(value, webkit_settings_get_clear_browse_record(settings));
+        break;
+    case PROP_CLEAR_DOWNLOAD_RECORD:
+        g_value_set_boolean(value, webkit_settings_get_clear_download_record(settings));
+        break;
+    case PROP_CLEAR_COOKIE_AND_OTHERS:
+        g_value_set_boolean(value, webkit_settings_get_clear_cookie_and_others(settings));
+        break;
+    case PROP_CLEAR_CACHED_IMAGES_AND_FILES:
+        g_value_set_boolean(value, webkit_settings_get_clear_cached_images_and_files(settings));
+        break;
+    case PROP_CLEAR_PASSWORDS:
+        g_value_set_boolean(value, webkit_settings_get_clear_passwords(settings));
+        break;
+    case PROP_CERTIFICATE_REVOCATION:
+        g_value_set_boolean(value, webkit_settings_get_certificate_revocation(settings)); 
+        break;
+    case PROP_ON_STARTUP:
+        g_value_set_uint(value,webkit_settings_get_on_startup(settings));
+        break;
+    case PROP_OPEN_NEWPAGE:
+        g_value_set_uint(value,webkit_settings_get_open_newpage(settings));
+        break;
+    case PROP_AUTO_LOAD_IMAGES:
+        g_value_set_boolean(value, webkit_settings_get_auto_load_images(settings));
+        break;
+    case PROP_ENABLE_JAVASCRIPT:
+        g_value_set_boolean(value, webkit_settings_get_enable_javascript(settings));
+        break;
+    case PROP_HISTORY_SETTING:
+        g_value_set_uint(value, webkit_settings_get_history_setting(settings));
+        break;
+    case PROP_COOKIE_SETTING:
+        g_value_set_uint(value, webkit_settings_get_cookie_setting(settings));
+        break;
+    case PROP_TRACK_LOCATION:
+        g_value_set_uint(value, webkit_settings_get_track_location(settings));
+        break;
+    case PROP_MEDIA_ACCESS:
+        g_value_set_uint(value, webkit_settings_get_media_access(settings));
+        break;
+    case PROP_HOME_PAGE:
+        g_value_set_string(value, webkit_settings_get_home_page(settings));
+        break;
+    case PROP_PAGE_ZOOM:
+        g_value_set_double(value, webkit_settings_get_page_zoom(settings));
+        break;
 
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
@@ -504,34 +649,6 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
     GParamFlags readWriteConstructParamFlags = static_cast<GParamFlags>(WEBKIT_PARAM_READWRITE | G_PARAM_CONSTRUCT);
 
     /**
-     * WebKitSettings:enable-javascript:
-     *
-     * Determines whether or not JavaScript executes within a page.
-     */
-    g_object_class_install_property(gObjectClass,
-                                    PROP_ENABLE_JAVASCRIPT,
-                                    g_param_spec_boolean("enable-javascript",
-                                                         _("Enable JavaScript"),
-                                                         _("Enable JavaScript."),
-                                                         TRUE,
-                                                         readWriteConstructParamFlags));
-
-    /**
-     * WebKitSettings:auto-load-images:
-     *
-     * Determines whether images should be automatically loaded or not.
-     * On devices where network bandwidth is of concern, it might be
-     * useful to turn this property off.
-     */
-    g_object_class_install_property(gObjectClass,
-                                    PROP_AUTO_LOAD_IMAGES,
-                                    g_param_spec_boolean("auto-load-images",
-                                                         _("Auto load images"),
-                                                         _("Load images automatically."),
-                                                         TRUE,
-                                                         readWriteConstructParamFlags));
-
-    /**
      * WebKitSettings:load-icons-ignoring-image-load-setting:
      *
      * Determines whether a site can load favicons irrespective
@@ -544,6 +661,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether to load site icons ignoring image load setting."),
                                                          FALSE,
                                                          readWriteConstructParamFlags));
+
+
 
     /**
      * WebKitSettings:enable-offline-web-application-cache:
@@ -563,6 +682,9 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          TRUE,
                                                          readWriteConstructParamFlags));
 
+
+ 
+
     /**
      * WebKitSettings:enable-html5-local-storage:
      *
@@ -579,6 +701,11 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether to enable HTML5 Local Storage support."),
                                                          TRUE,
                                                          readWriteConstructParamFlags));
+
+
+
+   
+
 
     /**
      * WebKitSettings:enable-html5-database:
@@ -598,6 +725,9 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          TRUE,
                                                          readWriteConstructParamFlags));
 
+
+
+
     /**
      * WebKitSettings:enable-xss-auditor:
      *
@@ -611,6 +741,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether to enable the XSS auditor."),
                                                          TRUE,
                                                          readWriteConstructParamFlags));
+
+
 
 
     /**
@@ -628,6 +760,9 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          FALSE,
                                                          readWriteConstructParamFlags));
 
+
+
+
     /**
      * WebKitSettings:enable-plugins:
      *
@@ -640,6 +775,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Enable embedded plugin objects."),
                                                          TRUE,
                                                          readWriteConstructParamFlags));
+
+
 
     /**
      * WebKitSettings:enable-java:
@@ -654,6 +791,9 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          TRUE,
                                                          readWriteConstructParamFlags));
 
+
+
+
     /**
      * WebKitSettings:javascript-can-open-windows-automatically:
      *
@@ -667,6 +807,9 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether JavaScript can open windows automatically."),
                                                          FALSE,
                                                          readWriteConstructParamFlags));
+
+
+
 
     /**
      * WebKitSettings:enable-hyperlink-auditing:
@@ -684,6 +827,9 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          FALSE,
                                                          readWriteConstructParamFlags));
 
+ 
+
+
     /**
      * WebKitWebSettings:default-font-family:
      *
@@ -696,6 +842,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                         _("The font family to use as the default for content that does not specify a font."),
                                                         "sans-serif",
                                                         readWriteConstructParamFlags));
+
+
 
     /**
      * WebKitWebSettings:monospace-font-family:
@@ -711,6 +859,10 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                         "monospace",
                                                         readWriteConstructParamFlags));
 
+
+
+
+
     /**
      * WebKitWebSettings:serif-font-family:
      *
@@ -723,6 +875,9 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                         _("The font family used as the default for content using serif font."),
                                                         "serif",
                                                         readWriteConstructParamFlags));
+
+
+
 
     /**
      * WebKitWebSettings:sans-serif-font-family:
@@ -737,6 +892,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                         "sans-serif",
                                                         readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitWebSettings:cursive-font-family:
      *
@@ -749,6 +906,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                         _("The font family used as the default for content using cursive font."),
                                                         "serif",
                                                         readWriteConstructParamFlags));
+
+
 
     /**
      * WebKitWebSettings:fantasy-font-family:
@@ -763,6 +922,9 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                         "serif",
                                                         readWriteConstructParamFlags));
 
+
+
+
     /**
      * WebKitWebSettings:pictograph-font-family:
      *
@@ -775,6 +937,7 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                         _("The font family used as the default for content using pictograph font."),
                                                         "serif",
                                                         readWriteConstructParamFlags));
+
 
     /**
      * WebKitWebSettings:default-font-size:
@@ -790,6 +953,11 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                       0, G_MAXUINT, 16,
                                                       readWriteConstructParamFlags));
 
+
+
+    
+
+
     /**
      * WebKitWebSettings:default-monospace-font-size:
      *
@@ -803,6 +971,9 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                       _("The default font size used to display monospace text."),
                                                       0, G_MAXUINT, 13,
                                                       readWriteConstructParamFlags));
+
+
+
 
     /**
      * WebKitWebSettings:minimum-font-size:
@@ -819,6 +990,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                       0, G_MAXUINT, 0,
                                                       readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:default-charset:
      *
@@ -831,6 +1004,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                         _("The default text charset used when interpreting content with unspecified charset."),
                                                         "iso-8859-1",
                                                         readWriteConstructParamFlags));
+
+
 
     /**
      * WebKitSettings:enable-private-browsing:
@@ -846,6 +1021,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          FALSE,
                                                          readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:enable-developer-extras:
      *
@@ -859,6 +1036,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          FALSE,
                                                          readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:enable-resizable-text-areas:
      *
@@ -871,6 +1050,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether to enable resizable text areas"),
                                                          TRUE,
                                                          readWriteConstructParamFlags));
+
+
 
     /**
      * WebKitSettings:enable-tabs-to-links:
@@ -888,6 +1069,7 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          TRUE,
                                                          readWriteConstructParamFlags));
 
+
     /**
      * WebKitSettings:enable-dns-prefetching:
      *
@@ -902,6 +1084,7 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          FALSE,
                                                          readWriteConstructParamFlags));
 
+
     /**
      * WebKitSettings:enable-caret-browsing:
      *
@@ -914,6 +1097,7 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether to enable accessibility enhanced keyboard navigation"),
                                                          FALSE,
                                                          readWriteConstructParamFlags));
+
 
     /**
      * WebKitSettings:enable-fullscreen:
@@ -931,6 +1115,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             TRUE,
             readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:print-backgrounds:
      *
@@ -943,6 +1129,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether background images should be drawn during printing"),
                                                          TRUE,
                                                          readWriteConstructParamFlags));
+
+
 
     /**
      * WebKitSettings:enable-webaudio:
@@ -963,6 +1151,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          FALSE,
                                                          readWriteConstructParamFlags));
 
+
+
     /**
     * WebKitSettings:enable-webgl:
     *
@@ -977,6 +1167,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether WebGL content should be rendered"),
                                                          FALSE,
                                                          readWriteConstructParamFlags));
+
+
 
     /**
      * WebKitSettings:allow-modal-dialogs:
@@ -996,6 +1188,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          FALSE,
                                                          readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:zoom-text-only:
      *
@@ -1012,6 +1206,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          FALSE,
                                                          readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:javascript-can-access-clipboard:
      *
@@ -1026,6 +1222,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether JavaScript can access Clipboard"),
                                                          FALSE,
                                                          readWriteConstructParamFlags));
+
+
 
     /**
      * WebKitSettings:media-playback-requires-user-gesture:
@@ -1044,6 +1242,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          FALSE,
                                                          readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:media-playback-allows-inline:
      *
@@ -1059,6 +1259,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          TRUE,
                                                          readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:draw-compositing-indicators:
      *
@@ -1073,6 +1275,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether to draw compositing borders and repaint counters"),
                                                          FALSE,
                                                          readWriteConstructParamFlags));
+
+
 
     /**
      * WebKitSettings:enable-site-specific-quirks:
@@ -1093,6 +1297,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             _("Enables the site-specific compatibility workarounds"),
             TRUE,
             readWriteConstructParamFlags));
+   
+
 
     /**
      * WebKitSettings:enable-page-cache:
@@ -1115,6 +1321,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          TRUE,
                                                          readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:user-agent:
      *
@@ -1135,6 +1343,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                         0, // A null string forces the standard user agent.
                                                         readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:enable-smooth-scrolling:
      *
@@ -1147,6 +1357,9 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether to enable smooth scrolling"),
                                                          FALSE,
                                                          readWriteConstructParamFlags));
+
+
+   
 
     /**
      * WebKitSettings:enable-accelerated-2d-canvas:
@@ -1166,6 +1379,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             FALSE,
             readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:enable-write-console-messages-to-stdout:
      *
@@ -1181,6 +1396,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             _("Whether to write console messages on stdout"),
             FALSE,
             readWriteConstructParamFlags));
+
+ 
 
     /**
      * WebKitSettings:enable-media-stream:
@@ -1200,6 +1417,7 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             _("Whether MediaStream content should be handled"),
             FALSE,
             readWriteConstructParamFlags));
+
 
    /**
      * WebKitSettings:enable-spatial-navigation:
@@ -1221,6 +1439,8 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             FALSE,
             readWriteConstructParamFlags));
 
+
+
     /**
      * WebKitSettings:enable-mediasource:
      *
@@ -1240,6 +1460,200 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             _("Whether MediaSource should be enabled."),
             FALSE,
             readWriteConstructParamFlags));
+
+   //install bool property
+    g_object_class_install_property(gObjectClass,
+        PROP_MUCH_TAB_WARNING,
+        g_param_spec_boolean("much-tab-warning",
+            _("Much Tab Warning"),
+            _("Whether to warning When much tab slow down the browser."),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_SHOW_HOMEPAGE_BUTTON,
+        g_param_spec_boolean("show-homepage-button",
+            _("Show Homepage Button"),
+            _("Whether to show homepage button."),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_SHOW_BOOKMARKBAR,
+        g_param_spec_boolean("show-bookmarkbar",
+            _("Show Bookmark Bar"),
+            _("Whether to show bookmark bar."),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_SHOW_TITLEBAR_AND_MENUBAR,
+        g_param_spec_boolean("show-titlebar-and-menubar",
+            _("Show Titlebar and Menubar"),
+            _("Whether to show Titlebar and Meunbar."),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_SHOW_FULLSCREEN,
+        g_param_spec_boolean("show-fullscreen",
+            _("Show Fullscreen"),
+            _("Whether to show fullscreen."),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_PAGE_CONTENT_CACHE,
+        g_param_spec_boolean("page-content-cache",
+            _("Page Content Cache"),
+            _("Whether to open page content cache."),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_CLEAR_BROWSE_RECORD,
+        g_param_spec_boolean("clear-browse-record",
+            _("Clear Browse Record"),
+            _("Whether to clear browse record."),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_CLEAR_DOWNLOAD_RECORD,
+        g_param_spec_boolean("clear-download-record",
+            _("Clear Download Record"),
+            _("Whether to clear download record."),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_CLEAR_COOKIE_AND_OTHERS,
+        g_param_spec_boolean("clear-cookie-and-others",
+            _("Clear Cookie And Others"),
+            _("Whether to clear cookie and other data."),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_CLEAR_CACHED_IMAGES_AND_FILES,
+        g_param_spec_boolean("clear-cached-images-and-files",
+            _("Clear Cached Images And Files"),
+            _("Whether to clear cached images and files."),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_CLEAR_PASSWORDS,
+        g_param_spec_boolean("clear-passwords",
+            _("Clear Passwords"),
+            _("Whether to clear passwords"),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_CERTIFICATE_REVOCATION,
+        g_param_spec_boolean("certificate-revocation",
+            _("Certificate-Revocation"),
+            _("Check for server certificate revocation"),
+            FALSE,
+            readWriteConstructParamFlags));
+
+    //install integer property
+    g_object_class_install_property(gObjectClass,
+        PROP_ON_STARTUP,
+        g_param_spec_uint("on-startup",
+            _("On Startup"),
+            _("How to load page when startup browser."),
+            0, G_MAXUINT, 1,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_OPEN_NEWPAGE,
+        g_param_spec_uint("open-newpage",
+            _("Open New Page"),
+            _("How to show page when load a new url."),
+            0, G_MAXUINT, 0,
+            readWriteConstructParamFlags));
+
+
+    /**
+     * WebKitSettings:auto-load-images:
+     *
+     * Determines whether images should be automatically loaded or not.
+     * On devices where network bandwidth is of concern, it might be
+     * useful to turn this property off.
+     */
+    g_object_class_install_property(gObjectClass,
+                                    PROP_AUTO_LOAD_IMAGES,
+                                    g_param_spec_boolean("auto-load-images",
+                                                         _("Auto Load Images"),
+                                                         _("Load images automatically."),
+                                                         TRUE,
+                                                         readWriteConstructParamFlags));
+    /**
+     * WebKitSettings:enable-javascript:
+     *
+     * Determines whether or not JavaScript executes within a page.
+     */
+    g_object_class_install_property(gObjectClass,
+                                    PROP_ENABLE_JAVASCRIPT,
+                                    g_param_spec_boolean("enable-javascript",
+                                                         _("Enable JavaScript"),
+                                                         _("Enable JavaScript."),
+                                                         TRUE,
+                                                         readWriteConstructParamFlags));
+ 
+
+    g_object_class_install_property(gObjectClass,
+        PROP_HISTORY_SETTING,
+        g_param_spec_uint("history-setting",
+            _("History Setting"),
+            _("Whether to record history."),
+            0, G_MAXUINT, 1,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_COOKIE_SETTING,
+        g_param_spec_uint("cookie-setting",
+            _("Cookie Setting"),
+            _("Whether to record cookie."),
+            0, G_MAXUINT, 0,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_TRACK_LOCATION,
+        g_param_spec_uint("track-location",
+            _("Track Location"),
+            _("Whether to track your physical location."),
+            0, G_MAXUINT, 1,
+            readWriteConstructParamFlags));
+
+    g_object_class_install_property(gObjectClass,
+        PROP_MEDIA_ACCESS,
+        g_param_spec_uint("media-access",
+            _("Media Access"),
+            _("Whether to allow sites to access your camera and microphone"),
+            0, G_MAXUINT, 0,
+            readWriteConstructParamFlags));
+
+    //install string property
+    g_object_class_install_property(gObjectClass,
+        PROP_HOME_PAGE,
+        g_param_spec_string("home-page",
+            _("Home Page"),
+            _("The loading url When select show home page radio button."),
+            "",
+            readWriteConstructParamFlags));
+
+    //install double property
+    g_object_class_install_property(gObjectClass,
+        PROP_PAGE_ZOOM,
+        g_param_spec_double("page-zoom",
+            _("Page Zoom"),
+            _("The zoom level to use as the default for page."),
+            -G_MAXDOUBLE, G_MAXDOUBLE, 1.0,
+            readWriteConstructParamFlags));
+
 }
 
 WebPreferences* webkitSettingsGetPreferences(WebKitSettings* settings)
@@ -1257,7 +1671,7 @@ WebPreferences* webkitSettingsGetPreferences(WebKitSettings* settings)
  * Returns: a new #WebKitSettings instance.
  */
 WebKitSettings* webkit_settings_new()
-{
+{ 
     return WEBKIT_SETTINGS(g_object_new(WEBKIT_TYPE_SETTINGS, NULL));
 }
 
@@ -1306,17 +1720,16 @@ gboolean webkit_settings_get_enable_javascript(WebKitSettings* settings)
 void webkit_settings_set_enable_javascript(WebKitSettings* settings, gboolean enabled)
 {
     g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
-
     WebKitSettingsPrivate* priv = settings->priv;
     bool currentValue = priv->preferences->javaScriptEnabled();
     if (currentValue == enabled)
         return;
-
+        
     if(!priv->IsStartState) { 
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_JAVASCRIPT], bvalue.release());  //Update new preference value.
-    }
-
+    } 
+   
     priv->preferences->setJavaScriptEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-javascript");
 }
@@ -1351,11 +1764,11 @@ void webkit_settings_set_auto_load_images(WebKitSettings* settings, gboolean ena
     bool currentValue = priv->preferences->loadsImagesAutomatically();
     if (currentValue == enabled)
         return;
-
-    if(!priv->IsStartState) {
+   
+     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_AUTO_LOAD_IMAGES], bvalue.release());  //Update new preference value.
-    }
+    } 
 
     priv->preferences->setLoadsImagesAutomatically(enabled);
     g_object_notify(G_OBJECT(settings), "auto-load-images");
@@ -1392,10 +1805,10 @@ void webkit_settings_set_load_icons_ignoring_image_load_setting(WebKitSettings* 
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_LOAD_ICONS_IGNORING_IMAGE_LOAD_SETTING], bvalue.release());  //Update new preference value.
-    }
+    } */
 
     priv->preferences->setLoadsSiteIconsIgnoringImageLoadingPreference(enabled);
     g_object_notify(G_OBJECT(settings), "load-icons-ignoring-image-load-setting");
@@ -1426,16 +1839,15 @@ gboolean webkit_settings_get_enable_offline_web_application_cache(WebKitSettings
 void webkit_settings_set_enable_offline_web_application_cache(WebKitSettings* settings, gboolean enabled)
 {
     g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
-
     WebKitSettingsPrivate* priv = settings->priv;
     bool currentValue = priv->preferences->offlineWebApplicationCacheEnabled();
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_OFFLINE_WEB_APPLICATION_CACHE], bvalue.release());  //Update new preference value.
-    }
+    } */
 
     priv->preferences->setOfflineWebApplicationCacheEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-offline-web-application-cache");
@@ -1466,16 +1878,15 @@ gboolean webkit_settings_get_enable_html5_local_storage(WebKitSettings* settings
 void webkit_settings_set_enable_html5_local_storage(WebKitSettings* settings, gboolean enabled)
 {
     g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
-
     WebKitSettingsPrivate* priv = settings->priv;
     bool currentValue = priv->preferences->localStorageEnabled();
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_HTML5_LOCAL_STORAGE], bvalue.release());  //Update new preference value.
-    }
+    } */
 
     priv->preferences->setLocalStorageEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-html5-local-storage");
@@ -1512,10 +1923,10 @@ void webkit_settings_set_enable_html5_database(WebKitSettings* settings, gboolea
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_HTML5_DATABASE], bvalue.release());  //Update new preference value.
-    }
+    } */
 
     priv->preferences->setDatabasesEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-html5-database");
@@ -1551,10 +1962,10 @@ void webkit_settings_set_enable_xss_auditor(WebKitSettings* settings, gboolean e
     bool currentValue = priv->preferences->xssAuditorEnabled();
     if (currentValue == enabled)
         return;
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_XSS_AUDITOR], bvalue.release());  //Update new preference value.
-    }
+    } */
 
     priv->preferences->setXSSAuditorEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-xss-auditor");
@@ -1592,10 +2003,10 @@ void webkit_settings_set_enable_frame_flattening(WebKitSettings* settings, gbool
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_FRAME_FLATTENING], bvalue.release());  //Update new preference value.
-    }
+    } */
 
     priv->preferences->setFrameFlatteningEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-frame-flattening");
@@ -1632,10 +2043,10 @@ void webkit_settings_set_enable_plugins(WebKitSettings* settings, gboolean enabl
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_PLUGINS], bvalue.release());  //Update new preference value.
-    }
+    } */
 
     priv->preferences->setPluginsEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-plugins");
@@ -1672,11 +2083,11 @@ void webkit_settings_set_enable_java(WebKitSettings* settings, gboolean enabled)
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_JAVA], bvalue.release());  //Update new preference value.
-    }
-
+    } */
+ 
     priv->preferences->setJavaEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-java");
 }
@@ -1712,10 +2123,10 @@ void webkit_settings_set_javascript_can_open_windows_automatically(WebKitSetting
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_JAVASCRIPT_CAN_OPEN_WINDOWS_AUTOMATICALLY], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setJavaScriptCanOpenWindowsAutomatically(enabled);
     g_object_notify(G_OBJECT(settings), "javascript-can-open-windows-automatically");
@@ -1752,10 +2163,10 @@ void webkit_settings_set_enable_hyperlink_auditing(WebKitSettings* settings, gbo
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_HYPERLINK_AUDITING], bvalue.release());  //Update new preference value.
-    }
+    } */
 
     priv->preferences->setHyperlinkAuditingEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-hyperlink-auditing");
@@ -1835,11 +2246,11 @@ void webkit_settings_set_monospace_font_family(WebKitSettings* settings, const g
     if (!g_strcmp0(priv->monospaceFontFamily.data(), monospaceFontFamily))
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       std::string strval(monospaceFontFamily);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_MONOSPACE_FONT_FAMILY], strvalue.release()); //Update new preference value.
-    }
+    } */
 
     String fixedFontFamily = String::fromUTF8(monospaceFontFamily);
     priv->preferences->setFixedFontFamily(fixedFontFamily);
@@ -1878,11 +2289,11 @@ void webkit_settings_set_serif_font_family(WebKitSettings* settings, const gchar
     if (!g_strcmp0(priv->serifFontFamily.data(), serifFontFamily))
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       std::string strval(serifFontFamily);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_SERIF_FONT_FAMILY], strvalue.release()); //Update new preference value.
-    }
+    } */
 
     String serifFontFamilyString = String::fromUTF8(serifFontFamily);
     priv->preferences->setSerifFontFamily(serifFontFamilyString);
@@ -1921,11 +2332,11 @@ void webkit_settings_set_sans_serif_font_family(WebKitSettings* settings, const 
     if (!g_strcmp0(priv->sansSerifFontFamily.data(), sansSerifFontFamily))
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       std::string strval(sansSerifFontFamily);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_SANS_SERIF_FONT_FAMILY], strvalue.release()); //Update new preference value.
-    }
+    } */
 
     String sansSerifFontFamilyString = String::fromUTF8(sansSerifFontFamily);
     priv->preferences->setSansSerifFontFamily(sansSerifFontFamilyString);
@@ -1964,11 +2375,11 @@ void webkit_settings_set_cursive_font_family(WebKitSettings* settings, const gch
     if (!g_strcmp0(priv->cursiveFontFamily.data(), cursiveFontFamily))
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       std::string strval(cursiveFontFamily);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_CURSIVE_FONT_FAMILY], strvalue.release()); //Update new preference value.
-    }
+    } */
 
     String cursiveFontFamilyString = String::fromUTF8(cursiveFontFamily);
     priv->preferences->setCursiveFontFamily(cursiveFontFamilyString);
@@ -2007,11 +2418,11 @@ void webkit_settings_set_fantasy_font_family(WebKitSettings* settings, const gch
     if (!g_strcmp0(priv->fantasyFontFamily.data(), fantasyFontFamily))
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       std::string strval(fantasyFontFamily);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_FANTASY_FONT_FAMILY], strvalue.release()); //Update new preference value.
-    }
+    } */
 
     String fantasyFontFamilyString = String::fromUTF8(fantasyFontFamily);
     priv->preferences->setFantasyFontFamily(fantasyFontFamilyString);
@@ -2050,11 +2461,11 @@ void webkit_settings_set_pictograph_font_family(WebKitSettings* settings, const 
     if (!g_strcmp0(priv->pictographFontFamily.data(), pictographFontFamily))
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       std::string strval(pictographFontFamily);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_PICTOGRAPH_FONT_FAMILY], strvalue.release()); //Update new preference value.
-    }
+    } */
 
     String pictographFontFamilyString = String::fromUTF8(pictographFontFamily);
     priv->preferences->setPictographFontFamily(pictographFontFamilyString);
@@ -2093,10 +2504,10 @@ void webkit_settings_set_default_font_size(WebKitSettings* settings, guint32 fon
     if (currentSize == fontSize)
         return;
 
-    if(!priv->IsStartState) {
+     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)fontSize));
       priv->user_pref_store_->SetValue(key[PROP_DEFAULT_FONT_SIZE], ivalue.release()); //Update new preference value.
-    }
+    } 
  
     priv->preferences->setDefaultFontSize(fontSize);
     g_object_notify(G_OBJECT(settings), "default-font-size");
@@ -2133,10 +2544,10 @@ void webkit_settings_set_default_monospace_font_size(WebKitSettings* settings, g
     if (currentSize == fontSize)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)fontSize));
       priv->user_pref_store_->SetValue(key[PROP_DEFAULT_MONOSPACE_FONT_SIZE], ivalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setDefaultFixedFontSize(fontSize);
     g_object_notify(G_OBJECT(settings), "default-monospace-font-size");
@@ -2173,10 +2584,10 @@ void webkit_settings_set_minimum_font_size(WebKitSettings* settings, guint32 fon
     if (currentSize == fontSize)
         return;
 
-     if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
        scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)fontSize));
        priv->user_pref_store_->SetValue(key[PROP_MINIMUM_FONT_SIZE], ivalue.release()); //Update new preference value.
-     }
+     } */
 
     priv->preferences->setMinimumFontSize(fontSize);
     g_object_notify(G_OBJECT(settings), "minimum-font-size");
@@ -2213,11 +2624,11 @@ void webkit_settings_set_default_charset(WebKitSettings* settings, const gchar* 
     if (!g_strcmp0(priv->defaultCharset.data(), defaultCharset))
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       std::string strval(defaultCharset);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_DEFAULT_CHARSET], strvalue.release()); //Update new preference value.
-    }
+    } */
 
     String defaultCharsetString = String::fromUTF8(defaultCharset);
     priv->preferences->setDefaultTextEncodingName(defaultCharsetString);
@@ -2256,10 +2667,10 @@ void webkit_settings_set_enable_private_browsing(WebKitSettings* settings, gbool
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_PRIVATE_BROWSING], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setPrivateBrowsingEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-private-browsing");
@@ -2296,10 +2707,10 @@ void webkit_settings_set_enable_developer_extras(WebKitSettings* settings, gbool
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_DEVELOPER_EXTRAS], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setDeveloperExtrasEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-developer-extras");
@@ -2336,10 +2747,10 @@ void webkit_settings_set_enable_resizable_text_areas(WebKitSettings* settings, g
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_RESIZABLE_TEXT_AREAS], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setTextAreasAreResizable(enabled);
     g_object_notify(G_OBJECT(settings), "enable-resizable-text-areas");
@@ -2376,10 +2787,10 @@ void webkit_settings_set_enable_tabs_to_links(WebKitSettings* settings, gboolean
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_TABS_TO_LINKS], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setTabsToLinks(enabled);
     g_object_notify(G_OBJECT(settings), "enable-tabs-to-links");
@@ -2416,10 +2827,10 @@ void webkit_settings_set_enable_dns_prefetching(WebKitSettings* settings, gboole
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_DNS_PREFETCHING], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setDNSPrefetchingEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-dns-prefetching");
@@ -2456,10 +2867,10 @@ void webkit_settings_set_enable_caret_browsing(WebKitSettings* settings, gboolea
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_CARET_BROWSING], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setCaretBrowsingEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-caret-browsing");
@@ -2496,10 +2907,10 @@ void webkit_settings_set_enable_fullscreen(WebKitSettings* settings, gboolean en
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_FULLSCREEN], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setFullScreenEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-fullscreen");
@@ -2536,10 +2947,10 @@ void webkit_settings_set_print_backgrounds(WebKitSettings* settings, gboolean pr
     if (currentValue == printBackgrounds)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)printBackgrounds));
       priv->user_pref_store_->SetValue(key[PROP_PRINT_BACKGROUNDS], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setShouldPrintBackgrounds(printBackgrounds);
     g_object_notify(G_OBJECT(settings), "print-backgrounds");
@@ -2576,10 +2987,10 @@ void webkit_settings_set_enable_webaudio(WebKitSettings* settings, gboolean enab
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_WEBAUDIO], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setWebAudioEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-webaudio");
@@ -2616,10 +3027,10 @@ void webkit_settings_set_enable_webgl(WebKitSettings* settings, gboolean enabled
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_WEBGL], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setWebGLEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-webgl");
@@ -2654,10 +3065,10 @@ void webkit_settings_set_allow_modal_dialogs(WebKitSettings* settings, gboolean 
     if (priv->allowModalDialogs == allowed)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)allowed));
       priv->user_pref_store_->SetValue(key[PROP_ALLOW_MODAL_DIALOGS], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->allowModalDialogs = allowed;
     g_object_notify(G_OBJECT(settings), "allow-modal-dialogs");
@@ -2697,7 +3108,7 @@ void webkit_settings_set_zoom_text_only(WebKitSettings* settings, gboolean zoomT
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)zoomTextOnly));
       priv->user_pref_store_->SetValue(key[PROP_ZOOM_TEXT_ONLY], bvalue.release()); //Update new preference value.
-    }
+    } 
 
     priv->zoomTextOnly = zoomTextOnly;
     g_object_notify(G_OBJECT(settings), "zoom-text-only");
@@ -2735,10 +3146,10 @@ void webkit_settings_set_javascript_can_access_clipboard(WebKitSettings* setting
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_JAVASCRIPT_CAN_ACCESS_CLIPBOARD], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setJavaScriptCanAccessClipboard(enabled);
     priv->preferences->setDOMPasteAllowed(enabled);
@@ -2777,10 +3188,10 @@ void webkit_settings_set_media_playback_requires_user_gesture(WebKitSettings* se
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_MEDIA_PLAYBACK_REQUIRES_USER_GESTURE], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setMediaPlaybackRequiresUserGesture(enabled);
     g_object_notify(G_OBJECT(settings), "media-playback-requires-user-gesture");
@@ -2818,10 +3229,10 @@ void webkit_settings_set_media_playback_allows_inline(WebKitSettings* settings, 
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_MEDIA_PLAYBACK_ALLOWS_INLINE], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setMediaPlaybackAllowsInline(enabled);
     g_object_notify(G_OBJECT(settings), "media-playback-allows-inline");
@@ -2858,10 +3269,10 @@ void webkit_settings_set_draw_compositing_indicators(WebKitSettings* settings, g
         && priv->preferences->compositingRepaintCountersVisible() == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_DRAW_COMPOSITING_INDICATORS], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setCompositingBordersVisible(enabled);
     priv->preferences->setCompositingRepaintCountersVisible(enabled);
@@ -2899,10 +3310,10 @@ void webkit_settings_set_enable_site_specific_quirks(WebKitSettings* settings, g
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_SITE_SPECIFIC_QUIRKS], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setNeedsSiteSpecificQuirks(enabled);
     g_object_notify(G_OBJECT(settings), "enable-site-specific-quirks");
@@ -2939,10 +3350,10 @@ void webkit_settings_set_enable_page_cache(WebKitSettings* settings, gboolean en
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_PAGE_CACHE], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setUsesPageCache(enabled);
     g_object_notify(G_OBJECT(settings), "enable-page-cache");
@@ -2981,11 +3392,11 @@ void webkit_settings_set_user_agent(WebKitSettings* settings, const char* userAg
     if (newUserAgent == priv->userAgent)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       std::string strval(userAgent);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_USER_AGENT], strvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->userAgent = newUserAgent;
     g_object_notify(G_OBJECT(settings), "user-agent");
@@ -3040,10 +3451,10 @@ void webkit_settings_set_enable_smooth_scrolling(WebKitSettings* settings, gbool
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_SMOOTH_SCROLLING], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setScrollAnimatorEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-smooth-scrolling");
@@ -3083,10 +3494,10 @@ void webkit_settings_set_enable_accelerated_2d_canvas(WebKitSettings* settings, 
     if (priv->preferences->accelerated2dCanvasEnabled() == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_ACCELERATED_2D_CANVAS], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setAccelerated2dCanvasEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-accelerated-2d-canvas");
@@ -3128,10 +3539,10 @@ void webkit_settings_set_enable_write_console_messages_to_stdout(WebKitSettings*
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_WRITE_CONSOLE_MESSAGES_TO_STDOUT], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setLogsPageMessagesToSystemConsoleEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-write-console-messages-to-stdout");
@@ -3172,10 +3583,10 @@ void webkit_settings_set_enable_media_stream(WebKitSettings* settings, gboolean 
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_MEDIA_STREAM], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setMediaStreamEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-media-stream");
@@ -3196,14 +3607,13 @@ void webkit_settings_set_enable_spatial_navigation(WebKitSettings* settings, gbo
 
     WebKitSettingsPrivate* priv = settings->priv;
     bool currentValue = priv->preferences->spatialNavigationEnabled();
-
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_SPATIAL_NAVIGATION], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setSpatialNavigationEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-spatial-navigation");
@@ -3262,13 +3672,494 @@ void webkit_settings_set_enable_mediasource(WebKitSettings* settings, gboolean e
     if (currentValue == enabled)
         return;
 
-    if(!priv->IsStartState) {
+    /* if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_MEDIASOURCE], bvalue.release()); //Update new preference value.
-    }
+    } */
 
     priv->preferences->setMediaSourceEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-mediasource");
+}
+
+
+gboolean webkit_settings_get_much_tab_warning(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->muchTabWarning;
+}
+
+
+void webkit_settings_set_much_tab_warning(WebKitSettings* settings, gboolean muchTabWarning)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->muchTabWarning == muchTabWarning)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)muchTabWarning));
+      priv->user_pref_store_->SetValue(key[PROP_MUCH_TAB_WARNING], bvalue.release()); //Update new preference value.
+    }
+
+    priv->muchTabWarning = muchTabWarning;
+}
+
+gboolean webkit_settings_get_show_homepage_button(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->showHomepageButton;
+}
+
+
+void webkit_settings_set_show_homepage_button(WebKitSettings* settings, gboolean showHomepageButton)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->showHomepageButton == showHomepageButton)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)showHomepageButton));
+      priv->user_pref_store_->SetValue(key[PROP_SHOW_HOMEPAGE_BUTTON], bvalue.release()); //Update new preference value.
+    }
+
+    priv->showHomepageButton = showHomepageButton;
+}
+
+gboolean webkit_settings_get_show_bookmarkbar(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->showBookmarkbar;
+}
+
+
+void webkit_settings_set_show_bookmarkbar(WebKitSettings* settings, gboolean showBookmarkbar)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->showBookmarkbar == showBookmarkbar)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)showBookmarkbar));
+      priv->user_pref_store_->SetValue(key[PROP_SHOW_BOOKMARKBAR], bvalue.release()); //Update new preference value.
+    }
+
+    priv->showBookmarkbar = showBookmarkbar;
+}
+
+gboolean webkit_settings_get_show_titlebar_and_menubar(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->showTitlebarAndMenubar;
+}
+
+
+void webkit_settings_set_show_titlebar_and_menubar(WebKitSettings* settings, gboolean showTitlebarAndMenubar)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->showTitlebarAndMenubar == showTitlebarAndMenubar)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)showTitlebarAndMenubar));
+      priv->user_pref_store_->SetValue(key[PROP_SHOW_TITLEBAR_AND_MENUBAR], bvalue.release()); //Update new preference value.
+    }
+
+    priv->showTitlebarAndMenubar = showTitlebarAndMenubar;
+}
+
+gboolean webkit_settings_get_show_fullscreen(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->showFullscreen;
+}
+
+
+void webkit_settings_set_show_fullscreen(WebKitSettings* settings, gboolean showFullscreen)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->showFullscreen == showFullscreen)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)showFullscreen));
+      priv->user_pref_store_->SetValue(key[PROP_SHOW_FULLSCREEN], bvalue.release()); //Update new preference value.
+    }
+
+    priv->showFullscreen = showFullscreen;
+}
+
+gboolean webkit_settings_get_page_content_cache(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->pageContentCache;
+}
+
+
+void webkit_settings_set_page_content_cache(WebKitSettings* settings, gboolean pageContentCache)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->pageContentCache == pageContentCache)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)pageContentCache));
+      priv->user_pref_store_->SetValue(key[PROP_PAGE_CONTENT_CACHE], bvalue.release()); //Update new preference value.
+    }
+
+    priv->pageContentCache = pageContentCache;
+}
+
+gboolean webkit_settings_get_clear_browse_record(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->clearBrowseRecord;
+}
+
+
+void webkit_settings_set_clear_browse_record(WebKitSettings* settings, gboolean clearBrowseRecord)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->clearBrowseRecord == clearBrowseRecord)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)clearBrowseRecord));
+      priv->user_pref_store_->SetValue(key[PROP_CLEAR_BROWSE_RECORD], bvalue.release()); //Update new preference value.
+    }
+
+    priv->clearBrowseRecord = clearBrowseRecord;
+}
+
+gboolean webkit_settings_get_clear_download_record(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->clearDownloadRecord;
+}
+
+
+void webkit_settings_set_clear_download_record(WebKitSettings* settings, gboolean clearDownloadRecord)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->clearDownloadRecord == clearDownloadRecord)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)clearDownloadRecord));
+      priv->user_pref_store_->SetValue(key[PROP_CLEAR_DOWNLOAD_RECORD], bvalue.release()); //Update new preference value.
+    }
+
+    priv->clearDownloadRecord = clearDownloadRecord;
+}
+
+gboolean webkit_settings_get_clear_cookie_and_others(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->clearCookieAndOthers;
+}
+
+
+void webkit_settings_set_clear_cookie_and_others(WebKitSettings* settings, gboolean clearCookieAndOthers)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->clearCookieAndOthers == clearCookieAndOthers)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)clearCookieAndOthers));
+      priv->user_pref_store_->SetValue(key[PROP_CLEAR_COOKIE_AND_OTHERS], bvalue.release()); //Update new preference value.
+    }
+
+    priv->clearCookieAndOthers = clearCookieAndOthers;
+}
+
+gboolean webkit_settings_get_clear_cached_images_and_files(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->clearCachedImagesAndFiles;
+}
+
+void webkit_settings_set_clear_cached_images_and_files(WebKitSettings* settings, gboolean clearCachedImagesAndFiles)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->clearCachedImagesAndFiles == clearCachedImagesAndFiles)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)clearCachedImagesAndFiles));
+      priv->user_pref_store_->SetValue(key[PROP_CLEAR_CACHED_IMAGES_AND_FILES], bvalue.release()); //Update new preference value.
+    }
+
+    priv->clearCachedImagesAndFiles = clearCachedImagesAndFiles;
+}
+
+gboolean webkit_settings_get_clear_passwords(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->clearPasswords;
+}
+
+
+void webkit_settings_set_clear_passwords(WebKitSettings* settings, gboolean clearPasswords)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->clearPasswords == clearPasswords)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)clearPasswords));
+      priv->user_pref_store_->SetValue(key[PROP_CLEAR_PASSWORDS], bvalue.release()); //Update new preference value.
+    }
+
+    priv->clearPasswords = clearPasswords;
+}
+
+gboolean webkit_settings_get_certificate_revocation(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->certificateRevocation;
+}
+
+
+void webkit_settings_set_certificate_revocation(WebKitSettings* settings, gboolean certificateRevocation)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->certificateRevocation == certificateRevocation)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)certificateRevocation));
+      priv->user_pref_store_->SetValue(key[PROP_CERTIFICATE_REVOCATION], bvalue.release()); //Update new preference value.
+    }
+
+    priv->certificateRevocation = certificateRevocation;
+}
+
+guint32 webkit_settings_get_on_startup(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), 0);
+
+    return settings->priv->onStartup;
+}
+
+void webkit_settings_set_on_startup(WebKitSettings* settings, guint32 onStartup)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->onStartup == onStartup)
+        return;
+
+     if(!priv->IsStartState) {
+       scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)onStartup));
+       priv->user_pref_store_->SetValue(key[PROP_ON_STARTUP], ivalue.release()); //Update new preference value.
+     }
+
+     priv->onStartup = onStartup;
+}
+
+guint32 webkit_settings_get_open_newpage(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), 0);
+
+    return settings->priv->openNewpage;
+}
+
+void webkit_settings_set_open_newpage(WebKitSettings* settings, guint32 openNewpage)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->openNewpage == openNewpage)
+        return;
+
+     if(!priv->IsStartState) {
+       scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)openNewpage));
+       priv->user_pref_store_->SetValue(key[PROP_OPEN_NEWPAGE], ivalue.release()); //Update new preference value.
+     }
+
+     priv->openNewpage = openNewpage;
+}
+
+gdouble webkit_settings_get_page_zoom(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), 0);
+
+    return settings->priv->pageZoom;
+}
+
+void webkit_settings_set_page_zoom(WebKitSettings* settings, gdouble pageZoom)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->pageZoom == pageZoom)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> dvalue(new base::FundamentalValue((double)pageZoom));
+      priv->user_pref_store_->SetValue(key[PROP_PAGE_ZOOM], dvalue.release()); //Update new preference value.
+    }
+   
+    priv->pageZoom = pageZoom;
+    g_object_notify(G_OBJECT(settings), "page-zoom");
+
+}
+
+guint32 webkit_settings_get_history_setting(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), 0);
+
+    return settings->priv->historySetting;
+}
+
+void webkit_settings_set_history_setting(WebKitSettings* settings, guint32 historySetting)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->historySetting == historySetting)
+        return;
+
+     if(!priv->IsStartState) {
+       scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)historySetting));
+       priv->user_pref_store_->SetValue(key[PROP_HISTORY_SETTING], ivalue.release()); //Update new preference value.
+     }
+   
+     priv->historySetting = historySetting;
+}
+
+guint32 webkit_settings_get_cookie_setting(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), 0);
+
+    return settings->priv->cookieSetting;
+}
+
+
+void webkit_settings_set_cookie_setting(WebKitSettings* settings, guint32 cookieSetting)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->cookieSetting == cookieSetting)
+        return;
+
+     if(!priv->IsStartState) {
+       scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)cookieSetting));
+       priv->user_pref_store_->SetValue(key[PROP_COOKIE_SETTING], ivalue.release()); //Update new preference value.
+     }
+   
+     priv->cookieSetting = cookieSetting;
+}
+
+guint32 webkit_settings_get_track_location(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), 0);
+
+    return settings->priv->trackLocation;
+}
+
+
+void webkit_settings_set_track_location(WebKitSettings* settings, guint32 trackLocation)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->trackLocation == trackLocation)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)trackLocation));
+      priv->user_pref_store_->SetValue(key[PROP_TRACK_LOCATION], ivalue.release()); //Update new preference value.
+    }
+   
+    priv->trackLocation = trackLocation;
+}
+
+guint32 webkit_settings_get_media_access(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), 0);
+
+    return settings->priv->mediaAccess;
+}
+
+
+void webkit_settings_set_media_access(WebKitSettings* settings, guint32 mediaAccess)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->mediaAccess == mediaAccess)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)mediaAccess));
+      priv->user_pref_store_->SetValue(key[PROP_MEDIA_ACCESS], ivalue.release()); //Update new preference value.
+    }
+   
+    priv->mediaAccess = mediaAccess;
+}
+
+const gchar* webkit_settings_get_home_page(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), 0);
+
+    return settings->priv->homepage.data();
+}
+
+
+void webkit_settings_set_home_page(WebKitSettings* settings, const char* homepage)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+    
+    g_return_if_fail(homepage);
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (!g_strcmp0(priv->homepage.data(), homepage))
+        return;
+
+    if(!priv->IsStartState) {
+      std::string strval(homepage);
+      scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
+      priv->user_pref_store_->SetValue(key[PROP_HOME_PAGE], strvalue.release()); //Update new preference value.
+    }
+
+    priv->homepage = homepage;
 }
 
 /**
@@ -3311,113 +4202,80 @@ void InitSettingsWithFile(WebKitSettings* settings)
  *
  * sunhaiming add 2014-10-16.
  */
+
 void ReSetProperty(WebKitSettings* settings)
 {
    unsigned int index = 0;
+   std::string key_name;
    JsonPrefStore* pref_store = settings->priv->user_pref_store_.get();
    //init bool
    bool bvalue;
    gboolean bvalue_ori;
-   for(index = PROP_ENABLE_JAVASCRIPT; index <= PROP_ENABLE_HYPERLINK_AUDITING; index++) {
+   for(index = PROP_BOOL_START + 1; index < PROP_BOOL_END; index++) {
      //first get value from dictionary_value, then set Property.
-     pref_store->GetBoolean(key[index], &bvalue);
+     key_name = key[index];
+     pref_store->GetBoolean(key_name, &bvalue);
      g_object_get(settings,
-              key[index].c_str(), &bvalue_ori,
+              key[index], &bvalue_ori,
               NULL);
      if(bvalue != bvalue_ori) {
        g_object_set(settings,
-                key[index].c_str(), bvalue,
+                key[index], bvalue,
                 NULL);
      }
    }
-   //PROP_ENABLE_PRIVATE_BROWSING
-   for(index = PROP_ENABLE_PRIVATE_BROWSING; index <= PROP_ENABLE_PAGE_CACHE; index++) {
-     //first get value from dictionary_value, then set Property.
-     pref_store->GetBoolean(key[index], &bvalue);
-  
-     g_object_get(settings,
-              key[index].c_str(), &bvalue_ori,
-              NULL);        
 
-     if(bvalue != bvalue_ori) {
-       g_object_set(settings,
-                key[index].c_str(), bvalue,
-                NULL);
-     }
-   }
-   //PROP_ENABLE_SMOOTH_SCROLLING
-   for(index = PROP_ENABLE_SMOOTH_SCROLLING; index <= PROP_ENABLE_MEDIASOURCE; index++) {
-     //first get value from dictionary_value, then set Property.
-     pref_store->GetBoolean(key[index], &bvalue);
+   //init integer
+   int ivalue;
+   gint ivalue_ori;
+   for(index = PROP_INTEGER_START + 1; index < PROP_INTEGER_END; index++) {
+     key_name = key[index];
+     pref_store->GetInteger(key_name, &ivalue);
      g_object_get(settings,
-              key[index].c_str(), &bvalue_ori,
-              NULL);   
-     if(bvalue != bvalue_ori) {
+              key[index], &ivalue_ori,
+              NULL);    
+     if(ivalue != ivalue_ori) {
        g_object_set(settings,
-                key[index].c_str(), bvalue,
+                key[index], ivalue,
                 NULL);
      }
-   }
+   }  
 
    //init string
    std::string strvalue;
    std::string strvalue_ori;
    gchar *strval;
-   for(index = PROP_DEFAULT_FONT_FAMILY; index <= PROP_PICTOGRAPH_FONT_FAMILY; index++) {
-     //first get value from dictionary_value, then set Property.
-     pref_store->GetString(key[index], &strvalue);
+   for(index = PROP_STRING_START + 1; index < PROP_STRING_END; index++) {
+     key_name = key[index];
+     pref_store->GetString(key_name, &strvalue);
      g_object_get(settings,
-              key[index].c_str(), &strval,
+              key[index], &strval,
               NULL);
      strvalue_ori =  strval;       
      if(strvalue != strvalue_ori) {
        g_object_set(settings,
-                key[index].c_str(), strvalue.c_str(),
+                key[index], strvalue.c_str(),
                 NULL);
      }
      g_free (strval);
    }
-   //PROP_DEFAULT_CHARSET
-   pref_store->GetString(key[PROP_DEFAULT_CHARSET], &strvalue);
-   g_object_get(settings,
-            key[PROP_DEFAULT_CHARSET].c_str(), &strval,
-            NULL);
-   strvalue_ori =  strval;    
-   if(strvalue != strvalue_ori) {
-     g_object_set(settings,
-              key[PROP_DEFAULT_CHARSET].c_str(), strvalue.c_str(),
-              NULL);
-   }
-   g_free (strval);
-   //PROP_USER_AGENT  
-   pref_store->GetString(key[PROP_USER_AGENT], &strvalue);
-   g_object_get(settings,
-            key[PROP_USER_AGENT].c_str(), &strval,
-            NULL);
-   strvalue_ori =  strval;    
-   if(strvalue != strvalue_ori) {
-     g_object_set(settings,
-              key[PROP_USER_AGENT].c_str(), strvalue.c_str(),
-              NULL);
-   }
-   g_free (strval);
 
-   //init integer
-   int ivalue;
-   gint ivalue_ori;
-   for(index = PROP_DEFAULT_FONT_SIZE; index <= PROP_MINIMUM_FONT_SIZE; index++) {
-     pref_store->GetInteger(key[index], &ivalue);
+   //init double
+   double dvalue;
+   gdouble dvalue_ori;
+   for(index = PROP_DOUBLE_START + 1; index < PROP_DOUBLE_END; index++) {
+     key_name = key[index];
+     pref_store->GetDouble(key_name, &dvalue);
      g_object_get(settings,
-              key[index].c_str(), &ivalue_ori,
+              key[index], &dvalue_ori,
               NULL);    
-     if(ivalue != ivalue_ori) {
+     if(dvalue != dvalue_ori) {
        g_object_set(settings,
-                key[index].c_str(), ivalue,
+                key[index], dvalue,
                 NULL);
      }
-   }    
+   }      
 }
-
 /**
  * SaveInitValueToFile:
  * @settings: a #WebKitSettings
@@ -3431,66 +4289,51 @@ void ReSetProperty(WebKitSettings* settings)
 void SaveInitValueToFile(WebKitSettings* settings)
 {  
    unsigned int index = 0;
+   std::string key_name;
    JsonPrefStore* pref_store = settings->priv->user_pref_store_.get();
    //init bool
    gboolean boolval;
-   for(index = PROP_ENABLE_JAVASCRIPT; index <= PROP_ENABLE_HYPERLINK_AUDITING; index++) {
+   for(index = PROP_BOOL_START + 1; index < PROP_BOOL_END; index++) {
      //first get init value, then set.
+     key_name = key[index];
      g_object_get(settings,
-              key[index].c_str(), &boolval,
+              key[index], &boolval,
               NULL);
-     pref_store->SetBoolean(key[index], boolval);
+     pref_store->SetBoolean(key_name, boolval);
    }
-   //PROP_ENABLE_PRIVATE_BROWSING
-   for(index = PROP_ENABLE_PRIVATE_BROWSING; index <= PROP_ENABLE_PAGE_CACHE; index++) {
-     //first get init value, then set.
+  
+   //init integer
+   gint intval;
+   for(index = PROP_INTEGER_START + 1; index < PROP_INTEGER_END; index++) {
+     key_name = key[index];
      g_object_get(settings,
-              key[index].c_str(), &boolval,
-              NULL);
-     pref_store->SetBoolean(key[index], boolval);
-   }
-   //PROP_ENABLE_SMOOTH_SCROLLING
-   for(index = PROP_ENABLE_SMOOTH_SCROLLING; index <= PROP_ENABLE_MEDIASOURCE; index++) {
-     //first get init value, then set.
-     g_object_get(settings,
-              key[index].c_str(), &boolval,
-              NULL);
-     pref_store->SetBoolean(key[index], boolval);
-   }
+              key[index], &intval,
+              NULL);    
+     pref_store->SetInteger(key_name, intval);
+   } 
+
 
    //init string
    gchar *strval;
    std::string strval_string;
-   for(index = PROP_DEFAULT_FONT_FAMILY; index <= PROP_PICTOGRAPH_FONT_FAMILY; index++) {
+   for(index = PROP_STRING_START + 1; index < PROP_STRING_END; index++) {
+     key_name = key[index];
      g_object_get(settings,
-              key[index].c_str(), &strval,
+              key[index], &strval,
               NULL);
      strval_string =  strval;       
-     pref_store->SetString(key[index], strval_string);
+     pref_store->SetString(key_name, strval_string);
      g_free (strval);
    }
-   //PROP_DEFAULT_CHARSET
-   g_object_get(settings,
-            key[PROP_DEFAULT_CHARSET].c_str(), &strval,
-            NULL);
-   strval_string =  strval;       
-   pref_store->SetString(key[PROP_DEFAULT_CHARSET], strval_string);
-   g_free (strval);
-   //PROP_USER_AGENT  
-   g_object_get(settings,
-            key[PROP_USER_AGENT].c_str(), &strval,
-            NULL);
-   strval_string =  strval;       
-   pref_store->SetString(key[PROP_USER_AGENT], strval_string);
-   g_free (strval);
-
-   //init integer
-   gint intval;
-   for(index = PROP_DEFAULT_FONT_SIZE; index <= PROP_MINIMUM_FONT_SIZE; index++) {
+   
+   //init double
+   gdouble doubleval;
+   for(index = PROP_DOUBLE_START + 1; index < PROP_DOUBLE_END; index++) {
+     key_name = key[index];
      g_object_get(settings,
-              key[index].c_str(), &intval,
+              key[index], &doubleval,
               NULL);    
-     pref_store->SetInteger(key[index], intval);
+     pref_store->SetDouble(key_name, doubleval);
    } 
 
    //now save to file. 

@@ -29,22 +29,7 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 
-G_BEGIN_DECLS
-
-#define BROWSER_TYPE_SETTINGS_DIALOG            (browser_settings_dialog_get_type())
-#define BROWSER_SETTINGS_DIALOG(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), BROWSER_TYPE_SETTINGS_DIALOG, BrowserSettingsDialog))
-#define BROWSER_SETTINGS_DIALOG_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass),  BROWSER_TYPE_SETTINGS_DIALOG, BrowserSettingsDialogClass))
-#define BROWSER_IS_SETTINGS_DIALOG(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj), BROWSER_TYPE_SETTINGS_DIALOG))
-#define BROWSER_IS_SETTINGS_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass),  BROWSER_TYPE_SETTINGS_DIALOG))
-#define BROWSER_SETTINGS_DIALOG_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj),  BROWSER_TYPE_SETTINGS_DIALOG, BrowserSettingsDialogClass))
-
-typedef struct _BrowserSettingsDialog        BrowserSettingsDialog;
-typedef struct _BrowserSettingsDialogClass   BrowserSettingsDialogClass;
-
-GType browser_settings_dialog_get_type(void);
-
-GtkWidget* browser_settings_dialog_new(WebKitSettings *settings);
-
-G_END_DECLS
+#define MAXBUFSIZE 1024
+GtkWidget * browser_settings_window_new(WebKitSettings *settings);
 
 #endif

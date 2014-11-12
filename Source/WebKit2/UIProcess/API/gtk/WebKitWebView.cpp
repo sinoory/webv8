@@ -391,6 +391,13 @@ static void userAgentChanged(WebKitSettings* settings, GParamSpec*, WebKitWebVie
     getPage(webView)->setCustomUserAgent(String::fromUTF8(webkit_settings_get_user_agent(settings)));
 }
 
+/*Set zoom level from pagezoom combobox. sunhaiming add.*/
+static void pageZoomChanged(WebKitSettings* settings, GParamSpec*, WebKitWebView* webView)
+{
+    gdouble pageZoom = webkit_settings_get_page_zoom(settings);
+    webkit_web_view_set_zoom_level(webView, pageZoom);  
+}
+
 static void webkitWebViewUpdateFavicon(WebKitWebView* webView, cairo_surface_t* favicon)
 {
     WebKitWebViewPrivate* priv = webView->priv;
@@ -468,6 +475,7 @@ static void webkitWebViewUpdateSettings(WebKitWebView* webView)
     g_signal_connect(settings, "notify::allow-modal-dialogs", G_CALLBACK(allowModalDialogsChanged), webView);
     g_signal_connect(settings, "notify::zoom-text-only", G_CALLBACK(zoomTextOnlyChanged), webView);
     g_signal_connect(settings, "notify::user-agent", G_CALLBACK(userAgentChanged), webView);
+    g_signal_connect(settings, "notify::page-zoom", G_CALLBACK(pageZoomChanged), webView); /*Connect to receive page-zoom action. sunhaiming add*/
 }
 
 static void webkitWebViewDisconnectSettingsSignalHandlers(WebKitWebView* webView)
@@ -476,6 +484,7 @@ static void webkitWebViewDisconnectSettingsSignalHandlers(WebKitWebView* webView
     g_signal_handlers_disconnect_by_func(settings, reinterpret_cast<gpointer>(allowModalDialogsChanged), webView);
     g_signal_handlers_disconnect_by_func(settings, reinterpret_cast<gpointer>(zoomTextOnlyChanged), webView);
     g_signal_handlers_disconnect_by_func(settings, reinterpret_cast<gpointer>(userAgentChanged), webView);
+    g_signal_handlers_disconnect_by_func(settings, reinterpret_cast<gpointer>(pageZoomChanged), webView);
 }
 
 static void webkitWebViewDisconnectMainResourceResponseChangedSignalHandler(WebKitWebView* webView)

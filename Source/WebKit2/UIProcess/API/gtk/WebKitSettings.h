@@ -53,9 +53,153 @@ typedef struct _WebKitSettingsPrivate WebKitSettingsPrivate;
 
 struct _WebKitSettings {
     GObject parent_instance;
-
     WebKitSettingsPrivate *priv;
+    GtkWidget *parent_uriEntry;
+
+    guint32 fontNum;
+    guint32 fontSizeNum;
+    guint32 pageZoomNum;
+    //Put all GtkWidget here ,so we can use later. sunhaiming add.
+    GtkWidget *window;
+    GtkWidget *entry1_general;
+    GtkWidget *button1_general;
+    GtkWidget *radiobutton1_general;
+    GtkWidget *radiobutton2_general;
+    GtkWidget *radiobutton3_general;
+    GtkWidget *radiobutton4_general;
+    GtkWidget *radiobutton5_general;
+    GtkWidget *radiobutton6_general;
+    GtkWidget * checkbutton1_general;
+    GtkWidget *checkbutton2_general;
+    GtkWidget *checkbutton3_general;
+    GtkWidget *checkbutton4_general;
+    GtkWidget *checkbutton5_general;
+    GtkWidget *comboboxtext1_content;
+    GtkWidget *comboboxtext2_content;
+    GtkWidget *comboboxtext3_content;
+    GtkWidget *checkbutton1_content;
+    GtkWidget *radiobutton1_content;
+    GtkWidget *radiobutton2_content;
+    GtkWidget *radiobutton3_content;
+    GtkWidget *radiobutton4_content;
+    GtkWidget *checkbutton3_privacy;
+    GtkWidget *comboboxtext1_privacy;
+    GtkWidget *checkbutton4_privacy;
+    GtkWidget *checkbutton5_privacy;
+    GtkWidget *checkbutton6_privacy;
+    GtkWidget *checkbutton7_privacy;
+    GtkWidget *checkbutton8_privacy;
+    GtkWidget *radiobutton1_privacy;
+    GtkWidget *radiobutton2_privacy;
+    GtkWidget *radiobutton3_privacy;
+    GtkWidget *checkbutton9_privacy;
+    GtkWidget *radiobutton4_privacy;
+    GtkWidget *radiobutton5_privacy;
+    GtkWidget *radiobutton6_privacy;
+    GtkWidget *checkbutton1_security;
+    GtkWidget *radiobutton1_security;
+    GtkWidget *radiobutton2_security;
 };
+
+enum {
+    PROP_0_settings,
+
+    //PROP_ENABLE_JAVASCRIPT, put later   
+    //PROP_AUTO_LOAD_IMAGES,  put later
+    PROP_LOAD_ICONS_IGNORING_IMAGE_LOAD_SETTING,
+    PROP_ENABLE_OFFLINE_WEB_APPLICATION_CACHE,
+    PROP_ENABLE_HTML5_LOCAL_STORAGE,
+    PROP_ENABLE_HTML5_DATABASE,
+    PROP_ENABLE_XSS_AUDITOR,
+    PROP_ENABLE_FRAME_FLATTENING,
+    PROP_ENABLE_PLUGINS,
+    PROP_ENABLE_JAVA,
+    PROP_JAVASCRIPT_CAN_OPEN_WINDOWS_AUTOMATICALLY,
+    PROP_ENABLE_HYPERLINK_AUDITING,
+    //PROP_DEFAULT_FONT_FAMILY, put later
+    PROP_MONOSPACE_FONT_FAMILY,
+    PROP_SERIF_FONT_FAMILY,
+    PROP_SANS_SERIF_FONT_FAMILY,
+    PROP_CURSIVE_FONT_FAMILY,
+    PROP_FANTASY_FONT_FAMILY,
+    PROP_PICTOGRAPH_FONT_FAMILY,
+    //PROP_DEFAULT_FONT_SIZE,   put later
+    PROP_DEFAULT_MONOSPACE_FONT_SIZE,
+    PROP_MINIMUM_FONT_SIZE,
+    PROP_DEFAULT_CHARSET,
+    PROP_ENABLE_PRIVATE_BROWSING,
+    PROP_ENABLE_DEVELOPER_EXTRAS,
+    PROP_ENABLE_RESIZABLE_TEXT_AREAS,
+    PROP_ENABLE_TABS_TO_LINKS,
+    PROP_ENABLE_DNS_PREFETCHING,
+    PROP_ENABLE_CARET_BROWSING,
+    PROP_ENABLE_FULLSCREEN,
+    PROP_PRINT_BACKGROUNDS,
+    PROP_ENABLE_WEBAUDIO,
+    PROP_ENABLE_WEBGL,
+    PROP_ALLOW_MODAL_DIALOGS,
+    //PROP_ZOOM_TEXT_ONLY,  put later
+    PROP_JAVASCRIPT_CAN_ACCESS_CLIPBOARD,
+    PROP_MEDIA_PLAYBACK_REQUIRES_USER_GESTURE,
+    PROP_MEDIA_PLAYBACK_ALLOWS_INLINE,
+    PROP_DRAW_COMPOSITING_INDICATORS,
+    PROP_ENABLE_SITE_SPECIFIC_QUIRKS,
+    PROP_ENABLE_PAGE_CACHE,
+    PROP_USER_AGENT,
+    PROP_ENABLE_SMOOTH_SCROLLING,
+    PROP_ENABLE_ACCELERATED_2D_CANVAS,
+    PROP_ENABLE_WRITE_CONSOLE_MESSAGES_TO_STDOUT,
+    PROP_ENABLE_MEDIA_STREAM,
+    PROP_ENABLE_SPATIAL_NAVIGATION,
+    PROP_ENABLE_MEDIASOURCE,
+
+    //bool property
+    PROP_BOOL_START,
+    PROP_MUCH_TAB_WARNING,
+    PROP_SHOW_HOMEPAGE_BUTTON,
+    PROP_SHOW_BOOKMARKBAR,
+    PROP_SHOW_TITLEBAR_AND_MENUBAR,
+    PROP_SHOW_FULLSCREEN,
+    PROP_ZOOM_TEXT_ONLY, 
+    PROP_AUTO_LOAD_IMAGES, 
+    PROP_ENABLE_JAVASCRIPT, 
+    PROP_PAGE_CONTENT_CACHE,
+    PROP_CLEAR_BROWSE_RECORD,
+    PROP_CLEAR_DOWNLOAD_RECORD,
+    PROP_CLEAR_COOKIE_AND_OTHERS,
+    PROP_CLEAR_CACHED_IMAGES_AND_FILES,
+    PROP_CLEAR_PASSWORDS,
+    PROP_CERTIFICATE_REVOCATION,
+    PROP_BOOL_END,
+     
+    //integer property
+    PROP_INTEGER_START,
+    PROP_ON_STARTUP,
+    PROP_OPEN_NEWPAGE,
+    PROP_DEFAULT_FONT_SIZE,
+    PROP_HISTORY_SETTING,
+    PROP_COOKIE_SETTING,
+    PROP_TRACK_LOCATION,
+    PROP_MEDIA_ACCESS,
+    PROP_INTEGER_END,
+
+    //string property
+    PROP_STRING_START,
+    PROP_HOME_PAGE,
+    PROP_DEFAULT_FONT_FAMILY,
+    PROP_STRING_END,
+
+    //double property
+    PROP_DOUBLE_START,
+    PROP_PAGE_ZOOM,
+    PROP_DOUBLE_END
+};
+
+
+extern const gchar* key[];
+extern const gchar* font[];
+extern const  guint32 font_size[];
+extern const gdouble zoom_factor[];
 
 struct _WebKitSettingsClass {
     GObjectClass parent_class;
@@ -65,6 +209,7 @@ struct _WebKitSettingsClass {
     void (*_webkit_reserved2) (void);
     void (*_webkit_reserved3) (void);
 };
+
 
 WEBKIT_API void 
 SaveInitValueToFile                                            (WebKitSettings* settings);
@@ -422,6 +567,166 @@ webkit_settings_get_enable_mediasource                         (WebKitSettings *
 WEBKIT_API void
 webkit_settings_set_enable_mediasource                         (WebKitSettings *settings,
                                                                 gboolean        enabled);
+
+WEBKIT_API gboolean
+webkit_settings_get_much_tab_warning                          (WebKitSettings* settings);
+
+WEBKIT_API void 
+webkit_settings_set_much_tab_warning                          (WebKitSettings* settings, 
+                                                               gboolean muchTabWarning);
+
+WEBKIT_API gboolean 
+webkit_settings_get_show_homepage_button                      (WebKitSettings* settings);
+
+WEBKIT_API void 
+webkit_settings_set_show_homepage_button                      (WebKitSettings* settings, 
+                                                               gboolean showHomepageButton);
+
+WEBKIT_API gboolean 
+webkit_settings_get_show_bookmarkbar                          (WebKitSettings* settings);
+
+WEBKIT_API void 
+webkit_settings_set_show_bookmarkbar                          (WebKitSettings* settings, 
+                                                               gboolean showbookmarkbar);
+
+WEBKIT_API gboolean 
+webkit_settings_get_show_titlebar_and_menubar                 (WebKitSettings* settings);
+
+WEBKIT_API void 
+webkit_settings_set_show_titlebar_and_menubar                 (WebKitSettings* settings, 
+                                                               gboolean showTitlebarAndMenubar);
+
+WEBKIT_API gboolean 
+webkit_settings_get_show_fullscreen                            (WebKitSettings* settings);
+
+WEBKIT_API void 
+webkit_settings_set_show_fullscreen                            (WebKitSettings* settings, 
+                                                                gboolean showFullscreen);
+
+WEBKIT_API gboolean 
+webkit_settings_get_page_content_cache                          (WebKitSettings* settings);
+
+
+WEBKIT_API void 
+webkit_settings_set_page_content_cache                          (WebKitSettings* settings, 
+                                                                 gboolean pageContentCache);
+
+WEBKIT_API gboolean 
+webkit_settings_get_clear_browse_record                         (WebKitSettings* settings);
+
+
+
+WEBKIT_API void 
+webkit_settings_set_clear_browse_record                         (WebKitSettings* settings, 
+                                                                 gboolean clearBrowseRecord);
+
+WEBKIT_API gboolean 
+webkit_settings_get_clear_download_record                         (WebKitSettings* settings);
+
+
+
+WEBKIT_API void 
+webkit_settings_set_clear_download_record                         (WebKitSettings* settings, 
+                                                                 gboolean clearDownloadRecord);
+
+WEBKIT_API gboolean 
+webkit_settings_get_clear_cookie_and_others                         (WebKitSettings* settings);
+
+
+
+WEBKIT_API void 
+webkit_settings_set_clear_cookie_and_others                      (WebKitSettings* settings, 
+                                                                 gboolean clearCookieAndOthers);
+
+WEBKIT_API gboolean 
+webkit_settings_get_clear_cached_images_and_files               (WebKitSettings* settings);
+
+
+
+WEBKIT_API void 
+webkit_settings_set_clear_cached_images_and_files               (WebKitSettings* settings, 
+                                                                 gboolean clearCachedImagesAndFiles);
+
+WEBKIT_API gboolean 
+webkit_settings_get_clear_passwords                             (WebKitSettings* settings);
+
+
+
+WEBKIT_API void 
+webkit_settings_set_clear_passwords                              (WebKitSettings* settings, 
+                                                                 gboolean clearPasswords);
+
+WEBKIT_API gboolean 
+webkit_settings_get_certificate_revocation                      (WebKitSettings* settings);
+
+
+
+WEBKIT_API void 
+webkit_settings_set_certificate_revocation                       (WebKitSettings* settings, 
+                                                                  gboolean certificateRevocation);
+
+WEBKIT_API guint32
+webkit_settings_get_on_startup                                 (WebKitSettings *settings);
+
+
+WEBKIT_API void
+webkit_settings_set_on_startup                                 (WebKitSettings *settings,
+                                                                guint32        onStartup);
+
+WEBKIT_API guint32
+webkit_settings_get_open_newpage                              (WebKitSettings* settings);
+
+WEBKIT_API void 
+webkit_settings_set_open_newpage                              (WebKitSettings* settings, 
+                                                               guint32 openNewpage);
+
+WEBKIT_API gdouble 
+webkit_settings_get_page_zoom                                  (WebKitSettings* settings);
+
+WEBKIT_API void 
+webkit_settings_set_page_zoom                                  (WebKitSettings* settings, 
+                                                                gdouble pageZoom);
+
+
+WEBKIT_API guint32 
+webkit_settings_get_history_setting                             (WebKitSettings* settings);
+
+
+WEBKIT_API void 
+webkit_settings_set_history_setting                             (WebKitSettings* settings, 
+                                                                 guint32 historySetting);
+
+WEBKIT_API guint32 
+webkit_settings_get_cookie_setting                              (WebKitSettings* settings);
+
+
+WEBKIT_API void 
+webkit_settings_set_cookie_setting                              (WebKitSettings* settings, 
+                                                                guint32 cookieSetting);
+
+WEBKIT_API guint32 
+webkit_settings_get_track_location                              (WebKitSettings* settings);
+
+
+WEBKIT_API void 
+webkit_settings_set_track_location                              (WebKitSettings* settings, 
+                                                                 guint32 trackLocation);
+
+WEBKIT_API guint32 
+webkit_settings_get_media_access                                 (WebKitSettings* settings);
+
+
+WEBKIT_API void 
+webkit_settings_set_media_access                                 (WebKitSettings* settings, 
+                                                                  guint32 mediaAccess);
+
+WEBKIT_API const gchar *
+webkit_settings_get_home_page                                 (WebKitSettings *settings);
+
+
+WEBKIT_API void
+webkit_settings_set_home_page                                 (WebKitSettings *settings,
+                                                                const gchar    *homepage);
 
 G_END_DECLS
 
