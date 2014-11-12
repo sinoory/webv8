@@ -255,8 +255,8 @@ int main(int argc, char *argv[])
         for (i = 0; uriArguments[i]; i++)
             createBrowserWindow(uriArguments[i], webkitSettings);
     } else
-//        createBrowserWindow("http://www.baidu.com/", webkitSettings);
-        createBrowserWindow("/home/zgh/CuprumBrowser/WebKitBrowser/WebKitBuild/Release/bin/resources/index.html",NULL);
+	createBrowserWindow("http://www.baidu.com/", webkitSettings);
+//	createBrowserWindow("/home/zgh/CuprumBrowser/WebKitBrowser/WebKitBuild/Release/bin/resources/index.html",NULL);
 
     g_clear_object(&webkitSettings);
 
