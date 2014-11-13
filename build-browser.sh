@@ -43,7 +43,7 @@ case $1 in
 	;;
 "release" )
 	echo "build release version start..." && sleep 3
-	cmake -DCMAKE_PREFIX_PATH:PATH=${tmp_INSTALL_DIR} -DCMAKE_INSTALL_PREFIX:PATH=${tmp_INSTALL_DIR} -DCMAKE_INSTALL_LIBDIR:PATH=lib -DCMAKE_EXE_LINKER_FLAGS:STRING='-L/usr/local/cuprumtest/lib' -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCMAKE_INSTALL_RPATH=${tmp_INSTALL_DIR}lib -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE && make -j${CPU_NUM} && echo ******build release SUCCESS********
+	cmake -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE && make -j${CPU_NUM} && echo ******build release SUCCESS********
 #	cp -rf $(CURDIR)/bin/resources $(CURDIR)/debian/tmp/usr/local/cuprumtest/bin/
 	;;
 "deb_package" )
