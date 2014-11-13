@@ -63,6 +63,18 @@ class BASE_PREFS_EXPORT JsonPrefStore : public base::ImportantFileWriter::DataSe
    void HandleErrors(const base::Value* value,const base::FilePath& path,int error_code,const std::string& error_msg);
    bool DoReading();
 
+  void ResetJsonValue();
+  
+  bool CheckValueSize(int key_size);
+
+  bool CheckBoolean(const std::string& key);
+
+  bool CheckInteger(const std::string& key);
+
+  bool CheckString(const std::string& key);
+
+  bool CheckDouble(const std::string& key);
+
   void GetBoolean(const std::string& path, bool* out_value);
 
   void GetString(const std::string& path, std::string* out_value);

@@ -321,6 +321,31 @@ bool JsonPrefStore::GetBoolean(const std::string& path) {
   return bool_value;
 }*/
 
+void JsonPrefStore::ResetJsonValue() {
+  prefs_.reset(new base::DictionaryValue());
+}
+
+bool JsonPrefStore::CheckValueSize(int key_size) {
+  return prefs_->size() == key_size;
+}
+
+bool JsonPrefStore::CheckBoolean(const std::string& key) {
+  return prefs_->GetBoolean(key, NULL);
+}
+
+bool JsonPrefStore::CheckInteger(const std::string& key) {
+  return prefs_->GetInteger(key, NULL);
+}
+
+bool JsonPrefStore::CheckString(const std::string& key) {
+  std::string dummy;
+  return prefs_->GetString(key, &dummy);
+}
+
+bool JsonPrefStore::CheckDouble(const std::string& key) {
+  return prefs_->GetDouble(key, NULL);
+}
+
 void JsonPrefStore::GetDouble(const std::string& path, double* out_value) {
    prefs_->GetDouble(path, out_value);
 }

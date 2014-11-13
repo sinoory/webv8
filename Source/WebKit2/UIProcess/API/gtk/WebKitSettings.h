@@ -153,6 +153,9 @@ enum {
     PROP_ENABLE_SPATIAL_NAVIGATION,
     PROP_ENABLE_MEDIASOURCE,
 
+ 
+    //property save start
+    PROP_SAVE_START,
     //bool property
     PROP_BOOL_START,
     PROP_MUCH_TAB_WARNING,
@@ -192,7 +195,9 @@ enum {
     //double property
     PROP_DOUBLE_START,
     PROP_PAGE_ZOOM,
-    PROP_DOUBLE_END
+    PROP_DOUBLE_END,
+    //property save start
+    PROP_SAVE_END
 };
 
 
@@ -210,6 +215,8 @@ struct _WebKitSettingsClass {
     void (*_webkit_reserved3) (void);
 };
 
+WEBKIT_API bool 
+CheckReadValue                                                 (WebKitSettings* settings);
 
 WEBKIT_API void 
 SaveInitValueToFile                                            (WebKitSettings* settings);

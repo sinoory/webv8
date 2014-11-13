@@ -134,6 +134,7 @@ const gchar* key[]   =    {"", "load-icons-ignoring-image-load-setting", "enable
                            "media-playback-requires-user-gesture", "media-playback-allows-inline", "draw-compositing-indicators", "enable-site-specific-quirks", 
                            "enable-page-cache", "user-agent", "enable-smooth-scrolling", "enable-accelerated-2d-canvas",
                            "enable-write-console-messages-to-stdout", "enable-media-stream", "enable-spatial-navigation", "enable-mediasource",
+                           "",
                            "", "much-tab-warning", "show-homepage-button", "show-bookmarkbar", "show-titlebar-and-menubar",
                            "show-fullscreen", "zoom-text-only", "auto-load-images", "enable-javascript", 
                            "page-content-cache", "clear-browse-record", "clear-download-record", "clear-cookie-and-others", 
@@ -141,7 +142,8 @@ const gchar* key[]   =    {"", "load-icons-ignoring-image-load-setting", "enable
                            "", "on-startup", "open-newpage",  "default-font-size", "history-setting",
                            "cookie-setting", "track-location", "media-access", "",
                            "", "home-page", "default-font-family", "", 
-                           "", "page-zoom", ""
+                           "", "page-zoom", "",
+                           ""
 
                           };
 
@@ -4163,6 +4165,50 @@ void webkit_settings_set_home_page(WebKitSettings* settings, const char* homepag
 }
 
 /**
+ * CheckReadValue:
+ * @settings: a #WebKitSettings
+ *
+ *
+ * Check value we have read from the config file. 
+ * 
+ * sunhaiming add.
+ */
+bool CheckReadValue(WebKitSettings* settings)
+{
+    unsigned int index = 0;
+    std::string key_name;
+    JsonPrefStore* pref_store = settings->priv->user_pref_store_.get();
+    //check size
+    if(!pref_store->CheckValueSize(PROP_SAVE_END - PROP_SAVE_START - 9))
+      return false;
+    //check bool
+    for(index = PROP_BOOL_START + 1; index < PROP_BOOL_END; index++) {
+      key_name = key[index];
+      if(!pref_store->CheckBoolean(key_name))
+        return false;
+    }
+    //check integer
+    for(index = PROP_INTEGER_START + 1; index < PROP_INTEGER_END; index++) {
+      key_name = key[index];
+      if(!pref_store->CheckInteger(key_name))
+        return false;
+    }
+    //check string
+    for(index = PROP_STRING_START + 1; index < PROP_STRING_END; index++) {
+      key_name = key[index];
+      if(!pref_store->CheckString(key_name))
+        return false;
+    }
+    //check double
+    for(index = PROP_DOUBLE_START + 1; index < PROP_DOUBLE_END; index++) {
+      key_name = key[index];
+      if(!pref_store->CheckDouble(key_name))
+        return false;
+    }
+    return true; 
+}
+
+/**
  * InitSettingsWithFile:
  * @settings: a #WebKitSettings
  *
@@ -4184,11 +4230,13 @@ void InitSettingsWithFile(WebKitSettings* settings)
       config_file = tmp;
     }
     settings->priv->user_pref_store_.reset(new JsonPrefStore(config_file));
-    if(!settings->priv->user_pref_store_->DoReading()) {
-        SaveInitValueToFile(settings);
+    //if config_file exist, we also need to check the value we have read from the config_file. sunhaiming add.
+    if (settings->priv->user_pref_store_->DoReading() && CheckReadValue(settings)) {
+      ReSetProperty(settings);        
     }
     else {
-        ReSetProperty(settings);   
+      settings->priv->user_pref_store_->ResetJsonValue();  //clear DictionaryValue. sunhaiming add. 
+      SaveInitValueToFile(settings);
     }
 }
 
