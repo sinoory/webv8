@@ -96,6 +96,7 @@ struct _WebKitSettings {
     GtkWidget *radiobutton4_privacy;
     GtkWidget *radiobutton5_privacy;
     GtkWidget *radiobutton6_privacy;
+    GtkWidget *button3_privacy;
     GtkWidget *checkbutton1_security;
     GtkWidget *radiobutton1_security;
     GtkWidget *radiobutton2_security;
