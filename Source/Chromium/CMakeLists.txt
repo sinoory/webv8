@@ -128,6 +128,7 @@ set(Chromium_LIBRARY_TYPE STATIC)
 
 include_directories(${CHROMIUM_INCLUDE_DIRECTORIES})
 add_library(Chromium ${Chromium_LIBRARY_TYPE} ${CHROMIUM_SOURCES})
+set_target_properties(Chromium PROPERTIES COMPILE_FLAGS "-fPIC")
 set_target_properties(Chromium PROPERTIES COMPILE_DEFINITIONS "BUILDING_Chromium")
 set_target_properties(Chromium PROPERTIES FOLDER "ChromiumCodes")
 
