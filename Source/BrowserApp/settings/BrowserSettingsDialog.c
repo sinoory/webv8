@@ -450,6 +450,30 @@ static void browserSettingsWindowConstructed(WebKitSettings *settings)
     initMediaAccessRadioButton(settings);  
 }
 
+//clear data callback 
+static void clearDataCallback(GtkButton *button, WebKitSettings *settings) 
+{
+    //clear browse record.
+    if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->checkbutton4_privacy))) {
+    }
+
+    //clear download record.
+    if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->checkbutton5_privacy))) {
+    }
+
+    //clear cookie and others
+    if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->checkbutton6_privacy))) {
+    }
+
+    //clear cached images and files
+    if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->checkbutton7_privacy))) {
+    }
+
+    //clear passwords
+    if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->checkbutton8_privacy))) {
+    }     
+}
+
 static void homePageCallback(GtkEntry *entry, WebKitSettings *settings) 
 {
     const gchar * entry_content =  gtk_entry_get_text(GTK_ENTRY(settings->entry1_general));
@@ -879,6 +903,8 @@ GtkWidget * browser_settings_window_new(WebKitSettings *settings)
    settings->radiobutton6_privacy = GTK_WIDGET(gtk_builder_get_object(builder, "radiobutton6_privacy"));
    g_signal_connect(G_OBJECT(settings->radiobutton6_privacy), "toggled", G_CALLBACK(trackLocationCallback), settings);
 
+   settings->button3_privacy = GTK_WIDGET(gtk_builder_get_object(builder, "button3_privacy"));
+   g_signal_connect(G_OBJECT(settings->button3_privacy), "clicked", G_CALLBACK(clearDataCallback), settings);
 
    settings->checkbutton1_security = GTK_WIDGET(gtk_builder_get_object(builder, "checkbutton1_security"));
    g_signal_connect(G_OBJECT(settings->checkbutton1_security), "toggled", G_CALLBACK(certificateRevocationCallback), settings);
