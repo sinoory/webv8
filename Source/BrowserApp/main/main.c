@@ -33,6 +33,8 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include <webkit2/webkit2.h>
+#include <stdlib.h>
+#include <fcntl.h>
 
 #define MINI_BROWSER_ERROR (miniBrowserErrorQuark())
 
@@ -213,6 +215,60 @@ aboutURISchemeRequestCallback(WebKitURISchemeRequest *request, gpointer userData
     }
 }
 
+static int initCookieManager(WebKitSettings *webkitSettings)
+{
+    if(!webkitSettings)
+        return 0;
+    // Enable cooki manager to store cookie message.--- by Jiayu
+    WebKitCookieManager* cookiemanager = webkit_web_context_get_cookie_manager(webkit_web_context_get_default());
+    int error = 0;
+    gchar* home = getenv("HOME");
+    gchar cookieDatabasePath[2048];
+    g_sprintf(cookieDatabasePath, "%s/.cookie", home);
+    if(!g_file_test(cookieDatabasePath, G_FILE_TEST_IS_DIR) || !g_access(cookieDatabasePath, /*S_IWUSR|S_IRUSR*/0755)){
+        error = g_mkdir_with_parents(cookieDatabasePath, /*S_IWUSR|S_IRUSR*/ 0755);
+    }
+    if(!error){
+        gchar cookieDatabase[2048];
+        g_sprintf(cookieDatabase, "%s/cookie_database", cookieDatabasePath);
+        g_printf("cookiedatabase path is %s\n", cookieDatabase);
+        webkit_cookie_manager_set_persistent_storage(cookiemanager, cookieDatabase, WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
+    }else{
+        g_printerr("LOG-> Init: Failed to init cookie database\n");
+        return 0;
+    }
+    
+    //g_mkdir_with_parents(cookieDatabaePath, );
+    //webkit_cookie_manager_set_persistent_storage(cookiemanager, "cookies_database", WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
+    WebKitCookieAcceptPolicy cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS;
+    int cookieSetting;
+    error = 0;
+    g_object_get(webkitSettings,
+             key[PROP_COOKIE_SETTING], &cookieSetting,
+             NULL);
+    switch(cookieSetting){
+    case 0:
+        cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS;
+        break;
+    case 1:
+        cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_NO_THIRD_PARTY;
+        break;
+    case 2:
+        cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_NEVER;
+        break;
+    default:
+        error = 1;
+        g_printerr("LOG-> Settings: Failed to get the correct cookie setting policy\n");
+        break;
+    }
+    if(error)
+        return 0;
+    else{
+        webkit_cookie_manager_set_accept_policy(cookiemanager,cookiePolicy);
+        return 1;
+    }
+}
+
 int main(int argc, char *argv[])
 {
     gtk_init(&argc, &argv);
@@ -244,6 +300,8 @@ int main(int argc, char *argv[])
         return 1;
     }
     g_option_context_free (context);
+
+    g_assert(initCookieManager(webkitSettings));
 
     // Enable the favicon database, by specifying the default directory.
     webkit_web_context_set_favicon_database_directory(webkit_web_context_get_default(), NULL);

@@ -707,19 +707,22 @@ static void clearPasswordsCallback(GtkToggleButton *togglebutton, WebKitSettings
              key[PROP_CLEAR_PASSWORDS], bvalue,
              NULL);
 }
-
 static void cookieSettingCallback(GtkToggleButton *togglebutton, WebKitSettings *settings)
 {
     int ivalue;
+    WebKitCookieAcceptPolicy cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS;
     if(gtk_toggle_button_get_active(togglebutton)) {
       if((void *)settings->radiobutton1_privacy == (void *)togglebutton) {
         ivalue = 0;
+        cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS;
       }
       else if((void *)settings->radiobutton2_privacy == (void *)togglebutton) {
         ivalue = 1;
+        cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_NO_THIRD_PARTY;
       }
       else if((void *)settings->radiobutton3_privacy == (void *)togglebutton) {
         ivalue = 2;
+        cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_NEVER;
       }
       else {
         printf("error cookieSettingCallback\n"); 
@@ -729,6 +732,8 @@ static void cookieSettingCallback(GtkToggleButton *togglebutton, WebKitSettings 
                key[PROP_COOKIE_SETTING], ivalue,
                NULL);
     }
+    WebKitCookieManager* cookiemanager = webkit_web_context_get_cookie_manager(webkit_web_context_get_default());
+    webkit_cookie_manager_set_accept_policy(cookiemanager,cookiePolicy);
 } 
 
 static void trackLocationCallback(GtkToggleButton *togglebutton, WebKitSettings *settings)

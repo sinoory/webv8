@@ -70,6 +70,8 @@ struct _BrowserMenuBar {
     GtkWidget* toolmenu;
     GtkWidget* menuitem_viewsourcecode;
     GtkWidget* menuitem_pageinfo;
+    GtkWidget* menuitem_clearcookie;
+    GtkWidget* menuitem_clearcache;   
     
     GtkWidget* helpmenu;
     GtkWidget* menuitem_help;
@@ -85,6 +87,19 @@ G_DEFINE_TYPE(BrowserMenuBar, browser_menu_bar, GTK_TYPE_MENU_BAR)
 static void on_menu_activate(GtkMenuItem* item,gpointer data)
 {
     g_print("menuitem %s is pressed.\n",(gchar*)data);
+}
+
+static void on_clear_cache_activate(GtkMenuItem* item,gpointer data)
+{
+    webkit_web_context_clear_cache(webkit_web_context_get_default());
+}
+
+static void on_clear_cookie_activate(GtkMenuItem* item, gpointer data)
+{
+    WebKitCookieManager* cookiemanager = webkit_web_context_get_cookie_manager(webkit_web_context_get_default());
+    if(cookiemanager){
+        webkit_cookie_manager_delete_all_cookies(cookiemanager);
+    }
 }
 
 static void on_open_new_window_cb(gpointer data)
@@ -379,6 +394,16 @@ static void browser_menu_bar_init(BrowserMenuBar *menubar)
     menubar->menuitem_pageinfo = menuitem;
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(on_menu_activate), (gpointer)(" 页面信息 "));
+
+    menuitem = gtk_menu_item_new_with_label( "清除缓存 " );
+    menubar->menuitem_clearcache = menuitem;
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+    g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(on_clear_cache_activate), (gpointer)(" 清除缓存 "));
+
+    menuitem = gtk_menu_item_new_with_label( "清除cookie " );
+    menubar->menuitem_clearcookie = menuitem;
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+    g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(on_clear_cookie_activate), (gpointer)(" 清除cookie "));
     
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(rootmenu), menu);
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), rootmenu);
