@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2006, 2007 Apple Inc.
  * Copyright (C) 2007 Alp Toker <alp@atoker.com>
@@ -257,6 +258,7 @@ int main(int argc, char *argv[])
     } else { 
         //createBrowserWindow("http://www.baidu.com/", webkitSettings);
         //createBrowserWindow("/home/zgh/CuprumBrowser/WebKitBrowser/WebKitBuild/Release/bin/resources/index.html",NULL);
+        gchar indexpage[BUFSIZE] = {0};
         gchar *uri;
         gchar *strval;
         int ivalue;
@@ -268,7 +270,10 @@ int main(int argc, char *argv[])
         /*Depending on_startup radiobutton to loading corresponding url. sunhaiming add */
         switch (ivalue) {
         case 0:
-            uri = "http://about:blank/";
+            strcat(indexpage, get_cuprum_dir());
+            strcat(indexpage, "/resources/assets/newtab.html");
+            printf("%s\n", indexpage);
+            uri = indexpage;
             break;
         case 1:
             uri = "http://nfs-cloud.cn:81/appCenter/open/softcenter";

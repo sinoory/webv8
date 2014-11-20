@@ -816,7 +816,7 @@ static void browser_window_init(BrowserWindow *window)
     strcat(img_source_2, "/resources/img/2.png");
 
     gtk_window_set_title(GTK_WINDOW(window), defaultWindowTitle);
-    gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
+    gtk_window_set_default_size(GTK_WINDOW(window), 1000, 750);
 
     window->uriEntry = gtk_entry_new();
     g_signal_connect_swapped(window->uriEntry, "activate", G_CALLBACK(activateUriEntryCallback), (gpointer)window);
