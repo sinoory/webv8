@@ -568,6 +568,7 @@ static void webkitWebViewHandleDownloadRequest(WebKitWebViewBase* webViewBase, D
 {
     GRefPtr<WebKitDownload> download = webkitWebContextGetOrCreateDownload(downloadProxy);
     webkitDownloadSetWebView(download.get(), WEBKIT_WEB_VIEW(webViewBase));
+    g_signal_emit(WEBKIT_WEB_VIEW(webViewBase), signals[CLOSE], 0, NULL);
 }
 
 static void webkitWebViewConstructed(GObject* object)

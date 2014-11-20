@@ -1099,6 +1099,23 @@ void browser_window_load_uri(BrowserWindow *window, const char *uri)
 
     if (!g_str_has_prefix(uri, "javascript:")) {
         char *internalURI = getInternalURI(uri);
+
+        if (!g_uri_parse_scheme (uri))
+        {
+            internalURI = g_strconcat("http://", internalURI, NULL);
+        }
+
+        if (!internalURI || !strncasecmp (internalURI, "http:", 5)
+         || !strncasecmp (internalURI, "https:", 6)
+         || !strncasecmp (internalURI, "file:", 5)
+         || !strncasecmp (internalURI, "minibrowser-about:", 18))
+        {
+            g_printerr("\n\t ok!\n");
+        }
+        else
+               return;
+
+
         webkit_web_view_load_uri(window->webView, internalURI);
         g_free(internalURI);
         return;

@@ -24,34 +24,17 @@
  */
 
 #include "BrowserDownloadFile.h"
-
-enum {
-    PROP_0,
-
-    PROP_SETTINGS
-};
-
-enum {
-	DOWNLOAD_MANAGER_COLUMN_FILENAME,
-	DOWNLOAD_MANAGER_COLUMN_PERCENT,
-	//DOWNLOAD_MANAGER_COLUMN_SPEED,
-	DOWNLOAD_MANAGER_COLUMN_FILESIZE,
-	DOWNLOAD_MANAGER_COLUMN_REMAININGTIME,
-	DOWNLOAD_MANAGER_COLUMN_CREATETIME,
-	DOWNLOAD_MANAGER_COLUMN_WEBSIZE,
-	
-	DOWNLOAD_MANAGER_N_COLUMN
-};
+#include "string.h"
 
 struct _BrowserDownloadFile {
     GtkDialog parent;
 
-	GtkWidget *newDownloadDialog;
-	GtkWidget *downloadList;
-	GtkWidget *downloadDialog;
+    GtkWidget *newDownloadDialog;
+    GtkWidget *downloadList;
+    GtkWidget *downloadDialog;
 
-        GtkWidget *entry1, *entry2, *entry3;
-        GtkWidget *dbtn, *btn;
+    GtkWidget *entry1, *entry2, *entry3;
+    GtkWidget *dbtn, *btn;
 };
 
 struct _BrowserDownloadFileClass {
@@ -61,63 +44,23 @@ struct _BrowserDownloadFileClass {
 G_DEFINE_TYPE(BrowserDownloadFile, browser_download_file, GTK_TYPE_DIALOG);
 
 static void downloadBtnCallback(GtkWidget *btn, BrowserDownloadFile *dialogFile) {
-    //g_return_val_if_fail(GTK_IS_WIDGET(data), NULL);
-    //char *url_d = "http://127.0.0.1:8000/webkit_web_context_get_default.note";
-    //const gchar *home = g_get_home_dir ();
     
+    if(gtk_entry_get_text_length(GTK_ENTRY(dialogFile->entry1)) <= 0) 
+        return;
+
     WebKitWebContext* m_webContext = webkit_web_context_get_default();
-    const gchar *downloar_uri = gtk_entry_get_text(GTK_ENTRY(dialogFile->entry1));
-    WebKitDownload* download = webkit_web_context_download_uri(m_webContext, downloar_uri);
+    const gchar *downloadUri = gtk_entry_get_text(GTK_ENTRY(dialogFile->entry1));
+
     const gchar *downloadDir = gtk_entry_get_text(GTK_ENTRY(dialogFile->entry2));
-    GFile *destFile = g_file_new_for_uri(downloar_uri);
-    //gchar *filename = g_file_get_basename(destFile);
-    const gchar *filename = gtk_entry_get_text(GTK_ENTRY(dialogFile->entry3));
-    gchar *destination = g_build_filename(downloadDir, filename, NULL);
-    gint i = 0;
-    gchar tmp[1000] = {0};
-
-    while(g_file_test(destination, G_FILE_TEST_EXISTS))
-    {
-        strcpy(tmp, destination);
-        gchar *t = g_strrstr(tmp , "(");
-        g_printerr("destination:%s-%d\n", destination,i);
-        if(t)
-        {
-            tmp[strlen(tmp) - strlen(t+1)] = '\0';
-            gchar *size = g_strdup_printf("%d", i);
-            destination = g_strconcat(tmp, size,")","\0");
-            memset(tmp, 0x00, 1000);
-            i++;
-            continue;
-        }
-        
-        destination = g_strconcat(destination, "(", g_strdup_printf("%d", i),")");
-        i++;
-    }
-    
-    //gchar *destination = g_build_filename(downloadDir, filename, NULL);
-    gchar *destinationUri = g_filename_to_uri(destination, 0, 0);
-    g_printerr("downloadDir:%s\n", downloadDir);
-    
-    g_printerr("destinationUri:%s\n", destinationUri);
-    //GFile *testFile = g_file_new_for_uri(destinationUri);
-    //const char *tfile = g_file_get_path(testFile);
-    //g_printerr("testFile:%s\n", g_file_get_path(testFile));
-    
-    webkit_download_set_destination(download, destinationUri);
+    if(!g_file_test(downloadDir, G_FILE_TEST_IS_DIR) && g_mkdir(downloadDir, 0700)) 
+        downloadDir = g_get_home_dir ();
+    //const gchar *filename = gtk_entry_get_text(GTK_ENTRY(dialogFile->entry3));
+    gchar *destination = g_build_filename(downloadDir, gtk_entry_get_text(GTK_ENTRY(dialogFile->entry3)), NULL);
+    //gchar *destinationUri = g_filename_to_uri(destination, 0, 0);
+    WebKitDownload* download = webkit_web_context_download_uri(m_webContext, downloadUri);
+    webkit_download_set_destination(download, g_filename_to_uri(destination, 0, 0));
     WebKitURIRequest* request = webkit_download_get_request(download);
-
-    //const gchar *dir = webkit_download_get_destination(download);
-    //char *home = getenv("HOME");
-    //const gchar *downloadsDir = g_get_user_special_dir(G_USER_DIRECTORY_DOWNLOAD);
-    //g_printerr("dir:%s\n", dir);
-    //g_printerr("download_dir:%s\n", downloadsDir);
-    //g_printerr("home:%s\n", home);
-    //webkit_download_set_destination(download, destinationURI.get());
-    //g_printerr("request:get_uri:%s\n", webkit_uri_request_get_uri(request));
-    //g_printerr("request:get_destination:%s\n", webkit_download_get_destination(download));
-    //g_printerr("websize::%s\n", gtk_entry_get_text(data));
-    g_free(destinationUri);
+    g_printerr("\t new download btn\n");
     gtk_widget_destroy(GTK_WIDGET(dialogFile));
 }
 
@@ -144,10 +87,10 @@ static void saveBtnCallback(GtkWidget *btn, BrowserDownloadFile * dialogFile) {
                                                                   NULL);
 
     const gchar *downloadsDir = g_get_user_special_dir(G_USER_DIRECTORY_DOWNLOAD);
-    const gchar* download_url = gtk_entry_get_text(GTK_ENTRY(dialogFile->entry1));
-    if(download_url)
+    const gchar* downloadUrl = gtk_entry_get_text(GTK_ENTRY(dialogFile->entry1));
+    if(downloadUrl)
     {
-        GFile *destFile = g_file_new_for_uri(download_url);
+        GFile *destFile = g_file_new_for_uri(downloadUrl);
         filename = g_file_get_basename(destFile);
         gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER (dialog), filename);
     }
@@ -155,18 +98,18 @@ static void saveBtnCallback(GtkWidget *btn, BrowserDownloadFile * dialogFile) {
     gint result = gtk_dialog_run (GTK_DIALOG (dialog));
     if (result == GTK_RESPONSE_ACCEPT)
     {
-        gchar *cur_dir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER (dialog));
-        gtk_entry_set_text(GTK_ENTRY(dialogFile->entry2), cur_dir);
+        gchar *curDir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER (dialog));
+        gtk_entry_set_text(GTK_ENTRY(dialogFile->entry2), curDir);
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+        //gtk_entry_set_text(GTK_ENTRY(dialogFile->entry3), g_file_get_basename(g_file_new_for_uri(filename)));
         //g_printerr("filename:%s\n",filename);
         //g_printerr("path:%s\n", cur_dir);
         //gtk_button_set_label (button, filename);
-        g_free(cur_dir);
+        g_free(curDir);
     }
     g_free(filename);
     gtk_widget_destroy(dialog);
 }
-
 
 static void browser_download_file_init(BrowserDownloadFile *dialog)
 {
@@ -175,23 +118,18 @@ static void browser_download_file_init(BrowserDownloadFile *dialog)
 
     gtk_window_set_default_size(GTK_WINDOW(dialog), 600, 150);
     gtk_window_set_title(GTK_WINDOW(dialog), "下载文件");
-    gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
+    gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), FALSE);
     gtk_container_set_border_width(GTK_CONTAINER(dialog), 20);
-
-    //gtk_dialog_add_button(GTK_DIALOG(dialog), "取消", GTK_RESPONSE_CANCEL);
-    //gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CANCEL);
 	
     GtkWidget *h1box,*h2box,*h3box,*h4box,*vbox;
     GtkWidget *cbtn;
     GtkWidget *label1, *label2, *label3;
-    //GtkWidget *entry1, *entry2, *entry3;
 
     h1box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     h2box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     h3box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     h4box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-
 
     label1 = gtk_label_new("网址:                  ");
     dialog->entry1 = gtk_entry_new();
@@ -219,7 +157,6 @@ static void browser_download_file_init(BrowserDownloadFile *dialog)
 
     dialog->dbtn = gtk_button_new_with_label("下载");
     g_signal_connect(G_OBJECT(dialog->dbtn), "clicked", G_CALLBACK(downloadBtnCallback), dialog);
-    //g_signal_connect(G_OBJECT(dbtn), "clicked", G_CALLBACK(cancelBtnCallback), (gpointer)dialog);
 
     cbtn = gtk_button_new_with_label("取消");
     g_signal_connect(G_OBJECT(cbtn), "clicked", G_CALLBACK(cancelBtnCallback), dialog);
@@ -235,7 +172,8 @@ static void browser_download_file_init(BrowserDownloadFile *dialog)
     gtk_container_add(GTK_CONTAINER(contentArea),vbox);
     gtk_widget_show_all(GTK_WIDGET(contentArea));  
 	
-    g_signal_connect(dialog, "response", G_CALLBACK(gtk_widget_destroy), NULL);
+    //g_signal_connect(dialog, "response", G_CALLBACK(gtk_widget_destroy), NULL);
+    g_signal_connect(dialog, "destroy", G_CALLBACK(gtk_widget_hide), NULL);
 }
 
 static void browserDownloadFileConstructed(GObject *object)
@@ -251,10 +189,7 @@ static void browser_download_file_class_init(BrowserDownloadFileClass *klass)
 
 GtkWidget *browser_download_file_new()
 {
-    //g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), NULL);
     return GTK_WIDGET(g_object_new(BROWSER_TYPE_DOWNLOAD_FILE, NULL));
 }
-
-
 
 
