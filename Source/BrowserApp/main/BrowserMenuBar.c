@@ -501,8 +501,8 @@ void browser_menu_bar_add_accelerators(BrowserMenuBar *menuBar, GtkAccelGroup *a
 
     gtk_widget_add_accelerator(menuBar->menuitem_new_window, "activate", accelGroup, GDK_KEY_N, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator(menuBar->menuitem_open, "activate", accelGroup, GDK_KEY_O, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator(menuBar->menuitem_save_as, "activate", accelGroup, GDK_KEY_A, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator(menuBar->menuitem_print_preview, "activate", accelGroup, GDK_KEY_V, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+//    gtk_widget_add_accelerator(menuBar->menuitem_save_as, "activate", accelGroup, GDK_KEY_A, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+//    gtk_widget_add_accelerator(menuBar->menuitem_print_preview, "activate", accelGroup, GDK_KEY_V, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator(menuBar->menuitem_quit, "activate", accelGroup, GDK_KEY_Q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     
 //    gtk_widget_add_accelerator(menuBar->menuitem_undo, "activate", accelGroup, GDK_KEY_Z, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);

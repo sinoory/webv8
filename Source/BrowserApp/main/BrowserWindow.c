@@ -244,7 +244,10 @@ static void settingsCallback(BrowserWindow *window)
 static void webViewURIChanged(WebKitWebView *webView, GParamSpec *pspec, BrowserWindow *window)
 {
     char *externalURI = getExternalURI(webkit_web_view_get_uri(webView));
-    gtk_entry_set_text(GTK_ENTRY(window->uriEntry), externalURI);
+    if (!strstr(externalURI, "resources/assets/newtab.html"))
+        gtk_entry_set_text(GTK_ENTRY(window->uriEntry), externalURI);
+    else
+        gtk_entry_set_text(GTK_ENTRY(window->uriEntry), "");
     g_free(externalURI);
 }
 
@@ -263,6 +266,7 @@ static gboolean resetEntryProgress(BrowserWindow *window)
 
 static void webViewLoadProgressChanged(WebKitWebView *webView, GParamSpec *pspec, BrowserWindow *window)
 {
+
     gdouble progress = webkit_web_view_get_estimated_load_progress(webView);
     gtk_entry_set_progress_fraction(GTK_ENTRY(window->uriEntry), progress);
     if (progress == 1.0) {
