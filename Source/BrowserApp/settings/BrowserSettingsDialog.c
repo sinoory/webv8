@@ -463,10 +463,15 @@ static void clearDataCallback(GtkButton *button, WebKitSettings *settings)
 
     //clear cookie and others
     if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->checkbutton6_privacy))) {
+        WebKitCookieManager* cookiemanager = webkit_web_context_get_cookie_manager(webkit_web_context_get_default());
+        if(cookiemanager){
+            webkit_cookie_manager_delete_all_cookies(cookiemanager);
+        }
     }
 
     //clear cached images and files
     if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->checkbutton7_privacy))) {
+        webkit_web_context_clear_cache(webkit_web_context_get_default());
     }
 
     //clear passwords
