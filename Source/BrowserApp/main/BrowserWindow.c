@@ -237,19 +237,22 @@ static void goForwardCallback(BrowserWindow *window)
        get single certificate detail information;
        display single certificata detail information;
 **/
-static void certificateCallback(BrowserWindow *window)
+static void certificateCallback(BrowserWindow *window, GtkEntryIconPosition iconPosition, GdkEvent *event)
 {
-
-   gchar* certificateData=NULL;
-   //return single certificate data by libsoup
-   webkit_web_view_certificate(window->webView,&certificateData);
-   if(certificateData)
-   {
-      //get single certificate detail information; 
-      get_certificate_data(certificateData);
-      //display single certificata detail information;
-      display_certificate_info();
-   }
+    if (iconPosition == GTK_ENTRY_ICON_PRIMARY) 
+    {
+        gchar* certificateData=NULL;
+       //return single certificate data by libsoup
+       webkit_web_view_certificate(window->webView,&certificateData);
+       if(certificateData)
+       {
+          //get single certificate detail information; 
+          get_certificate_data(certificateData);
+          //display single certificata detail information;
+          display_certificate_info();
+       }
+    }
+    
 }
 
 static void settingsCallback(BrowserWindow *window)
@@ -863,6 +866,7 @@ static void browser_window_init(BrowserWindow *window)
     window->uriEntry = gtk_entry_new();
     g_signal_connect_swapped(window->uriEntry, "activate", G_CALLBACK(activateUriEntryCallback), (gpointer)window);
     gtk_entry_set_icon_activatable(GTK_ENTRY(window->uriEntry), GTK_ENTRY_ICON_PRIMARY, FALSE);
+    g_signal_connect_swapped (G_OBJECT(window->uriEntry), "icon-press", G_CALLBACK(certificateCallback), window);
     updateUriEntryIcon(window);
 
     /* Keyboard accelerators */
