@@ -3,7 +3,7 @@ OUT_LIB_FILE=./lib/*
 OUT_BIN_FILE=./bin/*
 OUT_MAKE_FILE=./CMakeCache.txt
 tmp_INSTALL_DIR=/usr/local/cuprumtest
-OPENSSL_DIR=./Source/ThirdParty/
+ThirdParty_DIR=./Source/ThirdParty/
 CPU_NUM=0
 
 if [ -z $1 ];then
@@ -45,11 +45,11 @@ case $1 in
 "release" )
 
 	#add by luyue
-	cd $OPENSSL_DIR
+	cd $ThirdParty_DIR
 	tar -zxvf openssl-1.0.0d.tar.gz && cd openssl-1.0.0d
         ./config && make && cd ../../../
 	mkdir lib 
-        cp -rf $OPENSSL_DIR/openssl-1.0.0d/lib*.a ./lib
+        cp -rf $ThirdParty_DIR/openssl-1.0.0d/lib*.a ./lib
 	
 	echo "build release version start..." && sleep 3
 	cmake -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE && make -j${CPU_NUM} && echo ******build release SUCCESS********
