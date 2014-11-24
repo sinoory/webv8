@@ -34,7 +34,8 @@
 //#include "BrowserDownloadsBar.h"
 #include "BrowserDownloadDialog.h"
 //by sunh end
- 
+
+#include "Certificate.h" 
 #include "BrowserSearchBar.h"
 #include "BrowserSettingsDialog.h"
 #include "BrowserMenuBar.h"
@@ -225,6 +226,29 @@ static void goBackCallback(BrowserWindow *window)
 static void goForwardCallback(BrowserWindow *window)
 {
     webkit_web_view_go_forward(window->webView);
+}
+
+/**
+  add by luyue
+  @certificateData: return location for a #GTlsCertificate
+  Function:
+       return single certificate data by libsoup;
+       get single certificate detail information;
+       display single certificata detail information;
+**/
+static void certificateCallback(BrowserWindow *window)
+{
+
+   gchar* certificateData=NULL;
+   //return single certificate data by libsoup
+   webkit_web_view_certificate(window->webView,&certificateData);
+   if(certificateData)
+   {
+      //get single certificate detail information; 
+      get_certificate_data(certificateData);
+      //display single certificata detail information;
+      display_certificate_info();
+   }
 }
 
 static void settingsCallback(BrowserWindow *window)

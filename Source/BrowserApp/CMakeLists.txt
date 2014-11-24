@@ -9,6 +9,10 @@ file(MAKE_DIRECTORY ${DERIVED_SOURCES_BROWSERAPP_DIR})
 set(BrowserApp_SOURCES
     ${DERIVED_SOURCES_BROWSERAPP_DIR}/BrowserMarshal.c
 
+    #add certificates dir by luyue
+    ${BROWSERAPP_DIR}/certificates/Certificate.c
+    ${BROWSERAPP_DIR}/certificates/Certificate.h
+
     #${BROWSERAPP_DIR}/download/BrowserDownloadsBar.c
     #${BROWSERAPP_DIR}/download/BrowserDownloadsBar.h
     ${BROWSERAPP_DIR}/download/BrowserDownloadDialog.c
@@ -46,6 +50,12 @@ set(BrowserApp_INCLUDE_DIRECTORIES
     ${BROWSERAPP_DIR}/main
     ${BROWSERAPP_DIR}/settings
     ${BROWSERAPP_DIR}/download
+
+    #add certificates dir by luyue
+    ${BROWSERAPP_DIR}/certificates
+
+    #add openssl path by luyue
+    ${CMAKE_SOURCE_DIR}/Source/ThirdParty/openssl-1.0.0d/include
 )
 
 set(BrowserApp_LIBRARIES

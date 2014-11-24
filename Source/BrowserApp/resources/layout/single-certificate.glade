@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.24"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="window">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="default_width">400</property>
+    <property name="default_height">600</property>
+    <signal name="destroy" handler="gtk_widget_destroy" swapped="no"/>
+    <child>
+      <object class="GtkNotebook" id="notebook1">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="scrollable">True</property>
+        <child>
+          <object class="GtkFixed" id="fixed1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="TO">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">颁发给</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="foreground" value="#000000000000"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">80</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="CN">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">通用名</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">100</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="OR">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">组织</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">120</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="UN">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">组织单元</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">140</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="SN">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">序列号</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">160</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="BY">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">颁发者</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">200</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="CN1">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">通用名</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">220</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="OR1">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">组织</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">240</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="UN1">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">组织单元</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">260</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="DA">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">有效期</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">300</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="SD">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">颁发日期</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">320</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="ED">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">截止日期</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">340</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="FG">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">指纹</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">380</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="SHA1">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">SHA-1 指纹</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">400</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="MD5">
+                <property name="width_request">100</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.10000000149011612</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">ＭD-5  指纹</property>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">420</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="ToCommonName">
+                <property name="width_request">450</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">100</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="ToOrgName">
+                <property name="width_request">450</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">120</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="ToOrgUnitName">
+                <property name="width_request">450</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">140</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="SerialNumber">
+                <property name="width_request">450</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">160</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="ByCommonName">
+                <property name="width_request">450</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">220</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="ByOrgName">
+                <property name="width_request">450</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">240</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="ByOrgUnitName">
+                <property name="width_request">450</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">260</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="StartDate">
+                <property name="width_request">450</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">320</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="EndDate">
+                <property name="width_request">450</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">340</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="Sha1">
+                <property name="width_request">450</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">400</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="Md5">
+                <property name="width_request">500</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="xpad">5</property>
+              </object>
+              <packing>
+                <property name="x">130</property>
+                <property name="y">420</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="verfity">
+                <property name="width_request">400</property>
+                <property name="height_request">40</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">此证书已经过安全认证.</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="x">30</property>
+                <property name="y">30</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHSeparator" id="hseparator1">
+                <property name="width_request">610</property>
+                <property name="height_request">30</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="x">20</property>
+                <property name="y">55</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <child type="tab">
+          <object class="GtkLabel" id="G">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xpad">10</property>
+            <property name="label" translatable="yes">基本信息</property>
+          </object>
+          <packing>
+            <property name="tab_fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkVBox" id="vbox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkFixed" id="fixed2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolledwindow">
+                <property name="width_request">500</property>
+                <property name="height_request">300</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="hscrollbar_policy">automatic</property>
+                <property name="vscrollbar_policy">automatic</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolledwindow1">
+                <property name="width_request">300</property>
+                <property name="height_request">130</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="hscrollbar_policy">automatic</property>
+                <property name="vscrollbar_policy">automatic</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFixed" id="fixed5">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkButton" id="button2">
+                    <property name="label" translatable="yes">导出</property>
+                    <property name="width_request">80</property>
+                    <property name="height_request">30</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                  </object>
+                  <packing>
+                    <property name="y">20</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child type="tab">
+          <object class="GtkLabel" id="详细信息">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xpad">10</property>
+            <property name="label" translatable="yes">详细信息</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+            <property name="tab_fill">False</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

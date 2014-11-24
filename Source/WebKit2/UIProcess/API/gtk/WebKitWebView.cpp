@@ -2374,6 +2374,17 @@ void webkit_web_view_go_forward(WebKitWebView* webView)
     getPage(webView)->goForward();
 }
 
+/*get certificate info  
+  add by luyue
+*/
+void webkit_web_view_certificate(WebKitWebView* webView,gchar** certificateData)
+{
+    GTlsCertificate* certificate = 0;
+    GTlsCertificateFlags m_tlsErrors = static_cast<GTlsCertificateFlags>(0);
+    if(webkit_web_view_get_tls_info(webView, &certificate, &m_tlsErrors))
+       g_object_get(G_OBJECT(certificate), "certificate-pem", certificateData,NULL);
+}
+
 /**
  * webkit_web_view_can_go_forward:
  * @web_view: a #WebKitWebView

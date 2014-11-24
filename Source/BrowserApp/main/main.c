@@ -308,6 +308,8 @@ int main(int argc, char *argv[])
 
     webkit_web_context_register_uri_scheme(webkit_web_context_get_default(), miniBrowserAboutScheme, aboutURISchemeRequestCallback, NULL, NULL);
 
+    webkit_web_context_set_tls_errors_policy(webkit_web_context_get_default(), WEBKIT_TLS_ERRORS_POLICY_IGNORE);
+
     if (uriArguments) {
         int i;
 
