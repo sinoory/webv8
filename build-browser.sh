@@ -46,7 +46,7 @@ case $1 in
 
 	#add by luyue
 	cd $OPENSSL_DIR
-	./config && make && cd -
+	tar -zxvf openssl-1.0.0d.tar.gz && ./config && make && cd -
 	mkdir lib 
         cp -rf $OPENSSL_DIR/lib*.a ./lib
 	
