@@ -42,6 +42,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <string.h>
 #include "TabMng.h"
+#include "HistoryMng.h" //add by zlf
 enum {
     PROP_0,
 
@@ -279,6 +280,7 @@ static void webViewTitleChanged(WebKitWebView *webView, GParamSpec *pspec, Brows
 {
     const char *title = webkit_web_view_get_title(webView);
     gtk_window_set_title(GTK_WINDOW(window), title ? title : defaultWindowTitle);
+   HS_history_new(window, webView); //add by zlf
 }
 
 static gboolean resetEntryProgress(BrowserWindow *window)
@@ -672,6 +674,18 @@ static void showBookmarkbar(BrowserWindow *window)
     gtk_widget_set_visible(window->bookmarkbar, !gtk_widget_get_visible(window->bookmarkbar));
 }
 
+//add by zlf start. 2014.11.12
+static void showHistoryManagerWindow(BrowserWindow *window)
+{
+//    g_print("file:%s\n  func:%s\n  line[%d]\n",__FILE__,__func__,__LINE__);
+    return HS_showHistoryManagerWindow();
+}
+static void showHistoryClearWindow(BrowserWindow *window)
+{
+//    g_print("file:%s\n  func:%s\n  line[%d]\n",__FILE__,__func__,__LINE__);
+    return HS_showHistoryClearWindow();
+}
+//add by zlf end. 2014.11.12
 static gboolean toggleWebInspector(BrowserWindow *window, gpointer user_data)
 {
     WebKitWebInspector *inspectorWindow;
@@ -1000,6 +1014,7 @@ static void browser_window_init(BrowserWindow *window)
 
     gtk_container_add(GTK_CONTAINER(window), vbox);
     gtk_widget_show(vbox);
+    HS_init(window);// add by zlf
 }
 
 

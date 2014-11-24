@@ -14,6 +14,8 @@ enum {
     MENU_PAGESTYLE_WEBSTYLE_SIGNAL,
     MENU_FULLSCREEN_SIGNAL,
     MENU_BOOKMARKBAR_SIGNAL,
+    MENU_HISTORY_MANAGER_SIGNAL,                //[8] 管理历史记录 add by zlf 2014.11.12
+    MENU_HISTORY_CLEAR_SIGNAL,                        //[9]删除历史记录  add by zlf 2014.11.12
     
     MENU_QUIT_SIGNAL,
     
@@ -162,6 +164,20 @@ static void on_menu_quit_cb(GtkMenuItem *item, gpointer data)
     g_signal_emit(G_OBJECT(data), menu_signals[MENU_QUIT_SIGNAL], 0);
 }
 
+//add by zlf start 2014.11.12
+static void on_menu_history_manager_cb(GtkMenuItem *item, gpointer data)
+{
+//    g_print("file:%s\n  func:%s\n  line[%d]\n",__FILE__,__func__,__LINE__);
+    g_signal_emit(G_OBJECT(data),menu_signals[MENU_HISTORY_MANAGER_SIGNAL],0);
+}
+
+
+static void on_menu_history_clear_cb(GtkMenuItem *item, gpointer data)
+{
+//    g_print("file:%s\n  func:%s\n  line[%d]\n",__FILE__,__func__,__LINE__);
+    g_signal_emit(G_OBJECT(data),menu_signals[MENU_HISTORY_CLEAR_SIGNAL],0);
+}
+//add by zlf end 2014.11.12
 static void browser_menu_bar_init(BrowserMenuBar *menubar)
 {
     GtkWidget* menu;
@@ -350,12 +366,14 @@ static void browser_menu_bar_init(BrowserMenuBar *menubar)
     menuitem = gtk_menu_item_new_with_label("管理所有历史记录 ");
     menubar->menuitem_managerecords = menu;
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-    g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(on_menu_activate), (gpointer)( "管理所有历史记录" ));
+    g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(on_menu_history_manager_cb), menubar); //modify by zlf 2014.11.12
+//    g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(on_menu_activate), (gpointer)( "管理所有历史记录" ));
     
     menuitem = gtk_menu_item_new_with_label( "删除所有历史记录 " );
     menubar->menuitem_deleterecords = menuitem;
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-    g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(on_menu_activate), (gpointer)(" 删除所有历史记录 "));
+    g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(on_menu_history_clear_cb),menubar);   //modify by zlf 2014.11.12
+//    g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(on_menu_activate), (gpointer)(" 删除所有历史记录 "));
     
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(rootmenu), menu);
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), rootmenu);
@@ -495,6 +513,22 @@ static void browser_menu_bar_class_init(BrowserMenuBarClass *klass)
                      0, NULL, NULL,
                      g_cclosure_marshal_VOID__VOID,
                      G_TYPE_NONE, 0);   
+    //add by zlf start. 2014.11.12
+    menu_signals[MENU_HISTORY_MANAGER_SIGNAL] =
+        g_signal_new("menu_history_manager",
+                     G_TYPE_FROM_CLASS(objectclass),
+                     G_SIGNAL_RUN_LAST,
+                     0, NULL, NULL,
+                     g_cclosure_marshal_VOID__VOID,
+                     G_TYPE_NONE, 0);   
+    menu_signals[MENU_HISTORY_CLEAR_SIGNAL] =
+        g_signal_new("menu_history_clear",
+                     G_TYPE_FROM_CLASS(objectclass),
+                     G_SIGNAL_RUN_LAST,
+                     0, NULL, NULL,
+                     g_cclosure_marshal_VOID__VOID,
+                     G_TYPE_NONE, 0);   
+    //add by zlf end. 2014.11.12
     
     menu_signals[MENU_QUIT_SIGNAL] =
         g_signal_new("menu_quit",
