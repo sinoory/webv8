@@ -3,11 +3,7 @@ OUT_LIB_FILE=./lib/*
 OUT_BIN_FILE=./bin/*
 OUT_MAKE_FILE=./CMakeCache.txt
 tmp_INSTALL_DIR=/usr/local/cuprumtest
-<<<<<<< HEAD
 OPENSSL_DIR=./Source/ThirdParty/
-=======
-OPENSSL_DIR=./Source/ThirdParty
->>>>>>> 6afdac0fd8152b3d92d4c78293f9cb869c265d0b
 CPU_NUM=0
 
 if [ -z $1 ];then
