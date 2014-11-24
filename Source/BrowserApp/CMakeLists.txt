@@ -22,6 +22,8 @@ set(BrowserApp_SOURCES
 
     ${BROWSERAPP_DIR}/settings/BrowserSettingsDialog.c
     ${BROWSERAPP_DIR}/settings/BrowserSettingsDialog.h
+    ${BROWSERAPP_DIR}/History/HistoryMng.h
+    ${BROWSERAPP_DIR}/History/HistoryMng.c
 
     ${BROWSERAPP_DIR}/main/BrowserWindow.c
     ${BROWSERAPP_DIR}/main/BrowserWindow.h
@@ -50,6 +52,7 @@ set(BrowserApp_INCLUDE_DIRECTORIES
     ${BROWSERAPP_DIR}/main
     ${BROWSERAPP_DIR}/settings
     ${BROWSERAPP_DIR}/download
+    ${BROWSERAPP_DIR}/History
 
     #add certificates dir by luyue
     ${BROWSERAPP_DIR}/certificates
@@ -63,6 +66,7 @@ set(BrowserApp_LIBRARIES
     WebKit2
     ${GTK3_LIBRARIES}
     ${GLIB_LIBRARIES}
+    ${SQLITE_LIBRARIES}
 )
 
 add_custom_command(
