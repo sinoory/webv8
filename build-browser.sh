@@ -3,7 +3,7 @@ OUT_LIB_FILE=./lib/*
 OUT_BIN_FILE=./bin/*
 OUT_MAKE_FILE=./CMakeCache.txt
 tmp_INSTALL_DIR=/usr/local/cuprumtest
-OPENSSL_DIR=./Source/ThirdParty/openssl-1.0.0d
+OPENSSL_DIR=./Source/ThirdParty
 CPU_NUM=0
 
 if [ -z $1 ];then
@@ -46,7 +46,8 @@ case $1 in
 
 	#add by luyue
 	cd $OPENSSL_DIR
-	tar -zxvf openssl-1.0.0d.tar.gz && ./config && make && cd -
+	tar -zxvf openssl-1.0.0d.tar.gz && cd openssl-1.0.0d
+        ./config && make && cd ../../../
 	mkdir lib 
         cp -rf $OPENSSL_DIR/lib*.a ./lib
 	
