@@ -159,6 +159,7 @@ GtkTreeModel* createModel()
     gint size;
     
     HS_HistoryData history_data;
+    GdkPixbuf *pixbuf_dest = NULL;
 
     memset( &history_data, 0, sizeof(HS_HistoryData));
 
@@ -171,8 +172,9 @@ GtkTreeModel* createModel()
     for(i=0;i<history_data.current_index;i++)
     {
         pixbuf = gdk_pixbuf_new_from_file(history_data.history_item_arrary[i].favicon_path, NULL);
+        pixbuf_dest = gdk_pixbuf_scale_simple(pixbuf, 16, 16,GDK_INTERP_BILINEAR);
         gtk_list_store_append(store,&iter);
-        gtk_list_store_set(store,&iter,PIXBUF_COL,pixbuf,TEXT_COL1,history_data.history_item_arrary[i].title,-1);
+        gtk_list_store_set(store,&iter,PIXBUF_COL,pixbuf_dest,TEXT_COL1,history_data.history_item_arrary[i].title,-1);
         gdk_pixbuf_unref(pixbuf);
     }
     
