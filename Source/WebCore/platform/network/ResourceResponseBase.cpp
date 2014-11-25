@@ -217,7 +217,6 @@ void ResourceResponseBase::includeCertificateInfo() const
 
 CertificateInfo ResourceResponseBase::certificateInfo() const
 {
-    m_certificateInfo = static_cast<const ResourceResponse*>(this)->platformCertificateInfo();
     return m_certificateInfo;
 }
 

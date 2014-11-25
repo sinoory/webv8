@@ -83,7 +83,7 @@ char *ce_chain_value;
 char *ce_chain_value1;
 char *ce_chain_value2;
 
-char *root_cerpath="resources/assets/root_certificate";
+char *root_cerpath="./Source/BrowserApp/resources/assets/root_certificate/";
 
 //ASN1_Time to SIZE_T_Time
 static char * asn1_gettime(ASN1_TIME* time,char *date)
@@ -385,7 +385,7 @@ static int do_dump1(unsigned long lflags, char_io *io_ch, char *arg, ASN1_STRING
     * the DER encoding to readily obtained
     */
    ASN1_TYPE t;
-   unsigned char *der_buf, *p;
+   unsigned char *der_buf=NULL, *p=NULL;
    int outlen, der_len;
 
    if(!io_ch(arg, "#", 1)) 
@@ -408,6 +408,7 @@ static int do_dump1(unsigned long lflags, char_io *io_ch, char *arg, ASN1_STRING
    i2d_ASN1_TYPE(&t, &p);
    outlen = do_hex_dump1(io_ch, arg, der_buf, der_len);
    OPENSSL_free(der_buf);
+   p=NULL;
    if(outlen < 0) 
       return -1;
    return outlen + 1;
@@ -635,10 +636,10 @@ static void x509_name_get_ex(char *value, X509_NAME *nm,int indent, unsigned lon
 static void get_gens(char *value, STACK_OF(GENERAL_NAME) *gens)
 {
    int i,j;
-   unsigned char *p;
+   unsigned char *p=NULL;
    GENERAL_NAME *gen;
    char buf[80];
-   char *tmp;
+   char *tmp=NULL;
    for (i = 0; i < sk_GENERAL_NAME_num(gens); i++)
    {
       gen = sk_GENERAL_NAME_value(gens, i);
@@ -706,6 +707,7 @@ static void get_gens(char *value, STACK_OF(GENERAL_NAME) *gens)
             break;
       }            
       strcat(value, "\n");
+      p=NULL;
    }                
 }
 
@@ -753,7 +755,7 @@ static void get_reasons( char *value, const char *rname,ASN1_BIT_STRING *rflags)
 
 static void get_generalizedtime(char *value, const ASN1_GENERALIZEDTIME *tm)
 {
-   char *v;
+   char *v=NULL;
    int gmt=0;
    int i;
    int y=0,M=0,d=0,h=0,m=0,s=0;
@@ -801,7 +803,10 @@ static void get_generalizedtime(char *value, const ASN1_GENERALIZEDTIME *tm)
       }
    }
    sprintf(tmp,"%s %2d %02d:%02d:%02d%.*s %d%s",mon[M-1],d,h,m,s,f_len,f,y,(gmt)?" GMT":"");       
-   strcat(value,tmp);   
+   strcat(value,tmp);
+   memset(tmp,0,sizeof(tmp));
+   v=NULL;
+   f=NULL;   
 }
 
 static void get_pkey_usage_period( PKEY_USAGE_PERIOD *usage,char *value)
@@ -951,6 +956,7 @@ static void get_nc_ipadd(char *value, ASN1_OCTET_STRING *ip)
    }
    else
       strcat(value,"IP Address:<invalid>");
+   memset(tmp,0,sizeof(tmp));
 }
 
 static void get_general_name(char *value, GENERAL_NAME *gen)
@@ -1022,12 +1028,15 @@ static void get_general_name(char *value, GENERAL_NAME *gen)
          }
          break;
    }
+   memset(tmp,0,sizeof(tmp));
+   p=NULL;
 }
 
 static void get_i2r_name_constraints( STACK_OF(GENERAL_SUBTREE) *trees,char *value,char *name)
 {
    GENERAL_SUBTREE *tree;
    int i;
+
    if (sk_GENERAL_SUBTREE_num(trees) > 0)
    {
       strcat(value,name);
@@ -1146,7 +1155,7 @@ static void get_expand_info(STACK_OF(X509_EXTENSION) *exts)
    char *name=NULL;
    char tmp_value[1024];
    char *expand_value=NULL;
-   memset(tmp_value,0,sizeof(tmp_value));
+
    for (i=0; i<sk_X509_EXTENSION_num(exts); i++)
    {
       ex=sk_X509_EXTENSION_value(exts, i);
@@ -1437,7 +1446,7 @@ void get_certificate_data(const char *certificateData)
    certificate->exinfo = (struct Expand *)malloc(sizeof(struct Expand));
    memset(certificate->exinfo,0,sizeof(*(certificate->exinfo)));
    get_expand_info(x509->cert_info->extensions); 
-   
+ 
    X509_free(x509);  
 }
 
@@ -1502,15 +1511,12 @@ static void check_certificate_verfity(char **value)
    BIO_puts(bio_mem,ce_chain_value);
    cert=PEM_read_bio_X509(bio_mem, NULL, NULL, NULL);
    BIO_free(bio_mem);
-
    certchain = X509_STORE_new();
    if(ce_chain_value1)
    {
       bio_mem=BIO_new(BIO_s_mem());
       BIO_puts(bio_mem,ce_chain_value1);
       rootcert=PEM_read_bio_X509(bio_mem, NULL, NULL, NULL);    
-      if(!rootcert)
-         rootcert=d2i_X509(NULL,(const unsigned char ** )&ce_chain_value1,strlen(ce_chain_value1)+1);
       BIO_free(bio_mem);
       X509_STORE_add_cert(certchain,rootcert);      
       X509_free(rootcert);
@@ -1522,9 +1528,7 @@ static void check_certificate_verfity(char **value)
       bio_mem=BIO_new(BIO_s_mem());
       BIO_puts(bio_mem,ce_chain_value2);
       rootcert=PEM_read_bio_X509(bio_mem, NULL, NULL, NULL);
-      BIO_free(bio_mem);
-      if(!rootcert)
-         rootcert=d2i_X509(NULL,(const unsigned char ** )&ce_chain_value2,strlen(ce_chain_value2)+1);      
+      BIO_free(bio_mem);     
       X509_STORE_add_cert(certchain,rootcert);
       X509_free(rootcert);
    }
@@ -1564,7 +1568,7 @@ static void get_certificate_chain(char **value)
    int file_size;
    char *der=NULL;
    char pem[DER_MAX_SIZE];
-   char *p;
+   char *p=NULL;
 
    if(!certificate->to->commonName)
    {
@@ -1609,7 +1613,6 @@ static void get_certificate_chain(char **value)
             b=BIO_new_file(path,"r");   
             x=PEM_read_bio_X509(b,NULL,NULL,NULL);
             BIO_free(b);
-            b=NULL;
             if(!x)
             {
                fp=fopen(path,"r");
@@ -1619,12 +1622,21 @@ static void get_certificate_chain(char **value)
                der=(char *)malloc(file_size);
                j=fread(der,file_size,1,fp);
                if(!j)
+               {                 
+                  free(der);
+                  der=NULL;
                   return;
+               }
                x=d2i_X509(NULL,(const unsigned char ** )&der,file_size);
-               printf("der=%s\n",der);          
                fclose(fp);
                if(!x)
+               { 
+                  //only support der or pem
+                  free(der);
+                  der=NULL;
+                  X509_free(x);
                   return;
+               }
             }
             subject=X509_get_subject_name(x);
             entriesNum=sk_X509_NAME_ENTRY_num(subject->entries);
@@ -1642,7 +1654,6 @@ static void get_certificate_chain(char **value)
             if(!toname)
             { 
                X509_free(x);
-               x=NULL;
                free(path);
                path=NULL;
                continue;
@@ -1663,13 +1674,11 @@ static void get_certificate_chain(char **value)
                   }
                }
                X509_free(x);
-               x=NULL;
                break;
             }
             else
             {
                X509_free(x);
-               x=NULL;
                free(toname);
                toname=NULL;
                free(path);
@@ -1681,14 +1690,12 @@ static void get_certificate_chain(char **value)
             //store certificate information
             b=BIO_new_file(path,"r");   
             x=PEM_read_bio_X509(b,NULL,NULL,NULL);
-            BIO_free(b);
             if(x)
             {
                fp=fopen(path,"r");
                fseek(fp,0,SEEK_END);   
                file_size=ftell(fp);
                fseek(fp,0,SEEK_SET);
-               X509_free(x);
                if(!ce_chain_value1)
                {
                   ce_chain_value1=(char *)malloc(file_size * sizeof(char));
@@ -1714,12 +1721,11 @@ static void get_certificate_chain(char **value)
             {
                b=BIO_new_file(path,"r");
                x=d2i_X509_bio(b,NULL);
-    //           BIO_free(b);
                BIO *out = BIO_new(BIO_s_mem());
                PEM_write_bio_X509(out,x);
                BIO_read(out,pem,DER_MAX_SIZE);
+               BIO_free(out);
                p=pem;
-               printf("%s\n",p);
                for(j=0;;p++,j++)
                {
                   if(*p=='E'&&strncmp(p,"END CERTIFICATE",strlen("END CERTIFICATE"))==0)
@@ -1730,14 +1736,18 @@ static void get_certificate_chain(char **value)
                   ce_chain_value1=(char *)malloc(j+1+strlen("END CERTIFICATE-----"));
                   memcpy(ce_chain_value1,pem,j+strlen("END CERTIFICATE-----"));
                   strcat(ce_chain_value1,"\0");
-                  printf("%s\n",ce_chain_value1);
+                  memset(pem,0,sizeof(pem));
                }
                else
                {
-                  ce_chain_value2=(char *)malloc(strlen(pem)+1);
-                  strcpy(ce_chain_value1,pem);
+                  ce_chain_value2=(char *)malloc(j+1+strlen("END CERTIFICATE-----"));
+                  memcpy(ce_chain_value2,pem,j+strlen("END CERTIFICATE-----"));
+                  strcat(ce_chain_value2,"\0");
+                  memset(pem,0,sizeof(pem));                  
                }
             }
+            BIO_free(b);
+            X509_free(x);
             free(path);
             path=NULL;
             fclose(fp);
@@ -1879,6 +1889,7 @@ static void get_tree_store(GtkTreeStore *tree_store)
    gtk_tree_store_append(tree_store, &iters_child1, &iters_child);
    gtk_tree_store_set(tree_store, &iters_child1 ,0,"证书签名值",-1);
    gtk_tree_view_expand_all((GtkTreeView *)tree_s);
+   memset(tmp,0,sizeof(tmp));
 }
 
 static void get_name(char *value,char **name)
@@ -1924,6 +1935,7 @@ static void on_changed(GtkWidget *widget, GtkTreeStore *tree_store)
          get_name(ce_chain_value,&name);     
          if((name) && (strcmp(value,name)==0))
          {
+            free_certificate_memeory();
             get_certificate_data(ce_chain_value);
             get_tree_store(tree_store);
          }
@@ -1960,7 +1972,7 @@ static void on_changed(GtkWidget *widget, GtkTreeStore *tree_store)
          free(name);
          name=NULL;
       }
-      free(value);   
+      value=NULL;   
    }
 }
 
@@ -2078,7 +2090,7 @@ static void on_changed1(GtkWidget *widget, GtkTreeStore *tree_store)
             strcat(tmp_info,"\n");
          }
          gtk_tree_store_set (tree_store, &iter_v ,0,tmp_info,-1);
-         tmp_info[0]='\0';      
+         memset(tmp_info,0,sizeof(tmp_info));      
       }
       else if(strcmp(value,"证书签名算法")==0)
          gtk_tree_store_set (tree_store, &iter_v ,0,certificate->sig_alg,-1);
@@ -2120,7 +2132,7 @@ static void on_changed1(GtkWidget *widget, GtkTreeStore *tree_store)
          gtk_tree_store_set (tree_store, &iter_v ,0,certificate->exinfo->polMappings,-1);
       else 
          gtk_tree_store_set (tree_store, &iter_v ,0,NULL,-1); 
-      free(value);
+      value=NULL;
    }
 }
 
@@ -2216,7 +2228,6 @@ static void export_certificates(GtkWidget *widget)
             }
             else
             {
-               free(pathname);
                pathname=NULL;
                gtk_widget_destroy (dialog1);
                continue; 
@@ -2234,11 +2245,9 @@ static void export_certificates(GtkWidget *widget)
       }
    }
    if(strcmp(gtk_file_filter_get_name(filter),"X.509 证书(PEM)")==0 ||
-      strcmp(gtk_file_filter_get_name(filter),"所有文件")==0 ||
-      strcmp(gtk_file_filter_get_name(filter),"X.509 证书(PKCS#7)")==0)
+      strcmp(gtk_file_filter_get_name(filter),"所有文件")==0)
       g_file_set_contents(pathname,ce_chain_value,strlen(ce_chain_value),NULL);
-   else if(strcmp(gtk_file_filter_get_name(filter),"X.509 含链证书(PEM)")==0 ||
-           strcmp(gtk_file_filter_get_name(filter),"X.509 含链证书(PKCS#7)")==0)
+   else if(strcmp(gtk_file_filter_get_name(filter),"X.509 含链证书(PEM)")==0)
    {
       if(!ce_chain_value1)
       {
@@ -2274,19 +2283,17 @@ static void export_certificates(GtkWidget *widget)
       g_file_set_contents(pathname,filevalue,certificateData->len,NULL);
       free(filevalue);
       filevalue=NULL;
+      pathname=NULL;
       certificate1=NULL;
       certificateData=NULL;
    }
-   g_free(pathname);
-   pathname=NULL; 
    free(pretermitname);
    pretermitname=NULL;
    gtk_widget_destroy (dialog);
 }
 
-static int close_window(char **cer_chain)
+static int close_window()
 {
-   int i;
    free_certificate_memeory();
    free(ce_chain_value);
    ce_chain_value=NULL;
@@ -2294,11 +2301,6 @@ static int close_window(char **cer_chain)
    ce_chain_value1=NULL;
    free(ce_chain_value2);
    ce_chain_value2=NULL;
-   for(i=0;i<CHAIN_MAX_SIZE;i++)
-   {
- //    free(cer_chain[i]);
- //    cer_chain[i]=NULL;
-   }
    return false;
 }
 
@@ -2323,7 +2325,7 @@ void display_certificate_info()
    char *certificate_chain[CHAIN_MAX_SIZE]={NULL,NULL,NULL};
 
    builder=gtk_builder_new();
-   gtk_builder_add_from_file(builder,"resources/layout/single-certificate.glade", NULL);
+   gtk_builder_add_from_file(builder,"./Source/BrowserApp/resources/layout/single-certificate.glade", NULL);
 
    //set title
    window=(GtkWindow *)GTK_WIDGET(gtk_builder_get_object(builder,"window"));
@@ -2350,7 +2352,7 @@ void display_certificate_info()
    }
    gtk_window_set_title(window,title);
    memset(title,0,CERTITLELENGTH);   
-
+   
    //get certificate chain
    get_certificate_chain(certificate_chain);
 
@@ -2364,7 +2366,6 @@ void display_certificate_info()
        sprintf(title,"此证书没有通过认证,没有通过的原因为:%s",verfity_value);
        gtk_label_set_text(label,title);
        memset(title,0,CERTITLELENGTH);
-       free(verfity_value);
        verfity_value=NULL;
    }
    if(certificate->to->commonName)
@@ -2418,22 +2419,34 @@ void display_certificate_info()
    {
       gtk_tree_store_append(tree_store, &iter, NULL); 
       gtk_tree_store_set(tree_store, &iter,0,certificate_chain[CHAIN_MAX_SIZE-1],-1);
+      free(certificate_chain[CHAIN_MAX_SIZE-1]);
+      certificate_chain[CHAIN_MAX_SIZE-1]=NULL;
       gtk_tree_store_append(tree_store,&iter_child,&iter);
       gtk_tree_store_set(tree_store,&iter_child,0,certificate_chain[CHAIN_MAX_SIZE-2],-1);
+      free(certificate_chain[CHAIN_MAX_SIZE-2]);
+      certificate_chain[CHAIN_MAX_SIZE-2]=NULL;
       gtk_tree_store_append(tree_store,&iter_child1,&iter_child);
       gtk_tree_store_set(tree_store, &iter_child1,0,certificate_chain[CHAIN_MAX_SIZE-3],-1);
+      free(certificate_chain[CHAIN_MAX_SIZE-3]);
+      certificate_chain[CHAIN_MAX_SIZE-3]=NULL;
    }    
    else if(!certificate_chain[CHAIN_MAX_SIZE-1] && certificate_chain[CHAIN_MAX_SIZE-2])
    {
       gtk_tree_store_append(tree_store,&iter,NULL); 
       gtk_tree_store_set(tree_store, &iter,0,certificate_chain[CHAIN_MAX_SIZE-2],-1);
+      free(certificate_chain[CHAIN_MAX_SIZE-2]);
+      certificate_chain[CHAIN_MAX_SIZE-2]=NULL;
       gtk_tree_store_append(tree_store, &iter_child,&iter);
       gtk_tree_store_set(tree_store,&iter_child,0,certificate_chain[CHAIN_MAX_SIZE-3],-1);
+      free(certificate_chain[CHAIN_MAX_SIZE-3]);
+      certificate_chain[CHAIN_MAX_SIZE-3]=NULL;
    }
    else
    {
       gtk_tree_store_append(tree_store, &iter, NULL); 
-      gtk_tree_store_set(tree_store,&iter,0,certificate_chain[CHAIN_MAX_SIZE-3],-1); 
+      gtk_tree_store_set(tree_store,&iter,0,certificate_chain[CHAIN_MAX_SIZE-3],-1);
+      free(certificate_chain[CHAIN_MAX_SIZE-3]);
+      certificate_chain[CHAIN_MAX_SIZE-3]=NULL; 
    }
   
    gtk_tree_view_set_model(GTK_TREE_VIEW(tree),GTK_TREE_MODEL(tree_store));
@@ -2485,8 +2498,8 @@ void display_certificate_info()
 
    gtk_builder_connect_signals(builder,NULL);
    g_object_unref(G_OBJECT(builder));
-
+  
    //close window
-   g_signal_connect(G_OBJECT(window),"delete_event", G_CALLBACK(close_window),certificate_chain);
+   g_signal_connect(G_OBJECT(window),"delete_event", G_CALLBACK(close_window),NULL);
 }
 
