@@ -902,6 +902,8 @@ static void browser_window_init(BrowserWindow *window)
 //    g_signal_connect_swapped(G_OBJECT(window->menubar), "menu_webpagestyle", G_CALLBACK(menuWebpagestyleCallback), window);
     g_signal_connect_swapped(G_OBJECT(window->menubar), "menu_fullscreen", G_CALLBACK(showFullscreen), window);
     g_signal_connect_swapped(G_OBJECT(window->menubar), "menu_bookmarkbar", G_CALLBACK(showBookmarkbar), window);
+    g_signal_connect_swapped(G_OBJECT(window->menubar), "menu_history_manager", G_CALLBACK(showHistoryManagerWindow), window);//add by zlf
+    g_signal_connect_swapped(G_OBJECT(window->menubar), "menu_history_clear", G_CALLBACK(showHistoryClearWindow), window);//add by zlf
     g_signal_connect(G_OBJECT(window->menubar), "menu_quit", G_CALLBACK(gtk_main_quit), window);
 //    gtk_container_set_border_width(GTK_CONTAINER(window->menubar), 0);
 

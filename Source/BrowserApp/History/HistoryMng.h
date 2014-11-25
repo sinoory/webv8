@@ -3,7 +3,7 @@
 
 #include "BrowserWindow.h"
 
-#define HS_DEBUG_ON 1
+#define HS_DEBUG_ON 0
 #define HS_DEBUG
 
 #if HS_DEBUG_ON
