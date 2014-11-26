@@ -8,7 +8,6 @@ lib/
 
 CMakeFiles/
 .tmp_cpu_num
-*.cmake
 *.gmo
 CMakeCache.txt
 DerivedSources/
