@@ -100,6 +100,13 @@ struct _WebKitSettings {
     GtkWidget *checkbutton1_security;
     GtkWidget *radiobutton1_security;
     GtkWidget *radiobutton2_security;
+//lianxx add 14.11.13
+    GtkWidget *button1_advanced;
+    GtkWidget *button2_advanced;    
+	 GtkWidget *button3_advanced;	 
+    GtkWidget *button4_advanced;
+    GtkWidget *checkbutton1_advanced;
+	 GtkWidget *entry1_advanced;
 };
 
 enum {
@@ -174,6 +181,7 @@ enum {
     PROP_CLEAR_CACHED_IMAGES_AND_FILES,
     PROP_CLEAR_PASSWORDS,
     PROP_CERTIFICATE_REVOCATION,
+	 PROP_ASK_EVERYTIME_BEFORE_DOWN,//lxx add, 14.11.17
     PROP_BOOL_END,
      
     //integer property
@@ -227,6 +235,14 @@ ReSetProperty                                                  (WebKitSettings* 
 
 WEBKIT_API void 
 InitSettingsWithFile                                           (WebKitSettings* settings);
+
+//lxx add +, delete the preferences file
+WEBKIT_API gboolean
+DeletePreferencesFile														(void);
+
+WEBKIT_API gboolean
+setCuprumAsDefaultBrowser													(void);
+//lxx add -, delete the preferences file
 
 WEBKIT_API GType
 webkit_settings_get_type(void);
@@ -672,6 +688,16 @@ webkit_settings_get_certificate_revocation                      (WebKitSettings*
 WEBKIT_API void 
 webkit_settings_set_certificate_revocation                       (WebKitSettings* settings, 
                                                                   gboolean certificateRevocation);
+//lxx add +, 14.11.17
+WEBKIT_API gboolean 
+webkit_settings_get_ask_everytime_before_down                     (WebKitSettings* settings);
+
+
+
+WEBKIT_API void 
+webkit_settings_set_ask_everytime_before_down                    (WebKitSettings* settings, 
+                                                                  gboolean certificateRevocation);
+//lxx add -, 14.11.17
 
 WEBKIT_API guint32
 webkit_settings_get_on_startup                                 (WebKitSettings *settings);
@@ -735,6 +761,14 @@ webkit_settings_get_home_page                                 (WebKitSettings *s
 WEBKIT_API void
 webkit_settings_set_home_page                                 (WebKitSettings *settings,
                                                                 const gchar    *homepage);
+//lxx add, 14.11.17
+WEBKIT_API const gchar *
+webkit_settings_get_path_of_download_file							  (WebKitSettings* settings);
+
+WEBKIT_API void
+webkit_settings_set_path_of_download_file							  (WebKitSettings* settings, 
+																					const char* storePath);
+//lxx add, 14.11.17
 
 G_END_DECLS
 

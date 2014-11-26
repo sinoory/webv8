@@ -92,6 +92,7 @@ struct _WebKitSettingsPrivate {
     bool clearCachedImagesAndFiles;
     bool clearPasswords;
     bool certificateRevocation;
+	bool askEverytimeBeforeDown;
     uint32_t onStartup;
     uint32_t openNewpage;
     uint32_t historySetting;
@@ -99,6 +100,7 @@ struct _WebKitSettingsPrivate {
     uint32_t trackLocation;
     uint32_t mediaAccess;
     CString homepage;
+	CString storePathOfDownloadFile;
     double pageZoom;
   
 };
@@ -138,12 +140,11 @@ const gchar* key[]   =    {"", "load-icons-ignoring-image-load-setting", "enable
                            "", "much-tab-warning", "show-homepage-button", "show-bookmarkbar", "show-titlebar-and-menubar",
                            "show-fullscreen", "zoom-text-only", "auto-load-images", "enable-javascript", 
                            "page-content-cache", "clear-browse-record", "clear-download-record", "clear-cookie-and-others", 
-                           "clear-cached-images-and-files", "clear-passwords", "certificate-revocation", "",
+                           "clear-cached-images-and-files", "clear-passwords", "certificate-revocation", "ask-every-time-before-down", "",//lxx alter, 14.11.17
                            "", "on-startup", "open-newpage",  "default-font-size", "history-setting",
                            "cookie-setting", "track-location", "media-access", "",
-                           "", "home-page", "default-font-family", "", 
-                           "", "page-zoom", "",
-                           ""
+                           "", "home-page", "default-font-family", "store-path-of-downfile", "", //lxx alter, 14.11.17
+                           "", "page-zoom", ""
 
                           };
 
@@ -415,6 +416,9 @@ static void webKitSettingsSetProperty(GObject* object, guint propId, const GValu
     case PROP_HOME_PAGE:
         webkit_settings_set_home_page(settings,  g_value_get_string(value));   
         break;
+    case PROP_STORE_PATH_OF_DOWNFILE://lxx add, 14.11.17
+        webkit_settings_set_path_of_download_file(settings,  g_value_get_string(value));   
+        break;
     case PROP_PAGE_ZOOM:
         webkit_settings_set_page_zoom(settings, g_value_get_double(value));   
         break;
@@ -604,6 +608,9 @@ static void webKitSettingsGetProperty(GObject* object, guint propId, GValue* val
     case PROP_CERTIFICATE_REVOCATION:
         g_value_set_boolean(value, webkit_settings_get_certificate_revocation(settings)); 
         break;
+    case PROP_ASK_EVERYTIME_BEFORE_DOWN:
+        g_value_set_boolean(value, webkit_settings_get_ask_everytime_before_down(settings)); 
+        break;
     case PROP_ON_STARTUP:
         g_value_set_uint(value,webkit_settings_get_on_startup(settings));
         break;
@@ -630,6 +637,9 @@ static void webKitSettingsGetProperty(GObject* object, guint propId, GValue* val
         break;
     case PROP_HOME_PAGE:
         g_value_set_string(value, webkit_settings_get_home_page(settings));
+        break;
+    case PROP_STORE_PATH_OF_DOWNFILE:
+        g_value_set_string(value, webkit_settings_get_path_of_download_file(settings));
         break;
     case PROP_PAGE_ZOOM:
         g_value_set_double(value, webkit_settings_get_page_zoom(settings));
@@ -1560,6 +1570,15 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             FALSE,
             readWriteConstructParamFlags));
 
+//lxx add, 14.11.17
+    g_object_class_install_property(gObjectClass,
+        PROP_ASK_EVERYTIME_BEFORE_DOWN,
+        g_param_spec_boolean("ask-every-time-before-down",
+            _("ask_every_time_before_down"),
+            _("ask every time before download file from network"),
+            FALSE,
+            readWriteConstructParamFlags));
+
     //install integer property
     g_object_class_install_property(gObjectClass,
         PROP_ON_STARTUP,
@@ -1645,6 +1664,15 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             _("Home Page"),
             _("The loading url When select show home page radio button."),
             "",
+            readWriteConstructParamFlags));
+
+//lxx add, 14.11.17
+    g_object_class_install_property(gObjectClass,
+        PROP_STORE_PATH_OF_DOWNFILE,
+        g_param_spec_string("store-path-of-downfile",
+            _("Store path of download file"),
+            _("The store path of download file."),
+            "/home/lianxx/下载",
             readWriteConstructParamFlags));
 
     //install double property
@@ -3971,6 +3999,32 @@ void webkit_settings_set_certificate_revocation(WebKitSettings* settings, gboole
     priv->certificateRevocation = certificateRevocation;
 }
 
+//lxx add +, 14.11.17
+gboolean webkit_settings_get_ask_everytime_before_down(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->askEverytimeBeforeDown;
+}
+
+
+void webkit_settings_set_ask_everytime_before_down(WebKitSettings* settings, gboolean askEverytimeBeforeDown)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (priv->askEverytimeBeforeDown == askEverytimeBeforeDown)
+        return;
+
+    if(!priv->IsStartState) {
+      scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)askEverytimeBeforeDown));
+      priv->user_pref_store_->SetValue(key[PROP_ASK_EVERYTIME_BEFORE_DOWN], bvalue.release()); //Update new preference value.
+    }
+
+    priv->askEverytimeBeforeDown = askEverytimeBeforeDown;
+}
+//lxx add -, 14.11.17
+
 guint32 webkit_settings_get_on_startup(WebKitSettings* settings)
 {
     g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), 0);
@@ -4164,6 +4218,35 @@ void webkit_settings_set_home_page(WebKitSettings* settings, const char* homepag
     priv->homepage = homepage;
 }
 
+//lxx add +, 14.11.17
+const gchar* webkit_settings_get_path_of_download_file(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), 0);
+
+    return settings->priv->storePathOfDownloadFile.data();
+}
+
+
+void webkit_settings_set_path_of_download_file(WebKitSettings* settings, const char* storePath)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+    
+    g_return_if_fail(storePath);
+
+    WebKitSettingsPrivate* priv = settings->priv;
+    if (!g_strcmp0(priv->storePathOfDownloadFile.data(), storePath))
+        return;
+
+    if(!priv->IsStartState) {
+      std::string strval(storePath);
+      scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
+      priv->user_pref_store_->SetValue(key[PROP_STORE_PATH_OF_DOWNFILE], strvalue.release()); //Update new preference value.
+    }
+
+    priv->storePathOfDownloadFile = storePath;
+}
+//lxx add -, 14.11.17
+
 /**
  * CheckReadValue:
  * @settings: a #WebKitSettings
@@ -4239,6 +4322,48 @@ void InitSettingsWithFile(WebKitSettings* settings)
       SaveInitValueToFile(settings);
     }
 }
+
+//lxx add +, delete the preferences file
+WEBKIT_API gboolean
+DeletePreferencesFile(void)
+{
+    base::FilePath config_file;
+    base::FilePath home = base::GetHomeDir();
+    if (!home.empty()) 
+	   {
+      config_file = home.Append(".config/preferences");
+            }
+	  else 
+             {
+      std::string tmp_file = "/tmp/preferences";
+      base::FilePath tmp(tmp_file);
+      config_file = tmp;
+              }
+	  if( remove(config_file.value().c_str()) == 0 )
+              {
+		       printf("file has been removed\n");
+				 return 1;
+               }
+ 
+	  printf("DeletePreferencesFile function called in file Websettings.cpp\n");
+
+	  return 0;
+}
+WEBKIT_API gboolean
+setCuprumAsDefaultBrowser													(void)
+{
+
+/*
+		AppInfo appinfo = AppInfo.get_default_for_type ("x-scheme-handler/http", true); 
+		stdout.printf ("%s\n", appinfo.supports_files ().to_string ());
+		stdout.printf ("%s\n", appinfo.supports_uris ().to_string ());
+		stdout.printf ("%s\n", appinfo.get_commandline ());
+		stdout.printf ("%s\n", appinfo.get_name ());
+		appinfo.launch (null, null);
+*/
+
+}
+//lxx add -, delete the preferences file
 
 /**
  * ReSetProperty:
