@@ -1,0 +1,79 @@
+# Copyright (C) 2013 Christian Dywan <christian@twotoasts.de>
+# 资源生成到 bin/res路径下，注意要维护DATA_FILES，将不需要生成到bin下的资源REMOVE_ITEM，否则会导致cmake失败。install路径待实现。
+
+include(FindConvert)
+if (NOT CONVERT_FOUND)
+    message(FATAL_ERROR "rsvg-convert not found")
+endif ()
+
+include(FindIntltool)
+if (NOT INTLTOOL_MERGE_FOUND)
+    message(FATAL_ERROR "intltool-merge not found")
+elseif (NOT INTLTOOL_UPDATE_FOUND)
+    message(FATAL_ERROR "intltool-update not found")
+endif ()
+
+# ZRL remove CMakeFiles/ firstly
+file(REMOVE_RECURSE ${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/)
+
+file(GLOB_RECURSE DATA_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *)
+list(REMOVE_ITEM DATA_FILES "CMakeLists.txt")
+list(REMOVE_ITEM DATA_FILES "cmake_install.cmake" "CTestTestfile.cmake" "Makefile" "midori.appdata.xml.in" "midori-private.desktop" "midori.desktop")
+message(STATUS "ZRL midori DATA_FILES = ${DATA_FILES}")
+
+foreach(FILE ${DATA_FILES})
+    if (${FILE} MATCHES "faq.")
+        message(STATUS "ZRL data1 FILE = ${FILE}.")
+        install(FILES ${FILE} DESTINATION ${CMAKE_INSTALL_DOCDIR})
+    elseif (${FILE} MATCHES ".desktop")
+        if (NOT WIN32)
+            string(REPLACE ".desktop.in" "" DESKTOP_ID ${FILE})
+            message(STATUS "ZRL data2 FILE = ${FILE}. DESKTOP_ID = ${DESKTOP_ID}")
+            INTLTOOL_MERGE_DESKTOP (${DESKTOP_ID} po)
+        endif ()
+    elseif (${FILE} MATCHES ".appdata.xml")
+        if (NOT WIN32)
+            string(REPLACE ".appdata.xml.in" "" DESKTOP_ID ${FILE})
+            message(STATUS "ZRL data3 FILE = ${FILE}. DESKTOP_ID = ${DESKTOP_ID}")
+            INTLTOOL_MERGE_APPDATA (${DESKTOP_ID} po)
+        endif ()
+    elseif (${FILE} MATCHES "\\.svg$")
+        string(REPLACE ".svg" "" IMG_ID ${FILE})
+        string (FIND ${FILE} "/" IS_DIR)
+        if (IS_DIR GREATER -1)
+            string(REPLACE "/" ";" DIR_LIST ${FILE})
+            LIST(GET DIR_LIST 0 S_DIR)
+            SVG2PNG (${IMG_ID} "${CMAKE_INSTALL_DATADIR}/midori/res/${S_DIR}")
+            message(STATUS "ZRL data4 FILE = ${FILE}. S_DIR = ${S_DIR}. IMG_ID = ${IMG_ID}")
+        else ()
+            SVG2PNG (${IMG_ID} "${CMAKE_INSTALL_DATADIR}/midori/res/")
+            message(STATUS "ZRL data5 FILE = ${FILE}. IMG_ID = ${IMG_ID}")
+        endif()
+    # These are being handled in add_executable for the "midori" binary
+    elseif (${FILE} MATCHES "\\.ico$")
+    elseif (${FILE} MATCHES "\\.rc$")
+    # This is only meant for testing, and not used in production
+    elseif (${FILE} MATCHES "\\.swf$")
+    else()
+        string(FIND ${FILE} "/" IS_DIR)
+        if (IS_DIR GREATER -1)
+            string(REPLACE "/" ";" DIR_LIST ${FILE})
+            LIST(GET DIR_LIST 0 S_DIR)
+            LIST(GET DIR_LIST 1 S_FILE)
+            string(REPLACE "/" "_" target "${S_DIR}/${S_FILE}")
+            file(MAKE_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/res/${S_DIR}")
+            add_custom_target ("TEMP_${target}" ALL
+                cp ${S_DIR}/${S_FILE} "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/res/${S_DIR}/"
+            )
+            install(FILES ${S_DIR}/${S_FILE} DESTINATION ${CMAKE_INSTALL_DATADIR}/midori/res/${S_DIR})
+            message(STATUS "ZRL data6 FILE = ${FILE}. S_DIR = ${S_DIR}. S_FILE = ${S_FILE}")
+        else ()
+            add_custom_target ("${FILE}" ALL
+                cp ${FILE} "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/res/"
+            )
+            install(FILES ${FILE} DESTINATION ${CMAKE_INSTALL_DATADIR}/midori/res/)
+            message(STATUS "ZRL data7 FILE = ${FILE}.")
+        endif()
+    endif()
+
+endforeach()
