@@ -96,6 +96,7 @@ foreach(UNIT_SRC ${EXTENSIONS})
         string(REPLACE ".c" "" UNIT ${UNIT_SRC})
         message(STATUS "ZRL midori extension UNIT = ${UNIT}")
         add_library(${UNIT} MODULE ${UNIT_SRC})
+        add_dependencies(${UNIT} ${LIBMIDORI})
         target_link_libraries(${UNIT}
                               ${LIBMIDORI}
                               )
@@ -134,6 +135,7 @@ foreach(UNIT_SRC ${EXTENSIONS})
         endif ()
         if (UNIT_FILES)
             add_library(${UNIT_SRC} MODULE ${UNIT_FILES})
+            add_dependencies(${UNIT_SRC} ${LIBMIDORI})
             target_link_libraries(${UNIT_SRC}
                                   ${LIBMIDORI}
                                   )
@@ -175,6 +177,7 @@ foreach(UNIT_SRC ${EXTENSIONS})
             "${MIDORI_SOURCE_DIR}/midori/${LIBMIDORI}.vapi"
         )
         add_library(${UNIT} MODULE ${UNIT_SRC_C})
+        add_dependencies(${UNIT} ${LIBMIDORI})
         target_link_libraries(${UNIT}
                               ${LIBMIDORI}
                               )

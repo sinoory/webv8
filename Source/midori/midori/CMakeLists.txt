@@ -30,6 +30,7 @@ GENERATE_HEADER
 
 message(STATUS "ZRL DEPS_LIBRARIES = ${DEPS_LIBRARIES}. OPTS_LIBRARIES = ${OPTS_LIBRARIES}. DEPS_GTK_LIBRARIES = ${DEPS_GTK_LIBRARIES}")
 add_library("${LIBMIDORI}-vala" STATIC ${LIBMIDORI_SOURCE_C})
+add_dependencies("${LIBMIDORI}-vala" WebKit2)
 target_link_libraries("${LIBMIDORI}-vala"
                       ${DEPS_LIBRARIES}
                       ${OPTS_LIBRARIES}
@@ -41,6 +42,7 @@ set_target_properties("${LIBMIDORI}-vala" PROPERTIES
                       )
 
 add_library(${LIBMIDORI} SHARED ${LIBMIDORI_SOURCE})
+add_dependencies(${LIBMIDORI} WebKit2)
 include_directories(
                     ${MIDORI_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -128,6 +130,7 @@ else()
     add_executable(${MIDORI_PROJECT_NAME} main.c)
 endif()
 
+add_dependencies(${MIDORI_PROJECT_NAME} ${LIBMIDORI})
 target_link_libraries(${MIDORI_PROJECT_NAME}
                       ${LIBMIDORI}
                       JavaScriptCore
