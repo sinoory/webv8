@@ -199,6 +199,7 @@ enum {
     PROP_STRING_START,
     PROP_HOME_PAGE,
     PROP_DEFAULT_FONT_FAMILY,
+	 PROP_STORE_PATH_OF_DOWNFILE,//lxx add, 14.11.17
     PROP_STRING_END,
 
     //double property
