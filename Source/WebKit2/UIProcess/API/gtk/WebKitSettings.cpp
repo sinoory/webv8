@@ -100,7 +100,7 @@ struct _WebKitSettingsPrivate {
     uint32_t trackLocation;
     uint32_t mediaAccess;
     CString homepage;
-	String storePathOfDownloadFile;
+	CString storePathOfDownloadFile;
     double pageZoom;
   
 };
