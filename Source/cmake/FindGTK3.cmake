@@ -32,6 +32,14 @@
 find_package(PkgConfig)
 pkg_check_modules(GTK3 gtk+-3.0)
 
+# ZRL define a new var for GTK3_LIBRARY & GDK3_LIBRARY
+find_library(GTK3_LIBRARY
+    NAMES gtk-3
+    HINTS ${GTK3_LIBDIR}
+          ${GTK3_LIBRARY_DIRS}
+)
+find_library(GDK3_LIBRARY NAMES gdk-3 HINTS ${GTK3_LIBDIR} ${GTK3_LIBRARY_DIRS})
+
 set(VERSION_OK TRUE)
 if (GTK3_VERSION)
     if (GTK3_FIND_VERSION_EXACT)
