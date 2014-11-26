@@ -1408,7 +1408,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button3_advanced1">
+                  <object class="GtkButton" id="button3_advanced">
                     <property name="label" translatable="yes">重置浏览器设置</property>
                     <property name="width_request">100</property>
                     <property name="height_request">30</property>
