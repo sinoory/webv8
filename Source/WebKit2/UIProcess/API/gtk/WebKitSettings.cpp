@@ -92,7 +92,7 @@ struct _WebKitSettingsPrivate {
     bool clearCachedImagesAndFiles;
     bool clearPasswords;
     bool certificateRevocation;
-	bool askEverytimeBeforeDown;
+    bool askEverytimeBeforeDown;
     uint32_t onStartup;
     uint32_t openNewpage;
     uint32_t historySetting;
@@ -100,7 +100,7 @@ struct _WebKitSettingsPrivate {
     uint32_t trackLocation;
     uint32_t mediaAccess;
     CString homepage;
-	CString storePathOfDownloadFile;
+	String storePathOfDownloadFile;
     double pageZoom;
   
 };
@@ -388,6 +388,9 @@ static void webKitSettingsSetProperty(GObject* object, guint propId, const GValu
         break;
     case PROP_CERTIFICATE_REVOCATION:
         webkit_settings_set_certificate_revocation(settings, g_value_get_boolean(value));   
+        break;
+    case PROP_ASK_EVERYTIME_BEFORE_DOWN://lxx add,14.11.17
+        webkit_settings_set_ask_everytime_before_down(settings, g_value_get_boolean(value));   
         break;
     case PROP_ON_STARTUP:
         webkit_settings_set_on_startup(settings, g_value_get_uint(value));   
