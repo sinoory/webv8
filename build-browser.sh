@@ -5,6 +5,8 @@ OUT_MAKE_FILE=./CMakeCache.txt
 tmp_INSTALL_DIR=/usr/local/cuprumtest
 ThirdParty_DIR=./Source/ThirdParty/
 CPU_NUM=0
+BUILD_MIDORI=0
+INSTALL_DEP=0
 
 if [ -z $1 ];then
 	echo "Usage:"
@@ -15,6 +17,18 @@ if [ -z $1 ];then
 	echo "  ./build.sh [clean]"
 	echo "  	clean out file before build"
 fi
+
+# Read command parameters.
+for arg in "$@"
+do
+  if [ $arg -a $arg = "--midori" ];then
+    BUILD_MIDORI=1
+  fi
+
+  if [ $arg -a $arg = "--install-dependency" ];then
+    INSTALL_DEP=1
+  fi
+done
 
 #test cup process num
 cat /proc/cpuinfo | grep "cpu cores" | while read cpu cores dot cpu_num
@@ -31,6 +45,11 @@ else
 	then
 		CPU_NUM=$2
 	fi
+fi
+
+if [ $INSTALL_DEP -eq 1 ];then
+	# ZRL install dependencies.
+	sudo apt-get install valac-0.20 librsvg2-bin libgcr-3-dev libnotify-dev
 fi
 
 pushd $BUILD_PATH
@@ -52,7 +71,7 @@ case $1 in
         cp -rf $ThirdParty_DIR/openssl-1.0.0d/lib*.a ./lib
 	
 	echo "build release version start..." && sleep 3
-	cmake -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE && make -j${CPU_NUM} && echo ******build release SUCCESS********
+	cmake -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=ON -DENABLE_MIDORI=$BUILD_MIDORI && make -j${CPU_NUM} && echo ******build release SUCCESS********
 #	cp -rf $(CURDIR)/bin/resources $(CURDIR)/debian/tmp/usr/local/cuprumtest/bin/
 	;;
 "deb_package" )
