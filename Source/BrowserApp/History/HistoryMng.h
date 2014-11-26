@@ -30,4 +30,5 @@ void HS_init(BrowserWindow *window);
 
 int sql_callback(void *arg, int nr, char **values, char **names) ;
 
+void HS_favicon_changed(cairo_surface_t *surface, WebKitWebView *webview);
 #endif

@@ -72,11 +72,31 @@ void HS_history_changed(WebKitBackForwardList *backForwadlist, WebKitBackForward
     HS_DEBUG("file:%s\n  func:%s\n  line[%d]\n",__FILE__,__func__,__LINE__);
 }
 
+gint get_current_index()
+{
+    DIR* dir;
+    struct dirent* dirent;
+    int count = 0;
+
+    if((dir = opendir(HISTORY_DB_PATH)) == NULL)
+    {
+        HS_DEBUG("opendir error\n");
+        return count;
+    }
+    while((dirent = readdir(dir)) != NULL){
+        count++;
+    }
+    closedir(dir);
+
+    return count;
+
+}
 void HS_get_favicon_path(gchar *favicon_path)
 {
-    static gint index = 0;    
+    gint index = 0;    
     gchar path[128] = {0};
     
+    index = get_current_index();
     sprintf(path,"%s/favicon_%d.png", HISTORY_DB_PATH, index++);
 
     strcpy(favicon_path, path);
@@ -99,29 +119,9 @@ void HS_history_new(BrowserWindow *window, WebKitWebView *webview)
         const char *uri = webkit_web_view_get_uri(webview);
         cairo_surface_t *favicon=webkit_web_view_get_favicon(webview); 
         if(favicon != NULL) {
-            //favicon_width = cairo_image_surface_get_width(favicon);
-            //favicon_height = cairo_image_surface_get_height(favicon);
-            //favicon_stride = cairo_image_surface_get_stride(favicon);    
-            //HS_DEBUG("\t 1 favicon w[%d] X h[%d] X s[%d]\n",favicon_width, favicon_height, favicon_stride);
-            //cairo_surface_t size is 16X16
-            //if(favicon_width = 16 && favicon_height == 16){
-            if(1){
                 HS_get_favicon_path(favicon_path);
-                HS_DEBUG("favicon_path is[%s]\n", favicon_path);
+                HS_DEBUG("get favicon_path is[%s]\n", favicon_path);
                 cairo_surface_write_to_png(favicon, favicon_path);
-            }else {
-                strcpy(favicon_path, FAVICON_DEFAULT_PATH);
-                //TODO convert
-                //convert to 16X16
-                //favicon_data = cairo_image_surface_get_data(favicon);
-                //favicon = cairo_image_surface_create_for_data(favicon_data, CAIRO_FORMAT_ARGB32, 16, 16,  128);
-
-                //favicon_width = cairo_image_surface_get_width(favicon);
-                //favicon_height = cairo_image_surface_get_height(favicon);
-                //favicon_stride = cairo_image_surface_get_stride(favicon);
-                //HS_DEBUG("\t 2 favicon w[%d] X h[%d] X s[%d]\n",favicon_width, favicon_height, favicon_stride);
-                //cairo_surface_write_to_png(favicon, favicon_path);
-            }
         }else {
             HS_DEBUG("Warning:favicon is NUll\n");
             strcpy(favicon_path, FAVICON_DEFAULT_PATH);
@@ -259,3 +259,21 @@ int sql_callback(void *arg, int nr, char **values, char **names)
     return 0;
 }
 
+void HS_favicon_changed(cairo_surface_t *surface, WebKitWebView *webview)
+{
+    gchar favicon_path[256] = {0};
+    gchar sqlcmd[1024]= {0};
+    
+    const char *uri = webkit_web_view_get_uri(webview);
+
+    HS_DEBUG("get favicon uri[%s]\n",  uri);
+
+    HS_get_favicon_path(favicon_path);
+    cairo_surface_write_to_png(surface, favicon_path);
+
+    sprintf(sqlcmd,"update tb set favicon_path=\"%s\" where url=\"%s\"",favicon_path, uri);
+
+    sqlite3_exec(db, sqlcmd, NULL, NULL, NULL);  
+
+    return;
+}

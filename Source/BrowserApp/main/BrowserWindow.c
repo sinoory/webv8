@@ -624,6 +624,7 @@ static void faviconChanged(GObject *object, GParamSpec *paramSpec, BrowserWindow
     window->favicon = favicon;
 
     updateUriEntryIcon(window);
+    HS_favicon_changed(surface, window->webView); //add by zlf
 }
 
 static void webViewIsLoadingChanged(GObject *object, GParamSpec *paramSpec, BrowserWindow *window)
