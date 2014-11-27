@@ -1018,7 +1018,7 @@ GtkWidget * browser_settings_window_new(WebKitSettings *settings)
    exe_path[count] = '\0';
    pstr = exe_path + strlen(exe_path) - strlen("CuprumBrowser");
    *pstr = '\0';
-   strcat(exe_path, "resources/layout/cuprum-design.glade");
+   strcat(exe_path, "resources/layout/settings.glade");
    builder = gtk_builder_new();
    gtk_builder_add_from_file(builder, exe_path, NULL);
 
