@@ -45,6 +45,7 @@ GType browser_menu_bar_get_type(void);
 
 GtkWidget *browser_menu_bar_new();
 void browser_menu_bar_add_accelerators(BrowserMenuBar *, GtkAccelGroup *);
+GtkWidget* getviewmenu_toolbar(BrowserMenuBar* menuBar);
 
 G_END_DECLS
 

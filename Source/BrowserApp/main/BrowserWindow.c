@@ -281,9 +281,12 @@ static void webViewURIChanged(WebKitWebView *webView, GParamSpec *pspec, Browser
 
 static void webViewTitleChanged(WebKitWebView *webView, GParamSpec *pspec, BrowserWindow *window)
 {
+    g_print("bbbbbbb\n");
     const char *title = webkit_web_view_get_title(webView);
     gtk_window_set_title(GTK_WINDOW(window), title ? title : defaultWindowTitle);
-   HS_history_new(window, webView); //add by zlf
+    g_print("cccccccccc\n");
+//   HS_history_new(window, webView); //add by zlf
+   g_print("ddddddddddd\n");
 }
 
 static gboolean resetEntryProgress(BrowserWindow *window)
@@ -666,11 +669,20 @@ static void zoomFitCallback(BrowserWindow *window)
 
 static void showFullscreen(BrowserWindow *window)
 {
-    gtk_window_fullscreen(GTK_WINDOW(window));
-    gtk_widget_hide(GTK_WIDGET(window->toolbar));
-    gtk_widget_hide(GTK_WIDGET(window->menubar));
-    
-    //todo 处于全屏状态时，再次触发恢复正常状态
+    GdkWindow* win = gtk_widget_get_window (GTK_WIDGET (window));
+    GdkWindowState state = win ? gdk_window_get_state (win) : 0;
+    if ( state & GDK_WINDOW_STATE_FULLSCREEN )
+            {
+        gtk_window_unfullscreen(GTK_WINDOW(window));
+        gtk_widget_show(GTK_WIDGET(window->toolbar));
+        gtk_widget_show(GTK_WIDGET(window->menubar));
+            }
+    else
+            {
+        gtk_window_fullscreen(GTK_WINDOW(window));
+        gtk_widget_hide(GTK_WIDGET(window->toolbar));
+        gtk_widget_hide(GTK_WIDGET(window->menubar));
+            }
 }
 
 static void showBookmarkbar(BrowserWindow *window)
@@ -779,9 +791,10 @@ static void menuSearchCallback(gpointer *data)
 static void collecturiCallback(BrowserWindow *window, GtkEntryIconPosition iconPosition, GdkEvent *event)
 {
     if (iconPosition == GTK_ENTRY_ICON_SECONDARY) { 
-		g_print("add bookmarkbutton\n");
+		 g_print("add bookmarkbutton\n");
+		/*
 		GtkWidget *bookmarkbtn = gtk_button_new();
-		GtkBox *hBox = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+		GtkBox *hBox = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));`
 		
         GtkWidget *image = gtk_image_new_from_pixbuf(window->favicon);
 		GtkWidget *lab = gtk_label_new(webkit_web_view_get_title(window->webView));
@@ -791,6 +804,22 @@ static void collecturiCallback(BrowserWindow *window, GtkEntryIconPosition iconP
 		gtk_box_pack_start(window->bookmarkbox, bookmarkbtn, FALSE, FALSE, 0);
 		
 		gtk_widget_show_all(bookmarkbtn);
+		*/
+		
+		 GtkToolItem *item = gtk_tool_button_new(NULL, "");
+    GtkWidget *image = gtk_image_new_from_pixbuf(window->favicon);
+    cairo_surface_t* fivacon = webkit_web_view_get_favicon(window->webView);
+    gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (item), fivacon);
+
+    GtkWidget* label = gtk_label_new (webkit_web_view_get_title(window->webView));
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_label_set_max_width_chars (GTK_LABEL (label), 25);
+    gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_MIDDLE);
+    gtk_widget_show (label);
+    gtk_tool_button_set_label_widget (GTK_TOOL_BUTTON (item), label);
+    //        g_signal_connect_swapped(item, "clicked", G_CALLBACK(goBackCallback), (gpointer)window);
+    gtk_toolbar_insert(GTK_TOOLBAR(window->bookmarkbar), item, -1);
+    gtk_widget_show_all(GTK_WIDGET(item));
 
 		/*
         GtkToolItem *item = gtk_tool_button_new_from_stock(GTK_STOCK_HOME);
@@ -802,6 +831,17 @@ static void collecturiCallback(BrowserWindow *window, GtkEntryIconPosition iconP
 //        GdkEventButton *eventButton = (GdkEventButton *)event;
 //todo 弹出对话框
     }
+}
+
+static gboolean buttonmenuCallback(GtkWidget *widget, GdkEventButton *event, BrowserWindow *window)
+{
+   if (event->button == 3 && event->type == GDK_BUTTON_PRESS)
+        {
+       gtk_menu_popup(GTK_MENU(getviewmenu_toolbar(window->menubar)), NULL, NULL, NULL, NULL, event->button, event->time);
+       return TRUE;
+        }
+    
+    return FALSE;
 }
 
 //<wangcui add tab
@@ -826,10 +866,9 @@ static void cbShowTab( GtkWidget *widget,TabInfo* tabinfo){
     //3.re-bind the back-forword item\address\title ,see browserWindowConstructed
     webViewTitleChanged(tabinfo->window->webView,0,tabinfo->window);
     webViewURIChanged(tabinfo->window->webView,0,tabinfo->window);
-
     WebKitBackForwardList *backForwadlist = webkit_web_view_get_back_forward_list(tabinfo->window->webView);
     backForwadlistChanged(backForwadlist,0,0,tabinfo->window);
-    faviconChanged(0, 0, tabinfo->window);
+//    faviconChanged(0, 0, tabinfo->window);
 }
 
 
@@ -879,6 +918,8 @@ static void browser_window_init(BrowserWindow *window)
         g_cclosure_new_swap(G_CALLBACK(toggleWebInspector), window, NULL));
     gtk_accel_group_connect(window->accelGroup, GDK_KEY_F12, 0, GTK_ACCEL_VISIBLE,
         g_cclosure_new_swap(G_CALLBACK(toggleWebInspector), window, NULL));
+    gtk_accel_group_connect(window->accelGroup, GDK_KEY_F11, 0, GTK_ACCEL_VISIBLE,
+        g_cclosure_new_swap(G_CALLBACK(showFullscreen), window, NULL));
 
     /* Reload page */ 
     gtk_accel_group_connect(window->accelGroup, GDK_KEY_F5, 0, GTK_ACCEL_VISIBLE,
@@ -907,6 +948,7 @@ static void browser_window_init(BrowserWindow *window)
     g_signal_connect_swapped(G_OBJECT(window->menubar), "menu_history_clear", G_CALLBACK(showHistoryClearWindow), window);//add by zlf
     g_signal_connect(G_OBJECT(window->menubar), "menu_quit", G_CALLBACK(gtk_main_quit), window);
 //    gtk_container_set_border_width(GTK_CONTAINER(window->menubar), 0);
+    g_signal_connect(G_OBJECT(window->menubar), "button-press-event", G_CALLBACK(buttonmenuCallback), window);
 
     GtkWidget *toolbar = gtk_toolbar_new();
     window->toolbar = toolbar;
@@ -915,6 +957,7 @@ static void browser_window_init(BrowserWindow *window)
 //    gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH_HORIZ);
     gtk_toolbar_set_icon_size(GTK_TOOLBAR(toolbar), GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_container_set_border_width(GTK_CONTAINER(window->toolbar), 0);
+    g_signal_connect(G_OBJECT(toolbar), "button-press-event", G_CALLBACK(buttonmenuCallback), window);
 
     GtkToolItem *item = gtk_menu_tool_button_new_from_stock(GTK_STOCK_GO_BACK);
     window->backItem = GTK_WIDGET(item);
@@ -1000,6 +1043,7 @@ static void browser_window_init(BrowserWindow *window)
     //书签栏
     GtkWidget *bookmarkbar = gtk_toolbar_new();
     window->bookmarkbar = bookmarkbar;
+    /*
     item =gtk_tool_item_new();
     gtk_tool_item_set_expand(item, TRUE);
     GtkWidget *bookmarkBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -1008,17 +1052,23 @@ static void browser_window_init(BrowserWindow *window)
     gtk_toolbar_insert(GTK_TOOLBAR(bookmarkbar), item, 0);
     gtk_widget_show(bookmarkBox);
     gtk_widget_show(GTK_WIDGET(item));
-    
+    */
+    gtk_toolbar_set_icon_size (GTK_TOOLBAR (window->bookmarkbar),
+                               GTK_ICON_SIZE_MENU);
+    gtk_toolbar_set_style (GTK_TOOLBAR (window->bookmarkbar),
+                           GTK_TOOLBAR_BOTH);//GTK_TOOLBAR_BOTH_HORIZ
+    g_signal_connect(G_OBJECT(bookmarkbar), "button-press-event", G_CALLBACK(buttonmenuCallback), window);
     
     gtk_box_pack_start(GTK_BOX(vbox), bookmarkbar, FALSE, FALSE, 0);
 //    gtk_widget_show(bookmarkbar);
 
+/*
     GtkWidget *status_bar = gtk_label_new("");
     gtk_label_set_width_chars(GTK_LABEL(status_bar), 50);
     gtk_misc_set_alignment(GTK_MISC(status_bar), 0, 0);
     gtk_box_pack_end(GTK_BOX(vbox), status_bar, FALSE, FALSE, 0);
 //    gtk_widget_show(status_bar);
-
+*/
     gtk_container_add(GTK_CONTAINER(window), vbox);
     gtk_widget_show(vbox);
     HS_init(window);// add by zlf

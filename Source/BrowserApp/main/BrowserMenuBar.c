@@ -283,7 +283,7 @@ static void browser_menu_bar_init(BrowserMenuBar *menubar)
     menu = gtk_menu_new();
     
     menuitem = gtk_menu_item_new_with_label("工具栏 ");
-    menubar->menuitem_toolbar = menu;
+    menubar->menuitem_toolbar = menuitem;
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
     
 //二级开关菜单
@@ -575,5 +575,17 @@ void browser_menu_bar_add_accelerators(BrowserMenuBar *menuBar, GtkAccelGroup *a
     
     gtk_widget_add_accelerator(menuBar->menuitem_help, "activate", accelGroup, GDK_KEY_H, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
+}
+
+
+GtkWidget* getviewmenu_toolbar(BrowserMenuBar* menuBar)
+{
+    g_return_if_fail(BROWSER_IS_MENU_BAR(menuBar));
+    
+    if (menuBar)
+    {
+        return gtk_menu_item_get_submenu(menuBar->menuitem_toolbar);
+ //       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuBar->menuitem_toolbar_bookmarkbar), gtk_widget_get_visible(widget));
+    }
 }
 
