@@ -2503,3 +2503,8 @@ void display_certificate_info()
    g_signal_connect(G_OBJECT(window),"delete_event", G_CALLBACK(close_window),NULL);
 }
 
+//display certificate manager information
+void display_certificatemanager_info()
+{
+}
+

@@ -25,6 +25,7 @@
 
 #include "BrowserSettingsDialog.h"
 #include "BrowserCellRendererVariant.h"
+#include "Certificate.h"
 
 static void initOnStartupRadioButton(WebKitSettings *settings)
 {
@@ -1006,6 +1007,12 @@ static void askEverytimeBeforeDownloadCallback(GtkToggleButton *button, WebKitSe
 }
 //lxx add -, 14.11.13 
 
+//luyue add
+static void certificateManagerCallback(GtkToggleButton *button, WebKitSettings *settings)
+{
+   display_certificatemanager_info();   
+}
+
 /*Build settings window from the glade file. Connecting widgets we interest. sunhaiming add.*/
 GtkWidget * browser_settings_window_new(WebKitSettings *settings)
 {
@@ -1155,6 +1162,10 @@ GtkWidget * browser_settings_window_new(WebKitSettings *settings)
 
    settings->checkbutton1_advanced = GTK_WIDGET(gtk_builder_get_object(builder, "checkbutton1_advanced"));
    g_signal_connect(G_OBJECT(settings->checkbutton1_advanced), "toggled", G_CALLBACK(askEverytimeBeforeDownloadCallback), settings);
+
+//luyue add,certificate manager
+   settings->button1_security = GTK_WIDGET(gtk_builder_get_object(builder, "button1_security"));
+   g_signal_connect(G_OBJECT(settings->button1_security), "clicked", G_CALLBACK(certificateManagerCallback), settings);
 
    settings->entry1_advanced = GTK_WIDGET(gtk_builder_get_object(builder, "entry1_advanced"));
 

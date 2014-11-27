@@ -121,4 +121,7 @@ void get_certificate_data(const char *certificateData);
 //display single certificate detail information
 void display_certificate_info(void);
 
+//display certificate manager information
+void display_certificatemanager_info(void);
+
 #endif

@@ -107,6 +107,8 @@ struct _WebKitSettings {
     GtkWidget *button4_advanced;
     GtkWidget *checkbutton1_advanced;
 	 GtkWidget *entry1_advanced;
+//luyue add
+   GtkWidget *button1_security;
 };
 
 enum {
