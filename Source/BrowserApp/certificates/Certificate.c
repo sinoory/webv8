@@ -2313,10 +2313,9 @@ void display_certificate_info()
    GtkButton *export_button;
    GtkWindow *window;
    GtkTreeSelection *selection,*selection1;
-   GtkWidget *fixed2;
    GtkWidget *tree,*tree2;
    GtkTreeStore *tree_store,*tree_store1,*tree_store2;
-   GtkWidget *scrolledwindow, *scrolledwindow1;
+   GtkWidget *scrolledwindow, *scrolledwindow1,*scrolledwindow2;
    GtkTreeIter   iter;
    GtkTreeIter   iter_child,iter_child1;
    GtkCellRenderer *renderer;
@@ -2410,9 +2409,9 @@ void display_certificate_info()
    gtk_label_set_text(label,certificate->md5_t);
 
    //output detail infomation 
-   fixed2=GTK_WIDGET(gtk_builder_get_object(builder,"fixed2"));;
    scrolledwindow=GTK_WIDGET(gtk_builder_get_object(builder,"scrolledwindow"));
    scrolledwindow1=GTK_WIDGET(gtk_builder_get_object(builder,"scrolledwindow1"));
+   scrolledwindow2=GTK_WIDGET(gtk_builder_get_object(builder,"scrolledwindow2"));
    tree=gtk_tree_view_new();
    tree_store=gtk_tree_store_new(1,G_TYPE_STRING);  
    if(certificate_chain[CHAIN_MAX_SIZE-1])
@@ -2456,8 +2455,7 @@ void display_certificate_info()
    
    gtk_tree_view_append_column(GTK_TREE_VIEW(tree),column);
    gtk_tree_view_expand_all((GtkTreeView *)tree);
-   gtk_container_add(GTK_CONTAINER (fixed2),(GtkWidget *)tree);
-   gtk_widget_set_size_request(tree,630,100);
+   gtk_container_add(GTK_CONTAINER (scrolledwindow2),(GtkWidget *)tree);
    gtk_widget_show(tree);
 
    tree_s=gtk_tree_view_new();
