@@ -4352,20 +4352,7 @@ DeletePreferencesFile(void)
 
 	  return 0;
 }
-WEBKIT_API gboolean
-setCuprumAsDefaultBrowser													(void)
-{
 
-/*
-		AppInfo appinfo = AppInfo.get_default_for_type ("x-scheme-handler/http", true); 
-		stdout.printf ("%s\n", appinfo.supports_files ().to_string ());
-		stdout.printf ("%s\n", appinfo.supports_uris ().to_string ());
-		stdout.printf ("%s\n", appinfo.get_commandline ());
-		stdout.printf ("%s\n", appinfo.get_name ());
-		appinfo.launch (null, null);
-*/
-
-}
 //lxx add -, delete the preferences file
 
 /**
