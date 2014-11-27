@@ -613,7 +613,10 @@ bool NetscapePlugin::initialize(const Parameters& parameters)
             if (equalIgnoringCase(parameters.values[wmodeIndex], "transparent")
                 || (m_pluginModule->pluginQuirks().contains(PluginQuirks::ForceFlashWindowlessMode) && equalIgnoringCase(parameters.values[wmodeIndex], "window")))
                 paramValues[wmodeIndex] = "opaque";
-        } else if (m_pluginModule->pluginQuirks().contains(PluginQuirks::ForceFlashWindowlessMode)) {
+        } else if (m_pluginModule->pluginQuirks().contains(PluginQuirks::ForceFlashWindowlessMode)
+                  //add by luyue
+                  // support notFound wmode
+                  || m_pluginModule->pluginQuirks().contains(PluginQuirks::DoNotCancelSrcStreamInWindowedMode)) {
             paramNames.append("wmode");
             paramValues.append("opaque");
         }

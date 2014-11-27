@@ -126,7 +126,7 @@ bool PluginProcessProxy::scanPlugin(const String& pluginPath, RawPluginMetaData&
     }
 
     if (!WIFEXITED(status) || WEXITSTATUS(status) != EXIT_SUCCESS) {
-        WTFLogAlways("Error scanning plugin %s, %s returned %d exit status", argv[2], argv[0], status);
+ //       WTFLogAlways("Error scanning plugin %s, %s returned %d exit status", argv[2], argv[0], status);
         return false;
     }
 
