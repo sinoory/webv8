@@ -2626,6 +2626,8 @@ webkit_web_view_web_view_ready_cb (GtkWidget*  web_view,
     WebKitWebWindowFeatures* features = webkit_web_view_get_window_features (WEBKIT_WEB_VIEW (web_view));
 #endif
     gboolean locationbar_visible, menubar_visible, toolbar_visible;
+// ZRL no width & height in webkit2gtk-4.0. should get from GdkRectangle
+#if 0
     gint width, height;
     g_object_get (features,
                   "locationbar-visible", &locationbar_visible,
@@ -2634,6 +2636,18 @@ webkit_web_view_web_view_ready_cb (GtkWidget*  web_view,
                   "width", &width,
                   "height", &height,
                   NULL);
+#else
+    GdkRectangle rectangle;
+    gint width, height;
+    g_object_get (features,
+                  "locationbar-visible", &locationbar_visible,
+                  "menubar-visible", &menubar_visible,
+                  "toolbar-visible", &toolbar_visible,
+                  "geometry", &rectangle,
+                  NULL);
+    width = rectangle.width;
+    height = rectangle.height;
+#endif
     midori_tab_set_is_dialog (MIDORI_TAB (view),
      !locationbar_visible && !menubar_visible && !toolbar_visible
      && width > 0 && height > 0);

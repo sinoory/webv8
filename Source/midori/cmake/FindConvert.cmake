@@ -16,11 +16,13 @@ if (RSVG_CONVERT)
 #            ${RSVG_CONVERT} --keep-aspect-ratio --format=png "${CMAKE_CURRENT_SOURCE_DIR}/${filename}.svg"
 #                --output "${CMAKE_CURRENT_BINARY_DIR}/${filename}.png"
 #        )
+#        install (FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}.png"
+#            DESTINATION ${install_destination})
         add_custom_target ("${target}.png" ALL
             ${RSVG_CONVERT} --keep-aspect-ratio --format=png "${CMAKE_CURRENT_SOURCE_DIR}/${filename}.svg"
                 --output "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/res/${filename}.png"
         )
-        install (FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}.png"
+        install (FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/res/${filename}.png"
             DESTINATION ${install_destination})
     endmacro (SVG2PNG filename)
 endif ()

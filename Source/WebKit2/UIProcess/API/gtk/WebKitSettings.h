@@ -240,9 +240,6 @@ InitSettingsWithFile                                           (WebKitSettings* 
 //lxx add +, delete the preferences file
 WEBKIT_API gboolean
 DeletePreferencesFile														(void);
-
-WEBKIT_API gboolean
-setCuprumAsDefaultBrowser													(void);
 //lxx add -, delete the preferences file
 
 WEBKIT_API GType
