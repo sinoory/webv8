@@ -2691,6 +2691,7 @@ webkit_web_view_create_web_view_cb (GtkWidget*      web_view,
 #ifndef HAVE_WEBKIT2
                                     WebKitWebFrame* web_frame,
 #endif
+                                    WebKitNavigationAction* navigationAction, // ZRL add the parameter for webkit2gtk-4.0
                                     MidoriView*     view)
 {
     MidoriView* new_view;
