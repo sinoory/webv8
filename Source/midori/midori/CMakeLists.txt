@@ -28,7 +28,6 @@ GENERATE_HEADER
     "${MIDORI_PROJECT_NAME}-core"
 )
 
-message(STATUS "ZRL DEPS_LIBRARIES = ${DEPS_LIBRARIES}. OPTS_LIBRARIES = ${OPTS_LIBRARIES}. DEPS_GTK_LIBRARIES = ${DEPS_GTK_LIBRARIES}")
 add_library("${LIBMIDORI}-vala" STATIC ${LIBMIDORI_SOURCE_C})
 add_dependencies("${LIBMIDORI}-vala" WebKit2)
 target_link_libraries("${LIBMIDORI}-vala"

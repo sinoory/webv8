@@ -299,7 +299,6 @@ set(LIBMIDORI "${MIDORI_PROJECT_NAME}-core")
 add_custom_target (uninstall
     COMMAND "xargs" "rm" "-v" "<" "install_manifest.txt")
 
-message(STATUS "ZRL print CMAKE_INSTALL_DOCDIR = ${CMAKE_INSTALL_DOCDIR}")
 install(FILES AUTHORS COPYING ChangeLog EXPAT README DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
 add_subdirectory (midori)

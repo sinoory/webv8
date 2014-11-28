@@ -82,7 +82,6 @@ list(REMOVE_ITEM EXTENSIONS
       "flummi_valac.stamp" "flummi.c" "flummi.h"
       "about_valac.stamp" "about.h" "about.c"
 )
-message(STATUS "ZRL midori EXTENSIONS = ${EXTENSIONS}")
 
 # FIXME: re-enable webmedia extension
 # once we have working notifications on win
@@ -94,7 +93,6 @@ foreach(UNIT_SRC ${EXTENSIONS})
     string(FIND ${UNIT_SRC} ".c" UNIT_EXTENSION)
     if (UNIT_EXTENSION GREATER -1)
         string(REPLACE ".c" "" UNIT ${UNIT_SRC})
-        message(STATUS "ZRL midori extension UNIT = ${UNIT}")
         add_library(${UNIT} MODULE ${UNIT_SRC})
         add_dependencies(${UNIT} ${LIBMIDORI})
         target_link_libraries(${UNIT}
@@ -111,7 +109,6 @@ endforeach ()
 
 foreach(UNIT_SRC ${EXTENSIONS})
     string(FIND ${UNIT_SRC} "." UNIT_EXTENSION)
-    message(STATUS "ZRL midori extension UNIT_SRC = ${UNIT_SRC}")
     if (UNIT_EXTENSION EQUAL -1)
         file(GLOB UNIT_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${UNIT_SRC}/*.c")
         file(GLOB UNIT_FILES_VALA RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${UNIT_SRC}/*.vala")
