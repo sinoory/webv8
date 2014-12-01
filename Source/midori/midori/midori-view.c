@@ -2708,6 +2708,9 @@ webkit_web_view_create_web_view_cb (GtkWidget*      web_view,
         KatzeItem* item = katze_item_new ();
         item->uri = g_strdup (uri);
         new_view = (MidoriView*)midori_view_new_from_view (view, item, NULL);
+        //by sunh fix click new view 
+        midori_view_set_uri(new_view, webkit_uri_request_get_uri(webkit_navigation_action_get_request(navigationAction)));
+        //by sunh end
 #ifdef HAVE_WEBKIT2
         g_signal_connect (new_view->web_view, "ready-to-show",
                           G_CALLBACK (webkit_web_view_web_view_ready_cb), view);
