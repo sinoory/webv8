@@ -490,8 +490,8 @@ msgid "Failed to export bookmarks"
 msgstr "无法导出书签"
 
 #: ../midori/midori-browser.c:4746
-msgid "A lightweight web browser."
-msgstr "轻量级的网络浏览器。"
+msgid "A Security web browser."
+msgstr "安全的桌面浏览器。"
 
 #: ../midori/midori-browser.c:4747
 msgid "See about:version for version info."

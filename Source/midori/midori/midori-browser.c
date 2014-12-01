@@ -4846,11 +4846,11 @@ _action_tab_close_other_activate (GtkAction*     action,
 }
 
 static const gchar* credits_authors[] =
-    { "Christian Dywan <christian@twotoasts.de>", NULL };
+    { "Zhang RuiLi <zhangrl_os@sari.ac.cn>", NULL };
 static const gchar* credits_documenters[] =
-    { "Christian Dywan <christian@twotoasts.de>", NULL };
+    { "Zhang RuiLi <zhangrl_os@sari.ac.cn>", NULL };
 static const gchar* credits_artists[] =
-    { "Nancy Runge <nancy@twotoasts.de>", NULL };
+    { "Zhang RuiLi <zhangrl_os@sari.ac.cn>", NULL };
 
 static gchar*
 midori_browser_get_docs (gboolean error)
@@ -4878,6 +4878,8 @@ static void
 _action_about_activate (GtkAction*     action,
                         MidoriBrowser* browser)
 {
+// ZRL customize about dialog
+#if 0
     gchar* comments = g_strdup_printf ("%s\n%s",
         _("A lightweight web browser."),
         _("See about:version for version info."));
@@ -4922,6 +4924,48 @@ _action_about_activate (GtkAction*     action,
     gtk_widget_show (dialog);
     g_signal_connect_swapped (dialog, "response",
                               G_CALLBACK (gtk_widget_destroy), dialog);
+#else
+    gchar* comments = g_strdup_printf ("%s\n%s",
+        _("A Security web browser."),
+        _("See about:version for version info."));
+    const gchar* license =
+    _("This library is free software; you can redistribute it and/or "
+    "modify it under the terms of the GNU Lesser General Public "
+    "License as published by the Free Software Foundation; either "
+    "version 2.1 of the License, or (at your option) any later version.");
+
+#ifdef HAVE_GRANITE
+    gchar* docs = midori_browser_get_docs (FALSE);
+    /* Avoid granite_widgets_show_about_dialog for invalid memory and crashes */
+    /* FIXME: granite: should return GtkWidget* like GTK+ */
+    GtkWidget* dialog = (GtkWidget*)granite_widgets_about_dialog_new ();
+    g_object_set (dialog,
+        "translate", "https://translations.xfce.org/projects/p/midori/",
+        "bug", PACKAGE_BUGREPORT,
+        "help", docs,
+        "copyright", "2007-2013 Christian Dywan",
+#else
+    GtkWidget* dialog = gtk_about_dialog_new ();
+    g_object_set (dialog,
+        "wrap-license", FALSE,
+        "copyright", "Copyright © 2013-2014 XXXXXXXXXXX",
+#endif
+        "transient-for", browser,
+        "logo-icon-name", gtk_window_get_icon_name (GTK_WINDOW (browser)),
+        "program-name", PACKAGE_NAME,
+        "version", PACKAGE_VERSION,
+        "comments", comments,
+        "website", "http://www.baidu.com",
+        NULL);
+    g_free (comments);
+    #ifdef HAVE_GRANITE
+    g_free (docs);
+    #endif
+    printf("ZRL about icon name = %s. \n", gtk_window_get_icon_name (GTK_WINDOW (browser)));
+    gtk_widget_show (dialog);
+    g_signal_connect_swapped (dialog, "response",
+                              G_CALLBACK (gtk_widget_destroy), dialog);
+#endif
 }
 
 static void

@@ -136,9 +136,13 @@ namespace Midori {
             }
             else {
 #if HAVE_WEBKIT2_3_91
+// ZRL disable multiple process
+#if 0
                 /* Allow WebKit to spawn more than one rendering process */
-                if (!("wk2:no-multi-render-process" in (Environment.get_variable ("MIDORI_DEBUG") ?? "")))
+                if (!("wk2:no-multi-render-process" in (Environment.get_variable ("MIDORI_DEBUG") ?? ""))) {
                     WebKit.WebContext.get_default ().set_process_model (WebKit.ProcessModel.MULTIPLE_SECONDARY_PROCESSES);
+                }
+#endif
 #endif
                 string? real_config = config != null && !Path.is_absolute (config)
                     ? Path.build_filename (Environment.get_current_dir (), config) : config;

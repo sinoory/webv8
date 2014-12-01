@@ -493,8 +493,8 @@ msgid "Failed to export bookmarks"
 msgstr "Failed to export bookmarks"
 
 #: ../midori/midori-browser.c:4746
-msgid "A lightweight web browser."
-msgstr "A lightweight web browser."
+msgid "A Security web browser."
+msgstr "A Security web browser."
 
 #: ../midori/midori-browser.c:4747
 msgid "See about:version for version info."
