@@ -1266,7 +1266,7 @@ webkit_web_view_load_error_cb (WebKitWebView*  web_view,
     } 
     else
     {
-        title = g_strdup_printf (_("Midori can't find the page you're looking for"));
+        title = g_strdup_printf (_("Can't find the page you're opening"));
         message = g_strdup_printf (_("The page located at “%s” cannot be found. "
                                      "Check the web address for misspelled words and try again."), 
                                      midori_uri_parse_hostname(uri, NULL));

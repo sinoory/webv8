@@ -129,6 +129,10 @@ main (int    argc,
     inactivity_reset = 0;
     midori_app_setup (&argc, &argv, entries);
 
+    // ZRL ignore TLS error. Otherwise, mail.cstnet.cn cannot be accessed. 2014.12.02
+    WebKitWebContext* context = webkit_web_context_get_default ();
+    webkit_web_context_set_tls_errors_policy(context, WEBKIT_TLS_ERRORS_POLICY_IGNORE);
+
     if (debug)
     {
         gchar* gdb = g_find_program_in_path ("gdb");
