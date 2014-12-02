@@ -3029,6 +3029,15 @@ void WebPageProxy::closePage(bool stopResponsivenessTimer)
     m_uiClient->close(this);
 }
 
+// ZRL implement addMessageToConsole().
+void WebPageProxy::addMessageToConsole(const String& message, unsigned lineNumber, const String& sourceID, RefPtr<Messages::WebPageProxy::AddMessageToConsole::DelayedReply> reply)
+{
+    // Since addMessageToConsole() can spin a nested run loop we need to turn off the responsiveness timer.
+    m_process->responsivenessTimer()->stop();
+
+    m_uiClient->addMessageToConsole(this, message, lineNumber, sourceID, [reply]{ reply->send(); });
+}
+
 void WebPageProxy::runJavaScriptAlert(uint64_t frameID, const String& message, RefPtr<Messages::WebPageProxy::RunJavaScriptAlert::DelayedReply> reply)
 {
     WebFrameProxy* frame = m_process->webFrame(frameID);

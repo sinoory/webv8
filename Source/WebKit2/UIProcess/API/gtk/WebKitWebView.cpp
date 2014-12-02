@@ -123,6 +123,8 @@ enum {
 
     AUTHENTICATE,
 
+    CONSOLE_MESSAGE, /*ZRL create for console.log*/
+
     LAST_SIGNAL
 };
 
@@ -280,6 +282,13 @@ private:
 
     WebKitWebView* m_webView;
 };
+
+// ZRL implement default console_message
+static gboolean webkitWebViewConsoleMessage(WebKitWebView* webView, const gchar* message, unsigned lineNumber, const char* sourceID)
+{
+    g_message("console message: %s @%d: %s\n", sourceID, lineNumber, message);
+    return TRUE;
+}
 
 static gboolean webkitWebViewLoadFail(WebKitWebView* webView, WebKitLoadEvent, const char* failingURI, GError* error)
 {
@@ -718,6 +727,8 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
     webViewClass->permission_request = webkitWebViewPermissionRequest;
     webViewClass->run_file_chooser = webkitWebViewRunFileChooser;
     webViewClass->authenticate = webkitWebViewAuthenticate;
+    // ZRL create console_message function
+    webViewClass->console_message = webkitWebViewConsoleMessage;
 
     /**
      * WebKitWebView:web-context:
@@ -1092,6 +1103,16 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
                      0, 0,
                      g_cclosure_marshal_VOID__VOID,
                      G_TYPE_NONE, 0);
+
+    // ZRL create CONSOLE_MESSAGE signal
+    signals[CONSOLE_MESSAGE] = g_signal_new("console-message",
+            G_TYPE_FROM_CLASS(webViewClass),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET(WebKitWebViewClass, console_message),
+            g_signal_accumulator_true_handled, 0,
+            webkit_marshal_BOOLEAN__STRING_INT_STRING,
+            G_TYPE_BOOLEAN, 3,
+            G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING);
 
     /**
      * WebKitWebView::script-dialog:
@@ -1719,6 +1740,14 @@ void webkitWebViewRunAsModal(WebKitWebView* webView)
 void webkitWebViewClosePage(WebKitWebView* webView)
 {
     g_signal_emit(webView, signals[CLOSE], 0, NULL);
+}
+
+//ZRL implement. send signal outside.
+void webkitWebViewAddMessageToConsole(WebKitWebView* webView, const CString& message, unsigned lineNumber, const CString& sourceID)
+{
+    gboolean returnValue;
+    g_printerr("ZRL Enter WebKitWebView::webkitWebViewAddMessageToConsole() message = %s.  \n", message.data());
+    g_signal_emit(webView, signals[CONSOLE_MESSAGE], 0, message.data(), lineNumber, sourceID.data(), &returnValue);
 }
 
 void webkitWebViewRunJavaScriptAlert(WebKitWebView* webView, const CString& message)

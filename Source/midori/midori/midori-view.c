@@ -8,6 +8,10 @@
  version 2.1 of the License, or (at your option) any later version.
 
  See the file COPYING for the full license text.
+ 
+ Modify by ZRL
+ 2014.12.02 修改error page
+ 2014.12.02 接收console-message信号，为默认标签页功能。
 */
 
 #include "midori-view.h"
@@ -2968,6 +2972,34 @@ midori_view_download_requested_cb (GtkWidget*      web_view,
     return handled;
 }
 
+// ZRL Implement to receive signal console-message for console.log
+#ifdef HAVE_WEBKIT2
+static gboolean
+webkit_web_view_console_message_cb (GtkWidget*   web_view,
+                                    const gchar* message,
+                                    guint        line,
+                                    const gchar* source_id,
+                                    MidoriView*  view)
+{
+    if (!strncmp (message, "speed_dial-save", 13))
+    {
+        MidoriBrowser* browser = midori_browser_get_for_widget (GTK_WIDGET (view));
+        MidoriSpeedDial* dial = katze_object_get_object (browser, "speed-dial");
+        GError* error = NULL;
+        midori_speed_dial_save_message (dial, message, &error);
+        if (error != NULL)
+        {
+            g_critical ("Failed speed dial message: %s\n", error->message);
+            g_error_free (error);
+        }
+    }
+    else {
+        g_signal_emit_by_name (view, "console-message", message, line, source_id);
+    }
+    return TRUE;
+}
+#endif
+
 #ifndef HAVE_WEBKIT2
 static gboolean
 webkit_web_view_console_message_cb (GtkWidget*   web_view,
@@ -3636,6 +3668,9 @@ midori_view_constructor (GType                  type,
                       midori_view_web_view_context_menu_cb, view,
                       "signal::create",
                       webkit_web_view_create_web_view_cb, view,
+// ZRL add new signal for console.log
+                      "signal::console-message",
+                      webkit_web_view_console_message_cb, view,
                       #else
                       "signal::notify::load-status",
                       midori_view_web_view_notify_load_status_cb, view,

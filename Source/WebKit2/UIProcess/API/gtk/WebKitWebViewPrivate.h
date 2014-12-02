@@ -59,4 +59,7 @@ void webkitWebViewHandleAuthenticationChallenge(WebKitWebView*, WebKit::Authenti
 void webkitWebViewInsecureContentDetected(WebKitWebView*, WebKitInsecureContentEvent);
 void webkitWebViewWebProcessCrashed(WebKitWebView*);
 
+// ZRL create a new function for console.log
+void webkitWebViewAddMessageToConsole(WebKitWebView*, const CString& message, unsigned lineNumber, const CString& sourceID);
+
 #endif // WebKitWebViewPrivate_h

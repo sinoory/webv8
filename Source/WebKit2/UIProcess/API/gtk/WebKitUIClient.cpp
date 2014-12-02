@@ -60,6 +60,13 @@ private:
         webkitWebViewClosePage(m_webView);
     }
 
+    // ZRL implement.
+    virtual void addMessageToConsole(WebPageProxy*, const String& message, unsigned lineNumber, const String& sourceID, std::function<void ()> completionHandler) override
+    {
+        webkitWebViewAddMessageToConsole(m_webView, message.utf8(), lineNumber, sourceID.utf8());
+        completionHandler();
+    }
+
     virtual void runJavaScriptAlert(WebPageProxy*, const String& message, WebFrameProxy*, std::function<void ()> completionHandler) override
     {
         webkitWebViewRunJavaScriptAlert(m_webView, message.utf8());

@@ -238,6 +238,11 @@ struct _WebKitWebViewClass {
                                                 const gchar                 *failing_uri,
                                                 GTlsCertificate             *certificate,
                                                 GTlsCertificateFlags         errors);
+
+    // ZRL define console_message
+    gboolean   (* console_message)              (WebKitWebView               *web_view,
+                                                const gchar                 *message,
+                                                unsigned lineNumber, const char* sourceID);
     void (*_webkit_reserved0) (void);
     void (*_webkit_reserved1) (void);
     void (*_webkit_reserved2) (void);

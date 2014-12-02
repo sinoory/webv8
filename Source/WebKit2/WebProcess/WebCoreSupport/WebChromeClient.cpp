@@ -310,12 +310,20 @@ void WebChromeClient::setResizable(bool resizable)
     m_page->send(Messages::WebPageProxy::SetIsResizable(resizable));
 }
 
-void WebChromeClient::addMessageToConsole(MessageSource, MessageLevel, const String& message, unsigned lineNumber, unsigned /*columnNumber*/, const String& /*sourceID*/)
+void WebChromeClient::addMessageToConsole(MessageSource, MessageLevel, const String& message, unsigned lineNumber, unsigned columnNumber, const String& sourceID)
 {
     // Notify the bundle client.
     m_page->injectedBundleUIClient().willAddMessageToConsole(m_page, message, lineNumber);
 
+    //ZRL Implement the function
+#if 0
     notImplemented();
+#else
+    unsigned syncSendFlags = IPC::InformPlatformProcessWillSuspend;
+    if (WebPage::synchronousMessagesShouldSpinRunLoop())
+        syncSendFlags |= IPC::SpinRunLoopWhileWaitingForReply;
+    WebProcess::shared().parentProcessConnection()->sendSync(Messages::WebPageProxy::AddMessageToConsole(message, lineNumber, sourceID), Messages::WebPageProxy::AddMessageToConsole::Reply(), m_page->pageID(), std::chrono::milliseconds::max(), syncSendFlags);
+#endif
 }
 
 bool WebChromeClient::canRunBeforeUnloadConfirmPanel()

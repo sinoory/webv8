@@ -7,6 +7,9 @@
  version 2.1 of the License, or (at your option) any later version.
 
  See the file COPYING for the full license text.
+ 
+ Modify by ZhangRuili
+ 2014.12.02 save_message() 新建快捷方式时，增加title字段，默认与uri相同
 */
 
 namespace Katze {
@@ -234,6 +237,9 @@ namespace Midori {
                         string uri = keyfile.get_string (tile, "uri");
                         if (uri != null && uri.str ("://") != null && tile.has_prefix ("Dial ")) {
                             string title = keyfile.get_string (tile, "title");
+                            if (title == null) {
+                                title = uri;
+                            }
                             string thumb_filename = build_thumbnail_path (uri);
                             uint slot = tile.substring (5, -1).to_int ();
                             string encoded;
@@ -300,6 +306,7 @@ namespace Midori {
                     if (parts[2] == null)
                         throw new SpeedDialError.NO_URL ("No URL argument.");
                     keyfile.set_string (dial_id, "uri", parts[2]);
+                    keyfile.set_string (dial_id, "title", parts[2]); //ZRL create default title.
                     get_thumb (dial_id, parts[2]);
                 }
                 else if (action == "rename") {
