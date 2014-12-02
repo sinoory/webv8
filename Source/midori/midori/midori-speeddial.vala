@@ -10,6 +10,7 @@
  
  Modify by ZhangRuili
  2014.12.02 save_message() 新建快捷方式时，增加title字段，默认与uri相同
+ 2014.12.02 实现load_changed(), get_thumb(), save_thumbnail()函数，支持显示缩略图
 */
 
 namespace Katze {
@@ -35,10 +36,8 @@ namespace Midori {
         string filename;
         string? html = null;
         List<Spec> thumb_queue = null;
-#if !HAVE_WEBKIT2
         WebKit.WebView thumb_view = null;
         Spec? spec = null;
-#endif
 
         public GLib.KeyFile keyfile;
         public bool close_buttons_left { get; set; default = false; }
@@ -348,6 +347,7 @@ namespace Midori {
             refresh ();
         }
 
+// ZRL implement for Webkit2gtk API
 #if !HAVE_WEBKIT2
         void load_status (GLib.Object thumb_view_, ParamSpec pspec) {
             if (thumb_view.load_status != WebKit.LoadStatus.FINISHED
@@ -356,6 +356,20 @@ namespace Midori {
             thumb_view.notify["load-status"].disconnect (load_status);
             /* Schedule an idle to give the offscreen time to draw */
             Idle.add (save_thumbnail);
+        }
+#else
+        void load_changed (GLib.Object thumb_view_, WebKit.LoadEvent load_event) {
+            if (load_event != WebKit.LoadEvent.FINISHED)
+                return;
+            thumb_view.load_changed.disconnect (load_changed);
+            /* Schedule an idle to give the offscreen time to draw */
+            Idle.add (save_thumbnail);
+        }
+
+        bool load_failed (GLib.Object thumb_view_, WebKit.LoadEvent load_event, string failingURI, void *error) {
+            thumb_view.load_failed.disconnect (load_failed);
+            thumb_view.load_changed.disconnect (load_changed);
+            return true;
         }
 #endif
 
@@ -396,6 +410,44 @@ namespace Midori {
             }
             return false;
         }
+#else
+        bool save_thumbnail () {
+            return_val_if_fail (spec != null, false);
+
+            var offscreen = (thumb_view.parent as Gtk.OffscreenWindow);
+            var pixbuf = offscreen.get_pixbuf ();
+            int image_width = pixbuf.get_width (), image_height = pixbuf.get_height ();
+            int thumb_width = 240, thumb_height = 160;
+            float image_ratio = image_width / image_height;
+            float thumb_ratio = thumb_width / thumb_height;
+            int x_offset, y_offset, computed_width, computed_height;
+            if (image_ratio > thumb_ratio) {
+                computed_width = (int)(image_height * thumb_ratio);
+                computed_height = image_height;
+                x_offset = (image_width - computed_width) / 2;
+                y_offset = 0;
+            }
+            else {
+                computed_width = image_width;
+                computed_height = (int)(image_width / thumb_ratio);
+                x_offset = 0;
+                y_offset = 0;
+            }
+            var sub = pixbuf;
+            if (y_offset + computed_height <= image_height)
+                sub = new Gdk.Pixbuf.subpixbuf (pixbuf, x_offset, y_offset, computed_width, computed_height);
+            var scaled = sub.scale_simple (thumb_width, thumb_height, Gdk.InterpType.TILES);
+            add_with_id (spec.dial_id, spec.uri, thumb_view.get_title () ?? spec.uri, scaled);
+
+            thumb_queue.remove (spec);
+            if (thumb_queue.length () > 0) {
+                spec = thumb_queue.nth_data (0);
+                thumb_view.load_changed.connect (load_changed);
+                thumb_view.load_failed.connect (load_failed);
+                thumb_view.load_uri (spec.uri);
+            }
+            return false;
+        }
 #endif
 
         void get_thumb (string dial_id, string uri) {
@@ -426,6 +478,35 @@ namespace Midori {
 
             spec = thumb_queue.nth_data (0);
             thumb_view.notify["load-status"].connect (load_status);
+            thumb_view.load_uri (spec.uri);
+#else
+            if (thumb_view == null) {
+                thumb_view = new WebKit.WebView ();
+                thumb_view.get_settings().set (
+                    "enable-scripts", false,
+                    "enable-plugins", false,
+                    "auto-load-images", true,
+                    "enable-html5-database", false,
+                    "enable-html5-local-storage", false,
+                    "enable-java-applet", false);
+                var offscreen = new Gtk.OffscreenWindow ();
+                offscreen.add (thumb_view);
+                thumb_view.set_size_request (800, 600);
+                offscreen.show_all ();
+            }
+
+            /* Don't load thumbnails already queued */
+            foreach (var spec_ in thumb_queue)
+                if (spec_.dial_id == dial_id)
+                    return;
+
+            thumb_queue.append (new Spec (dial_id, uri));
+            if (thumb_queue.length () > 1)
+                return;
+
+            spec = thumb_queue.nth_data (0);
+            thumb_view.load_changed.connect (load_changed);
+            thumb_view.load_failed.connect (load_failed);
             thumb_view.load_uri (spec.uri);
 #endif
         }
