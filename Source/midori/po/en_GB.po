@@ -1485,7 +1485,7 @@ msgstr "The file needs %s but only %s are left."
 
 #: ../midori/midori-speeddial.vala:188
 msgid "Speed Dial"
-msgstr "Speed Dial"
+msgstr "New Tab"
 
 #: ../midori/midori-speeddial.vala:189 ../midori/midori-speeddial.vala:269
 msgid "Click to add a shortcut"
@@ -3506,3 +3506,8 @@ msgstr "Edit rule"
 #: ../extensions/adblock/extension.vala:197
 msgid "_Rule:"
 msgstr "_Rule:"
+
+# ZRL Append New String
+#: ../midori/midori-view.c
+msgid "You are not connected to a network"
+msgstr "Unable connect to Internet"

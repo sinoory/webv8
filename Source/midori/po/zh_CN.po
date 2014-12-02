@@ -1472,7 +1472,7 @@ msgstr "此文件需要 %s 但只剩余 %s。"
 
 #: ../midori/midori-speeddial.vala:188
 msgid "Speed Dial"
-msgstr "快速拨号"
+msgstr "新标签页"
 
 #: ../midori/midori-speeddial.vala:189 ../midori/midori-speeddial.vala:269
 msgid "Click to add a shortcut"
@@ -3459,3 +3459,11 @@ msgstr "编辑规则"
 #: ../extensions/adblock/extension.vala:197
 msgid "_Rule:"
 msgstr "规则(_R)："
+
+# ZRL Append New String
+#: ../midori/midori-view.c
+msgid "You are not connected to a network"
+msgstr "无法连接互联网"
+
+msgid "Your computer must be connected to a network to reach “%s”. ""Connect to a wireless access point or attach a network cable and try again."
+msgstr "无法连接到“%s”网站。请检查您计算机的网络设置，确认已连接到网络。"

@@ -809,8 +809,14 @@ midori_view_web_view_resource_request_cb (WebKitWebView*         web_view,
         {
             gchar* content_type = g_content_type_guess (filepath, (guchar*)contents, length, NULL);
             gchar* mime_type = g_content_type_get_mime_type (content_type);
+// ZRL fix the issue for incorrect resource loading API.
+#if 0
             GInputStream* stream = g_memory_input_stream_new_from_data (contents, -1, g_free);
             webkit_uri_scheme_request_finish (request, stream, -1, mime_type);
+#else
+            GInputStream* stream = g_memory_input_stream_new_from_data (contents, length, g_free);
+            webkit_uri_scheme_request_finish (request, stream, length, mime_type);
+#endif
             g_object_unref (stream);
             g_free (mime_type);
             g_free (content_type);
@@ -885,7 +891,12 @@ midori_view_web_view_resource_request_cb (WebKitWebView*         web_view,
             g_free (encoded);
             #ifdef HAVE_WEBKIT2
             GInputStream* stream = g_memory_input_stream_new_from_data (buffer, buffer_size, g_free);
+// ZRL using correct API.
+#if 0
             webkit_uri_scheme_request_finish (request, stream, -1, "image/png");
+#else
+            webkit_uri_scheme_request_finish (request, stream, buffer_size, "image/png");
+#endif
             g_object_unref (stream);
             #else
             g_free (buffer);
@@ -1141,8 +1152,13 @@ midori_view_display_error (MidoriView*     view,
         #endif
 
         GtkSettings* gtk_settings = gtk_widget_get_settings (view->web_view);
+// ZRL force to show refresh image.
+#if 0
         gboolean show_button_images = gtk_settings != NULL
           && katze_object_get_boolean (gtk_settings, "gtk-button-images");
+#else
+        gboolean show_button_images = TRUE;
+#endif
         if (uri == NULL)
             uri = midori_tab_get_uri (MIDORI_TAB (view));
         title_escaped = g_markup_escape_text (title ? title : view->title, -1);
@@ -1216,19 +1232,33 @@ webkit_web_view_load_error_cb (WebKitWebView*  web_view,
     if (!g_network_monitor_get_network_available (g_network_monitor_get_default ()))
     {
         title = g_strdup_printf (_("You are not connected to a network"));
+// ZRL 不显示具体原因，只提示检查网络设置
+#if 0
         message = g_strdup_printf (_("Your computer must be connected to a network to reach “%s”. "
                                      "Connect to a wireless access point or attach a network cable and try again."), 
                                      midori_uri_parse_hostname(uri, NULL));
+#else
+        message = g_strdup_printf (_("Your computer must be connected to a network to reach “%s”. "
+                                     "Connect to a wireless access point or attach a network cable and try again."), 
+                                     uri);
+#endif
     } 
     else if (!g_network_monitor_can_reach (g_network_monitor_get_default (), 
-                                           g_network_address_parse_uri ("http://midori-browser.org/", 80, NULL), 
+                                           g_network_address_parse_uri ("http://www.baidu.com/", 80, NULL), 
                                            NULL, 
                                            NULL))
     {
         title = g_strdup_printf (_("You are not connected to the Internet"));
+// ZRL 修改为与上一个错误提示相同
+#if 0
         message = g_strdup_printf (_("Your computer appears to be connected to a network, but can't reach “%s”. "
                                      "Check your network settings and try again."), 
                                      midori_uri_parse_hostname(uri, NULL));
+#else
+        message = g_strdup_printf (_("Your computer must be connected to a network to reach “%s”. "
+                                     "Connect to a wireless access point or attach a network cable and try again."), 
+                                     uri);
+#endif
     } 
     else
     {
