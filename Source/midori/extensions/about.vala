@@ -8,6 +8,9 @@
    version 2.1 of the License, or (at your option) any later version.
 
    See the file COPYING for the full license text.
+
+   Modified by ZRL
+   2014.12.03 修改AboutVersion，加载定制的HTML页面
 */
 
 namespace About {
@@ -104,13 +107,15 @@ namespace About {
             return "<p>%s</p>".printf (links);
         }
 
+        // ZRL about:version文件通过aboutversion.html加载
         public override void get_contents (Midori.View view, string uri) {
+#if 0
             string contents = """<html>
                 <head><title>about:version</title></head>
                 <body>
                     <h1>a<span style="position: absolute; left: -1000px; top: -1000px">lias a=b; echo Copy carefully #</span>bout:version</h1>
                     <p>%s</p>
-                    <img src="res://logo-shade.png" style="position: absolute; right: 15px; bottom: 15px; z-index: -9;">
+                    <!-- <img src="res://logo-shade.png" style="position: absolute; right: 15px; bottom: 15px; z-index: -9;"> -->
                     <table>
                         <tr><td>Command line %s</td></tr>
                         %s
@@ -124,9 +129,22 @@ namespace About {
                     %s
                 </body>
             </html>""";
+#else
+            string filename = Midori.Paths.get_res_filename ("aboutversion.html");
+            string? contents = null;
+            if (!FileUtils.get_contents (filename, out contents, null)) {
+		this.load_html (view, "<html><body><h1>加载版本详情页面失败。</h1></body></html>", uri);
+                return;
+            }
+
+            uint8[] logopicture;
+            string logofilename = Midori.Paths.get_res_filename("product_logo.png");
+            FileUtils.get_data (logofilename, out logopicture);
+            string encoded = Base64.encode (logopicture);
+#endif
 
             GLib.StringBuilder versions = new GLib.StringBuilder ();
-            Midori.View.list_versions (versions, true);
+            Midori.View.list_versions (versions, false);
 
             string ident; 
             unowned string architecture;
@@ -138,17 +156,17 @@ namespace About {
             view.list_video_formats (video_formats, true);
 
             GLib.StringBuilder ns_plugins = new GLib.StringBuilder ();
-            view.list_plugins (ns_plugins, true);
+            view.list_plugins (ns_plugins, false);
 
             /* TODO: list active extensions */
 
             this.load_html (view, contents.printf (
-                _("Version numbers in brackets show the version used at runtime."),
-                Midori.Paths.get_command_line_str (true),
-                versions.str,
+                encoded ?? "",
                 platform, sys_name, architecture != null ? architecture : "",
-                ident,
+                versions.str,
                 video_formats.str,
+                ident,
+                Midori.Paths.get_command_line_str (true),
                 ns_plugins.str,
                 this.list_about_uris ()
             ), uri);

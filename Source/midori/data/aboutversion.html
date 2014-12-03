@@ -1,0 +1,108 @@
+<!-- about:version 对应Web文件，需要根据版本变化，适时定制页面中显示的内容。-->
+<html id="t" i18n-values="dir:textdirection;" dir="ltr"><head>
+    <meta charset="utf-8">
+    <title i18n-content="title">关于版本</title>
+    <style>
+body {
+  background-color: white;
+  color: black;
+  font-family: Helvetica,Arial,sans-serif;
+  margin: 0;
+}
+#outer {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  width: 800px;
+}
+#inner {
+  padding-top: 10px;
+  width: 550px;
+}
+.label {
+  -webkit-padding-end: 5px;
+  font-size: 0.9em;
+  font-weight: bold;
+  text-align: end;
+  vertical-align: top;
+  white-space: nowrap;
+}
+.label::after {
+  content: ':';
+}
+#logo {
+  float: right;
+  margin-left: 40px;
+  text-align: right;
+  width: 180px;
+}
+#company {
+  font-size: 0.7em;
+  text-align: right;
+}
+#copyright {
+  font-size: 0.7em;
+  text-align: right;
+}
+#useragent {
+  font-family: monospace;
+}
+.version {
+  font-family: monospace;
+  max-width: 430px;
+  padding-left: 5px;
+}
+    </style>
+
+  <body>
+    <div id="outer">
+      <div id="logo">
+        <img src="data:image/png;base64,%s">
+        <div id="company" i18n-content="company">The Cuprum Authors</div>
+        <div id="copyright" i18n-content="copyright">版权所有2013-2014 核高基项目，桌面操作系统基础版。保留所有权利。</div>
+      </div>
+      <table id="inner" cellpadding="0" cellspacing="0" border="0">
+        <tbody><tr><td class="label" i18n-content="application_label">Cuprum浏览器</td>
+          <td class="version" id="version">
+              <span i18n-content="version">0.5.141202</span>
+          </td>
+        </tr>
+<tr><td class="label" i18n-content="os_name">平台</td>
+          <td class="version" id="os_type">
+            <span i18n-content="os_type">%s %s %s</span>
+            <span id="os_version" i18n-content="os_version"></span>
+          </td>
+
+        </tr>
+        <tr><td class="label">WebKit</td>
+          <td class="version" id="blink_version" i18n-content="blink_version">2.6.2</td>
+        </tr>
+        <tr><td class="label">依赖库版本</td>
+          <td class="version" id="js_engine">%s</td>
+        </tr>
+        <tr><td class="label">支持视频格式</td>
+          <td class="version" id="video_format">%s</td>
+        </tr>
+        <tr><td class="label" i18n-content="user_agent_name">用户代理</td>
+          <td class="version" id="useragent" i18n-content="useragent">%s</td>
+        </tr>
+        <tr><td class="label" i18n-content="command_line_name">命令行</td>
+          <td class="version" id="command_line" i18n-content="command_line">%s</td>
+        </tr>
+        <tr><td class="label" i18n-content="executable_path_name">可执行文件路径</td>
+          <td class="version" id="executable_path" i18n-content="executable_path">/usr/local/bin/cuprumbrowser</td>
+        </tr>
+        <tr><td class="label" i18n-content="profile_path_name">个人资料路径</td>
+          <td class="version" id="profile_path" i18n-content="profile_path">~/.config/cuprumbrowser</td>
+        </tr>
+        <tr><td class="label" i18n-content="profile_path_name">NetScape插件</td>
+          <td class="version" id="netscape_plugin" i18n-content="profile_path">%s</td>
+        </tr>
+        <tr id="variations-section">
+          <td class="label" i18n-content="variations_name">内部网页</td>
+          <td class="version" id="variations-list">%s</td>
+        </tr>
+
+      </tbody></table>
+    </div>
+</body></html>
