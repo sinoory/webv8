@@ -17,7 +17,7 @@ add_definitions("-DPACKAGE_BUGREPORT=\"https://bugs.launchpad.net/midori\"")
 set(DERIVED_SOURCES_MIDORI_DIR "${CMAKE_BINARY_DIR}/DerivedSources/midori")
 file(MAKE_DIRECTORY ${DERIVED_SOURCES_MIDORI_DIR})
 
-set(VERSION 0.5.8)
+set(VERSION 0.5.9)
 add_definitions("-DMIDORI_VERSION_SUFFIX=\"${VERSION}\"")
  
 string(REPLACE "." ";" VERSION_LIST ${VERSION})
