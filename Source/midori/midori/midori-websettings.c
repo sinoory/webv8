@@ -8,6 +8,9 @@
  version 2.1 of the License, or (at your option) any later version.
 
  See the file COPYING for the full license text.
+
+ Modified by ZRL
+ 2014.12.03 generate_ident_string() 定制User-Agent字符串
 */
 
 #include "midori-websettings.h"
@@ -811,7 +814,7 @@ static gchar*
 generate_ident_string (MidoriWebSettings* web_settings,
                        MidoriIdentity     identify_as)
 {
-    const gchar* appname = "Midori/"
+    const gchar* appname = "Cuprum/"
         G_STRINGIFY (MIDORI_MAJOR_VERSION) "."
         G_STRINGIFY (MIDORI_MINOR_VERSION);
 

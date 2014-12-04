@@ -25,15 +25,15 @@ msgstr ""
 #: ../data/midori.desktop.in.h:1 ../midori/main.c:142
 #: ../midori/midori-websettings.c:227
 msgid "Midori"
-msgstr "Midori 浏览器"
+msgstr "CDOS桌面浏览器"
 
 #: ../data/midori.desktop.in.h:2
 msgid "Web Browser"
-msgstr "网络浏览器"
+msgstr "CDOS网络浏览器"
 
 #: ../data/midori.desktop.in.h:3
 msgid "Midori Web Browser"
-msgstr "Midori 网络浏览器"
+msgstr "CDOS 网络浏览器"
 
 #: ../data/midori.desktop.in.h:4
 msgid "Browse the Web"
@@ -57,7 +57,7 @@ msgstr "新建私人浏览窗口"
 
 #: ../data/midori-private.desktop.in.h:1
 msgid "Midori Private Browsing"
-msgstr "Midori 私人浏览"
+msgstr "私人浏览模式"
 
 #: ../data/midori-private.desktop.in.h:2 ../midori/midori-view.c:3897
 msgid "Private Browsing"
@@ -1194,7 +1194,7 @@ msgstr "唉呀 - %s"
 #: ../midori/midori-view.c:1347
 #, c-format
 msgid "Something went wrong with '%s'."
-msgstr "‘%s’ 中出错了。"
+msgstr "‘%s’ 中出错了。建议重新启动浏览器试试。"
 
 #: ../midori/midori-view.c:1349
 msgid "Try again"

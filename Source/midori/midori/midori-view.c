@@ -12,6 +12,7 @@
  Modify by ZRL
  2014.12.02 修改error page
  2014.12.02 接收console-message信号，为默认标签页功能。
+ 2014.12.04 修改midori_view_list_versions()
 */
 
 #include "midori-view.h"
@@ -3816,12 +3817,18 @@ midori_view_add_version (GString* markup,
     g_free (text);
 }
 
+/* ZRL 定制版本信息显示*/
 void
 midori_view_list_versions (GString* markup,
                            gboolean html)
 {
+#if 0
     midori_view_add_version (markup, html, g_strdup_printf ("%s %s (%s) %s",
         g_get_application_name (), PACKAGE_VERSION, midori_app_get_name (NULL), gdk_get_program_class ()));
+#else
+    midori_view_add_version (markup, html, g_strdup_printf ("%s %s",
+        g_get_application_name (), PACKAGE_VERSION));
+#endif
     midori_view_add_version (markup, html, g_strdup_printf ("GTK+ %s (%u.%u.%u)\tGlib %s (%u.%u.%u)",
         GTK_VERSION, gtk_major_version, gtk_minor_version, gtk_micro_version,
         GIO_VERSION, glib_major_version, glib_minor_version, glib_micro_version));

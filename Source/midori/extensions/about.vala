@@ -11,6 +11,8 @@
 
    Modified by ZRL
    2014.12.03 修改AboutVersion，加载定制的HTML页面
+   2014.12.04 修改Version::get_contents() 暂时屏蔽ns插件信息的显示，未来需要添加
+              修改Manager ()中扩展信息
 */
 
 namespace About {
@@ -167,7 +169,8 @@ namespace About {
                 video_formats.str,
                 ident,
                 Midori.Paths.get_command_line_str (true),
-                ns_plugins.str,
+		"",
+/*                ns_plugins.str, */
                 this.list_about_uris ()
             ), uri);
         }
@@ -375,9 +378,9 @@ namespace About {
 
         internal Manager () {
             GLib.Object (name: "About pages",
-                         description: "Internal about: handler",
+                         description: "Internal about: Page",
                          version: "0.1",
-                         authors: "André Stösel <andre@stoesel.de>");
+                         authors: "BrowserTeam");
 
             this.activate.connect (this.activated);
             this.deactivate.connect (this.deactivated);

@@ -483,12 +483,12 @@ namespace Midori {
             if (thumb_view == null) {
                 thumb_view = new WebKit.WebView ();
                 thumb_view.get_settings().set (
-                    "enable-scripts", false,
+                    "enable-javascript", true,
                     "enable-plugins", false,
                     "auto-load-images", true,
                     "enable-html5-database", false,
                     "enable-html5-local-storage", false,
-                    "enable-java-applet", false);
+                    "enable-java", false);
                 var offscreen = new Gtk.OffscreenWindow ();
                 offscreen.add (thumb_view);
                 thumb_view.set_size_request (800, 600);

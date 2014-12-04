@@ -23,7 +23,7 @@ msgstr ""
 #: ../data/midori.desktop.in.h:1 ../midori/main.c:142
 #: ../midori/midori-websettings.c:227
 msgid "Midori"
-msgstr "Midori"
+msgstr "CDOS Browser"
 
 #: ../data/midori.desktop.in.h:2
 msgid "Web Browser"
@@ -31,7 +31,7 @@ msgstr "Web Browser"
 
 #: ../data/midori.desktop.in.h:3
 msgid "Midori Web Browser"
-msgstr "Midori Web Browser"
+msgstr "CDOS Web Browser"
 
 #: ../data/midori.desktop.in.h:4
 msgid "Browse the Web"
