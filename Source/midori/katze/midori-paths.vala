@@ -7,6 +7,9 @@
  version 2.1 of the License, or (at your option) any later version.
 
  See the file COPYING for the full license text.
+
+ Modified by ZRL
+ 2014.12.04 实现获取资源路径接口 get_res_dir()
 */
 
 namespace GLib {
@@ -429,6 +432,18 @@ namespace Midori {
             return path;
 #endif
             #endif
+        }
+
+        /* ZRL 获取资源路径接口*/
+        public static string get_res_dir () {
+            assert (command_line != null);
+
+            string path = Path.build_filename (MDATADIR, PACKAGE_NAME, "res", null);
+            if (Posix.access (path, Posix.F_OK) == 0)
+                return path;
+
+            /* TODO implement extra path.*/
+            return "";
         }
 
         #if !HAVE_WIN32
