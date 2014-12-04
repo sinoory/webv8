@@ -434,16 +434,16 @@ namespace Midori {
             #endif
         }
 
-        /* ZRL 获取资源路径接口*/
+        /* ZRL 获取资源路径接口 2 Path to search: exec_path/share/package_name/res & MDATADIR/PACKAGE_NAME/res */
         public static string get_res_dir () {
             assert (command_line != null);
 
-            string path = Path.build_filename (MDATADIR, PACKAGE_NAME, "res", null);
+            string path = Path.build_filename (exec_path, "share", PACKAGE_NAME, "res", null);
             if (Posix.access (path, Posix.F_OK) == 0)
                 return path;
 
-            /* TODO implement extra path.*/
-            return "";
+            path = Path.build_filename (MDATADIR, PACKAGE_NAME, "res", null);
+            return path;
         }
 
         #if !HAVE_WIN32
