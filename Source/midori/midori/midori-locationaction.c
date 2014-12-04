@@ -12,6 +12,7 @@
 
 #include "midori-locationaction.h"
 
+#include "Certificate.h"
 #include "marshal.h"
 #include "midori-browser.h"
 #include "midori-searchaction.h"
@@ -1506,17 +1507,43 @@ midori_location_action_icon_released_cb (GtkWidget*           widget,
             katze_widget_popup (widget, menu, NULL, KATZE_MENU_POSITION_LEFT);
             return;
         }
+       //modify by luyue start 2014/12/4
+        GTlsCertificate* tls_cert;
+        GTlsCertificateFlags tls_flags;
+        gchar* hostname;
+        MidoriBrowser* browser = midori_browser_get_for_widget (widget);
+        MidoriView* view = MIDORI_VIEW (midori_browser_get_current_tab (browser));
+        #ifdef HAVE_WEBKIT2
+        void* request = NULL;
+        #else
+        WebKitWebView* web_view = WEBKIT_WEB_VIEW (midori_view_get_web_view (view));
+        WebKitWebFrame* web_frame = webkit_web_view_get_main_frame (web_view);
+        WebKitWebDataSource* source = webkit_web_frame_get_data_source (web_frame);
+        WebKitNetworkRequest* request = webkit_web_data_source_get_request (source);
+        #endif
+        midori_view_get_tls_info (view, request, &tls_cert, &tls_flags, &hostname);
+        if (tls_cert == NULL)
+        {
+           g_free (hostname);
+           return;
+        }
+        gchar* certificateData;
+        g_object_get(tls_cert, "certificate-pem", &certificateData,NULL);
+        //get single certificate detail information; 
+        get_single_certificate_data(certificateData);
+        //display single certificata detail information;
+        display_single_certificate();
 
-        const gchar* title = _("Security details");
+        /*const gchar* title = _("Security details");
         GtkWidget* content_area;
         GtkWidget* hbox;
         #ifdef HAVE_GRANITE
         gint wx, wy;
         GtkAllocation allocation;
-        GdkRectangle icon_rect;
+        GdkRectangle icon_rect;*/
 
         /* FIXME: granite: should return GtkWidget* like GTK+ */
-        dialog = (GtkWidget*)granite_widgets_pop_over_new ();
+      /*  dialog = (GtkWidget*)granite_widgets_pop_over_new ();
         gchar* markup = g_strdup_printf ("<b>%s</b>", title);
         GtkWidget* label = gtk_label_new (markup);
         content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
@@ -1547,7 +1574,8 @@ midori_location_action_icon_released_cb (GtkWidget*           widget,
         midori_location_action_show_page_info (widget, GTK_BOX (content_area), dialog);
         #endif
         g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
-        gtk_widget_show_all (dialog);
+        gtk_widget_show_all (dialog);*/
+        //modify by luyue end 2014/12/4
     }
     if (icon_pos == GTK_ENTRY_ICON_SECONDARY)
     {

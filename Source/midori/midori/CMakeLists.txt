@@ -6,7 +6,7 @@ set(LIBMIDORI_SOVERSION 0)
 set(MIDORI_SOURCE_DIR "${CMAKE_SOURCE_DIR}/Source/midori")
 
 file(GLOB MIDORI_VALA_SOURCE ../katze/*.vala *.vala ../panels/*.vala)
-file(GLOB LIBMIDORI_SOURCE ../katze/*.c ../panels/*.c ../toolbars/*.c midori-*.vala midori-*.c sokoke.c)
+file(GLOB LIBMIDORI_SOURCE ../katze/*.c ../panels/*.c ../toolbars/*.c midori-*.vala midori-*.c sokoke.c Certificate.c)
 include(GLibHelpers)
 add_glib_marshal(LIBMIDORI_SOURCE marshal ${MIDORI_PROJECT_NAME}_cclosure_marshal "midori.h")
 set(MIDORI_SOURCE
@@ -80,6 +80,8 @@ include_directories(
                     ${FORWARDING_HEADERS_WEBKIT2GTK_EXTENSION_DIR}
                     ${DEPS_INCLUDE_DIRS}
                     ${OPTS_INCLUDE_DIRS}
+                    #add openssl path by luyue
+                    ${CMAKE_SOURCE_DIR}/Source/ThirdParty/openssl-1.0.0d/include
                     )
 target_link_libraries(${LIBMIDORI}
                       "${LIBMIDORI}-vala"

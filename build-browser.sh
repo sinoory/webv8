@@ -66,12 +66,12 @@ case $1 in
 	#add by luyue
 	cd $ThirdParty_DIR
 	tar -zxvf openssl-1.0.0d.tar.gz && cd openssl-1.0.0d
-        ./config && make && cd ../../../
+	./config && make && cd ../../../
 	mkdir lib 
-        cp -rf $ThirdParty_DIR/openssl-1.0.0d/lib*.a ./lib
+	cp -rf $ThirdParty_DIR/openssl-1.0.0d/lib*.a ./lib
 	
 	echo "build release version start..." && sleep 3
-	cmake -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=ON -DENABLE_MIDORI=$BUILD_MIDORI && make -j${CPU_NUM} && echo ******build release SUCCESS********
+	cmake -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=FALSE -DENABLE_MIDORI=$BUILD_MIDORI && make -j${CPU_NUM} && echo ******build release SUCCESS********
 #	cp -rf $(CURDIR)/bin/resources $(CURDIR)/debian/tmp/usr/local/cuprumtest/bin/
 	;;
 "deb_package" )
