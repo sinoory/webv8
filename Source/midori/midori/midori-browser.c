@@ -5100,6 +5100,8 @@ midori_panel_notify_right_aligned_cb (MidoriPanel*   panel,
                                       GParamSpec*    pspec,
                                       MidoriBrowser* browser)
 {
+//zlf
+#if 0
     gboolean right_aligned = katze_object_get_boolean (panel, "right-aligned");
     GtkWidget* hpaned = gtk_widget_get_parent (browser->panel);
     GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
@@ -5129,6 +5131,7 @@ midori_panel_notify_right_aligned_cb (MidoriPanel*   panel,
     gtk_paned_set_position (GTK_PANED (hpaned), paned_size - paned_position);
     g_object_unref (browser->panel);
     g_object_unref (vpaned);
+#endif
 }
 
 static gboolean
