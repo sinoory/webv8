@@ -74,11 +74,11 @@ msgstr "截图保存至：%s\n"
 
 #: ../midori/main.c:79
 msgid "Run ADDRESS as a web application"
-msgstr "将‘地址’作为网络应用程序运行"
+msgstr "将指定网址作为应用程序运行"
 
 #: ../midori/main.c:79
 msgid "ADDRESS"
-msgstr "地址"
+msgstr "网址"
 
 #: ../midori/main.c:81
 msgid "Use FOLDER as configuration folder"

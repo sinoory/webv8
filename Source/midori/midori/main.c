@@ -81,10 +81,6 @@ main (int    argc,
        N_("Use FOLDER as configuration folder"), N_("FOLDER") },
        { "private", 'p', 0, G_OPTION_ARG_NONE, &private,
        N_("Private browsing, no changes are saved"), NULL },
-       #ifdef G_OS_WIN32
-       { "portable", 'P', 0, G_OPTION_ARG_NONE, &portable,
-       N_("Portable mode, all runtime files are stored in one place"), NULL },
-       #endif
        { "plain", '\0', 0, G_OPTION_ARG_NONE, &plain,
        N_("Plain GTK+ window with WebKit, akin to GtkLauncher"), NULL },
        { "diagnostic-dialog", 'd', 0, G_OPTION_ARG_NONE, &diagnostic_dialog,
@@ -310,7 +306,7 @@ main (int    argc,
         gtk_box_pack_start (GTK_BOX (vbox), web_view, TRUE, TRUE, 0);
 #endif
         gtk_container_add (GTK_CONTAINER (window), vbox);
-        gtk_entry_set_text (GTK_ENTRY (entry), uris && *uris ? *uris : "http://www.example.com");
+        gtk_entry_set_text (GTK_ENTRY (entry), uris && *uris ? *uris : "http://www.baidu.com");
         plain_entry_activate_cb (entry, web_view);
         g_signal_connect (entry, "activate",
             G_CALLBACK (plain_entry_activate_cb), web_view);
