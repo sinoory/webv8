@@ -8,6 +8,8 @@
  version 2.1 of the License, or (at your option) any later version.
 
  See the file COPYING for the full license text.
+ Modified by LuYue
+ 2014.12.04 增加网站证书显示功能
 */
 
 #include "midori-locationaction.h"
