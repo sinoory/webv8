@@ -100,9 +100,6 @@ struct _MidoriBrowser
     guint last_web_search;
 
     gboolean bookmarkbar_populate;
-	//zlf
-    GtkWidget* sari_panel_windows;
-    GtkWidget* sari_panel;
 };
 
 G_DEFINE_TYPE (MidoriBrowser, midori_browser, GTK_TYPE_WINDOW)
@@ -224,21 +221,7 @@ static void
 midori_browser_disconnect_tab (MidoriBrowser* browser,
                                MidoriView*    view);
 
-//add by zlf
-void history_windows_destory_cb(MidoriBrowser* browser)
-{
 
-    _action_set_active (browser, "Panel", FALSE);
-#if 1
-    GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
-    GtkWidget* hpaned = gtk_widget_get_parent (vpaned);
-
-    gtk_container_remove (browser->sari_panel_windows, browser->panel);    
-    gtk_paned_pack1 (GTK_PANED (hpaned), browser->panel, FALSE, FALSE);
-    gtk_widget_hide(browser->sari_panel_windows);
-#endif
-    return;
-}
 static gboolean
 midori_browser_is_fullscreen (MidoriBrowser* browser)
 {
@@ -5012,12 +4995,9 @@ static void
 _action_panel_activate (GtkToggleAction* action,
                         MidoriBrowser*   browser)
 {
-//zlf
-#if 0
     gboolean active = gtk_toggle_action_get_active (action);
     g_object_set (browser->settings, "show-panel", active, NULL);
     sokoke_widget_set_visible (browser->panel, active);
-#endif
 }
 
 static gboolean
@@ -5065,21 +5045,9 @@ midori_panel_notify_page_cb (MidoriPanel*   panel,
                              GParamSpec*    pspec,
                              MidoriBrowser* browser)
 {
-#if 0
     gint page = midori_panel_get_current_page (panel);
     if (page > -1)
         g_object_set (browser->settings, "last-panel-page", page, NULL);
-#else
-    GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
-    GtkWidget* hpaned = gtk_widget_get_parent (vpaned);
-
-    gtk_container_remove (GTK_CONTAINER (hpaned), browser->panel);
-    gtk_container_add(GTK_CONTAINER(browser->sari_panel_windows), browser->panel);
-    gtk_widget_show(browser->panel);
-
-    gtk_widget_show_all(browser->sari_panel_windows);
-
-#endif
 }
 
 static void
@@ -5100,8 +5068,6 @@ midori_panel_notify_right_aligned_cb (MidoriPanel*   panel,
                                       GParamSpec*    pspec,
                                       MidoriBrowser* browser)
 {
-//zlf
-#if 0
     gboolean right_aligned = katze_object_get_boolean (panel, "right-aligned");
     GtkWidget* hpaned = gtk_widget_get_parent (browser->panel);
     GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
@@ -5131,7 +5097,6 @@ midori_panel_notify_right_aligned_cb (MidoriPanel*   panel,
     gtk_paned_set_position (GTK_PANED (hpaned), paned_size - paned_position);
     g_object_unref (browser->panel);
     g_object_unref (vpaned);
-#endif
 }
 
 static gboolean
@@ -5139,15 +5104,6 @@ midori_panel_close_cb (MidoriPanel*   panel,
                        MidoriBrowser* browser)
 {
     _action_set_active (browser, "Panel", FALSE);
-#if 1 //zlf
-
-    GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
-    GtkWidget* hpaned = gtk_widget_get_parent (vpaned);
-
-    gtk_container_remove (browser->sari_panel_windows, browser->panel);    
-    gtk_paned_pack1 (GTK_PANED (hpaned), browser->panel, FALSE, FALSE);
-    gtk_widget_hide(browser->sari_panel_windows);
-#endif
     return FALSE;
 }
 
@@ -6294,12 +6250,6 @@ midori_browser_init (MidoriBrowser* browser)
     g_signal_connect (browser->bookmarkbar, "popup-context-menu",
         G_CALLBACK (midori_browser_toolbar_popup_context_menu_cb), browser);
 
-    //create the panel windows zlf
-    browser->sari_panel_windows = gtk_window_new(GTK_WINDOW_POPUP);
-    g_signal_connect(G_OBJECT(browser->sari_panel_windows), "destroy", G_CALLBACK (history_windows_destory_cb), browser);
-    gtk_window_set_title(GTK_WINDOW(browser->sari_panel_windows), "管理器");
-    gtk_window_set_default_size(GTK_WINDOW(browser->sari_panel_windows), 260, 450);
-
     /* Create the panel */
     hpaned = gtk_hpaned_new ();
     g_signal_connect (hpaned, "notify::position",
@@ -6323,10 +6273,7 @@ midori_browser_init (MidoriBrowser* browser)
         "signal::close",
         midori_panel_close_cb, browser,
         NULL);
-    //zlf
-    //gtk_paned_pack1 (GTK_PANED (hpaned), browser->panel, FALSE, FALSE);
-    //gtk_container_add(GTK_CONTAINER(browser->sari_panel_windows), browser->panel);
-    //gtk_widget_show_all(browser->sari_panel_windows); //zlf
+    gtk_paned_pack1 (GTK_PANED (hpaned), browser->panel, FALSE, FALSE);
 
     /* Notebook, containing all views */
     vpaned = gtk_vpaned_new ();
