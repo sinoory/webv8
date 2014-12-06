@@ -611,7 +611,8 @@ bool NetscapePlugin::initialize(const Parameters& parameters)
         if (wmodeIndex != notFound) {
             // Transparent window mode is not supported by X11 backend.
             if (equalIgnoringCase(parameters.values[wmodeIndex], "transparent")
-                || (m_pluginModule->pluginQuirks().contains(PluginQuirks::ForceFlashWindowlessMode) && equalIgnoringCase(parameters.values[wmodeIndex], "window")))
+                || ((m_pluginModule->pluginQuirks().contains(PluginQuirks::ForceFlashWindowlessMode) && equalIgnoringCase(parameters.values[wmodeIndex], "window")))
+                || m_pluginModule->pluginQuirks().contains(PluginQuirks::DoNotCancelSrcStreamInWindowedMode))
                 paramValues[wmodeIndex] = "opaque";
         } else if (m_pluginModule->pluginQuirks().contains(PluginQuirks::ForceFlashWindowlessMode)
                   //add by luyue
