@@ -700,10 +700,11 @@ add_dependencies(WebKit2 ${WEBKIT2_EXTRA_DEPENDENCIES})
 add_webkit2_prefix_header(WebKit2)
 target_link_libraries(WebKit2 ${WebKit2_LIBRARIES})
 set_target_properties(WebKit2 PROPERTIES FOLDER "WebKit")
+set_target_properties(WebKit2 PROPERTIES LINK_FLAGS "-fPIC")
 
 # add OpenSSL libs by luyue
-target_link_libraries(WebKit2 "-Wl,--whole-archive ../../lib/libcrypto.a -Wl,--no-whole-archive")
-target_link_libraries(WebKit2 "-Wl,--whole-archive ../../lib/libssl.a -Wl,--no-whole-archive")
+target_link_libraries(WebKit2 "-Wl,--whole-archive ../../lib/libcrypto.so -Wl,--no-whole-archive")
+target_link_libraries(WebKit2 "-Wl,--whole-archive ../../lib/libssl.so -Wl,--no-whole-archive")
 
 if (WebKit2_VERSION_SCRIPT)
     ADD_TARGET_PROPERTIES(WebKit2 LINK_FLAGS "${WebKit2_VERSION_SCRIPT}")
