@@ -2705,9 +2705,9 @@ webkit_web_view_web_view_ready_cb (GtkWidget*  web_view,
     gtk_widget_show (new_view);
 // ZRL 解决类似hao123网站，无法打开新窗口问题
 #ifdef HAVE_WEBKIT2
-    g_signal_emit (view, signals[NEW_VIEW], 0, new_view, where, FALSE);
-#else
     g_signal_emit (view, signals[NEW_WINDOW], 0, midori_view_get_link_uri (view));
+#else
+    g_signal_emit (view, signals[NEW_VIEW], 0, new_view, where, FALSE);
 #endif
 
     if (midori_tab_get_is_dialog (MIDORI_TAB (view)))

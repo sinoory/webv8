@@ -7,6 +7,9 @@
  version 2.1 of the License, or (at your option) any later version.
 
  See the file COPYING for the full license text.
+ 
+ Modified by ZRL
+ 2014.12.09 修复新窗口打开网页，关闭窗口后，再新窗口打开时crash问题。参考midori_bookmarks_finalize()
 */
 
 #include "midori-bookmarks.h"
@@ -487,6 +490,12 @@ static void
 midori_bookmarks_update_cb (KatzeArray*      array,
                             MidoriBookmarks* bookmarks)
 {
+    // ZRL 做指针和类型保护
+    if (!bookmarks || !GTK_IS_TREE_VIEW(bookmarks->treeview)) {
+        printf("ZRL midori-bookmarks.c midori_bookmarks_update_cb() Should not be here !! \n");
+        return;
+    }
+
     GtkTreeModel* model = gtk_tree_view_get_model (GTK_TREE_VIEW (bookmarks->treeview));
     gtk_tree_store_clear (GTK_TREE_STORE (model));
     midori_bookmarks_read_from_db_to_model (bookmarks,
@@ -1414,6 +1423,9 @@ midori_bookmarks_init (MidoriBookmarks* bookmarks)
     bookmarks->hovering_item = NULL;
 }
 
+/* ZRL 修复新窗口打开网页，关闭窗口后，再新窗口打开时crash问题。解决方法：取消midori_bookmarks_set_app()中注册的信号回调。
+   !!!但是当前不确定是否信号被屏蔽干净，待深度测试验证 !!!   
+*/
 static void
 midori_bookmarks_finalize (GObject* object)
 {
@@ -1423,4 +1435,20 @@ midori_bookmarks_finalize (GObject* object)
         g_object_unref (bookmarks->app);
     if (bookmarks->hovering_item)
 	g_object_unref (bookmarks->hovering_item);
+
+    guint signalID = 0U;
+    g_signal_parse_name ("update", midori_bookmarks_db_get_type (), &signalID, NULL, FALSE);
+    g_signal_handlers_disconnect_matched (bookmarks->bookmarks_db, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, signalID, 0, NULL, (GCallback) midori_bookmarks_update_cb, bookmarks);
+
+    g_signal_parse_name ("remove-item", midori_bookmarks_db_get_type (), &signalID, NULL, FALSE);
+    g_signal_handlers_disconnect_matched (bookmarks->bookmarks_db, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, signalID, 0, NULL, (GCallback) midori_bookmarks_remove_item_cb, bookmarks);
+
+    g_signal_parse_name ("add-item", midori_bookmarks_db_get_type (), &signalID, NULL, FALSE);
+    g_signal_handlers_disconnect_matched (bookmarks->bookmarks_db, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, signalID, 0, NULL, (GCallback) midori_bookmarks_add_item_cb, bookmarks);
+
+    g_signal_parse_name ("update-item", midori_bookmarks_db_get_type (), &signalID, NULL, FALSE);
+    g_signal_handlers_disconnect_matched (bookmarks->bookmarks_db, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, signalID, 0, NULL, (GCallback) midori_bookmarks_update_item_cb, bookmarks);
+
+    g_signal_parse_name ("row-changed", midori_bookmarks_db_get_type (), &signalID, NULL, FALSE);
+    g_signal_handlers_disconnect_matched (bookmarks->bookmarks_db, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, signalID, 0, NULL, (GCallback) midori_bookmarks_row_changed_cb, bookmarks);
 }
