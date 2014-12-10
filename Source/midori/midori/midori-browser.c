@@ -9,6 +9,9 @@
  version 2.1 of the License, or (at your option) any later version.
 
  See the file COPYING for the full license text.
+
+ Modified by ZRL
+ 2014.12.10 修复网页中打开新窗口或新Tab时，不加载网页问题。参考midori_view_new_view_cb()
 */
 
 #include "midori-browser.h"
@@ -289,6 +292,7 @@ _midori_browser_update_interface (MidoriBrowser* browser,
 
     _action_set_sensitive (browser, "Back", midori_view_can_go_back (view));
     _action_set_sensitive (browser, "Forward", midori_tab_can_go_forward (MIDORI_TAB (view)));
+    _action_set_visible (browser, "Forward", midori_tab_can_go_forward (MIDORI_TAB (view)));    //zgh
     _action_set_sensitive (browser, "Previous",
         midori_view_get_previous_page (view) != NULL);
     _action_set_sensitive (browser, "Next",
@@ -326,6 +330,10 @@ _midori_browser_update_interface (MidoriBrowser* browser,
     }
 
     action = _action_by_name (browser, "Location");
+#if 1 //zgh
+    midori_location_action_set_secondary_icon (
+            MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARK_ADD);
+#endif
     if (midori_tab_is_blank (MIDORI_TAB (view)))
     {
         gchar* icon_names[] = { "edit-find-symbolic", "edit-find", NULL };
@@ -337,7 +345,7 @@ _midori_browser_update_interface (MidoriBrowser* browser,
     else
         midori_location_action_set_security_hint (
             MIDORI_LOCATION_ACTION (action), midori_tab_get_security (MIDORI_TAB (view)));
-    midori_browser_update_secondary_icon (browser, view, action);
+//    midori_browser_update_secondary_icon (browser, view, action);   //zgh 1203
 }
 
 static void
@@ -366,7 +374,7 @@ _midori_browser_set_statusbar_text (MidoriBrowser* browser,
         GtkAction* action = _action_by_name (browser, "Location");
         MidoriLocationAction* location_action = MIDORI_LOCATION_ACTION (action);
         midori_location_action_set_text (location_action, browser->statusbar_text);
-        midori_location_action_set_secondary_icon (location_action, NULL);
+//        midori_location_action_set_secondary_icon (location_action, NULL);  //zgh   1203
         #endif
     }
     else if (!gtk_widget_get_visible (browser->statusbar) && !is_location)
@@ -376,7 +384,7 @@ _midori_browser_set_statusbar_text (MidoriBrowser* browser,
         #else
         GtkAction* action = _action_by_name (browser, "Location");
         MidoriLocationAction* location_action = MIDORI_LOCATION_ACTION (action);
-        midori_browser_update_secondary_icon (browser, view, action);
+//        midori_browser_update_secondary_icon (browser, view, action);   //zgh 1203
         midori_location_action_set_text (location_action,
             midori_view_get_display_uri (view));
         #endif
@@ -1678,6 +1686,7 @@ midori_view_new_view_cb (GtkWidget*     view,
         sokoke_widget_set_visible (new_browser->bookmarkbar, FALSE);
         sokoke_widget_set_visible (new_browser->statusbar, FALSE);
         _action_set_visible (new_browser, "CompactMenu", FALSE);
+        _action_set_visible (new_browser, "Preferences", TRUE); //zgh
         _midori_browser_set_toolbar_items (new_browser, "Location");
         sokoke_widget_set_visible (new_browser->panel, FALSE);
         midori_browser_add_tab (new_browser, new_view);
@@ -1698,15 +1707,29 @@ midori_view_new_view_cb (GtkWidget*     view,
         g_assert (new_browser != NULL);
         midori_browser_add_tab (new_browser, new_view);
         midori_browser_set_current_tab (new_browser, new_view);
+
+        // ZRL 以新窗口打开时主动设置新视图的uri，激活加载流程
+        const gchar* dest_uri = g_object_get_data (G_OBJECT (new_view), "destination-uri");
+        midori_view_set_uri(new_view, dest_uri);
     }
+// ZRL TODO 暂时屏蔽,未来清楚其作用时再打开
+#if 0
     else if (gtk_widget_get_parent (new_view) != browser->notebook)
     {
         midori_browser_add_tab (browser, new_view);
         if (where != MIDORI_NEW_VIEW_BACKGROUND)
             midori_browser_set_current_tab (browser, new_view);
     }
-    else
+#endif
+    else {
         midori_browser_notify_new_tab (browser);
+        // ZRL 以新Tab打开时步骤：midori_browser_add_tab, midori_browser_set_current_tab, midori_view_set_uri
+        const gchar* dest_uri = g_object_get_data (G_OBJECT (new_view), "destination-uri");
+        midori_browser_add_tab (browser, new_view);
+        if (where != MIDORI_NEW_VIEW_BACKGROUND)
+            midori_browser_set_current_tab (browser, new_view);
+        midori_view_set_uri(new_view, dest_uri);
+    }
 
     if (!user_initiated)
     {
@@ -2909,9 +2932,10 @@ _action_edit_activate (GtkAction*     action,
         can_paste = gtk_text_view_get_editable (text_view) && has_selection;
         can_select_all = TRUE;
     }
-
+#if 0 //zgh
     _action_set_sensitive (browser, "Undo", can_undo);
     _action_set_sensitive (browser, "Redo", can_redo);
+#endif
     _action_set_sensitive (browser, "Cut", can_cut);
     _action_set_sensitive (browser, "Copy", can_copy);
     _action_set_sensitive (browser, "Paste", can_paste);
@@ -3119,7 +3143,7 @@ midori_browser_toolbar_popup_context_menu_cb (GtkWidget*     widget,
     MidoriContextAction* menu = midori_context_action_new ("ToolbarContextMenu", NULL, NULL, NULL);
     midori_context_action_add_action_group (menu, browser->action_group);
     midori_context_action_add_by_name (menu, "Menubar");
-    midori_context_action_add_by_name (menu, "Navigationbar");
+//zgh    midori_context_action_add_by_name (menu, "Navigationbar");
     midori_context_action_add_by_name (menu, "Bookmarkbar");
     midori_context_action_add_by_name (menu, "Statusbar");
 
@@ -3256,15 +3280,17 @@ _action_tools_populate_popup (GtkAction*     action,
 {
     MidoriContextAction* menu = midori_context_action_new ("ToolsMenu", NULL, NULL, NULL);
     midori_context_action_add_action_group (menu, browser->action_group);
-    midori_context_action_add_by_name (menu, "ManageSearchEngines");
+//    midori_context_action_add_by_name (menu, "ManageSearchEngines");  //zgh
     midori_context_action_add_by_name (menu, "ClearPrivateData");
     midori_context_action_add_by_name (menu, "InspectPage");
     g_signal_emit (browser, signals[POPULATE_TOOL_MENU], 0, default_menu);
-    midori_context_action_add (menu, NULL);
+//    midori_context_action_add (menu, NULL);   //zgh
+#if 0 //zgh
     gsize j = 0;
     GtkWidget* widget;
     while ((widget = midori_panel_get_nth_page (MIDORI_PANEL (browser->panel), j++)))
         midori_context_action_add (menu, g_object_get_data (G_OBJECT (widget), "midori-panel-action"));
+#endif
     #ifdef G_OS_WIN32
     midori_context_action_add (menu, NULL);
     midori_context_action_add_by_name (menu, "Preferences");
@@ -3300,11 +3326,24 @@ _action_bookmarks_populate_folder (GtkAction*     action,
         menuitem = gtk_action_create_menu_item (_action_by_name (browser, "BookmarksExport"));
         gtk_menu_shell_append (menu, menuitem);
         gtk_widget_show (menuitem);
+        #if 0 //zgh
         menuitem = gtk_separator_menu_item_new ();
         gtk_menu_shell_append (menu, menuitem);
         gtk_widget_show (menuitem);
+        #endif
+    }
+    
+    if (!katze_array_is_empty (folder))  //zgh
+    {
+        GtkWidget* menuitem = gtk_separator_menu_item_new ();
+        gtk_menu_shell_append (menu, menuitem);
+        gtk_widget_show (menuitem);
+        
+        katze_array_action_generate_menu (KATZE_ARRAY_ACTION (action), folder,
+                                      menu, GTK_WIDGET (browser));
     }
 
+#if 0 //zgh
     if (katze_array_is_empty (folder))
     {
         GtkWidget* menuitem = gtk_image_menu_item_new_with_label (_("Empty"));
@@ -3316,6 +3355,7 @@ _action_bookmarks_populate_folder (GtkAction*     action,
 
     katze_array_action_generate_menu (KATZE_ARRAY_ACTION (action), folder,
                                       menu, GTK_WIDGET (browser));
+#endif
     return TRUE;
 }
 
@@ -3360,6 +3400,7 @@ _action_compact_menu_populate_popup (GtkAction*     action,
     midori_context_action_add_by_name (menu, "Fullscreen");
     midori_context_action_add_by_name (menu, "MailTo");
     midori_context_action_add (menu, NULL);
+    midori_context_action_add_by_name (menu, "Homepage");   //zgh
     gsize j = 0;
     GtkWidget* widget;
     while ((widget = midori_panel_get_nth_page (MIDORI_PANEL (browser->panel), j++)))
@@ -3476,6 +3517,7 @@ _action_menubar_activate (GtkToggleAction* menubar_action,
     g_free (items);
 
     sokoke_widget_set_visible (browser->menubar, active);
+    _action_set_visible(browser, "Preferences", active);    //zgh
     g_object_set_data (G_OBJECT (browser), "midori-toolbars-visible",
         gtk_widget_get_visible (browser->menubar)
         || gtk_widget_get_visible (browser->navigationbar)
@@ -3705,7 +3747,10 @@ _action_fullscreen_activate (GtkAction*     action,
     if (state & GDK_WINDOW_STATE_FULLSCREEN)
     {
         if (katze_object_get_boolean (G_OBJECT (browser->settings), "show-menubar"))
+            {
             gtk_widget_show (browser->menubar);
+            _action_set_visible(browser, "Preferences", TRUE);  //zgh
+            }
 
         if (katze_object_get_boolean (G_OBJECT (browser->settings), "show-panel"))
             gtk_widget_show (browser->panel);
@@ -3850,7 +3895,10 @@ _action_navigation_activate (GtkAction*     action,
             midori_browser_set_current_tab_smartly (browser, new_view);
         }
         else
+            {
             midori_view_go_back (view);
+            _action_set_visible(browser, "Forward", TRUE);  //zgh
+            }
 
         return TRUE;
     }
@@ -3917,7 +3965,8 @@ _action_navigation_activate (GtkAction*     action,
             midori_browser_set_current_tab_smartly (browser, new_view);
         }
         else
-            midori_view_set_uri (view, "about:home");
+//zgh            midori_view_set_uri (view, "about:home");
+            midori_view_set_uri (view, "http://www.baidu.com/");
 
         return TRUE;
     }
@@ -3946,6 +3995,7 @@ _action_location_focus_in (GtkAction*     action,
             MIDORI_LOCATION_ACTION (action), GTK_STOCK_JUMP_TO);
 }
 
+
 static void
 _action_location_focus_out (GtkAction*     action,
                             MidoriBrowser* browser)
@@ -3955,7 +4005,7 @@ _action_location_focus_out (GtkAction*     action,
     if (!browser->show_navigationbar || midori_browser_is_fullscreen (browser))
         gtk_widget_hide (browser->navigationbar);
 
-    midori_browser_update_secondary_icon (browser, MIDORI_VIEW (view), action);
+//    midori_browser_update_secondary_icon (browser, MIDORI_VIEW (view), action); //zgh 1203
 }
 
 static void
@@ -4105,6 +4155,19 @@ _action_location_secondary_icon_released (GtkAction*     action,
                                           MidoriBrowser* browser)
 {
     GtkWidget* view = midori_browser_get_current_tab (browser);
+    KatzeItem* bookmark = (KatzeItem*)katze_array_new (KATZE_TYPE_ARRAY);
+    katze_item_set_name (bookmark,
+        midori_view_get_display_title (MIDORI_VIEW (view)));
+    katze_item_set_uri (bookmark, 
+        midori_view_get_display_uri (MIDORI_VIEW (view)));
+    katze_item_set_meta_integer (bookmark, "toolbar", TRUE);
+    katze_item_set_meta_integer (bookmark, "parentid", 0);
+
+    midori_bookmarks_db_add_item (browser->bookmarks, bookmark);
+//            midori_bookmarks_db_update_item (browser->bookmarks, bookmark);
+
+#if 0   //zgh   功能改为添加书栏
+    GtkWidget* view = midori_browser_get_current_tab (browser);
         const gchar* uri = midori_view_get_display_uri (MIDORI_VIEW (view));
         const gchar* feed;
         /* Clicking icon on blank is equal to Paste and Proceed */
@@ -4173,6 +4236,7 @@ _action_location_secondary_icon_released (GtkAction*     action,
         }
         else
             _action_location_submit_uri (action, uri, FALSE, browser);
+#endif
         return TRUE;
 }
 
@@ -4995,6 +5059,7 @@ static void
 _action_panel_activate (GtkToggleAction* action,
                         MidoriBrowser*   browser)
 {
+    g_print("sidespanel out\n");
     gboolean active = gtk_toggle_action_get_active (action);
     g_object_set (browser->settings, "show-panel", active, NULL);
     sokoke_widget_set_visible (browser->panel, active);
@@ -5251,6 +5316,7 @@ _action_trash_empty_activate (GtkAction*     action,
 
 static const GtkActionEntry entries[] =
 {
+    //by zgh
     { "File", NULL, N_("_File") },
     { "WindowNew", STOCK_WINDOW_NEW,
         N_("New _Window"), "<Ctrl>n",
@@ -5267,21 +5333,25 @@ static const GtkActionEntry entries[] =
     { "SaveAs", GTK_STOCK_SAVE_AS,
         N_("_Save Page As…"), "<Ctrl>s",
         N_("Save to a file"), G_CALLBACK (_action_save_as_activate) },
+        #if 0 //zgh
     { "AddSpeedDial", NULL,
         N_("Add to Speed _dial"), "<Ctrl>h",
         NULL, G_CALLBACK (_action_add_speed_dial_activate) },
+        #endif
     { "AddNewsFeed", NULL,
         N_("Subscribe to News _feed"), NULL,
         NULL, G_CALLBACK (_action_add_news_feed_activate) },
     { "CompactAdd", GTK_STOCK_ADD,
         NULL, NULL,
         NULL, G_CALLBACK (_action_compact_add_activate) },
+        #if 0 //zgh
     { "TabClose", GTK_STOCK_CLOSE,
         N_("_Close Tab"), "<Ctrl>w",
         N_("Close the current tab"), G_CALLBACK (_action_tab_close_activate) },
     { "WindowClose", NULL,
         N_("C_lose Window"), "<Ctrl><Shift>w",
         NULL, G_CALLBACK (_action_window_close_activate) },
+        #endif
     { "Print", GTK_STOCK_PRINT,
         NULL, "<Ctrl>p",
         N_("Print the current page"), G_CALLBACK (_action_print_activate) },
@@ -5386,6 +5456,7 @@ static const GtkActionEntry entries[] =
     { "Forward", GTK_STOCK_GO_FORWARD,
         NULL, "<Alt>Right",
         N_("Go forward to the next page"), G_CALLBACK (_action_navigation_activate) },
+#if 1   //zgh
     { "Previous", GTK_STOCK_MEDIA_PREVIOUS,
         NULL, "<Alt><Shift>Left",
         /* i18n: Visit the previous logical page, ie. in a forum or blog */
@@ -5397,6 +5468,7 @@ static const GtkActionEntry entries[] =
     { "NextForward", GTK_STOCK_MEDIA_NEXT,
         N_("Next or Forward"), "",
         N_("Go to the next sub-page or next page in history"), G_CALLBACK (_action_navigation_activate) },
+#endif
     { "Homepage", GTK_STOCK_HOME,
         N_("_Homepage"), "<Alt>Home",
         N_("Go to your homepage"), G_CALLBACK (_action_navigation_activate) },
@@ -5688,6 +5760,7 @@ static const gchar* ui_markup =
                 "<separator/>"
                 "<menuitem action='Open'/>"
                 "<separator/>"
+#if 0 //zgh
                 "<menuitem action='SaveAs'/>"
                 "<menuitem action='AddSpeedDial'/>"
                 "<separator/>"
@@ -5695,13 +5768,16 @@ static const gchar* ui_markup =
                 "<menuitem action='WindowClose'/>"
                 "<separator/>"
                 "<menuitem action='MailTo'/>"
+#endif
                 "<menuitem action='Print'/>"
                 "<separator/>"
                 "<menuitem action='Quit'/>"
             "</menu>"
             "<menu action='Edit'>"
+#if 0   //zgh
                 "<menuitem action='Undo'/>"
                 "<menuitem action='Redo'/>"
+#endif
                 "<separator/>"
                 "<menuitem action='Cut'/>"
                 "<menuitem action='Copy'/>"
@@ -5711,7 +5787,7 @@ static const gchar* ui_markup =
                 "<menuitem action='SelectAll'/>"
                 "<separator/>"
                 "<menuitem action='Find'/>"
-                "<menuitem action='FindNext'/>"
+//                "<menuitem action='FindNext'/>"   //zgh
                 #ifndef G_OS_WIN32
                 "<separator/>"
                 "<menuitem action='Preferences'/>"
@@ -5724,11 +5800,13 @@ static const gchar* ui_markup =
                     "<menuitem action='Bookmarkbar'/>"
                     "<menuitem action='Statusbar'/>"
                 "</menu>"
+#if 0 //zgh
                 "<menuitem action='Panel'/>"
                 "<separator/>"
                 "<menuitem action='Stop'/>"
                 "<menuitem action='Reload'/>"
                 "<separator/>"
+#endif
                 "<menuitem action='ZoomIn'/>"
                 "<menuitem action='ZoomOut'/>"
                 "<menuitem action='ZoomNormal'/>"
@@ -5745,10 +5823,11 @@ static const gchar* ui_markup =
                     "<menuitem action='EncodingCustom'/>"
                 "</menu>"
                 "<menuitem action='SourceView'/>"
-                "<menuitem action='SourceViewDom'/>"
+//                "<menuitem action='SourceViewDom'/>"  //zgh
                 "<menuitem action='Fullscreen'/>"
-                "<menuitem action='Readable'/>"
+//                "<menuitem action='Readable'/>"   //zgh
             "</menu>"
+#if 0   //zgh 
             "<menu action='Go'>"
                 "<menuitem action='Back'/>"
                 "<menuitem action='Forward'/>"
@@ -5759,15 +5838,17 @@ static const gchar* ui_markup =
                 "<menuitem action='Search'/>"
                 "<menuitem action='Trash'/>"
             "</menu>"
+#endif
+            //todo add 历史菜单
             "<menu action='Bookmarks'>"
                 "<menuitem action='BookmarksAdd'/>"
                 "<menuitem action='BookmarksImport'/>"
                 "<menuitem action='BookmarksExport'/>"
             "</menu>"
             "<menuitem action='Tools'/>"
-            "<menuitem action='Window'/>"
+//            "<menuitem action='Window'/>" //zgh
             "<menu action='Help'>"
-                "<menuitem action='HelpFAQ'/>"
+//                "<menuitem action='HelpFAQ'/>"    //zgh
                 "<menuitem action='HelpBugs'/>"
                 "<separator/>"
                 "<menuitem action='About'/>"
@@ -6033,11 +6114,14 @@ midori_browser_init (MidoriBrowser* browser)
         "tooltip", _("Open a particular location"),
         "placeholder-text", _("Search or enter an address"),
         NULL);
+
     g_object_connect (action,
                       "signal::activate",
                       _action_location_activate, browser,
+                      #if 0 //zgh
                       "signal::focus-in",
                       _action_location_focus_in, browser,
+                      #endif
                       "signal::focus-out",
                       _action_location_focus_out, browser,
                       "signal::reset-uri",
@@ -6047,10 +6131,12 @@ midori_browser_init (MidoriBrowser* browser)
                       "signal-after::secondary-icon-released",
                       _action_location_secondary_icon_released, browser,
                       NULL);
+
     gtk_action_group_add_action_with_accel (browser->action_group,
         action, "<Ctrl>L");
     g_object_unref (action);
 
+#if 0 //zgh 本地搜索
     action = g_object_new (MIDORI_TYPE_SEARCH_ACTION,
         "name", "Search",
         "label", _("_Web Search…"),
@@ -6072,13 +6158,14 @@ midori_browser_init (MidoriBrowser* browser)
     gtk_action_group_add_action_with_accel (browser->action_group,
         action, "<Ctrl>K");
     g_object_unref (action);
-
+#endif
     action = g_object_new (MIDORI_TYPE_PANED_ACTION,
         "name", "LocationSearch",
         NULL);
     gtk_action_group_add_action (browser->action_group, action);
     g_object_unref (action);
 
+#if 0 //zgh 垃圾桶
     action = g_object_new (KATZE_TYPE_ARRAY_ACTION,
         "name", "Trash",
         "stock-id", STOCK_USER_TRASH,
@@ -6092,7 +6179,7 @@ midori_browser_init (MidoriBrowser* browser)
                       NULL);
     gtk_action_group_add_action_with_accel (browser->action_group, action, "");
     g_object_unref (action);
-
+#endif
     dummy_array = katze_array_new (KATZE_TYPE_ARRAY);
     katze_array_update (dummy_array);
     action = g_object_new (KATZE_TYPE_ARRAY_ACTION,
@@ -6167,7 +6254,7 @@ midori_browser_init (MidoriBrowser* browser)
     _action_set_visible (browser, "Menubar", !midori_browser_has_native_menubar ());
     g_signal_connect (browser->menubar, "button-press-event",
         G_CALLBACK (midori_browser_menu_button_press_event_cb), browser);
-
+#if 0  //by zgh
     menuitem = gtk_menu_item_new ();
     gtk_widget_show (menuitem);
     browser->throbber = gtk_spinner_new ();
@@ -6189,12 +6276,12 @@ midori_browser_init (MidoriBrowser* browser)
     gtk_menu_item_set_right_justified (GTK_MENU_ITEM (menuitem), TRUE);
     #endif
     gtk_menu_shell_append (GTK_MENU_SHELL (browser->menubar), menuitem);
-
+#endif
     gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (
         gtk_ui_manager_get_widget (ui_manager, "/menubar/File/WindowNew")), NULL);
     gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (
         gtk_ui_manager_get_widget (ui_manager, "/menubar/Go/Location")), NULL);
-
+#if 0 //zgh
     homepage = gtk_ui_manager_get_widget (ui_manager, "/menubar/Go/Homepage");
     g_signal_connect (homepage, "button-press-event",
         G_CALLBACK (midori_browser_menu_item_middle_click_event_cb), browser);
@@ -6210,7 +6297,7 @@ midori_browser_init (MidoriBrowser* browser)
     forward = gtk_ui_manager_get_widget (ui_manager, "/menubar/Go/Next");
     g_signal_connect (forward, "button-press-event",
         G_CALLBACK (midori_browser_menu_item_middle_click_event_cb), browser);
-
+#endif
     _action_set_sensitive (browser, "EncodingCustom", FALSE);
     _action_set_visible (browser, "LastSession", FALSE);
 
@@ -6221,6 +6308,7 @@ midori_browser_init (MidoriBrowser* browser)
     _action_set_visible (browser, "Bookmarkbar", browser->bookmarks != NULL);
     _action_set_visible (browser, "Trash", browser->trash != NULL);
     _action_set_visible (browser, "UndoTabClose", browser->trash != NULL);
+    _action_set_visible (browser, "Forward", FALSE);    //zgh
 
     /* Create the navigationbar */
     browser->navigationbar = gtk_ui_manager_get_widget (
@@ -6232,7 +6320,7 @@ midori_browser_init (MidoriBrowser* browser)
         g_signal_connect (gtk_settings, "notify::gtk-toolbar-style",
             G_CALLBACK (midori_browser_navigationbar_notify_style_cb), browser);
     gtk_toolbar_set_show_arrow (GTK_TOOLBAR (browser->navigationbar), TRUE);
-    g_object_set (_action_by_name (browser, "Back"), "is-important", TRUE, NULL);
+//zgh    g_object_set (_action_by_name (browser, "Back"), "is-important", TRUE, NULL);  //工具栏上显示字符
     gtk_widget_hide (browser->navigationbar);
     g_signal_connect (browser->navigationbar, "popup-context-menu",
         G_CALLBACK (midori_browser_toolbar_popup_context_menu_cb), browser);
@@ -6246,6 +6334,7 @@ midori_browser_init (MidoriBrowser* browser)
                                GTK_ICON_SIZE_MENU);
     gtk_toolbar_set_style (GTK_TOOLBAR (browser->bookmarkbar),
                            GTK_TOOLBAR_BOTH_HORIZ);
+    
     gtk_box_pack_start (GTK_BOX (vbox), browser->bookmarkbar, FALSE, FALSE, 0);
     g_signal_connect (browser->bookmarkbar, "popup-context-menu",
         G_CALLBACK (midori_browser_toolbar_popup_context_menu_cb), browser);
@@ -6561,6 +6650,7 @@ _midori_browser_set_toolbar_items (MidoriBrowser* browser,
     name = names;
     for (; *name; ++name)
     {
+        g_print("zgh add navagation item: name:%s\n",*name);
         action = _action_by_name (browser, *name);
         if (action && strstr (*name, "CompactMenu") == NULL)
         {
@@ -6644,8 +6734,11 @@ _midori_browser_set_toolbar_items (MidoriBrowser* browser,
                     G_CALLBACK (midori_browser_toolbar_item_button_press_event_cb),
                     browser);
             }
+           #if 1   //zgh
+           // if (g_strcmp0(*name, "BookmarkAdd"))
             gtk_toolbar_insert (GTK_TOOLBAR (browser->navigationbar),
                                 GTK_TOOL_ITEM (toolitem), -1);
+           #endif
         }
     }
     g_strfreev (names);

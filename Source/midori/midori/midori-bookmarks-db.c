@@ -97,6 +97,11 @@ midori_bookmarks_db_update_item_db (sqlite3*   db,
 static gboolean
 midori_bookmarks_db_remove_item_db (sqlite3*   db,
                                     KatzeItem* item);
+                                    
+//zgh
+static gboolean
+midori_bookmarks_db_exist_by_uri(MidoriBookmarksDb*  bookmarks,
+                          const gchar*        uri);
 
 static guint
 item_hash (gconstpointer item)
@@ -648,10 +653,16 @@ midori_bookmarks_db_add_item (MidoriBookmarksDb* bookmarks, KatzeItem* item)
     g_return_if_fail (IS_MIDORI_BOOKMARKS_DB (bookmarks));
     g_return_if_fail (KATZE_IS_ITEM (item));
     g_return_if_fail (NULL == katze_item_get_meta_string (item, "id"));
-
+//add by zgh     
+    if (midori_bookmarks_db_exist_by_uri(bookmarks, katze_item_get_uri(item)))
+        midori_bookmarks_db_update_item(bookmarks, item);
+    else
+    {
+    //end add by zgh
     midori_bookmarks_db_add_item_recursive (bookmarks, item);
 
     katze_array_add_item (KATZE_ARRAY (bookmarks), item);
+    }
 }
 
 /**
@@ -981,6 +992,26 @@ midori_bookmarks_db_count_from_sqlite (sqlite3*     db,
     sqlite3_reset (stmt);
 
     return count;
+}
+
+//zgh
+static gboolean
+midori_bookmarks_db_exist_by_uri(MidoriBookmarksDb*  bookmarks,
+                          const gchar*        uri)
+{
+    gint64 count = -1;
+    gchar* sqlcmd ;
+    
+    g_return_val_if_fail (MIDORI_BOOKMARKS_DB (bookmarks), -1);
+    g_return_val_if_fail (bookmarks->db != NULL, -1);
+    
+    sqlcmd = g_strdup_printf ("SELECT COUNT(*) FROM bookmarks WHERE parentid IS NULL AND uri = '%s' ",uri);
+                                  
+    count = midori_bookmarks_db_count_from_sqlite (bookmarks->db, sqlcmd);
+    
+    g_free (sqlcmd);
+    
+    return count > 0 ? TRUE : FALSE;
 }
 
 static gint64
