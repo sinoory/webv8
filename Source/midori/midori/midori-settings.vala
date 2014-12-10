@@ -135,7 +135,7 @@ namespace Midori {
         /* Since: 0.1.2 */
         public bool show_crash_dialog { get; set; default = true; }
         public string toolbar_items { get; set; default =
-            "TabNew,Back,NextForward,ReloadStop,BookmarkAdd,Location,Search,Trash,CompactMenu"; }
+            "TabNew,Back,Forward,Homepage,ReloadStop,BookmarkAdd,Location,Search,Trash,CompactMenu,Preferences"; }
         /* Since: 0.1.4 */
         // [Deprecated (since = "0.4.7")]
         public bool find_while_typing { get; set; default = false; }
