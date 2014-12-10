@@ -1187,29 +1187,6 @@ midori_app_setup (gint               *argc,
         { STOCK_FOLDER_NEW,   N_("New _Folder") },
     };
 
-    /* Print messages to stdout on Win32 console, cf. AbiWord
-     * http://svn.abisource.com/abiword/trunk/src/wp/main/win/Win32Main.cpp */
-    #ifdef _WIN32
-    if (fileno (stdout) != -1
-    && _get_osfhandle (fileno (stdout)) != -1)
-    {
-        /* stdout is already being redirected to a file */
-    }
-    else
-    {
-        typedef BOOL (WINAPI *AttachConsole_t) (DWORD);
-        AttachConsole_t p_AttachConsole =
-            (AttachConsole_t) GetProcAddress (GetModuleHandle ("kernel32.dll"), "AttachConsole");
-        if (p_AttachConsole != NULL && p_AttachConsole (ATTACH_PARENT_PROCESS))
-        {
-            freopen ("CONOUT$", "w", stdout);
-            dup2 (fileno (stdout), 1);
-            freopen ("CONOUT$", "w", stderr);
-            dup2 (fileno (stderr), 2);
-        }
-    }
-    #endif
-
     /* Midori.Paths uses GFile */
     g_type_init ();
     /* Preserve argument vector */

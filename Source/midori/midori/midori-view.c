@@ -14,6 +14,7 @@
  2014.12.02 接收console-message信号，为默认标签页功能。
  2014.12.04 修改midori_view_list_versions()
  2014.12.05 解决网页中通过link打开新窗口不显示内容问题，见webkit_web_view_web_view_ready_cb
+ 2014.12.10 修复网页中打开新窗口或新Tab时，不加载网页问题。修改webkit_web_view_create_web_view_cb()，并回退12.05针对webkit_web_view_web_view_ready_cb()的修改
 */
 
 #include "midori-view.h"
@@ -2703,12 +2704,7 @@ webkit_web_view_web_view_ready_cb (GtkWidget*  web_view,
         where = MIDORI_NEW_VIEW_WINDOW;
 
     gtk_widget_show (new_view);
-// ZRL 解决类似hao123网站，无法打开新窗口问题
-#ifdef HAVE_WEBKIT2
-    g_signal_emit (view, signals[NEW_WINDOW], 0, midori_view_get_link_uri (view));
-#else
     g_signal_emit (view, signals[NEW_VIEW], 0, new_view, where, FALSE);
-#endif
 
     if (midori_tab_get_is_dialog (MIDORI_TAB (view)))
     {
@@ -2727,6 +2723,7 @@ webkit_web_view_web_view_ready_cb (GtkWidget*  web_view,
     return TRUE;
 }
 
+/* ZRL 从navigationAction读取新uri，并为midori-view新建destination-uri属性，保存该uri。*/
 static GtkWidget*
 webkit_web_view_create_web_view_cb (GtkWidget*      web_view,
 #ifndef HAVE_WEBKIT2
@@ -2736,6 +2733,9 @@ webkit_web_view_create_web_view_cb (GtkWidget*      web_view,
                                     MidoriView*     view)
 {
     MidoriView* new_view;
+
+    WebKitURIRequest *naviationRequest = webkit_navigation_action_get_request(navigationAction);
+    gchar *destUri = webkit_uri_request_get_uri(naviationRequest);
 
 #ifdef HAVE_WEBKIT2
     const gchar* uri = webkit_web_view_get_uri (WEBKIT_WEB_VIEW (web_view));
@@ -2749,12 +2749,7 @@ webkit_web_view_create_web_view_cb (GtkWidget*      web_view,
         KatzeItem* item = katze_item_new ();
         item->uri = g_strdup (uri);
         new_view = (MidoriView*)midori_view_new_from_view (view, item, NULL);
-// ZRL 通过link创建新窗口问题解决参见webkit_web_view_web_view_ready_cb()
-#if 0
-        //by sunh fix click new view 
-        //midori_view_set_uri(new_view, webkit_uri_request_get_uri(webkit_navigation_action_get_request(navigationAction)));
-        //by sunh end
-#endif
+
 #ifdef HAVE_WEBKIT2
         g_signal_connect (new_view->web_view, "ready-to-show",
                           G_CALLBACK (webkit_web_view_web_view_ready_cb), view);
@@ -2764,6 +2759,7 @@ webkit_web_view_create_web_view_cb (GtkWidget*      web_view,
 #endif
     }
     g_object_set_data_full (G_OBJECT (new_view), "opener-uri", g_strdup (uri), g_free);
+    g_object_set_data_full (G_OBJECT (new_view), "destination-uri", g_strdup (destUri), g_free);
     return new_view->web_view;
 }
 

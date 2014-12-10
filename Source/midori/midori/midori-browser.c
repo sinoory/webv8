@@ -9,6 +9,9 @@
  version 2.1 of the License, or (at your option) any later version.
 
  See the file COPYING for the full license text.
+
+ Modified by ZRL
+ 2014.12.10 修复网页中打开新窗口或新Tab时，不加载网页问题。参考midori_view_new_view_cb()
 */
 
 #include "midori-browser.h"
@@ -1698,15 +1701,29 @@ midori_view_new_view_cb (GtkWidget*     view,
         g_assert (new_browser != NULL);
         midori_browser_add_tab (new_browser, new_view);
         midori_browser_set_current_tab (new_browser, new_view);
+
+        // ZRL 以新窗口打开时主动设置新视图的uri，激活加载流程
+        const gchar* dest_uri = g_object_get_data (G_OBJECT (new_view), "destination-uri");
+        midori_view_set_uri(new_view, dest_uri);
     }
+// ZRL TODO 暂时屏蔽,未来清楚其作用时再打开
+#if 0
     else if (gtk_widget_get_parent (new_view) != browser->notebook)
     {
         midori_browser_add_tab (browser, new_view);
         if (where != MIDORI_NEW_VIEW_BACKGROUND)
             midori_browser_set_current_tab (browser, new_view);
     }
-    else
+#endif
+    else {
         midori_browser_notify_new_tab (browser);
+        // ZRL 以新Tab打开时步骤：midori_browser_add_tab, midori_browser_set_current_tab, midori_view_set_uri
+        const gchar* dest_uri = g_object_get_data (G_OBJECT (new_view), "destination-uri");
+        midori_browser_add_tab (browser, new_view);
+        if (where != MIDORI_NEW_VIEW_BACKGROUND)
+            midori_browser_set_current_tab (browser, new_view);
+        midori_view_set_uri(new_view, dest_uri);
+    }
 
     if (!user_initiated)
     {
