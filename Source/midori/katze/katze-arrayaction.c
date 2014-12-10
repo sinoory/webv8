@@ -552,9 +552,11 @@ katze_array_action_proxy_clicked_cb (GtkWidget*        proxy,
 
     if (KATZE_IS_ITEM (array) && katze_item_get_uri ((KatzeItem*)array))
     {
+        g_print("Go! I belive I can fly!\n");
         katze_array_action_activate_item (array_action, KATZE_ITEM (array));
         return;
     }
+    g_print("No! sb eat your brain!\n");
 
     menu = gtk_menu_new ();
     gtk_menu_attach_to_widget (GTK_MENU (menu), proxy, NULL);
@@ -701,16 +703,25 @@ GtkToolItem*
 katze_array_action_create_tool_item_for (KatzeArrayAction* array_action,
                                          KatzeItem*        item)
 {
+#define zghtest 0
+
     const gchar* title;
     const gchar* uri;
-    const gchar* desc;
+//    const gchar* desc;
+    gchar desc[512] = {0};
+
     GtkToolItem* toolitem;
+    GtkWidget* itembox;
+    GtkWidget* button;
     GtkWidget* image;
     GtkWidget* label;
 
     title = katze_item_get_name (item);
     uri = katze_item_get_uri (item);
-    desc = katze_item_get_text (item);
+//    desc = katze_item_get_text (item);
+    strcpy(desc, katze_item_get_name (item));
+    strcat(desc,"\n");
+    strcat(desc, katze_item_get_uri(item));
 
     if (KATZE_ITEM_IS_SEPARATOR (item))
         return gtk_separator_tool_item_new ();
@@ -718,35 +729,75 @@ katze_array_action_create_tool_item_for (KatzeArrayAction* array_action,
     if (KATZE_ITEM_IS_FOLDER (item))
         toolitem = gtk_toggle_tool_button_new ();
     else
+    {
+#if zghtest
         toolitem = gtk_tool_button_new (NULL, "");
+        gtk_widget_set_size_request(GTK_WIDGET(toolitem), 30, 30);  
+#else
+        toolitem = gtk_tool_item_new();
+        button = gtk_button_new();
+        gtk_button_set_relief(button, GTK_RELIEF_NONE);
+        gtk_widget_set_size_request(button, 140, -1);  
+        gtk_container_add(GTK_CONTAINER(toolitem), button);
+        gtk_widget_show(button);
+        
+        itembox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, NULL);
+        gtk_container_add(GTK_CONTAINER(button), itembox);
+        gtk_widget_show(itembox);
+#endif
+        }
+
     g_signal_connect (toolitem, "create-menu-proxy",
         G_CALLBACK (katze_array_action_proxy_create_menu_proxy_cb), item);
+
     image = katze_item_get_image (item, GTK_WIDGET (toolitem));
+#if zghtest
     gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (toolitem), image);
-    label = gtk_label_new (NULL);
+#else
+    gtk_box_pack_start (GTK_BOX(itembox), image, FALSE, FALSE ,0);
+#endif
+    label = gtk_label_new (title);
     /* FIXME: Should text direction be respected here? */
     gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
     gtk_label_set_max_width_chars (GTK_LABEL (label), 25);
-    gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_MIDDLE);
+    gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
+//    gtk_label_set_text(GTK_LABEL(label), title);
     gtk_widget_show (label);
+#if zghtest
     gtk_tool_button_set_label_widget (GTK_TOOL_BUTTON (toolitem), label);
+#else
+    gtk_box_pack_start (GTK_BOX(itembox), label, FALSE, FALSE, 0);
+#endif
     /* GtkToolItem won't update our custom label, so we
        apply a little bit of 'magic' to fix that.  */
     g_signal_connect (toolitem, "notify",
         G_CALLBACK (katze_array_action_label_notify_cb), label);
+#if 0//zghtest
     if (title)
         gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolitem), title);
     else
         gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolitem), uri);
+//#else
+        if (title)
+        gtk_label_set_text(GTK_LABEL(label), title);
+    else
+        gtk_label_set_text(GTK_LABEL(label), uri);
+#endif
     gtk_tool_item_set_is_important (toolitem, TRUE);
     if (desc && *desc)
         gtk_tool_item_set_tooltip_text (toolitem, desc);
     else
         gtk_tool_item_set_tooltip_text (toolitem, uri);
 
+#if zghtest
     g_object_set_data (G_OBJECT (toolitem), "KatzeItem", item);
     g_signal_connect (toolitem, "clicked",
         G_CALLBACK (katze_array_action_proxy_clicked_cb), array_action);
+#else
+        g_object_set_data (G_OBJECT (button), "KatzeItem", item);
+        g_signal_connect (button, "clicked",
+        G_CALLBACK (katze_array_action_proxy_clicked_cb), array_action);
+#endif
     if (KATZE_IS_ITEM (item))
     {
         /* Tool items block the "button-press-event" but we can get it
