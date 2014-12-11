@@ -15,6 +15,7 @@
  2014.12.04 修改midori_view_list_versions()
  2014.12.05 解决网页中通过link打开新窗口不显示内容问题，见webkit_web_view_web_view_ready_cb
  2014.12.10 修复网页中打开新窗口或新Tab时，不加载网页问题。修改webkit_web_view_create_web_view_cb()，并回退12.05针对webkit_web_view_web_view_ready_cb()的修改
+ 2014.12.11 修复12306.cn左键新窗口或新Tab打开购票页面时crash的问题。为midori-view增加load_commited，并在midori_view_web_view_navigation_decision_cb()使用
 */
 
 #include "midori-view.h"
@@ -132,6 +133,9 @@ struct _MidoriView
     GtkWidget* overlay_label;
     GtkWidget* overlay_find;
     #endif
+
+    // ZRL 标记该view是否已是LOAD_COMMITED状态，用它辅助判断是否可以获取证书信息
+    gboolean load_commited;
 };
 
 struct _MidoriViewClass
@@ -592,7 +596,8 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
            if (webkit_web_navigation_action_get_reason (action) == WEBKIT_WEB_NAVIGATION_REASON_FORM_SUBMITTED)
            FIXME: Verify more stricly that this cannot be eg. a simple Reload */
         #ifdef HAVE_WEBKIT2
-        if (decision_type == WEBKIT_POLICY_DECISION_TYPE_NAVIGATION_ACTION)
+        // ZRL 只有view达到LOAD_COMMITED状态时，取证书信息才有意义
+        if (decision_type == WEBKIT_POLICY_DECISION_TYPE_NAVIGATION_ACTION && view->load_commited == TRUE)
         #else
         if (webkit_web_navigation_action_get_reason (action) == WEBKIT_WEB_NAVIGATION_REASON_RELOAD)
         #endif
@@ -767,6 +772,7 @@ midori_view_load_committed (MidoriView* view)
         midori_tab_set_security (MIDORI_TAB (view), MIDORI_SECURITY_NONE);
 
     view->find_links = -1;
+    view->load_commited = TRUE; // ZRL initialize var
     
     midori_view_update_load_status (view, MIDORI_LOAD_COMMITTED);
 
@@ -3159,6 +3165,7 @@ midori_view_init (MidoriView* view)
     view->news_feeds = NULL;
     view->find_links = -1;
     view->alerts = 0;
+    view->load_commited = FALSE;
 
     view->item = katze_item_new ();
 
