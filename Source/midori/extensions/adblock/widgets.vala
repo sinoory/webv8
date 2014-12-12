@@ -120,11 +120,7 @@ namespace Adblock {
             this.config = config;
             this.liststore = new Gtk.ListStore (1, typeof (Subscription));
             this.description_label = new Gtk.Label (null);
-            this.description = _("Type the address of a preconfigured filter list in the text entry and hit Enter.\n");
-            this.description += _("You can find more lists by visiting following sites:\n %s, %s\n".printf (
-                "<a href=\"http://adblockplus.org/en/subscriptions\">adblockplus.org/en/subscriptions</a>",
-                "<a href=\"http://easylist.adblockplus.org/\">easylist.adblockplus.org</a>"
-            ));
+            this.description = _("Type the locally saved the filter file and hit Entry.Form:file://filepath+filename,such as file:///home/test.txt.");
         }
 
         public void add_subscription (string? uri) {
@@ -134,13 +130,13 @@ namespace Adblock {
                 Gtk.DialogFlags.NO_SEPARATOR |
 #endif
                 Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                Gtk.STOCK_HELP, Gtk.ResponseType.HELP,
+//                Gtk.STOCK_HELP, Gtk.ResponseType.HELP,
                 Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE);
 #if HAVE_GTK3
-            dialog.get_widget_for_response (Gtk.ResponseType.HELP).get_style_context ().add_class ("help_button");
+//            dialog.get_widget_for_response (Gtk.ResponseType.HELP).get_style_context ().add_class ("help_button");
 #endif
             dialog.set_icon_name (Gtk.STOCK_PROPERTIES);
-            dialog.set_response_sensitive (Gtk.ResponseType.HELP, false);
+//            dialog.set_response_sensitive (Gtk.ResponseType.HELP, false);
 
             var hbox = new Gtk.HBox (false, 0);
             (dialog.get_content_area () as Gtk.Box).pack_start (hbox, true, true, 12);

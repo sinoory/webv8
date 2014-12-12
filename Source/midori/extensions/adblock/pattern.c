@@ -128,20 +128,20 @@ static AdblockDirective* _adblock_directive_dup (AdblockDirective* self);
 AdblockPattern* adblock_pattern_construct (GType object_type, AdblockOptions* options) {
 	AdblockPattern * self = NULL;
 	AdblockOptions* _tmp0_;
-#line 15 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 15 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	g_return_val_if_fail (options != NULL, NULL);
-#line 16 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 16 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	_tmp0_ = options;
-#line 16 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 16 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	self = (AdblockPattern*) adblock_filter_construct (object_type, _tmp0_);
-#line 15 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 15 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	return self;
 #line 140 "pattern.c"
 }
 
 
 AdblockPattern* adblock_pattern_new (AdblockOptions* options) {
-#line 15 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 15 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	return adblock_pattern_construct (ADBLOCK_TYPE_PATTERN, options);
 #line 147 "pattern.c"
 }
@@ -149,18 +149,18 @@ AdblockPattern* adblock_pattern_new (AdblockOptions* options) {
 
 static AdblockDirective* _adblock_directive_dup (AdblockDirective* self) {
 	AdblockDirective* dup;
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	dup = g_new0 (AdblockDirective, 1);
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	memcpy (dup, self, sizeof (AdblockDirective));
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	return dup;
 #line 159 "pattern.c"
 }
 
 
 static gpointer __adblock_directive_dup0 (gpointer self) {
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	return self ? _adblock_directive_dup (self) : NULL;
 #line 166 "pattern.c"
 }
@@ -172,27 +172,27 @@ static AdblockDirective* adblock_pattern_real_match (AdblockFeature* base, const
 	GHashTable* _tmp0_;
 	GList* _tmp1_ = NULL;
 	GError * _inner_error_ = NULL;
-#line 19 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 19 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	self = (AdblockPattern*) base;
-#line 19 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 19 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	g_return_val_if_fail (request_uri != NULL, NULL);
-#line 19 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 19 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	g_return_val_if_fail (page_uri != NULL, NULL);
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	_tmp0_ = ((AdblockFilter*) self)->rules;
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	_tmp1_ = g_hash_table_get_keys (_tmp0_);
 #line 186 "pattern.c"
 	{
 		GList* patt_collection = NULL;
 		GList* patt_it = NULL;
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 		patt_collection = _tmp1_;
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 		for (patt_it = patt_collection; patt_it != NULL; patt_it = patt_it->next) {
 #line 194 "pattern.c"
 			const gchar* patt = NULL;
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 			patt = (const gchar*) patt_it->data;
 #line 198 "pattern.c"
 			{
@@ -204,67 +204,67 @@ static AdblockDirective* adblock_pattern_real_match (AdblockFeature* base, const
 				const gchar* _tmp7_;
 				gboolean _tmp8_ = FALSE;
 				gboolean _tmp9_;
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 				_tmp2_ = ((AdblockFilter*) self)->rules;
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 				_tmp3_ = patt;
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 				_tmp4_ = g_hash_table_lookup (_tmp2_, _tmp3_);
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 				_tmp5_ = patt;
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 				_tmp6_ = request_uri;
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 				_tmp7_ = page_uri;
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 				_tmp8_ = adblock_filter_check_rule ((AdblockFilter*) self, (GRegex*) _tmp4_, _tmp5_, _tmp6_, _tmp7_, &_inner_error_);
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 				_tmp9_ = _tmp8_;
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 				if (_inner_error_ != NULL) {
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 					g_propagate_error (error, _inner_error_);
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 					_g_list_free0 (patt_collection);
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 					return NULL;
 #line 232 "pattern.c"
 				}
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 				if (_tmp9_) {
 #line 236 "pattern.c"
 					AdblockDirective _tmp10_;
 					AdblockDirective* _tmp11_;
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 					_tmp10_ = ADBLOCK_DIRECTIVE_BLOCK;
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 					_tmp11_ = __adblock_directive_dup0 (&_tmp10_);
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 					result = _tmp11_;
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 					_g_list_free0 (patt_collection);
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 					return result;
 #line 249 "pattern.c"
 				}
 			}
 		}
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 		_g_list_free0 (patt_collection);
 #line 255 "pattern.c"
 	}
-#line 23 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 23 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	result = NULL;
-#line 23 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 23 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	return result;
 #line 261 "pattern.c"
 }
 
 
 static void adblock_pattern_class_init (AdblockPatternClass * klass) {
-#line 14 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 14 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	adblock_pattern_parent_class = g_type_class_peek_parent (klass);
-#line 14 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
+#line 14 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/pattern.vala"
 	ADBLOCK_FEATURE_CLASS (klass)->match = adblock_pattern_real_match;
 #line 270 "pattern.c"
 }

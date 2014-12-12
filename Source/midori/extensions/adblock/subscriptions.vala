@@ -81,14 +81,17 @@ namespace Adblock {
 
         internal void parse_line (string? line) throws Error {
             if (line.has_prefix ("@@")) {
-                if (line.contains("$") && line.contains ("domain"))
-                    return;
+//                if (line.contains("$") && line.contains ("domain"))
+//                    return;
                 if (line.has_prefix ("@@||"))
-                    add_url_pattern ("^", "whitelist", line.offset (4));
+//                  add_url_pattern ("^", "whitelist", line.offset (4));
+                    add_url_pattern ("", "fulluri", line.offset (4));
                 else if (line.has_prefix ("@@|"))
-                    add_url_pattern ("^", "whitelist", line.offset (3));
+//                    add_url_pattern ("^", "whitelist", line.offset (3));
+                      add_url_pattern ("", "fulluri", line.offset (3));
                 else
-                    add_url_pattern ("", "whitelist", line.offset (2));
+//                    add_url_pattern ("", "whitelist", line.offset (2));
+                      add_url_pattern ("", "fulluri", line.offset (2));
                 return;
             }
             /* TODO: [include] [exclude] */
@@ -98,7 +101,7 @@ namespace Adblock {
             /* CSS block hider */
             if (line.has_prefix ("##")) {
                 /* TODO */
-                return;
+               return;
             }
             if (line[0] == '#')
                 return;
@@ -120,8 +123,8 @@ namespace Adblock {
             /* URL blocker rule */
             if (line.has_prefix ("|")) {
                 /* TODO: handle options and domains excludes */
-                if (line.contains("$"))
-                    return;
+ //               if (line.contains("$"))
+ //                   return;
 
                 if (line.has_prefix ("||"))
                     add_url_pattern ("", "fulluri", line.offset (2));
@@ -205,8 +208,8 @@ namespace Adblock {
             patt = data[0];
             opts = type;
 
-            if (data[1] != null)
-                opts = type + "," + data[1];
+        //    if (data[1] != null)
+        //        opts = type + "," + data[1];
 
             if (Regex.match_simple ("subdocument", opts,
                 RegexCompileFlags.CASELESS, RegexMatchFlags.NOTEMPTY))
@@ -262,7 +265,7 @@ namespace Adblock {
                 return false;
             }
             catch (Error error) {
-                warning ("Adblock compile regexp: %s", error.message);
+         //       warning ("Adblock compile regexp: %s", error.message);
                 return true;
             }
         }
@@ -375,12 +378,23 @@ namespace Adblock {
             try {
                 Directive? directive = cache.lookup (request_uri);
                 if (directive != null)
+                {
+                    //add by luyue 2014/12/11
+                    if(!active)
+                       return Directive.ALLOW;
+
                     return directive;
+                }
                 foreach (var feature in features) {
                     directive = feature.match (request_uri, page_uri);
                     if (directive != null) {
                         debug ("%s gave %s for %s (%s)\n",
                                feature.get_type ().name (), directive.to_string (), request_uri, page_uri);
+
+                        //add by luyue 2014/12/11
+                        if(!active)
+                           return Directive.ALLOW;
+
                         return directive;
                     }
                 }

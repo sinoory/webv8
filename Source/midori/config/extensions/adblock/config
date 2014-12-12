@@ -1,2 +1,3 @@
 [settings]
-filters=https://easylist-downloads.adblockplus.org/easylist.txt;https://easylist-downloads.adblockplus.org/easyprivacy.txt
+filters=file:///usr/local/share/midori/res/adblock/preset_adblock_rule.txt
+
