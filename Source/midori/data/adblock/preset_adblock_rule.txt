@@ -873,6 +873,10 @@ gamefy.cn##.float_bottom_right
 /ys168/*$domain=ys168.com
 @@||gxp.cc/templates/xskaifa/images/ad/down.js
 ||bego.cc/adm.js
+v.ad.vsnoon.com/
+cc.ad.vsnoon.com/
+||union.paipai.com/billboard/
+
 ||bego.cc/img/
 ||d.119g.com/fanwan/$script
 ||d.namipan.com/inc_js/$script
@@ -1598,6 +1602,9 @@ zhidao.baidu.com###union-qbbanner
 zhidao.baidu.com##.wgt-ads
 !--hao123
 hao123img.com/res/ecom/
+!--image
+image.baidu.com###ecomContainer
+image.baidu.com##[id^="relecom"]
 !--pan
 ||dq.baidu.com/nocipher?
 !--tieba
@@ -1606,6 +1613,13 @@ hao123img.com/res/ecom/
 tieba.baidu.com###search_button.search_button
 tieba.baidu.com##.l_banner
 tieba.baidu.com##[id^="game_couplet_pb_"]
+!--zhidao
+||baidu.com^*/egg*.swf
+iknow.baidu.com,z.baidu.com,zidao.baidu.com,zhidao.baidu.com##.ad-fc-down
+iknow.baidu.com,z.baidu.com,zidao.baidu.com,zhidao.baidu.com###ad-brand-down
+iknow.baidu.com,z.baidu.com,zidao.baidu.com,zhidao.baidu.com###ik-qb-egg
+iknow.baidu.com,z.baidu.com,zidao.baidu.com,zhidao.baidu.com###qb-ad-cpro
+iknow.baidu.com,z.baidu.com,zidao.baidu.com,zhidao.baidu.com##[class^="wgt-ads"]
 !--unions
 ||cb.baidu.com^
 ||cbjs.baidu.com^
@@ -1734,7 +1748,7 @@ download.csdn.net##.ad_area_1
 @@||400gb.com/advview2013.php?ad_pos=0
 @@||cpro.baidustatic.com/cpro/ui/f.js$domain=400gb.com
 @@||hm.baidu.com^$script,domain=400gb.com
-@@||pos.baidu.com^$script,domain=400gb.com
+@@||pos.baidu.com^$script
 ||doubleclick.tv002.com^
 400gb.com###ad_right_side
 400gb.com##.ad_area
@@ -1753,6 +1767,13 @@ dayoo.com##div[style="top: 10px; height: 320px; width: 100px; z-index: 1000; ove
 !--gzdaily
 /pub/news/gzrb/*$script
 ||gzdaily.dayoo.com/tpl/banner$object
+!---动漫花园
+||share.dmhy.*/QS*.jpg
+||share.dmhy.*/MZ$image
+||share.dmhy.*/shareman$image
+||share.dmhy.*/WLGO$image
+share.dmhy.me,share.dmhy.org###shareman_ad
+share.dmhy.me,share.dmhy.org###WLGO_ad
 !---豆瓣
 ||douban.com^*/fm_bgad.js
 ||img3.douban.com/js/packed_ad
@@ -2003,6 +2024,12 @@ ipc.me##.d250
 ipc.me##.d300
 ipc.me##.post-top-gg
 ipc.me##li[style="_display:block;height:252px;width:301px;overflow:hidden;margin-bottom:7px"]
+!---iPc.me
+ipc.me###crumb_r
+ipc.me##li[style="_display:block;height:252px;width:301px;overflow:hidden;margin-bottom:7px"]
+ipc.me##.d250
+ipc.me##.d300
+ipc.me##.post-top-gg
 !---异次元软件世界
 iplaysoft.com###section_event
 iplaysoft.com###sidebar > UL > .widget:first-child
@@ -2463,8 +2490,8 @@ find.sina.com.tw###show_ysm + div[style]
 ||biz.shm.com.cn^$object
 shm.com.cn##.surround2
 !---搜狐
-||images.sohu.com/bill/
-||images.sohu.com/cs/
+||images.sohu.com/
+||sohu.optaim.com/
 ||itc.cn^*/tracker.js
 ||news.sohu.com/upload/article/2012/images/swf/
 ||txt.go.sohu.com/ip/soip
@@ -2481,8 +2508,6 @@ www.sohu.com###ad_TOP
 www.sohu.com###contentC > .columnC
 !--tv
 ||hd.sohu.com.cn^$object_subrequest
-||images.sohu.com/ytv/$subdocument
-||images.sohu.com/ytv/*.swf
 ||js.tv.itc.cn/gg$script
 ||vm.aty.sohu.com^
 tv.sohu.com###miaozhenad
@@ -44629,5 +44654,7 @@ accounts.google.com#@#.adwords
 @@||ads.b10f.jp/flv/$~third-party
 @@||ads.b10f.jp/images/$~third-party
 @@||b10f.jp/flv2/player_1280x1024.swf?*&movieurl=http://ads.b10f.jp/flv/$object,~third-party
+!京东
+||x.jd.com^
 ! *** easylist:easylist_adult/adult_whitelist_popup.txt ***
 @@||imagebam.com/image/$popup
