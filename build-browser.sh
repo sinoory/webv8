@@ -8,6 +8,17 @@ CPU_NUM=0
 BUILD_MIDORI=0
 INSTALL_DEP=0
 
+USE_32BITS=0
+ARCH_64BITS="x86_64"
+ARCH=$(arch)
+if [ ${ARCH} == ${CUR_ARCH} ];then
+	USE_32BITS=0
+	echo "Using 64 bit Linux"
+else
+	USE_32BITS=1
+	echo "Using 32 bit Linux"
+fi
+
 if [ -z $1 ];then
 	echo "Usage:"
 	echo "  ./build.sh [release] [4]"
@@ -64,15 +75,28 @@ case $1 in
 "release" )
 
 	#add by luyue
+if [ ${USE_32BITS} -eq 1 ]; then
+	echo "------------build 32 bits"
+	cd $ThirdParty_DIR
+	tar -zxvf openssl-1.0.0d.tar.gz && cd openssl-1.0.0d
+	./config && make && cd ../../../
+	mkdir lib 
+	cp -rf $ThirdParty_DIR/openssl-1.0.0d/lib*.a ./lib
+	
+	echo "build release version start..." && sleep 3
+	cmake -DUSE_32BITS=1 -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=OFF -DENABLE_MIDORI=$BUILD_MIDORI && make -j${CPU_NUM} && echo ******build release SUCCESS********
+#	cp -rf $(CURDIR)/bin/resources $(CURDIR)/debian/tmp/usr/local/cuprumtest/bin/
+else
+#compile project on 64bits Linux machine
+	echo "-----------build 64 bits"
 	cd $ThirdParty_DIR
 	tar -zxvf openssl-1.0.0d.tar.gz && cd openssl-1.0.0d
 	./config shared && make && cd ../../../
 	mkdir lib 
 	cp -rf $ThirdParty_DIR/openssl-1.0.0d/lib*.so* ./lib
-	
 	echo "build release version start..." && sleep 3
-	cmake -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=OFF -DENABLE_MIDORI=$BUILD_MIDORI && make -j${CPU_NUM} && echo ******build release SUCCESS********
-#	cp -rf $(CURDIR)/bin/resources $(CURDIR)/debian/tmp/usr/local/cuprumtest/bin/
+	cmake -DUSE_64BITS=1 -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=OFF -DENABLE_MIDORI=$BUILD_MIDORI && make -j${CPU_NUM} && echo ******build release SUCCESS********
+fi
 	;;
 "deb_package" )
 	echo "build deb package"
