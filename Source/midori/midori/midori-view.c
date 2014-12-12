@@ -669,7 +669,20 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
     view->find_links = -1;
     #endif
 
+    //add by luyue 2014/12/10
     gboolean handled = FALSE;
+    g_signal_emit_by_name (view, "navigation-adblock", uri, &handled);
+    if (handled)
+    {
+        #ifdef HAVE_WEBKIT2
+        webkit_policy_decision_ignore (decision);
+        #else
+        webkit_web_policy_decision_ignore (decision);
+        #endif
+        return TRUE;
+    }
+
+//    gboolean handled = FALSE;
     g_signal_emit_by_name (view, "navigation-requested", uri, &handled);
     if (handled)
     {

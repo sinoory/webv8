@@ -49,7 +49,7 @@ fi
 
 if [ $INSTALL_DEP -eq 1 ];then
 	# ZRL install dependencies.
-	sudo apt-get install valac-0.20 librsvg2-bin libgcr-3-dev libnotify-dev
+	sudo apt-get install valac-0.20 librsvg2-bin libgcr-3-dev libnotify-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-0 libgstreamer1.0-0 libgstreamer-plugins-bad1.0-dev libgstreamer-plugins-good1.0-dev libgstreamer-plugins-good1.0-0 libgstreamer-plugins-bad1.0-0 libgstreamer-plugins-base1.0-dev
 fi
 
 pushd $BUILD_PATH

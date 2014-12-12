@@ -105,6 +105,8 @@ namespace Midori {
            Since: 0.5.8
          */
         public signal bool open_uri (string uri);
+        //add by luyue 2014/12/10
+        public signal bool navigation_adblock (string uri);
         /* Since: 0.5.8 */
         public signal bool navigation_requested (string uri);
         public signal void console_message (string message, int line, string source_id);

@@ -138,7 +138,7 @@ namespace Adblock {
         }
 
         void tab_added (Midori.View view) {
-            view.navigation_requested.connect (navigation_requested);
+            view.navigation_adblock.connect (navigation_adblock);
 #if !HAVE_WEBKIT2
             view.web_view.resource_request_starting.connect (resource_requested);
 #endif
@@ -150,7 +150,7 @@ namespace Adblock {
 #if !HAVE_WEBKIT2
             view.web_view.resource_request_starting.disconnect (resource_requested);
 #endif
-            view.navigation_requested.disconnect (navigation_requested);
+            view.navigation_adblock.disconnect (navigation_adblock);
             view.notify["load-status"].disconnect (load_status_changed);
             view.context_menu.disconnect (context_menu);
         }
@@ -191,12 +191,16 @@ namespace Adblock {
             }
         }
 #endif
-
-        bool navigation_requested (Midori.Tab tab, string uri) {
-            if (uri.has_prefix ("abp:")) {
-                string parsed_uri = parse_subscription_uri (uri);
-                manager.add_subscription (parsed_uri);
-                return true;
+//modify by luyue 2014/12/10
+        bool navigation_adblock (Midori.Tab tab, string uri) {
+            if (uri.has_prefix ("abp:")||uri.has_prefix ("http:")) {
+  //              string parsed_uri = parse_subscription_uri (uri);
+  //              manager.add_subscription (parsed_uri);
+  //              return true;
+                  if(request_handled(uri,tab.uri)){
+                  	status_icon.set_state (config.enabled ? State.ENABLED : State.DISABLED);
+                  	return true;
+                  }
             }
             status_icon.set_state (config.enabled ? State.ENABLED : State.DISABLED);
             return false;
@@ -379,16 +383,16 @@ namespace Adblock {
             string presets = Midori.Paths.get_extension_preset_filename ("adblock", "config");
             string filename = Path.build_filename (config_dir, "config");
             config = new Config (filename, presets);
-            string custom_list = GLib.Path.build_filename (config_dir, "custom.list");
-            try {
-                custom = new Subscription (Filename.to_uri (custom_list, null));
-                custom.mutable = false;
-                custom.title = _("Custom");
-                config.add (custom);
-            } catch (Error error) {
-                custom = null;
-                warning ("Failed to add custom list %s: %s", custom_list, error.message);
-            }
+//            string custom_list = GLib.Path.build_filename (config_dir, "custom.list");
+//            try {
+//                custom = new Subscription (Filename.to_uri (custom_list, null));
+//                custom.mutable = false;
+//                custom.title = _("Custom");
+//                config.add (custom);
+//            } catch (Error error) {
+//                custom = null;
+//                warning ("Failed to add custom list %s: %s", custom_list, error.message);
+//            }
         }
 
         public Adblock.Directive get_directive_for_uri (string request_uri, string page_uri) {

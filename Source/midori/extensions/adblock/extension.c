@@ -305,8 +305,8 @@ static void _adblock_extension_tab_added_midori_browser_add_tab (MidoriBrowser* 
 static void adblock_extension_tab_removed (AdblockExtension* self, MidoriView* view);
 static void _adblock_extension_tab_removed_midori_browser_remove_tab (MidoriBrowser* _sender, MidoriView* tab, gpointer self);
 AdblockStatusIconIconButton* adblock_status_icon_add_button (AdblockStatusIcon* self);
-static gboolean adblock_extension_navigation_requested (AdblockExtension* self, MidoriTab* tab, const gchar* uri);
-static gboolean _adblock_extension_navigation_requested_midori_tab_navigation_requested (MidoriTab* _sender, const gchar* uri, gpointer self);
+static gboolean adblock_extension_navigation_adblock (AdblockExtension* self, MidoriTab* tab, const gchar* uri);
+static gboolean _adblock_extension_navigation_adblock_midori_tab_navigation_adblock (MidoriTab* _sender, const gchar* uri, gpointer self);
 static void adblock_extension_load_status_changed (AdblockExtension* self, GObject* object, GParamSpec* pspec);
 static void _adblock_extension_load_status_changed_g_object_notify (GObject* _sender, GParamSpec* pspec, gpointer self);
 static void adblock_extension_context_menu (AdblockExtension* self, WebKitHitTestResult* hit_test_result, MidoriContextAction* menu);
@@ -328,6 +328,7 @@ GType adblock_custom_rules_editor_get_type (void) G_GNUC_CONST;
 void adblock_custom_rules_editor_set_uri (AdblockCustomRulesEditor* self, const gchar* uri);
 void adblock_custom_rules_editor_show (AdblockCustomRulesEditor* self);
 static void ___lambda11__gtk_action_activate (GtkAction* _sender, gpointer self);
+gboolean adblock_extension_request_handled (AdblockExtension* self, const gchar* request_uri, const gchar* page_uri);
 void adblock_status_icon_set_state (AdblockStatusIcon* self, AdblockState state);
 static gchar* adblock_extension_fetch_js_hider_function_body (AdblockExtension* self);
 static gchar* adblock_extension_get_hider_js_for_blocked_resorces (AdblockExtension* self);
@@ -354,16 +355,10 @@ static gboolean adblock_extension_open_link (AdblockExtension* self, const gchar
 static gboolean _adblock_extension_open_link_gtk_label_activate_link (GtkLabel* _sender, const gchar* uri, gpointer self);
 AdblockConfig* adblock_config_new (const gchar* path, const gchar* presets);
 AdblockConfig* adblock_config_construct (GType object_type, const gchar* path, const gchar* presets);
-AdblockSubscription* adblock_subscription_new (const gchar* uri);
-AdblockSubscription* adblock_subscription_construct (GType object_type, const gchar* uri);
-void adblock_subscription_set_mutable (AdblockSubscription* self, gboolean value);
-void adblock_subscription_set_title (AdblockSubscription* self, const gchar* value);
-gboolean adblock_config_add (AdblockConfig* self, AdblockSubscription* sub);
 AdblockDirective adblock_extension_get_directive_for_uri (AdblockExtension* self, const gchar* request_uri, const gchar* page_uri);
 AdblockDirective* adblock_subscription_get_directive (AdblockSubscription* self, const gchar* request_uri, const gchar* page_uri);
 static AdblockDirective* _adblock_directive_dup (AdblockDirective* self);
 static gboolean _adblock_directive_equal (const AdblockDirective* s1, const AdblockDirective* s2);
-gboolean adblock_extension_request_handled (AdblockExtension* self, const gchar* request_uri, const gchar* page_uri);
 static void adblock_extension_finalize (GObject* obj);
 void adblock_debug (const gchar* format, ...);
 gchar* adblock_fixup_regex (const gchar* prefix, const gchar* src);
@@ -382,6 +377,9 @@ void test_case_sub_copy (const TestCaseSub* self, TestCaseSub* dest);
 void test_case_sub_destroy (TestCaseSub* self);
 void test_adblock_subs (void);
 gboolean adblock_subscription_get_active (AdblockSubscription* self);
+gboolean adblock_config_add (AdblockConfig* self, AdblockSubscription* sub);
+AdblockSubscription* adblock_subscription_new (const gchar* uri);
+AdblockSubscription* adblock_subscription_construct (GType object_type, const gchar* uri);
 void adblock_config_save (AdblockConfig* self);
 const gchar* adblock_config_get_path (AdblockConfig* self);
 void adblock_config_set_enabled (AdblockConfig* self, gboolean value);
@@ -507,7 +505,7 @@ static gchar* string_replace (const gchar* self, const gchar* old, const gchar* 
 	g_return_val_if_fail (old != NULL, NULL);
 #line 1242 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
-#line 482 "extension.c"
+#line 480 "extension.c"
 	{
 		const gchar* _tmp0_;
 		gchar* _tmp1_ = NULL;
@@ -537,8 +535,8 @@ static gchar* string_replace (const gchar* self, const gchar* old, const gchar* 
 		if (_inner_error_ != NULL) {
 #line 1244 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-#line 512 "extension.c"
-				goto __catch5_g_regex_error;
+#line 510 "extension.c"
+				goto __catch1_g_regex_error;
 			}
 #line 1244 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -546,7 +544,7 @@ static gchar* string_replace (const gchar* self, const gchar* old, const gchar* 
 			g_clear_error (&_inner_error_);
 #line 1244 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 			return NULL;
-#line 521 "extension.c"
+#line 519 "extension.c"
 		}
 #line 1245 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		_tmp5_ = regex;
@@ -562,8 +560,8 @@ static gchar* string_replace (const gchar* self, const gchar* old, const gchar* 
 			_g_regex_unref0 (regex);
 #line 1245 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-#line 537 "extension.c"
-				goto __catch5_g_regex_error;
+#line 535 "extension.c"
+				goto __catch1_g_regex_error;
 			}
 #line 1245 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 			_g_regex_unref0 (regex);
@@ -573,7 +571,7 @@ static gchar* string_replace (const gchar* self, const gchar* old, const gchar* 
 			g_clear_error (&_inner_error_);
 #line 1245 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 			return NULL;
-#line 548 "extension.c"
+#line 546 "extension.c"
 		}
 #line 1245 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		result = _tmp8_;
@@ -581,10 +579,10 @@ static gchar* string_replace (const gchar* self, const gchar* old, const gchar* 
 		_g_regex_unref0 (regex);
 #line 1245 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		return result;
-#line 556 "extension.c"
+#line 554 "extension.c"
 	}
-	goto __finally5;
-	__catch5_g_regex_error:
+	goto __finally1;
+	__catch1_g_regex_error:
 	{
 		GError* e = NULL;
 #line 1243 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
@@ -595,9 +593,9 @@ static gchar* string_replace (const gchar* self, const gchar* old, const gchar* 
 		g_assert_not_reached ();
 #line 1243 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		_g_error_free0 (e);
-#line 570 "extension.c"
+#line 568 "extension.c"
 	}
-	__finally5:
+	__finally1:
 #line 1243 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	if (_inner_error_ != NULL) {
 #line 1243 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
@@ -606,7 +604,7 @@ static gchar* string_replace (const gchar* self, const gchar* old, const gchar* 
 		g_clear_error (&_inner_error_);
 #line 1243 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		return NULL;
-#line 581 "extension.c"
+#line 579 "extension.c"
 	}
 }
 
@@ -630,7 +628,7 @@ static glong string_strnlen (gchar* str, glong maxlen) {
 	_tmp3_ = end;
 #line 1158 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	if (_tmp3_ == NULL) {
-#line 605 "extension.c"
+#line 603 "extension.c"
 		glong _tmp4_;
 #line 1159 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		_tmp4_ = maxlen;
@@ -638,7 +636,7 @@ static glong string_strnlen (gchar* str, glong maxlen) {
 		result = _tmp4_;
 #line 1159 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		return result;
-#line 613 "extension.c"
+#line 611 "extension.c"
 	} else {
 		gchar* _tmp5_;
 		gchar* _tmp6_;
@@ -650,7 +648,7 @@ static glong string_strnlen (gchar* str, glong maxlen) {
 		result = (glong) (_tmp5_ - _tmp6_);
 #line 1161 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		return result;
-#line 625 "extension.c"
+#line 623 "extension.c"
 	}
 }
 
@@ -675,23 +673,23 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 	_tmp1_ = offset;
 #line 1170 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	if (_tmp1_ >= ((glong) 0)) {
-#line 650 "extension.c"
+#line 648 "extension.c"
 		glong _tmp2_;
 #line 1170 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		_tmp2_ = len;
 #line 1170 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		_tmp0_ = _tmp2_ >= ((glong) 0);
-#line 656 "extension.c"
+#line 654 "extension.c"
 	} else {
 #line 1170 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		_tmp0_ = FALSE;
-#line 660 "extension.c"
+#line 658 "extension.c"
 	}
 #line 1170 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	_tmp3_ = _tmp0_;
 #line 1170 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	if (_tmp3_) {
-#line 666 "extension.c"
+#line 664 "extension.c"
 		glong _tmp4_;
 		glong _tmp5_;
 		glong _tmp6_ = 0L;
@@ -703,7 +701,7 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 		_tmp6_ = string_strnlen ((gchar*) self, _tmp4_ + _tmp5_);
 #line 1172 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		string_length = _tmp6_;
-#line 678 "extension.c"
+#line 676 "extension.c"
 	} else {
 		gint _tmp7_;
 		gint _tmp8_;
@@ -713,13 +711,13 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 		_tmp8_ = _tmp7_;
 #line 1174 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		string_length = (glong) _tmp8_;
-#line 688 "extension.c"
+#line 686 "extension.c"
 	}
 #line 1177 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	_tmp9_ = offset;
 #line 1177 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	if (_tmp9_ < ((glong) 0)) {
-#line 694 "extension.c"
+#line 692 "extension.c"
 		glong _tmp10_;
 		glong _tmp11_;
 		glong _tmp12_;
@@ -733,7 +731,7 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 		_tmp12_ = offset;
 #line 1179 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		g_return_val_if_fail (_tmp12_ >= ((glong) 0), NULL);
-#line 708 "extension.c"
+#line 706 "extension.c"
 	} else {
 		glong _tmp13_;
 		glong _tmp14_;
@@ -743,13 +741,13 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 		_tmp14_ = string_length;
 #line 1181 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		g_return_val_if_fail (_tmp13_ <= _tmp14_, NULL);
-#line 718 "extension.c"
+#line 716 "extension.c"
 	}
 #line 1183 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	_tmp15_ = len;
 #line 1183 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	if (_tmp15_ < ((glong) 0)) {
-#line 724 "extension.c"
+#line 722 "extension.c"
 		glong _tmp16_;
 		glong _tmp17_;
 #line 1184 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
@@ -758,7 +756,7 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 		_tmp17_ = offset;
 #line 1184 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		len = _tmp16_ - _tmp17_;
-#line 733 "extension.c"
+#line 731 "extension.c"
 	}
 #line 1186 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	_tmp18_ = offset;
@@ -778,7 +776,7 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 	result = _tmp23_;
 #line 1187 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	return result;
-#line 753 "extension.c"
+#line 751 "extension.c"
 }
 
 
@@ -791,59 +789,59 @@ gchar* adblock_parse_subscription_uri (const gchar* uri) {
 	gboolean _tmp4_ = FALSE;
 	gboolean _tmp7_;
 	gboolean _tmp10_;
-#line 26 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 26 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = uri;
-#line 26 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 26 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp0_ == NULL) {
-#line 27 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 27 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = NULL;
-#line 27 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 27 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 774 "extension.c"
+#line 772 "extension.c"
 	}
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = uri;
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = g_str_has_prefix (_tmp3_, "http");
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp4_) {
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp2_ = TRUE;
-#line 784 "extension.c"
+#line 782 "extension.c"
 	} else {
 		const gchar* _tmp5_;
 		gboolean _tmp6_ = FALSE;
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp5_ = uri;
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp6_ = g_str_has_prefix (_tmp5_, "abp");
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp2_ = _tmp6_;
-#line 794 "extension.c"
+#line 792 "extension.c"
 	}
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7_ = _tmp2_;
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp7_) {
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp1_ = TRUE;
-#line 802 "extension.c"
+#line 800 "extension.c"
 	} else {
 		const gchar* _tmp8_;
 		gboolean _tmp9_ = FALSE;
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp8_ = uri;
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp9_ = g_str_has_prefix (_tmp8_, "file");
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp1_ = _tmp9_;
-#line 812 "extension.c"
+#line 810 "extension.c"
 	}
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp10_ = _tmp1_;
-#line 29 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 29 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp10_) {
-#line 818 "extension.c"
+#line 816 "extension.c"
 		const gchar* _tmp11_;
 		gchar* _tmp12_;
 		gchar* sub_uri;
@@ -852,39 +850,39 @@ gchar* adblock_parse_subscription_uri (const gchar* uri) {
 		const gchar* _tmp29_;
 		gchar* _tmp30_ = NULL;
 		gchar* decoded_uri;
-#line 31 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 31 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp11_ = uri;
-#line 31 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 31 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp12_ = g_strdup (_tmp11_);
-#line 31 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 31 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		sub_uri = _tmp12_;
-#line 32 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 32 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp13_ = uri;
-#line 32 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 32 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp14_ = g_str_has_prefix (_tmp13_, "abp:");
-#line 32 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 32 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_tmp14_) {
-#line 839 "extension.c"
+#line 837 "extension.c"
 			const gchar* _tmp15_;
 			gchar* _tmp16_ = NULL;
 			gchar* _tmp17_;
 			const gchar* _tmp18_;
 			gboolean _tmp19_ = FALSE;
-#line 33 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 33 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp15_ = uri;
-#line 33 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 33 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp16_ = string_replace (_tmp15_, "abp://", "abp:");
-#line 33 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 33 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp17_ = _tmp16_;
-#line 33 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 33 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_g_free0 (_tmp17_);
-#line 34 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 34 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp18_ = uri;
-#line 34 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 34 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp19_ = g_str_has_prefix (_tmp18_, "abp:subscribe?location=");
-#line 34 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 34 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			if (_tmp19_) {
-#line 859 "extension.c"
+#line 857 "extension.c"
 				const gchar* _tmp20_;
 				gchar* _tmp21_ = NULL;
 				gchar* _tmp22_;
@@ -899,83 +897,83 @@ gchar* adblock_parse_subscription_uri (const gchar* uri) {
 				gint _tmp26__length1;
 				const gchar* _tmp27_;
 				gchar* _tmp28_;
-#line 36 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 36 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp20_ = uri;
-#line 36 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 36 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp21_ = string_substring (_tmp20_, (glong) 23, (glong) (-1));
-#line 36 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 36 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp22_ = _tmp21_;
-#line 36 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 36 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp24_ = _tmp23_ = g_strsplit (_tmp22_, "&", 2);
-#line 36 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 36 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp25_ = _tmp24_;
-#line 36 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 36 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp25__length1 = _vala_array_length (_tmp23_);
-#line 36 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 36 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_free0 (_tmp22_);
-#line 36 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 36 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				parts = _tmp25_;
-#line 36 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 36 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				parts_length1 = _tmp25__length1;
-#line 36 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 36 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_parts_size_ = parts_length1;
-#line 37 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 37 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp26_ = parts;
-#line 37 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 37 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp26__length1 = parts_length1;
-#line 37 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 37 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp27_ = _tmp26_[0];
-#line 37 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 37 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp28_ = g_strdup (_tmp27_);
-#line 37 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 37 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_free0 (sub_uri);
-#line 37 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 37 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				sub_uri = _tmp28_;
-#line 34 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 34 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				parts = (_vala_array_free (parts, parts_length1, (GDestroyNotify) g_free), NULL);
-#line 908 "extension.c"
+#line 906 "extension.c"
 			}
 		}
-#line 41 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 41 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp29_ = sub_uri;
-#line 41 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 41 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp30_ = soup_uri_decode (_tmp29_);
-#line 41 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 41 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		decoded_uri = _tmp30_;
-#line 42 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 42 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = decoded_uri;
-#line 42 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 42 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (sub_uri);
-#line 42 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 42 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 923 "extension.c"
+#line 921 "extension.c"
 	}
-#line 44 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 44 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = NULL;
-#line 44 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 44 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 929 "extension.c"
+#line 927 "extension.c"
 }
 
 
 static void _adblock_extension_extension_activated_midori_extension_activate (MidoriExtension* _sender, MidoriApp* app, gpointer self) {
-#line 80 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 80 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_extension_activated (self, app);
-#line 936 "extension.c"
+#line 934 "extension.c"
 }
 
 
 static void _adblock_extension_extension_deactivated_midori_extension_deactivate (MidoriExtension* _sender, gpointer self) {
-#line 81 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 81 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_extension_deactivated (self);
-#line 943 "extension.c"
+#line 941 "extension.c"
 }
 
 
 static void _adblock_extension_extension_preferences_midori_extension_open_preferences (MidoriExtension* _sender, gpointer self) {
-#line 82 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 82 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_extension_preferences (self);
-#line 950 "extension.c"
+#line 948 "extension.c"
 }
 
 
@@ -983,54 +981,54 @@ AdblockExtension* adblock_extension_construct (GType object_type) {
 	AdblockExtension * self = NULL;
 	const gchar* _tmp0_ = NULL;
 	const gchar* _tmp1_ = NULL;
-#line 76 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 76 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = _ ("Advertisement blocker");
-#line 76 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 76 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = _ ("Block advertisements according to a filter list");
-#line 76 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 76 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	self = (AdblockExtension*) g_object_new (object_type, "name", _tmp0_, "description", _tmp1_, "version", "2.0", "authors", "Christian Dywan <christian@twotoasts.de>", NULL);
-#line 80 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 80 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object ((MidoriExtension*) self, "activate", (GCallback) _adblock_extension_extension_activated_midori_extension_activate, self, 0);
-#line 81 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 81 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object ((MidoriExtension*) self, "deactivate", (GCallback) _adblock_extension_extension_deactivated_midori_extension_deactivate, self, 0);
-#line 82 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 82 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object ((MidoriExtension*) self, "open-preferences", (GCallback) _adblock_extension_extension_preferences_midori_extension_open_preferences, self, 0);
-#line 75 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 75 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return self;
-#line 972 "extension.c"
+#line 970 "extension.c"
 }
 
 
 AdblockExtension* adblock_extension_new (void) {
-#line 75 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 75 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return adblock_extension_construct (ADBLOCK_TYPE_EXTENSION);
-#line 979 "extension.c"
+#line 977 "extension.c"
 }
 
 
 static void adblock_extension_extension_preferences (AdblockExtension* self) {
 	AdblockSubscriptionManager* _tmp0_;
-#line 85 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 85 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 86 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 86 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = self->manager;
-#line 86 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 86 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_subscription_manager_add_subscription (_tmp0_, NULL);
-#line 991 "extension.c"
+#line 989 "extension.c"
 }
 
 
 static void _adblock_extension_browser_added_midori_app_add_browser (MidoriApp* _sender, MidoriBrowser* browser, gpointer self) {
-#line 108 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 108 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_browser_added (self, browser);
-#line 998 "extension.c"
+#line 996 "extension.c"
 }
 
 
 static void _adblock_extension_browser_removed_midori_app_remove_browser (MidoriApp* _sender, MidoriBrowser* browser, gpointer self) {
-#line 109 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 109 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_browser_removed (self, browser);
-#line 1005 "extension.c"
+#line 1003 "extension.c"
 }
 
 
@@ -1064,205 +1062,205 @@ static void adblock_extension_extension_activated (AdblockExtension* self, Midor
 	MidoriApp* _tmp28_;
 	MidoriApp* _tmp29_;
 	GError * _inner_error_ = NULL;
-#line 89 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 89 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 89 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 89 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (app != NULL);
-#line 91 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 91 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = g_get_user_cache_dir ();
-#line 91 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 91 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_strdup (_tmp0_);
-#line 91 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 91 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	cache_dir = _tmp1_;
-#line 92 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 92 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = cache_dir;
-#line 92 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 92 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = g_build_path (G_DIR_SEPARATOR_S, _tmp2_, "wk2ext", NULL);
-#line 92 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 92 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	wk2path = _tmp3_;
-#line 93 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 93 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = wk2path;
-#line 93 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 93 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	midori_paths_mkdir_with_parents (_tmp4_, 0700);
-#line 94 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 94 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = g_strdup ("libadblock." G_MODULE_SUFFIX);
-#line 94 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 94 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	filename = _tmp5_;
-#line 95 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 95 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp6_ = wk2path;
-#line 95 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 95 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7_ = g_file_new_for_path (_tmp6_);
-#line 95 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 95 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp8_ = _tmp7_;
-#line 95 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 95 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp9_ = filename;
-#line 95 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 95 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp10_ = g_file_get_child (_tmp8_, _tmp9_);
-#line 95 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 95 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp11_ = _tmp10_;
-#line 95 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 95 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (_tmp8_);
-#line 95 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 95 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	wk2link = _tmp11_;
-#line 96 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 96 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp12_ = midori_paths_get_lib_path (PACKAGE_NAME);
-#line 96 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 96 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp13_ = _tmp12_;
-#line 96 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 96 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp14_ = g_file_new_for_path (_tmp13_);
-#line 96 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 96 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp15_ = _tmp14_;
-#line 96 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 96 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp16_ = filename;
-#line 96 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 96 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp17_ = g_file_get_child (_tmp15_, _tmp16_);
-#line 96 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 96 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp18_ = _tmp17_;
-#line 96 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 96 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (_tmp15_);
-#line 96 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 96 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp13_);
-#line 96 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 96 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	library = _tmp18_;
-#line 1099 "extension.c"
+#line 1097 "extension.c"
 	{
 		GFile* _tmp19_;
 		GFile* _tmp20_;
 		gchar* _tmp21_ = NULL;
 		gchar* _tmp22_;
-#line 98 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 98 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp19_ = wk2link;
-#line 98 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 98 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp20_ = library;
-#line 98 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 98 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp21_ = g_file_get_path (_tmp20_);
-#line 98 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 98 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp22_ = _tmp21_;
-#line 98 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 98 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_file_make_symbolic_link (_tmp19_, _tmp22_, NULL, &_inner_error_);
-#line 98 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 98 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (_tmp22_);
-#line 98 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 98 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_inner_error_ != NULL) {
-#line 98 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 98 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
-#line 1121 "extension.c"
-				goto __catch6_g_io_error_exists;
+#line 1119 "extension.c"
+				goto __catch2_g_io_error_exists;
 			}
-			goto __catch6_g_error;
+			goto __catch2_g_error;
 		}
 	}
-	goto __finally6;
-	__catch6_g_io_error_exists:
+	goto __finally2;
+	__catch2_g_io_error_exists:
 	{
 		GError* exist_error = NULL;
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		exist_error = _inner_error_;
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_inner_error_ = NULL;
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_error_free0 (exist_error);
-#line 1137 "extension.c"
+#line 1135 "extension.c"
 	}
-	goto __finally6;
-	__catch6_g_error:
+	goto __finally2;
+	__catch2_g_error:
 	{
 		GError* _error_ = NULL;
 		GError* _tmp23_;
 		const gchar* _tmp24_;
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_error_ = _inner_error_;
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_inner_error_ = NULL;
-#line 102 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 102 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp23_ = _error_;
-#line 102 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 102 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp24_ = _tmp23_->message;
-#line 102 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 102 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_critical ("extension.vala:102: Failed to create WebKit2 link: %s", _tmp24_);
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_error_free0 (_error_);
-#line 1157 "extension.c"
+#line 1155 "extension.c"
 	}
-	__finally6:
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	__finally2:
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_inner_error_ != NULL) {
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (library);
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (wk2link);
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (filename);
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (wk2path);
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (cache_dir);
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_clear_error (&_inner_error_);
-#line 97 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 97 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return;
-#line 1178 "extension.c"
+#line 1176 "extension.c"
 	}
-#line 105 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 105 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_init (self);
-#line 106 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 106 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp25_ = app;
-#line 106 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 106 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp26_ = midori_app_get_browsers (_tmp25_);
-#line 1186 "extension.c"
+#line 1184 "extension.c"
 	{
 		GList* browser_collection = NULL;
 		GList* browser_it = NULL;
-#line 106 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 106 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		browser_collection = _tmp26_;
-#line 106 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 106 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (browser_it = browser_collection; browser_it != NULL; browser_it = browser_it->next) {
-#line 1194 "extension.c"
+#line 1192 "extension.c"
 			MidoriBrowser* browser = NULL;
-#line 106 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 106 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			browser = (MidoriBrowser*) browser_it->data;
-#line 1198 "extension.c"
+#line 1196 "extension.c"
 			{
 				MidoriBrowser* _tmp27_;
-#line 107 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 107 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp27_ = browser;
-#line 107 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 107 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				adblock_extension_browser_added (self, _tmp27_);
-#line 1205 "extension.c"
+#line 1203 "extension.c"
 			}
 		}
-#line 106 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 106 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_list_free0 (browser_collection);
-#line 1210 "extension.c"
+#line 1208 "extension.c"
 	}
-#line 108 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 108 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp28_ = app;
-#line 108 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 108 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object (_tmp28_, "add-browser", (GCallback) _adblock_extension_browser_added_midori_app_add_browser, self, 0);
-#line 109 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 109 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp29_ = app;
-#line 109 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 109 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object (_tmp29_, "remove-browser", (GCallback) _adblock_extension_browser_removed_midori_app_remove_browser, self, 0);
-#line 89 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 89 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (library);
-#line 89 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 89 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (wk2link);
-#line 89 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 89 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (filename);
-#line 89 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 89 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (wk2path);
-#line 89 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 89 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (cache_dir);
-#line 1230 "extension.c"
+#line 1228 "extension.c"
 }
 
 
 static gpointer _g_object_ref0 (gpointer self) {
-#line 113 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 113 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return self ? g_object_ref (self) : NULL;
-#line 1237 "extension.c"
+#line 1235 "extension.c"
 }
 
 
@@ -1278,105 +1276,105 @@ static void adblock_extension_extension_deactivated (AdblockExtension* self) {
 	guint _tmp8_ = 0U;
 	AdblockStatusIcon* _tmp9_;
 	GList* _tmp10_;
-#line 112 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 112 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 113 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 113 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = midori_extension_get_app ((MidoriExtension*) self);
-#line 113 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 113 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = _g_object_ref0 (_tmp0_);
-#line 113 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 113 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	app = _tmp1_;
-#line 114 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 114 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = app;
-#line 114 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 114 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = midori_app_get_browsers (_tmp2_);
-#line 1265 "extension.c"
+#line 1263 "extension.c"
 	{
 		GList* browser_collection = NULL;
 		GList* browser_it = NULL;
-#line 114 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 114 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		browser_collection = _tmp3_;
-#line 114 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 114 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (browser_it = browser_collection; browser_it != NULL; browser_it = browser_it->next) {
-#line 1273 "extension.c"
+#line 1271 "extension.c"
 			MidoriBrowser* browser = NULL;
-#line 114 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 114 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			browser = (MidoriBrowser*) browser_it->data;
-#line 1277 "extension.c"
+#line 1275 "extension.c"
 			{
 				MidoriBrowser* _tmp4_;
-#line 115 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 115 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp4_ = browser;
-#line 115 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 115 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				adblock_extension_browser_removed (self, _tmp4_);
-#line 1284 "extension.c"
+#line 1282 "extension.c"
 			}
 		}
-#line 114 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 114 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_list_free0 (browser_collection);
-#line 1289 "extension.c"
+#line 1287 "extension.c"
 	}
-#line 116 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 116 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = app;
-#line 116 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 116 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_parse_name ("add-browser", MIDORI_TYPE_APP, &_tmp6_, NULL, FALSE);
-#line 116 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 116 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_handlers_disconnect_matched (_tmp5_, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, _tmp6_, 0, NULL, (GCallback) _adblock_extension_browser_added_midori_app_add_browser, self);
-#line 117 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 117 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7_ = app;
-#line 117 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 117 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_parse_name ("remove-browser", MIDORI_TYPE_APP, &_tmp8_, NULL, FALSE);
-#line 117 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 117 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_handlers_disconnect_matched (_tmp7_, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, _tmp8_, 0, NULL, (GCallback) _adblock_extension_browser_removed_midori_app_remove_browser, self);
-#line 118 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 118 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp9_ = self->status_icon;
-#line 118 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 118 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp10_ = _tmp9_->toggle_buttons;
-#line 1307 "extension.c"
+#line 1305 "extension.c"
 	{
 		GList* button_collection = NULL;
 		GList* button_it = NULL;
-#line 118 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 118 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		button_collection = _tmp10_;
-#line 118 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 118 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (button_it = button_collection; button_it != NULL; button_it = button_it->next) {
-#line 1315 "extension.c"
+#line 1313 "extension.c"
 			AdblockStatusIconIconButton* _tmp11_;
 			AdblockStatusIconIconButton* button = NULL;
-#line 118 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 118 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp11_ = _g_object_ref0 ((AdblockStatusIconIconButton*) button_it->data);
-#line 118 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 118 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			button = _tmp11_;
-#line 1322 "extension.c"
+#line 1320 "extension.c"
 			{
 				AdblockStatusIconIconButton* _tmp12_;
-#line 119 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 119 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp12_ = button;
-#line 119 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 119 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				gtk_widget_destroy ((GtkWidget*) _tmp12_);
-#line 118 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 118 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (button);
-#line 1331 "extension.c"
+#line 1329 "extension.c"
 			}
 		}
 	}
-#line 112 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 112 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (app);
-#line 1337 "extension.c"
+#line 1335 "extension.c"
 }
 
 
 static void _adblock_extension_tab_added_midori_browser_add_tab (MidoriBrowser* _sender, MidoriView* tab, gpointer self) {
-#line 125 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 125 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_tab_added (self, tab);
-#line 1344 "extension.c"
+#line 1342 "extension.c"
 }
 
 
 static void _adblock_extension_tab_removed_midori_browser_remove_tab (MidoriBrowser* _sender, MidoriView* tab, gpointer self) {
-#line 126 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 126 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_tab_removed (self, tab);
-#line 1351 "extension.c"
+#line 1349 "extension.c"
 }
 
 
@@ -1392,71 +1390,71 @@ static void adblock_extension_browser_added (AdblockExtension* self, MidoriBrows
 	GtkStatusbar* _tmp8_ = NULL;
 	GtkStatusbar* _tmp9_;
 	GtkStatusbar* _tmp10_;
-#line 122 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 122 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 122 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 122 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (browser != NULL);
-#line 123 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 123 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = browser;
-#line 123 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 123 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = midori_browser_get_tabs (_tmp0_);
-#line 1375 "extension.c"
+#line 1373 "extension.c"
 	{
 		GList* tab_collection = NULL;
 		GList* tab_it = NULL;
-#line 123 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 123 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		tab_collection = _tmp1_;
-#line 123 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 123 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (tab_it = tab_collection; tab_it != NULL; tab_it = tab_it->next) {
-#line 1383 "extension.c"
+#line 1381 "extension.c"
 			MidoriView* tab = NULL;
-#line 123 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 123 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			tab = (MidoriView*) tab_it->data;
-#line 1387 "extension.c"
+#line 1385 "extension.c"
 			{
 				MidoriView* _tmp2_;
-#line 124 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 124 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp2_ = tab;
-#line 124 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 124 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				adblock_extension_tab_added (self, _tmp2_);
-#line 1394 "extension.c"
+#line 1392 "extension.c"
 			}
 		}
-#line 123 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 123 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_list_free0 (tab_collection);
-#line 1399 "extension.c"
+#line 1397 "extension.c"
 	}
-#line 125 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 125 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = browser;
-#line 125 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 125 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object (_tmp3_, "add-tab", (GCallback) _adblock_extension_tab_added_midori_browser_add_tab, self, 0);
-#line 126 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 126 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = browser;
-#line 126 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 126 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object (_tmp4_, "remove-tab", (GCallback) _adblock_extension_tab_removed_midori_browser_remove_tab, self, 0);
-#line 128 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 128 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = self->status_icon;
-#line 128 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 128 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp6_ = adblock_status_icon_add_button (_tmp5_);
-#line 128 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 128 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	toggle_button = _tmp6_;
-#line 129 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 129 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7_ = browser;
-#line 129 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 129 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_object_get (_tmp7_, "statusbar", &_tmp8_, NULL);
-#line 129 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 129 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp9_ = _tmp8_;
-#line 129 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 129 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp10_ = _tmp9_;
-#line 129 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 129 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	gtk_box_pack_end ((GtkBox*) _tmp10_, (GtkWidget*) toggle_button, FALSE, FALSE, (guint) 3);
-#line 129 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 129 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (_tmp10_);
-#line 130 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 130 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	gtk_widget_show ((GtkWidget*) toggle_button);
-#line 122 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 122 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (toggle_button);
-#line 1431 "extension.c"
+#line 1429 "extension.c"
 }
 
 
@@ -1467,76 +1465,76 @@ static void adblock_extension_browser_removed (AdblockExtension* self, MidoriBro
 	guint _tmp4_ = 0U;
 	MidoriBrowser* _tmp5_;
 	guint _tmp6_ = 0U;
-#line 133 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 133 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 133 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 133 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (browser != NULL);
-#line 134 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 134 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = browser;
-#line 134 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 134 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = midori_browser_get_tabs (_tmp0_);
-#line 1450 "extension.c"
+#line 1448 "extension.c"
 	{
 		GList* tab_collection = NULL;
 		GList* tab_it = NULL;
-#line 134 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 134 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		tab_collection = _tmp1_;
-#line 134 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 134 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (tab_it = tab_collection; tab_it != NULL; tab_it = tab_it->next) {
-#line 1458 "extension.c"
+#line 1456 "extension.c"
 			MidoriView* tab = NULL;
-#line 134 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 134 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			tab = (MidoriView*) tab_it->data;
-#line 1462 "extension.c"
+#line 1460 "extension.c"
 			{
 				MidoriView* _tmp2_;
-#line 135 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 135 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp2_ = tab;
-#line 135 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 135 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				adblock_extension_tab_removed (self, _tmp2_);
-#line 1469 "extension.c"
+#line 1467 "extension.c"
 			}
 		}
-#line 134 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 134 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_list_free0 (tab_collection);
-#line 1474 "extension.c"
+#line 1472 "extension.c"
 	}
-#line 136 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 136 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = browser;
-#line 136 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 136 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_parse_name ("add-tab", MIDORI_TYPE_BROWSER, &_tmp4_, NULL, FALSE);
-#line 136 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 136 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_handlers_disconnect_matched (_tmp3_, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, _tmp4_, 0, NULL, (GCallback) _adblock_extension_tab_added_midori_browser_add_tab, self);
-#line 137 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 137 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = browser;
-#line 137 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 137 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_parse_name ("remove-tab", MIDORI_TYPE_BROWSER, &_tmp6_, NULL, FALSE);
-#line 137 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 137 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_handlers_disconnect_matched (_tmp5_, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, _tmp6_, 0, NULL, (GCallback) _adblock_extension_tab_removed_midori_browser_remove_tab, self);
-#line 1488 "extension.c"
+#line 1486 "extension.c"
 }
 
 
-static gboolean _adblock_extension_navigation_requested_midori_tab_navigation_requested (MidoriTab* _sender, const gchar* uri, gpointer self) {
+static gboolean _adblock_extension_navigation_adblock_midori_tab_navigation_adblock (MidoriTab* _sender, const gchar* uri, gpointer self) {
 	gboolean result;
-	result = adblock_extension_navigation_requested (self, _sender, uri);
-#line 141 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	result = adblock_extension_navigation_adblock (self, _sender, uri);
+#line 141 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 1497 "extension.c"
+#line 1495 "extension.c"
 }
 
 
 static void _adblock_extension_load_status_changed_g_object_notify (GObject* _sender, GParamSpec* pspec, gpointer self) {
-#line 145 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 145 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_load_status_changed (self, _sender, pspec);
-#line 1504 "extension.c"
+#line 1502 "extension.c"
 }
 
 
 static void _adblock_extension_context_menu_midori_tab_context_menu (MidoriTab* _sender, WebKitHitTestResult* hit_test_result, MidoriContextAction* menu, gpointer self) {
-#line 146 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 146 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_context_menu (self, hit_test_result, menu);
-#line 1511 "extension.c"
+#line 1509 "extension.c"
 }
 
 
@@ -1544,23 +1542,23 @@ static void adblock_extension_tab_added (AdblockExtension* self, MidoriView* vie
 	MidoriView* _tmp0_;
 	MidoriView* _tmp1_;
 	MidoriView* _tmp2_;
-#line 140 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 140 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 140 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 140 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (view != NULL);
-#line 141 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 141 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = view;
-#line 141 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	g_signal_connect_object ((MidoriTab*) _tmp0_, "navigation-requested", (GCallback) _adblock_extension_navigation_requested_midori_tab_navigation_requested, self, 0);
-#line 145 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 141 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	g_signal_connect_object ((MidoriTab*) _tmp0_, "navigation-adblock", (GCallback) _adblock_extension_navigation_adblock_midori_tab_navigation_adblock, self, 0);
+#line 145 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = view;
-#line 145 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 145 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object ((GObject*) _tmp1_, "notify::load-status", (GCallback) _adblock_extension_load_status_changed_g_object_notify, self, 0);
-#line 146 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 146 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = view;
-#line 146 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 146 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object ((MidoriTab*) _tmp2_, "context-menu", (GCallback) _adblock_extension_context_menu_midori_tab_context_menu, self, 0);
-#line 1535 "extension.c"
+#line 1533 "extension.c"
 }
 
 
@@ -1572,29 +1570,29 @@ static void adblock_extension_tab_removed (AdblockExtension* self, MidoriView* v
 	GQuark _tmp4_ = 0U;
 	MidoriView* _tmp5_;
 	guint _tmp6_ = 0U;
-#line 149 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 149 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 149 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 149 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (view != NULL);
-#line 153 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 153 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = view;
-#line 153 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	g_signal_parse_name ("navigation-requested", MIDORI_TYPE_TAB, &_tmp1_, NULL, FALSE);
-#line 153 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	g_signal_handlers_disconnect_matched ((MidoriTab*) _tmp0_, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, _tmp1_, 0, NULL, (GCallback) _adblock_extension_navigation_requested_midori_tab_navigation_requested, self);
-#line 154 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 153 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	g_signal_parse_name ("navigation-adblock", MIDORI_TYPE_TAB, &_tmp1_, NULL, FALSE);
+#line 153 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	g_signal_handlers_disconnect_matched ((MidoriTab*) _tmp0_, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, _tmp1_, 0, NULL, (GCallback) _adblock_extension_navigation_adblock_midori_tab_navigation_adblock, self);
+#line 154 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = view;
-#line 154 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 154 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_parse_name ("notify::load-status", G_TYPE_OBJECT, &_tmp3_, &_tmp4_, TRUE);
-#line 154 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 154 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_handlers_disconnect_matched ((GObject*) _tmp2_, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_DETAIL | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, _tmp3_, _tmp4_, NULL, (GCallback) _adblock_extension_load_status_changed_g_object_notify, self);
-#line 155 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 155 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = view;
-#line 155 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 155 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_parse_name ("context-menu", MIDORI_TYPE_TAB, &_tmp6_, NULL, FALSE);
-#line 155 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 155 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_handlers_disconnect_matched ((MidoriTab*) _tmp5_, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, _tmp6_, 0, NULL, (GCallback) _adblock_extension_context_menu_midori_tab_context_menu, self);
-#line 1569 "extension.c"
+#line 1567 "extension.c"
 }
 
 
@@ -1605,87 +1603,87 @@ static void adblock_extension_load_status_changed (AdblockExtension* self, GObje
 	AdblockConfig* _tmp2_;
 	gboolean _tmp3_;
 	gboolean _tmp4_;
-#line 158 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 158 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 158 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 158 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (object != NULL);
-#line 158 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 158 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (pspec != NULL);
-#line 159 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 159 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = object;
-#line 159 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 159 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = _g_object_ref0 (G_TYPE_CHECK_INSTANCE_TYPE (_tmp0_, MIDORI_TYPE_VIEW) ? ((MidoriView*) _tmp0_) : NULL);
-#line 159 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 159 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	view = _tmp1_;
-#line 160 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 160 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = self->config;
-#line 160 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 160 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = adblock_config_get_enabled (_tmp2_);
-#line 160 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 160 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = _tmp3_;
-#line 160 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 160 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp4_) {
-#line 1600 "extension.c"
+#line 1598 "extension.c"
 		MidoriView* _tmp5_;
 		MidoriLoadStatus _tmp6_;
 		MidoriLoadStatus _tmp7_;
-#line 161 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 161 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp5_ = view;
-#line 161 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 161 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp6_ = midori_tab_get_load_status ((MidoriTab*) _tmp5_);
-#line 161 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 161 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp7_ = _tmp6_;
-#line 161 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 161 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_tmp7_ == MIDORI_LOAD_FINISHED) {
-#line 1612 "extension.c"
+#line 1610 "extension.c"
 			MidoriView* _tmp8_;
 			MidoriView* _tmp9_;
 			const gchar* _tmp10_;
 			const gchar* _tmp11_;
-#line 162 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 162 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp8_ = view;
-#line 162 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 162 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp9_ = view;
-#line 162 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 162 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp10_ = midori_tab_get_uri ((MidoriTab*) _tmp9_);
-#line 162 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 162 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp11_ = _tmp10_;
-#line 162 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 162 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			adblock_extension_inject_css (self, _tmp8_, _tmp11_);
-#line 1627 "extension.c"
+#line 1625 "extension.c"
 		}
 	}
-#line 158 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 158 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (view);
-#line 1632 "extension.c"
+#line 1630 "extension.c"
 }
 
 
 static Block4Data* block4_data_ref (Block4Data* _data4_) {
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_atomic_int_inc (&_data4_->_ref_count_);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return _data4_;
-#line 1641 "extension.c"
+#line 1639 "extension.c"
 }
 
 
 static void block4_data_unref (void * _userdata_) {
 	Block4Data* _data4_;
 	_data4_ = (Block4Data*) _userdata_;
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (g_atomic_int_dec_and_test (&_data4_->_ref_count_)) {
-#line 1650 "extension.c"
+#line 1648 "extension.c"
 		AdblockExtension * self;
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		self = _data4_->self;
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (_data4_->uri);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (self);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_slice_free (Block4Data, _data4_);
-#line 1660 "extension.c"
+#line 1658 "extension.c"
 	}
 }
 
@@ -1696,32 +1694,32 @@ static void __lambda11_ (Block4Data* _data4_, GtkAction* action) {
 	AdblockCustomRulesEditor* _tmp1_;
 	AdblockCustomRulesEditor* custom_rules_editor;
 	const gchar* _tmp2_;
-#line 177 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 177 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	self = _data4_->self;
-#line 177 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 177 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (action != NULL);
-#line 178 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 178 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = self->custom;
-#line 178 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 178 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = adblock_custom_rules_editor_new (_tmp0_);
-#line 178 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 178 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	custom_rules_editor = _tmp1_;
-#line 179 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 179 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = _data4_->uri;
-#line 179 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 179 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_custom_rules_editor_set_uri (custom_rules_editor, _tmp2_);
-#line 180 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 180 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_custom_rules_editor_show (custom_rules_editor);
-#line 177 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 177 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_adblock_custom_rules_editor_unref0 (custom_rules_editor);
-#line 1689 "extension.c"
+#line 1687 "extension.c"
 }
 
 
 static void ___lambda11__gtk_action_activate (GtkAction* _sender, gpointer self) {
-#line 177 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 177 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	__lambda11_ (self, _sender);
-#line 1696 "extension.c"
+#line 1694 "extension.c"
 }
 
 
@@ -1737,209 +1735,287 @@ static void adblock_extension_context_menu (AdblockExtension* self, WebKitHitTes
 	GtkAction* _tmp20_;
 	MidoriContextAction* _tmp21_;
 	GtkAction* _tmp22_;
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (hit_test_result != NULL);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (menu != NULL);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_data4_ = g_slice_new0 (Block4Data);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_data4_->_ref_count_ = 1;
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_data4_->self = g_object_ref (self);
-#line 168 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 168 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = hit_test_result;
-#line 168 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 168 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = webkit_hit_test_result_get_context (_tmp0_);
-#line 168 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 168 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = _tmp1_;
-#line 168 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 168 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if ((_tmp2_ & WEBKIT_HIT_TEST_RESULT_CONTEXT_IMAGE) != ((guint) 0)) {
-#line 1732 "extension.c"
+#line 1730 "extension.c"
 		const gchar* _tmp3_ = NULL;
 		gchar* _tmp4_;
 		WebKitHitTestResult* _tmp5_;
 		const gchar* _tmp6_;
 		const gchar* _tmp7_;
 		gchar* _tmp8_;
-#line 169 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 169 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp3_ = _ ("Bl_ock image");
-#line 169 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 169 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp4_ = g_strdup (_tmp3_);
-#line 169 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 169 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (label);
-#line 169 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 169 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		label = _tmp4_;
-#line 170 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 170 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp5_ = hit_test_result;
-#line 170 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 170 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp6_ = webkit_hit_test_result_get_image_uri (_tmp5_);
-#line 170 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 170 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp7_ = _tmp6_;
-#line 170 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 170 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp8_ = g_strdup (_tmp7_);
-#line 170 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 170 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (_data4_->uri);
-#line 170 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 170 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_data4_->uri = _tmp8_;
-#line 1759 "extension.c"
+#line 1757 "extension.c"
 	} else {
 		WebKitHitTestResult* _tmp9_;
 		guint _tmp10_;
 		guint _tmp11_;
-#line 171 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 171 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp9_ = hit_test_result;
-#line 171 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 171 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp10_ = webkit_hit_test_result_get_context (_tmp9_);
-#line 171 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 171 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp11_ = _tmp10_;
-#line 171 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 171 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if ((_tmp11_ & WEBKIT_HIT_TEST_RESULT_CONTEXT_LINK) != ((guint) 0)) {
-#line 1772 "extension.c"
+#line 1770 "extension.c"
 			const gchar* _tmp12_ = NULL;
 			gchar* _tmp13_;
 			WebKitHitTestResult* _tmp14_;
 			const gchar* _tmp15_;
 			const gchar* _tmp16_;
 			gchar* _tmp17_;
-#line 172 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 172 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp12_ = _ ("Bl_ock link");
-#line 172 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 172 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp13_ = g_strdup (_tmp12_);
-#line 172 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 172 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_g_free0 (label);
-#line 172 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 172 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			label = _tmp13_;
-#line 173 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 173 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp14_ = hit_test_result;
-#line 173 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 173 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp15_ = webkit_hit_test_result_get_link_uri (_tmp14_);
-#line 173 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 173 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp16_ = _tmp15_;
-#line 173 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 173 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp17_ = g_strdup (_tmp16_);
-#line 173 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 173 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_g_free0 (_data4_->uri);
-#line 173 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 173 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_data4_->uri = _tmp17_;
-#line 1799 "extension.c"
+#line 1797 "extension.c"
 		} else {
-#line 175 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 175 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_g_free0 (label);
-#line 175 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 175 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			block4_data_unref (_data4_);
-#line 175 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 175 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_data4_ = NULL;
-#line 175 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 175 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			return;
-#line 1809 "extension.c"
+#line 1807 "extension.c"
 		}
 	}
-#line 176 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 176 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp18_ = label;
-#line 176 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 176 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp19_ = gtk_action_new ("BlockElement", _tmp18_, NULL, NULL);
-#line 176 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 176 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	action = _tmp19_;
-#line 177 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 177 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp20_ = action;
-#line 177 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 177 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_data (_tmp20_, "activate", (GCallback) ___lambda11__gtk_action_activate, block4_data_ref (_data4_), (GClosureNotify) block4_data_unref, 0);
-#line 182 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 182 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp21_ = menu;
-#line 182 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 182 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp22_ = action;
-#line 182 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 182 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	midori_context_action_add (_tmp21_, _tmp22_);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (action);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (label);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	block4_data_unref (_data4_);
-#line 166 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 166 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_data4_ = NULL;
-#line 1836 "extension.c"
+#line 1834 "extension.c"
 }
 
 
-static gboolean adblock_extension_navigation_requested (AdblockExtension* self, MidoriTab* tab, const gchar* uri) {
+static gboolean adblock_extension_navigation_adblock (AdblockExtension* self, MidoriTab* tab, const gchar* uri) {
 	gboolean result = FALSE;
-	const gchar* _tmp0_;
-	gboolean _tmp1_ = FALSE;
-	AdblockState _tmp6_ = 0;
-	AdblockConfig* _tmp7_;
-	gboolean _tmp8_;
-	gboolean _tmp9_;
-	AdblockStatusIcon* _tmp10_;
-	AdblockState _tmp11_;
-#line 195 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	gboolean _tmp0_ = FALSE;
+	const gchar* _tmp1_;
+	gboolean _tmp2_ = FALSE;
+	gboolean _tmp5_;
+	AdblockState _tmp25_ = 0;
+	AdblockConfig* _tmp26_;
+	gboolean _tmp27_;
+	gboolean _tmp28_;
+	AdblockStatusIcon* _tmp29_;
+	AdblockState _tmp30_;
+#line 195 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 195 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 195 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (tab != NULL, FALSE);
-#line 195 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 195 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (uri != NULL, FALSE);
-#line 196 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp0_ = uri;
-#line 196 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp1_ = g_str_has_prefix (_tmp0_, "abp:");
-#line 196 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	if (_tmp1_) {
-#line 1862 "extension.c"
-		const gchar* _tmp2_;
-		gchar* _tmp3_ = NULL;
-		gchar* parsed_uri;
-		AdblockSubscriptionManager* _tmp4_;
-		const gchar* _tmp5_;
-#line 197 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp2_ = uri;
-#line 197 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp3_ = adblock_parse_subscription_uri (_tmp2_);
-#line 197 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		parsed_uri = _tmp3_;
-#line 198 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp4_ = self->manager;
-#line 198 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp5_ = parsed_uri;
-#line 198 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		adblock_subscription_manager_add_subscription (_tmp4_, _tmp5_);
-#line 199 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		result = TRUE;
-#line 199 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_g_free0 (parsed_uri);
-#line 199 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		return result;
-#line 1886 "extension.c"
-	}
-#line 201 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp7_ = self->config;
-#line 201 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp8_ = adblock_config_get_enabled (_tmp7_);
-#line 201 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp9_ = _tmp8_;
-#line 201 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	if (_tmp9_) {
-#line 201 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp6_ = ADBLOCK_STATE_ENABLED;
-#line 1898 "extension.c"
+#line 196 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp1_ = uri;
+#line 196 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp2_ = g_str_has_prefix (_tmp1_, "abp:");
+#line 196 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	if (_tmp2_) {
+#line 196 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp0_ = TRUE;
+#line 1864 "extension.c"
 	} else {
-#line 201 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp6_ = ADBLOCK_STATE_DISABLED;
-#line 1902 "extension.c"
+		const gchar* _tmp3_;
+		gboolean _tmp4_ = FALSE;
+#line 196 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp3_ = uri;
+#line 196 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp4_ = g_str_has_prefix (_tmp3_, "http:");
+#line 196 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp0_ = _tmp4_;
+#line 1874 "extension.c"
 	}
-#line 201 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp10_ = self->status_icon;
-#line 201 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp11_ = _tmp6_;
-#line 201 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	adblock_status_icon_set_state (_tmp10_, _tmp11_);
-#line 202 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 196 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp5_ = _tmp0_;
+#line 196 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	if (_tmp5_) {
+#line 1880 "extension.c"
+		FILE* _tmp6_;
+		const gchar* _tmp7_;
+		const gchar* _tmp8_;
+		MidoriTab* _tmp9_;
+		const gchar* _tmp10_;
+		const gchar* _tmp11_;
+		gboolean _tmp12_ = FALSE;
+#line 200 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp6_ = stdout;
+#line 200 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp7_ = uri;
+#line 200 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		fprintf (_tmp6_, "uri=================%s\n", _tmp7_);
+#line 201 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp8_ = uri;
+#line 201 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp9_ = tab;
+#line 201 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp10_ = midori_tab_get_uri (_tmp9_);
+#line 201 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp11_ = _tmp10_;
+#line 201 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp12_ = adblock_extension_request_handled (self, _tmp8_, _tmp11_);
+#line 201 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		if (_tmp12_) {
+#line 1906 "extension.c"
+			FILE* _tmp13_;
+			const gchar* _tmp14_;
+			FILE* _tmp15_;
+			MidoriTab* _tmp16_;
+			const gchar* _tmp17_;
+			const gchar* _tmp18_;
+			AdblockState _tmp19_ = 0;
+			AdblockConfig* _tmp20_;
+			gboolean _tmp21_;
+			gboolean _tmp22_;
+			AdblockStatusIcon* _tmp23_;
+			AdblockState _tmp24_;
+#line 202 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp13_ = stdout;
+#line 202 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp14_ = uri;
+#line 202 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			fprintf (_tmp13_, "uri==%s\n", _tmp14_);
+#line 203 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp15_ = stdout;
+#line 203 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp16_ = tab;
+#line 203 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp17_ = midori_tab_get_uri (_tmp16_);
+#line 203 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp18_ = _tmp17_;
+#line 203 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			fprintf (_tmp15_, "pageuri==%s\n", _tmp18_);
+#line 204 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp20_ = self->config;
+#line 204 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp21_ = adblock_config_get_enabled (_tmp20_);
+#line 204 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp22_ = _tmp21_;
+#line 204 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			if (_tmp22_) {
+#line 204 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+				_tmp19_ = ADBLOCK_STATE_ENABLED;
+#line 1945 "extension.c"
+			} else {
+#line 204 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+				_tmp19_ = ADBLOCK_STATE_DISABLED;
+#line 1949 "extension.c"
+			}
+#line 204 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp23_ = self->status_icon;
+#line 204 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			_tmp24_ = _tmp19_;
+#line 204 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			adblock_status_icon_set_state (_tmp23_, _tmp24_);
+#line 205 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			result = TRUE;
+#line 205 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			return result;
+#line 1961 "extension.c"
+		}
+	}
+#line 208 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp26_ = self->config;
+#line 208 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp27_ = adblock_config_get_enabled (_tmp26_);
+#line 208 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp28_ = _tmp27_;
+#line 208 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	if (_tmp28_) {
+#line 208 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp25_ = ADBLOCK_STATE_ENABLED;
+#line 1974 "extension.c"
+	} else {
+#line 208 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		_tmp25_ = ADBLOCK_STATE_DISABLED;
+#line 1978 "extension.c"
+	}
+#line 208 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp29_ = self->status_icon;
+#line 208 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp30_ = _tmp25_;
+#line 208 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	adblock_status_icon_set_state (_tmp29_, _tmp30_);
+#line 209 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = FALSE;
-#line 202 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 209 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 1914 "extension.c"
+#line 1990 "extension.c"
 }
 
 
@@ -1950,17 +2026,17 @@ static gchar* adblock_extension_fetch_js_hider_function_body (AdblockExtension* 
 	GFile* _tmp1_ = NULL;
 	GFile* js_file;
 	GError * _inner_error_ = NULL;
-#line 225 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 232 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 226 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 233 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = midori_paths_get_res_filename ("adblock/element_hider.js");
-#line 226 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 233 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	filename = _tmp0_;
-#line 227 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 234 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_file_new_for_path (filename);
-#line 227 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 234 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	js_file = _tmp1_;
-#line 1935 "extension.c"
+#line 2011 "extension.c"
 	{
 		guint8* function_body = NULL;
 		gint function_body_length1 = 0;
@@ -1968,81 +2044,81 @@ static gchar* adblock_extension_fetch_js_hider_function_body (AdblockExtension* 
 		guint8* _tmp2_ = NULL;
 		gsize _tmp3_;
 		gchar* _tmp4_;
-#line 230 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 237 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_file_load_contents (js_file, NULL, &_tmp2_, &_tmp3_, NULL, &_inner_error_);
-#line 230 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 237 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		function_body = (g_free (function_body), NULL);
-#line 230 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 237 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		function_body = _tmp2_;
-#line 230 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 237 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		function_body_length1 = _tmp3_;
-#line 230 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 237 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_function_body_size_ = function_body_length1;
-#line 230 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 237 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_inner_error_ != NULL) {
-#line 230 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 237 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			function_body = (g_free (function_body), NULL);
-#line 1957 "extension.c"
-			goto __catch7_g_error;
+#line 2033 "extension.c"
+			goto __catch3_g_error;
 		}
-#line 231 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 238 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp4_ = g_strdup ((const gchar*) function_body);
-#line 231 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 238 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = _tmp4_;
-#line 231 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 238 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		function_body = (g_free (function_body), NULL);
-#line 231 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 238 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (js_file);
-#line 231 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 238 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (filename);
-#line 231 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 238 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 1972 "extension.c"
+#line 2048 "extension.c"
 	}
-	goto __finally7;
-	__catch7_g_error:
+	goto __finally3;
+	__catch3_g_error:
 	{
 		GError* _error_ = NULL;
 		GError* _tmp5_;
 		const gchar* _tmp6_;
-#line 228 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 235 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_error_ = _inner_error_;
-#line 228 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 235 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_inner_error_ = NULL;
-#line 234 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 241 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp5_ = _error_;
-#line 234 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 241 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp6_ = _tmp5_->message;
-#line 234 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_warning ("extension.vala:234: Error while loading adblock hider js: %s\n", _tmp6_);
-#line 228 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 241 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		g_warning ("extension.vala:241: Error while loading adblock hider js: %s\n", _tmp6_);
+#line 235 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_error_free0 (_error_);
-#line 1992 "extension.c"
+#line 2068 "extension.c"
 	}
-	__finally7:
-#line 228 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	__finally3:
+#line 235 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_inner_error_ != NULL) {
-#line 228 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 235 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (js_file);
-#line 228 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 235 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (filename);
-#line 228 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 235 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 228 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 235 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_clear_error (&_inner_error_);
-#line 228 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 235 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return NULL;
-#line 2007 "extension.c"
+#line 2083 "extension.c"
 	}
-#line 236 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 243 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = NULL;
-#line 236 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 243 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (js_file);
-#line 236 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 243 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (filename);
-#line 236 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 243 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 2017 "extension.c"
+#line 2093 "extension.c"
 }
 
 
@@ -2065,101 +2141,101 @@ static gchar* adblock_extension_get_hider_js_for_blocked_resorces (AdblockExtens
 	GString* _tmp14_;
 	const gchar* _tmp15_;
 	gchar* _tmp16_;
-#line 239 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 246 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 240 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 247 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = self->hider_selectors;
-#line 240 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 247 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = _tmp0_->str;
-#line 240 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 247 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (g_strcmp0 (_tmp1_, "") == 0) {
-#line 241 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 248 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = NULL;
-#line 241 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 248 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 2052 "extension.c"
+#line 2128 "extension.c"
 	}
-#line 243 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 250 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = self->js_hider_function_body;
-#line 243 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 250 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp3_ == NULL) {
-#line 243 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 250 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp2_ = TRUE;
-#line 2060 "extension.c"
+#line 2136 "extension.c"
 	} else {
 		const gchar* _tmp4_;
-#line 243 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 250 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp4_ = self->js_hider_function_body;
-#line 243 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 250 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp2_ = g_strcmp0 (_tmp4_, "") == 0;
-#line 2067 "extension.c"
+#line 2143 "extension.c"
 	}
-#line 243 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 250 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = _tmp2_;
-#line 243 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 250 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp5_) {
-#line 244 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 251 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = NULL;
-#line 244 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 251 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 2077 "extension.c"
+#line 2153 "extension.c"
 	}
-#line 246 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 253 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp6_ = g_string_new ("(function() {");
-#line 246 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 253 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	js = _tmp6_;
-#line 247 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 254 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7_ = js;
-#line 247 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 254 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp8_ = self->js_hider_function_body;
-#line 247 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 254 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_string_append (_tmp7_, _tmp8_);
-#line 248 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 255 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp9_ = js;
-#line 248 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 255 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_string_append (_tmp9_, "var uris=new Array ();");
-#line 249 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 256 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp10_ = js;
-#line 249 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 256 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp11_ = self->hider_selectors;
-#line 249 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 256 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp12_ = _tmp11_->str;
-#line 249 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 256 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_string_append (_tmp10_, _tmp12_);
-#line 250 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 257 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp13_ = js;
-#line 250 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 257 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_string_append (_tmp13_, " hideElementBySrc (uris);})();");
-#line 252 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 259 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp14_ = js;
-#line 252 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 259 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp15_ = _tmp14_->str;
-#line 252 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 259 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp16_ = g_strdup (_tmp15_);
-#line 252 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 259 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = _tmp16_;
-#line 252 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 259 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_string_free0 (js);
-#line 252 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 259 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 2117 "extension.c"
+#line 2193 "extension.c"
 }
 
 
 static void _vala_array_add1 (gchar*** array, int* length, int* size, gchar* value) {
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if ((*length) == (*size)) {
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		*size = (*size) ? (2 * (*size)) : 4;
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		*array = g_renew (gchar*, *array, (*size) + 1);
-#line 2128 "extension.c"
+#line 2204 "extension.c"
 	}
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*array)[(*length)++] = value;
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*array)[*length] = NULL;
-#line 2134 "extension.c"
+#line 2210 "extension.c"
 }
 
 
@@ -2193,115 +2269,115 @@ static gchar** adblock_extension_get_domains_for_uri (AdblockExtension* self, co
 	gint _tmp15_;
 	gchar** _tmp27_;
 	gint _tmp27__length1;
-#line 256 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 263 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 256 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 263 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (uri != NULL, NULL);
-#line 257 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 264 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = uri;
-#line 257 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 264 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp0_ == NULL) {
-#line 2176 "extension.c"
+#line 2252 "extension.c"
 		gchar** _tmp1_;
 		gint _tmp1__length1;
-#line 258 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 265 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp1_ = NULL;
-#line 258 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 265 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp1__length1 = 0;
-#line 258 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 265 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (result_length1) {
-#line 258 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 265 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			*result_length1 = _tmp1__length1;
-#line 2187 "extension.c"
+#line 2263 "extension.c"
 		}
-#line 258 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 265 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = _tmp1_;
-#line 258 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 265 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 2193 "extension.c"
+#line 2269 "extension.c"
 	}
-#line 259 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 266 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	domains = NULL;
-#line 259 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 266 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	domains_length1 = 0;
-#line 259 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 266 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_domains_size_ = domains_length1;
-#line 260 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 267 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = uri;
-#line 260 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 267 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = midori_uri_parse_hostname (_tmp2_, NULL);
-#line 260 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 267 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	domain = _tmp3_;
-#line 261 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 268 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = domain;
-#line 261 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 268 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp6_ = _tmp5_ = g_strsplit (_tmp4_, ".", 0);
-#line 261 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 268 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	subdomains = _tmp6_;
-#line 261 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 268 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	subdomains_length1 = _vala_array_length (_tmp5_);
-#line 261 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 268 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_subdomains_size_ = subdomains_length1;
-#line 262 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 269 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7_ = subdomains;
-#line 262 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 269 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7__length1 = subdomains_length1;
-#line 262 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 269 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp7_ == NULL) {
-#line 2223 "extension.c"
+#line 2299 "extension.c"
 		gchar** _tmp8_;
 		gint _tmp8__length1;
-#line 263 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 270 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp8_ = NULL;
-#line 263 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 270 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp8__length1 = 0;
-#line 263 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 270 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (result_length1) {
-#line 263 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 270 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			*result_length1 = _tmp8__length1;
-#line 2234 "extension.c"
+#line 2310 "extension.c"
 		}
-#line 263 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 270 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = _tmp8_;
-#line 263 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 270 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		subdomains = (_vala_array_free (subdomains, subdomains_length1, (GDestroyNotify) g_free), NULL);
-#line 263 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 270 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (domain);
-#line 263 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 270 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		domains = (_vala_array_free (domains, domains_length1, (GDestroyNotify) g_free), NULL);
-#line 263 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 270 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 2246 "extension.c"
+#line 2322 "extension.c"
 	}
-#line 264 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 271 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp9_ = subdomains;
-#line 264 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 271 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp9__length1 = subdomains_length1;
-#line 264 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 271 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	cnt = _tmp9__length1 - 1;
-#line 265 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 272 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp10_ = subdomains;
-#line 265 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 272 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp10__length1 = subdomains_length1;
-#line 265 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 272 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp11_ = cnt;
-#line 265 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 272 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp12_ = _tmp10_[_tmp11_];
-#line 265 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 272 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp13_ = g_string_new (_tmp12_);
-#line 265 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 272 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	subdomain = _tmp13_;
-#line 266 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 273 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp14_ = subdomain;
-#line 266 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 273 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_string_prepend_c (_tmp14_, '.');
-#line 267 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 274 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp15_ = cnt;
-#line 267 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 274 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	cnt = _tmp15_ - 1;
-#line 268 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 275 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	while (TRUE) {
-#line 2276 "extension.c"
+#line 2352 "extension.c"
 		gint _tmp16_;
 		GString* _tmp17_;
 		gchar** _tmp18_;
@@ -2315,69 +2391,69 @@ static gchar** adblock_extension_get_domains_for_uri (AdblockExtension* self, co
 		gchar* _tmp24_;
 		GString* _tmp25_;
 		gint _tmp26_;
-#line 268 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 275 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp16_ = cnt;
-#line 268 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 275 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (!(_tmp16_ >= 0)) {
-#line 268 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 275 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			break;
-#line 2296 "extension.c"
+#line 2372 "extension.c"
 		}
-#line 269 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 276 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp17_ = subdomain;
-#line 269 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 276 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp18_ = subdomains;
-#line 269 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 276 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp18__length1 = subdomains_length1;
-#line 269 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 276 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp19_ = cnt;
-#line 269 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 276 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp20_ = _tmp18_[_tmp19_];
-#line 269 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 276 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_string_prepend (_tmp17_, _tmp20_);
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp21_ = domains;
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp21__length1 = domains_length1;
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp22_ = subdomain;
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp23_ = _tmp22_->str;
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp24_ = g_strdup (_tmp23_);
-#line 270 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 277 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_vala_array_add1 (&domains, &domains_length1, &_domains_size_, _tmp24_);
-#line 271 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 278 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp25_ = subdomain;
-#line 271 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 278 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_string_prepend_c (_tmp25_, '.');
-#line 272 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 279 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp26_ = cnt;
-#line 272 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 279 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		cnt = _tmp26_ - 1;
-#line 2330 "extension.c"
+#line 2406 "extension.c"
 	}
-#line 274 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 281 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp27_ = domains;
-#line 274 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 281 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp27__length1 = domains_length1;
-#line 274 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 281 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (result_length1) {
-#line 274 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 281 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		*result_length1 = _tmp27__length1;
-#line 2340 "extension.c"
+#line 2416 "extension.c"
 	}
-#line 274 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 281 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = _tmp27_;
-#line 274 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 281 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_string_free0 (subdomain);
-#line 274 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 281 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	subdomains = (_vala_array_free (subdomains, subdomains_length1, (GDestroyNotify) g_free), NULL);
-#line 274 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 281 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (domain);
-#line 274 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 281 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 2352 "extension.c"
+#line 2428 "extension.c"
 }
 
 
@@ -2408,53 +2484,53 @@ static gchar* adblock_extension_get_hider_css_rules_for_uri (AdblockExtension* s
 	GString* _tmp52_;
 	const gchar* _tmp53_;
 	gchar* _tmp54_;
-#line 277 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 284 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 277 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 284 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (page_uri != NULL, NULL);
-#line 278 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 285 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = page_uri;
-#line 278 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 285 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp0_ == NULL) {
-#line 279 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 286 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = NULL;
-#line 279 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 286 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 2395 "extension.c"
+#line 2471 "extension.c"
 	}
-#line 280 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 287 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = page_uri;
-#line 280 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 287 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = adblock_extension_get_domains_for_uri (self, _tmp1_, &_tmp2_);
-#line 280 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 287 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	domains = _tmp3_;
-#line 280 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 287 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	domains_length1 = _tmp2_;
-#line 280 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 287 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_domains_size_ = domains_length1;
-#line 281 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 288 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = domains;
-#line 281 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 288 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4__length1 = domains_length1;
-#line 281 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 288 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp4_ == NULL) {
-#line 282 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 289 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = NULL;
-#line 282 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 289 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		domains = (_vala_array_free (domains, domains_length1, (GDestroyNotify) g_free), NULL);
-#line 282 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 289 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 2419 "extension.c"
+#line 2495 "extension.c"
 	}
-#line 283 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 290 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = g_string_new ("");
-#line 283 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 290 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	code = _tmp5_;
-#line 284 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 291 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	blockscnt = 0;
-#line 285 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 292 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	style = NULL;
-#line 2429 "extension.c"
+#line 2505 "extension.c"
 	{
 		AdblockConfig* _tmp6_;
 		AdblockConfig* _tmp7_;
@@ -2464,25 +2540,25 @@ static gchar* adblock_extension_get_hider_css_rules_for_uri (AdblockExtension* s
 		guint _tmp10_;
 		guint _sub_size;
 		gint _sub_index;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp6_ = self->config;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp7_ = _g_object_ref0 (_tmp6_);
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_list = _tmp7_;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp8_ = _sub_list;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp9_ = adblock_config_get_size (_tmp8_);
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp10_ = _tmp9_;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_size = _tmp10_;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_index = -1;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		while (TRUE) {
-#line 2457 "extension.c"
+#line 2533 "extension.c"
 			gint _tmp11_;
 			gint _tmp12_;
 			guint _tmp13_;
@@ -2490,29 +2566,29 @@ static gchar* adblock_extension_get_hider_css_rules_for_uri (AdblockExtension* s
 			gint _tmp15_;
 			AdblockSubscription* _tmp16_ = NULL;
 			AdblockSubscription* sub;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp11_ = _sub_index;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_sub_index = _tmp11_ + 1;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp12_ = _sub_index;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp13_ = _sub_size;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			if (!(((guint) _tmp12_) < _tmp13_)) {
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				break;
-#line 2477 "extension.c"
+#line 2553 "extension.c"
 			}
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp14_ = _sub_list;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp15_ = _sub_index;
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp16_ = adblock_config_get (_tmp14_, (guint) _tmp15_);
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			sub = _tmp16_;
-#line 2487 "extension.c"
+#line 2563 "extension.c"
 			{
 				AdblockSubscription* _tmp17_;
 				AdblockSubscription* _tmp18_;
@@ -2522,25 +2598,25 @@ static gchar* adblock_extension_get_hider_css_rules_for_uri (AdblockExtension* s
 				guint _tmp21_;
 				guint _feature_size;
 				gint _feature_index;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp17_ = sub;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp18_ = _g_object_ref0 (_tmp17_);
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_feature_list = _tmp18_;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp19_ = _feature_list;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp20_ = adblock_subscription_get_size (_tmp19_);
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp21_ = _tmp20_;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_feature_size = _tmp21_;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_feature_index = -1;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				while (TRUE) {
-#line 2515 "extension.c"
+#line 2591 "extension.c"
 					gint _tmp22_;
 					gint _tmp23_;
 					guint _tmp24_;
@@ -2549,213 +2625,213 @@ static gchar* adblock_extension_get_hider_css_rules_for_uri (AdblockExtension* s
 					AdblockFeature* _tmp27_ = NULL;
 					AdblockFeature* feature;
 					AdblockFeature* _tmp28_;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp22_ = _feature_index;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_feature_index = _tmp22_ + 1;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp23_ = _feature_index;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp24_ = _feature_size;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					if (!(((guint) _tmp23_) < _tmp24_)) {
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						break;
-#line 2536 "extension.c"
+#line 2612 "extension.c"
 					}
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp25_ = _feature_list;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp26_ = _feature_index;
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp27_ = adblock_subscription_get (_tmp25_, (guint) _tmp26_);
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					feature = _tmp27_;
-#line 288 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 295 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp28_ = feature;
-#line 288 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 295 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp28_, ADBLOCK_TYPE_ELEMENT)) {
-#line 2550 "extension.c"
+#line 2626 "extension.c"
 						gchar** _tmp29_;
 						gint _tmp29__length1;
-#line 289 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 296 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp29_ = domains;
-#line 289 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 296 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp29__length1 = domains_length1;
-#line 2557 "extension.c"
+#line 2633 "extension.c"
 						{
 							gchar** subdomain_collection = NULL;
 							gint subdomain_collection_length1 = 0;
 							gint _subdomain_collection_size_ = 0;
 							gint subdomain_it = 0;
-#line 289 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 296 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							subdomain_collection = _tmp29_;
-#line 289 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 296 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							subdomain_collection_length1 = _tmp29__length1;
-#line 289 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 296 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							for (subdomain_it = 0; subdomain_it < _tmp29__length1; subdomain_it = subdomain_it + 1) {
-#line 2569 "extension.c"
+#line 2645 "extension.c"
 								gchar* _tmp30_;
 								gchar* subdomain = NULL;
-#line 289 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 296 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 								_tmp30_ = g_strdup (subdomain_collection[subdomain_it]);
-#line 289 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 296 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 								subdomain = _tmp30_;
-#line 2576 "extension.c"
+#line 2652 "extension.c"
 								{
 									AdblockFeature* _tmp31_;
 									const gchar* _tmp32_;
 									gchar* _tmp33_ = NULL;
 									const gchar* _tmp34_;
-#line 290 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 297 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 									_tmp31_ = feature;
-#line 290 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 297 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 									_tmp32_ = subdomain;
-#line 290 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 297 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 									_tmp33_ = adblock_element_lookup (G_TYPE_CHECK_INSTANCE_TYPE (_tmp31_, ADBLOCK_TYPE_ELEMENT) ? ((AdblockElement*) _tmp31_) : NULL, _tmp32_);
-#line 290 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 297 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 									_g_free0 (style);
-#line 290 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 297 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 									style = _tmp33_;
-#line 291 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 298 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 									_tmp34_ = style;
-#line 291 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 298 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 									if (_tmp34_ != NULL) {
-#line 2596 "extension.c"
+#line 2672 "extension.c"
 										GString* _tmp35_;
 										const gchar* _tmp36_;
 										GString* _tmp37_;
 										gint _tmp38_;
-#line 292 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 299 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 										_tmp35_ = code;
-#line 292 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 299 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 										_tmp36_ = style;
-#line 292 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 299 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 										g_string_append (_tmp35_, _tmp36_);
-#line 293 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 300 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 										_tmp37_ = code;
-#line 293 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 300 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 										g_string_append_c (_tmp37_, ',');
-#line 294 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 301 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 										_tmp38_ = blockscnt;
-#line 294 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 301 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 										blockscnt = _tmp38_ + 1;
-#line 2615 "extension.c"
+#line 2691 "extension.c"
 									}
-#line 289 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 296 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 									_g_free0 (subdomain);
-#line 2619 "extension.c"
+#line 2695 "extension.c"
 								}
 							}
 						}
 					}
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_object_unref0 (feature);
-#line 2626 "extension.c"
+#line 2702 "extension.c"
 				}
-#line 287 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 294 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (_feature_list);
-#line 2630 "extension.c"
+#line 2706 "extension.c"
 			}
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_g_object_unref0 (sub);
-#line 2634 "extension.c"
+#line 2710 "extension.c"
 		}
-#line 286 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 293 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (_sub_list);
-#line 2638 "extension.c"
+#line 2714 "extension.c"
 	}
-#line 301 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 308 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp39_ = blockscnt;
-#line 301 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 308 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp39_ == 0) {
-#line 302 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 309 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = NULL;
-#line 302 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 309 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (style);
-#line 302 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 309 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_string_free0 (code);
-#line 302 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 309 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		domains = (_vala_array_free (domains, domains_length1, (GDestroyNotify) g_free), NULL);
-#line 302 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 309 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 2654 "extension.c"
+#line 2730 "extension.c"
 	}
-#line 303 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 310 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp40_ = code;
-#line 303 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 310 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp41_ = code;
-#line 303 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 310 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp42_ = _tmp41_->len;
-#line 303 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 310 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_string_truncate (_tmp40_, (gsize) (_tmp42_ - 1));
-#line 306 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 313 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp43_ = self->debug_element;
-#line 306 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 313 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp43_) {
-#line 2668 "extension.c"
+#line 2744 "extension.c"
 		gchar* _tmp44_;
-#line 307 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 314 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp44_ = g_strdup (" { background-color: red !important; border: 4px solid green !importan" \
 "t; }");
-#line 307 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 314 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (hider_css);
-#line 307 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 314 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		hider_css = _tmp44_;
-#line 2676 "extension.c"
+#line 2752 "extension.c"
 	} else {
 		gchar* _tmp45_;
-#line 309 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 316 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp45_ = g_strdup (" { display: none !important }");
-#line 309 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 316 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (hider_css);
-#line 309 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 316 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		hider_css = _tmp45_;
-#line 2685 "extension.c"
+#line 2761 "extension.c"
 	}
-#line 311 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 318 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp46_ = code;
-#line 311 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 318 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp47_ = hider_css;
-#line 311 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 318 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_string_append (_tmp46_, _tmp47_);
-#line 312 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 319 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp48_ = self->debug_element;
-#line 312 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 319 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp48_) {
-#line 2697 "extension.c"
+#line 2773 "extension.c"
 		FILE* _tmp49_;
 		GString* _tmp50_;
 		const gchar* _tmp51_;
-#line 313 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 320 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp49_ = stdout;
-#line 313 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 320 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp50_ = code;
-#line 313 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 320 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp51_ = _tmp50_->str;
-#line 313 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 320 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		fprintf (_tmp49_, "css: %s\n", _tmp51_);
-#line 2709 "extension.c"
+#line 2785 "extension.c"
 	}
-#line 315 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 322 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp52_ = code;
-#line 315 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 322 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp53_ = _tmp52_->str;
-#line 315 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 322 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp54_ = g_strdup (_tmp53_);
-#line 315 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 322 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = _tmp54_;
-#line 315 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 322 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (hider_css);
-#line 315 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 322 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (style);
-#line 315 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 322 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_string_free0 (code);
-#line 315 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 322 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	domains = (_vala_array_free (domains, domains_length1, (GDestroyNotify) g_free), NULL);
-#line 315 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 322 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 2729 "extension.c"
+#line 2805 "extension.c"
 }
 
 
@@ -2775,7 +2851,7 @@ static gboolean string_contains (const gchar* self, const gchar* needle) {
 	result = _tmp1_ != NULL;
 #line 1239 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	return result;
-#line 2749 "extension.c"
+#line 2825 "extension.c"
 }
 
 
@@ -2795,125 +2871,125 @@ static void adblock_extension_inject_css (AdblockExtension* self, MidoriView* vi
 	gchar* _tmp16_ = NULL;
 	gchar* style;
 	const gchar* _tmp17_;
-#line 318 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 325 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 318 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 325 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (view != NULL);
-#line 318 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 325 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (page_uri != NULL);
-#line 320 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 327 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = page_uri;
-#line 320 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 327 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = midori_uri_is_http (_tmp0_);
-#line 320 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 327 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (!_tmp1_) {
-#line 321 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 328 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return;
-#line 2783 "extension.c"
+#line 2859 "extension.c"
 	}
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = g_getenv ("MIDORI_DEBUG");
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = g_strdup (_tmp2_);
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = _tmp3_;
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = _tmp4_;
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp5_ == NULL) {
-#line 2795 "extension.c"
+#line 2871 "extension.c"
 		gchar* _tmp6_;
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp6_ = g_strdup ("");
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (_tmp4_);
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp4_ = _tmp6_;
-#line 2803 "extension.c"
+#line 2879 "extension.c"
 	}
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7_ = _tmp4_;
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp8_ = string_contains (_tmp7_, "adblock:element");
-#line 323 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 330 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp8_) {
-#line 324 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 331 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		self->debug_element = TRUE;
-#line 2813 "extension.c"
+#line 2889 "extension.c"
 	} else {
 		AdblockStatusIcon* _tmp9_;
 		gboolean _tmp10_;
-#line 326 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 333 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp9_ = self->status_icon;
-#line 326 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 333 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp10_ = _tmp9_->debug_element_toggled;
-#line 326 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 333 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		self->debug_element = _tmp10_;
-#line 2823 "extension.c"
+#line 2899 "extension.c"
 	}
-#line 333 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 340 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp11_ = adblock_extension_get_hider_js_for_blocked_resorces (self);
-#line 333 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 340 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	blocked_js = _tmp11_;
-#line 334 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 341 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp12_ = blocked_js;
-#line 334 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 341 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp12_ != NULL) {
-#line 2833 "extension.c"
+#line 2909 "extension.c"
 		MidoriView* _tmp13_;
 		const gchar* _tmp14_;
-#line 335 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 342 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp13_ = view;
-#line 335 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 342 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp14_ = blocked_js;
-#line 335 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 342 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		midori_view_execute_script (_tmp13_, _tmp14_, NULL);
-#line 2842 "extension.c"
+#line 2918 "extension.c"
 	}
-#line 337 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 344 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp15_ = page_uri;
-#line 337 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 344 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp16_ = adblock_extension_get_hider_css_rules_for_uri (self, _tmp15_);
-#line 337 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 344 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	style = _tmp16_;
-#line 338 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 345 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp17_ = style;
-#line 338 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 345 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp17_ != NULL) {
-#line 2854 "extension.c"
+#line 2930 "extension.c"
 		MidoriView* _tmp18_;
 		const gchar* _tmp19_;
-#line 339 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 346 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp18_ = view;
-#line 339 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 346 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp19_ = style;
-#line 339 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 346 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		midori_tab_inject_stylesheet ((MidoriTab*) _tmp18_, _tmp19_);
-#line 2863 "extension.c"
+#line 2939 "extension.c"
 	}
-#line 318 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 325 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (style);
-#line 318 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 325 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (blocked_js);
-#line 318 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 325 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp4_);
-#line 2871 "extension.c"
+#line 2947 "extension.c"
 }
 
 
 static void _adblock_extension_subscriptions_added_removed_g_object_notify (GObject* _sender, GParamSpec* pspec, gpointer self) {
-#line 354 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 361 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_subscriptions_added_removed (self, pspec);
-#line 2878 "extension.c"
+#line 2954 "extension.c"
 }
 
 
 static gboolean _adblock_extension_open_link_gtk_label_activate_link (GtkLabel* _sender, const gchar* uri, gpointer self) {
 	gboolean result;
 	result = adblock_extension_open_link (self, uri);
-#line 355 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 362 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 2887 "extension.c"
+#line 2963 "extension.c"
 }
 
 
@@ -2929,35 +3005,35 @@ void adblock_extension_init (AdblockExtension* self) {
 	GtkLabel* _tmp25_;
 	gchar* _tmp26_ = NULL;
 	GError * _inner_error_ = NULL;
-#line 342 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 349 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 343 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 350 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = g_string_new ("");
-#line 343 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 350 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_string_free0 (self->hider_selectors);
-#line 343 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 350 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	self->hider_selectors = _tmp0_;
-#line 344 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 351 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_load_config (self);
-#line 345 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 352 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = self->config;
-#line 345 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 352 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = adblock_subscription_manager_new (_tmp1_);
-#line 345 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 352 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_adblock_subscription_manager_unref0 (self->manager);
-#line 345 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 352 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	self->manager = _tmp2_;
-#line 346 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 353 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = self->config;
-#line 346 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 353 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = self->manager;
-#line 346 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 353 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = adblock_status_icon_new (_tmp3_, _tmp4_);
-#line 346 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 353 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_adblock_status_icon_unref0 (self->status_icon);
-#line 346 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 353 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	self->status_icon = _tmp5_;
-#line 2931 "extension.c"
+#line 3007 "extension.c"
 	{
 		AdblockConfig* _tmp6_;
 		AdblockConfig* _tmp7_;
@@ -2967,25 +3043,25 @@ void adblock_extension_init (AdblockExtension* self) {
 		guint _tmp10_;
 		guint _sub_size;
 		gint _sub_index;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp6_ = self->config;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp7_ = _g_object_ref0 (_tmp6_);
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_list = _tmp7_;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp8_ = _sub_list;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp9_ = adblock_config_get_size (_tmp8_);
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp10_ = _tmp9_;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_size = _tmp10_;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_index = -1;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		while (TRUE) {
-#line 2959 "extension.c"
+#line 3035 "extension.c"
 			gint _tmp11_;
 			gint _tmp12_;
 			guint _tmp13_;
@@ -2993,43 +3069,43 @@ void adblock_extension_init (AdblockExtension* self) {
 			gint _tmp15_;
 			AdblockSubscription* _tmp16_ = NULL;
 			AdblockSubscription* sub;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp11_ = _sub_index;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_sub_index = _tmp11_ + 1;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp12_ = _sub_index;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp13_ = _sub_size;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			if (!(((guint) _tmp12_) < _tmp13_)) {
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				break;
-#line 2979 "extension.c"
+#line 3055 "extension.c"
 			}
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp14_ = _sub_list;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp15_ = _sub_index;
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp16_ = adblock_config_get (_tmp14_, (guint) _tmp15_);
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			sub = _tmp16_;
-#line 2989 "extension.c"
+#line 3065 "extension.c"
 			{
 				AdblockSubscription* _tmp17_;
-#line 349 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 356 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp17_ = sub;
-#line 349 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 356 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				adblock_subscription_parse (_tmp17_, &_inner_error_);
-#line 349 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 356 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (_inner_error_ != NULL) {
-#line 2998 "extension.c"
-					goto __catch8_g_error;
+#line 3074 "extension.c"
+					goto __catch4_g_error;
 				}
 			}
-			goto __finally8;
-			__catch8_g_error:
+			goto __finally4;
+			__catch4_g_error:
 			{
 				GError* _error_ = NULL;
 				AdblockSubscription* _tmp18_;
@@ -3037,66 +3113,66 @@ void adblock_extension_init (AdblockExtension* self) {
 				const gchar* _tmp20_;
 				GError* _tmp21_;
 				const gchar* _tmp22_;
-#line 348 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 355 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_error_ = _inner_error_;
-#line 348 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 355 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_inner_error_ = NULL;
-#line 351 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 358 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp18_ = sub;
-#line 351 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 358 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp19_ = adblock_subscription_get_uri (_tmp18_);
-#line 351 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 358 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp20_ = _tmp19_;
-#line 351 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 358 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp21_ = _error_;
-#line 351 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 358 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp22_ = _tmp21_->message;
-#line 351 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-				g_warning ("extension.vala:351: Error parsing %s: %s", _tmp20_, _tmp22_);
-#line 348 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 358 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+				g_warning ("extension.vala:358: Error parsing %s: %s", _tmp20_, _tmp22_);
+#line 355 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_error_free0 (_error_);
-#line 3029 "extension.c"
+#line 3105 "extension.c"
 			}
-			__finally8:
-#line 348 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+			__finally4:
+#line 355 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			if (_inner_error_ != NULL) {
-#line 348 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 355 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (sub);
-#line 348 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 355 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (_sub_list);
-#line 348 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 355 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 348 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 355 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				g_clear_error (&_inner_error_);
-#line 348 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 355 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				return;
-#line 3044 "extension.c"
+#line 3120 "extension.c"
 			}
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_g_object_unref0 (sub);
-#line 3048 "extension.c"
+#line 3124 "extension.c"
 		}
-#line 347 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 354 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (_sub_list);
-#line 3052 "extension.c"
+#line 3128 "extension.c"
 	}
-#line 354 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 361 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp23_ = self->config;
-#line 354 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 361 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object ((GObject*) _tmp23_, "notify::size", (GCallback) _adblock_extension_subscriptions_added_removed_g_object_notify, self, 0);
-#line 355 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 362 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp24_ = self->manager;
-#line 355 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 362 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp25_ = _tmp24_->description_label;
-#line 355 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 362 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_signal_connect_object (_tmp25_, "activate-link", (GCallback) _adblock_extension_open_link_gtk_label_activate_link, self, 0);
-#line 357 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 364 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp26_ = adblock_extension_fetch_js_hider_function_body (self);
-#line 357 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 364 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (self->js_hider_function_body);
-#line 357 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 364 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	self->js_hider_function_body = _tmp26_;
-#line 3070 "extension.c"
+#line 3146 "extension.c"
 }
 
 
@@ -3111,55 +3187,55 @@ static gboolean adblock_extension_open_link (AdblockExtension* self, const gchar
 	GtkWidget* _tmp5_ = NULL;
 	GtkWidget* _tmp6_;
 	GtkWidget* view;
-#line 361 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 368 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 361 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 368 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (uri != NULL, FALSE);
-#line 362 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 369 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = midori_extension_get_app ((MidoriExtension*) self);
-#line 362 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 369 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = midori_app_get_browser (_tmp0_);
-#line 362 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 369 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = _tmp1_;
-#line 362 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 369 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = _g_object_ref0 (_tmp2_);
-#line 362 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 369 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	browser = _tmp3_;
-#line 363 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 370 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = uri;
-#line 363 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 370 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = midori_browser_add_uri (browser, _tmp4_);
-#line 363 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 370 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp6_ = _g_object_ref0 (_tmp5_);
-#line 363 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 370 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	view = _tmp6_;
-#line 364 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 371 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	midori_browser_set_tab (browser, view);
-#line 365 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 372 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = TRUE;
-#line 365 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 372 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (view);
-#line 365 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 372 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (browser);
-#line 365 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 372 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 3117 "extension.c"
+#line 3193 "extension.c"
 }
 
 
 static void adblock_extension_subscriptions_added_removed (AdblockExtension* self, GParamSpec* pspec) {
 	GString* _tmp0_;
-#line 368 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 375 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 368 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 375 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (pspec != NULL);
-#line 369 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 376 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = g_string_new ("");
-#line 369 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 376 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_string_free0 (self->hider_selectors);
-#line 369 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 376 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	self->hider_selectors = _tmp0_;
-#line 3133 "extension.c"
+#line 3209 "extension.c"
 }
 
 
@@ -3172,181 +3248,81 @@ static void adblock_extension_load_config (AdblockExtension* self) {
 	gchar* _tmp3_ = NULL;
 	gchar* filename;
 	AdblockConfig* _tmp4_;
-	gchar* _tmp5_ = NULL;
-	gchar* custom_list;
-	GError * _inner_error_ = NULL;
-#line 372 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 379 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (self != NULL);
-#line 374 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 381 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = g_get_user_config_dir ();
-#line 374 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 381 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_build_filename (_tmp0_, "midori", "extensions", "libadblock." G_MODULE_SUFFIX, NULL);
-#line 374 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 381 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	config_dir = _tmp1_;
-#line 375 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 382 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	midori_paths_mkdir_with_parents (config_dir, 0700);
-#line 379 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 386 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = midori_paths_get_extension_preset_filename ("adblock", "config");
-#line 379 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 386 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	presets = _tmp2_;
-#line 380 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 387 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = g_build_filename (config_dir, "config", NULL);
-#line 380 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 387 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	filename = _tmp3_;
-#line 381 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 388 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = adblock_config_new (filename, presets);
-#line 381 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 388 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (self->config);
-#line 381 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 388 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	self->config = _tmp4_;
-#line 382 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp5_ = g_build_filename (config_dir, "custom.list", NULL);
-#line 382 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	custom_list = _tmp5_;
-#line 3177 "extension.c"
-	{
-		gchar* _tmp6_ = NULL;
-		gchar* _tmp7_;
-		gchar* _tmp8_;
-		AdblockSubscription* _tmp9_;
-		AdblockSubscription* _tmp10_;
-		AdblockSubscription* _tmp11_;
-		const gchar* _tmp12_ = NULL;
-		AdblockConfig* _tmp13_;
-		AdblockSubscription* _tmp14_;
-#line 384 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp6_ = g_filename_to_uri (custom_list, NULL, &_inner_error_);
-#line 384 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp7_ = _tmp6_;
-#line 384 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		if (_inner_error_ != NULL) {
-#line 3194 "extension.c"
-			goto __catch9_g_error;
-		}
-#line 384 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp8_ = _tmp7_;
-#line 384 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp9_ = adblock_subscription_new (_tmp8_);
-#line 384 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_g_object_unref0 (self->custom);
-#line 384 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		self->custom = _tmp9_;
-#line 384 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_g_free0 (_tmp8_);
-#line 385 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp10_ = self->custom;
-#line 385 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		adblock_subscription_set_mutable (_tmp10_, FALSE);
-#line 386 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp11_ = self->custom;
-#line 386 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp12_ = _ ("Custom");
-#line 386 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		adblock_subscription_set_title (_tmp11_, _tmp12_);
-#line 387 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp13_ = self->config;
-#line 387 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp14_ = self->custom;
-#line 387 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		adblock_config_add (_tmp13_, _tmp14_);
-#line 3223 "extension.c"
-	}
-	goto __finally9;
-	__catch9_g_error:
-	{
-		GError* _error_ = NULL;
-		GError* _tmp15_;
-		const gchar* _tmp16_;
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_error_ = _inner_error_;
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_inner_error_ = NULL;
-#line 389 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_g_object_unref0 (self->custom);
-#line 389 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		self->custom = NULL;
-#line 390 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp15_ = _error_;
-#line 390 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_tmp16_ = _tmp15_->message;
-#line 390 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_warning ("extension.vala:390: Failed to add custom list %s: %s", custom_list, _tmp16_);
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_g_error_free0 (_error_);
-#line 3247 "extension.c"
-	}
-	__finally9:
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	if (_inner_error_ != NULL) {
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_g_free0 (custom_list);
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_g_free0 (filename);
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_g_free0 (presets);
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		_g_free0 (config_dir);
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_clear_error (&_inner_error_);
-#line 383 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		return;
-#line 3266 "extension.c"
-	}
-#line 372 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_g_free0 (custom_list);
-#line 372 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 379 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (filename);
-#line 372 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 379 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (presets);
-#line 372 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 379 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (config_dir);
-#line 3276 "extension.c"
+#line 3252 "extension.c"
 }
 
 
 static AdblockDirective* _adblock_directive_dup (AdblockDirective* self) {
 	AdblockDirective* dup;
-#line 418 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 425 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	dup = g_new0 (AdblockDirective, 1);
-#line 418 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 425 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	memcpy (dup, self, sizeof (AdblockDirective));
-#line 418 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 425 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return dup;
-#line 3288 "extension.c"
+#line 3264 "extension.c"
 }
 
 
 static gpointer __adblock_directive_dup0 (gpointer self) {
-#line 418 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 425 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return self ? _adblock_directive_dup (self) : NULL;
-#line 3295 "extension.c"
+#line 3271 "extension.c"
 }
 
 
 static gboolean _adblock_directive_equal (const AdblockDirective* s1, const AdblockDirective* s2) {
-#line 419 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 426 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (s1 == s2) {
-#line 419 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 426 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return TRUE;
-#line 3304 "extension.c"
+#line 3280 "extension.c"
 	}
-#line 419 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 426 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (s1 == NULL) {
-#line 419 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 426 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return FALSE;
-#line 3310 "extension.c"
+#line 3286 "extension.c"
 	}
-#line 419 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 426 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (s2 == NULL) {
-#line 419 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 426 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return FALSE;
-#line 3316 "extension.c"
+#line 3292 "extension.c"
 	}
-#line 419 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 426 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return (*s1) == (*s2);
-#line 3320 "extension.c"
+#line 3296 "extension.c"
 }
 
 
@@ -3367,83 +3343,83 @@ AdblockDirective adblock_extension_get_directive_for_uri (AdblockExtension* self
 	AdblockDirective* _tmp29_;
 	AdblockDirective* _tmp39_;
 	AdblockDirective _tmp40_;
-#line 394 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 401 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 394 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 401 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (request_uri != NULL, 0);
-#line 394 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 401 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (page_uri != NULL, 0);
-#line 395 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 402 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = self->config;
-#line 395 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 402 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = adblock_config_get_enabled (_tmp0_);
-#line 395 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 402 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = _tmp1_;
-#line 395 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 402 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (!_tmp2_) {
-#line 396 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 403 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = ADBLOCK_DIRECTIVE_ALLOW;
-#line 396 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 403 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		return result;
+#line 3335 "extension.c"
+	}
+#line 406 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp3_ = request_uri;
+#line 406 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp4_ = page_uri;
+#line 406 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	if (g_strcmp0 (_tmp3_, _tmp4_) == 0) {
+#line 407 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		result = ADBLOCK_DIRECTIVE_ALLOW;
+#line 407 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		return result;
+#line 3347 "extension.c"
+	}
+#line 410 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp5_ = page_uri;
+#line 410 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	_tmp6_ = midori_uri_is_blank (_tmp5_);
+#line 410 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	if (_tmp6_) {
+#line 411 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		result = ADBLOCK_DIRECTIVE_ALLOW;
+#line 411 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
 #line 3359 "extension.c"
 	}
-#line 399 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp3_ = request_uri;
-#line 399 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp4_ = page_uri;
-#line 399 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	if (g_strcmp0 (_tmp3_, _tmp4_) == 0) {
-#line 400 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		result = ADBLOCK_DIRECTIVE_ALLOW;
-#line 400 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		return result;
-#line 3371 "extension.c"
-	}
-#line 403 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp5_ = page_uri;
-#line 403 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	_tmp6_ = midori_uri_is_blank (_tmp5_);
-#line 403 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-	if (_tmp6_) {
-#line 404 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		result = ADBLOCK_DIRECTIVE_ALLOW;
-#line 404 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		return result;
-#line 3383 "extension.c"
-	}
-#line 407 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 414 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp8_ = request_uri;
-#line 407 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 414 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp9_ = midori_uri_is_http (_tmp8_);
-#line 407 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 414 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (!_tmp9_) {
-#line 407 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 414 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp7_ = TRUE;
-#line 3393 "extension.c"
+#line 3369 "extension.c"
 	} else {
 		const gchar* _tmp10_;
 		gboolean _tmp11_ = FALSE;
-#line 407 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 414 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp10_ = request_uri;
-#line 407 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 414 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp11_ = g_str_has_suffix (_tmp10_, "favicon.ico");
-#line 407 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 414 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp7_ = _tmp11_;
-#line 3403 "extension.c"
+#line 3379 "extension.c"
 	}
-#line 407 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 414 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp12_ = _tmp7_;
-#line 407 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 414 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp12_) {
-#line 408 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 415 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = ADBLOCK_DIRECTIVE_ALLOW;
-#line 408 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 415 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 3413 "extension.c"
+#line 3389 "extension.c"
 	}
-#line 410 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 417 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	directive = NULL;
-#line 3417 "extension.c"
+#line 3393 "extension.c"
 	{
 		AdblockConfig* _tmp13_;
 		AdblockConfig* _tmp14_;
@@ -3453,25 +3429,25 @@ AdblockDirective adblock_extension_get_directive_for_uri (AdblockExtension* self
 		guint _tmp17_;
 		guint _sub_size;
 		gint _sub_index;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp13_ = self->config;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp14_ = _g_object_ref0 (_tmp13_);
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_list = _tmp14_;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp15_ = _sub_list;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp16_ = adblock_config_get_size (_tmp15_);
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp17_ = _tmp16_;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_size = _tmp17_;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_index = -1;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		while (TRUE) {
-#line 3445 "extension.c"
+#line 3421 "extension.c"
 			gint _tmp18_;
 			gint _tmp19_;
 			guint _tmp20_;
@@ -3484,119 +3460,119 @@ AdblockDirective adblock_extension_get_directive_for_uri (AdblockExtension* self
 			const gchar* _tmp26_;
 			AdblockDirective* _tmp27_ = NULL;
 			AdblockDirective* _tmp28_;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp18_ = _sub_index;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_sub_index = _tmp18_ + 1;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp19_ = _sub_index;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp20_ = _sub_size;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			if (!(((guint) _tmp19_) < _tmp20_)) {
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				break;
-#line 3470 "extension.c"
+#line 3446 "extension.c"
 			}
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp21_ = _sub_list;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp22_ = _sub_index;
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp23_ = adblock_config_get (_tmp21_, (guint) _tmp22_);
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			sub = _tmp23_;
-#line 412 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 419 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp24_ = sub;
-#line 412 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 419 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp25_ = request_uri;
-#line 412 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 419 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp26_ = page_uri;
-#line 412 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 419 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp27_ = adblock_subscription_get_directive (_tmp24_, _tmp25_, _tmp26_);
-#line 412 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 419 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_g_free0 (directive);
-#line 412 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 419 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			directive = _tmp27_;
-#line 413 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 420 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp28_ = directive;
-#line 413 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 420 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			if (_tmp28_ != NULL) {
-#line 414 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 421 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (sub);
-#line 414 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 421 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				break;
-#line 3500 "extension.c"
+#line 3476 "extension.c"
 			}
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_g_object_unref0 (sub);
-#line 3504 "extension.c"
+#line 3480 "extension.c"
 		}
-#line 411 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 418 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (_sub_list);
-#line 3508 "extension.c"
+#line 3484 "extension.c"
 	}
-#line 417 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 424 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp29_ = directive;
-#line 417 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 424 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp29_ == NULL) {
-#line 3514 "extension.c"
+#line 3490 "extension.c"
 		AdblockDirective _tmp30_;
 		AdblockDirective* _tmp31_;
-#line 418 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 425 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp30_ = ADBLOCK_DIRECTIVE_ALLOW;
-#line 418 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 425 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp31_ = __adblock_directive_dup0 (&_tmp30_);
-#line 418 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 425 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (directive);
-#line 418 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 425 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		directive = _tmp31_;
-#line 3525 "extension.c"
+#line 3501 "extension.c"
 	} else {
 		AdblockDirective* _tmp32_;
 		AdblockDirective _tmp33_;
-#line 419 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 426 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp32_ = directive;
-#line 419 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 426 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp33_ = ADBLOCK_DIRECTIVE_BLOCK;
-#line 419 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 426 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_adblock_directive_equal (_tmp32_, &_tmp33_) == TRUE) {
-#line 3535 "extension.c"
+#line 3511 "extension.c"
 			AdblockStatusIcon* _tmp34_;
 			GString* _tmp35_;
 			const gchar* _tmp36_;
 			gchar* _tmp37_ = NULL;
 			gchar* _tmp38_;
-#line 420 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 427 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp34_ = self->status_icon;
-#line 420 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 427 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			adblock_status_icon_set_state (_tmp34_, ADBLOCK_STATE_BLOCKED);
-#line 424 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 431 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp35_ = self->hider_selectors;
-#line 424 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 431 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp36_ = request_uri;
-#line 424 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 431 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp37_ = g_strdup_printf (" uris.push ('%s');\n", _tmp36_);
-#line 424 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 431 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp38_ = _tmp37_;
-#line 424 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 431 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			g_string_append (_tmp35_, _tmp38_);
-#line 424 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 431 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_g_free0 (_tmp38_);
-#line 3557 "extension.c"
+#line 3533 "extension.c"
 		}
 	}
-#line 427 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 434 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp39_ = directive;
-#line 427 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 434 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp40_ = *_tmp39_;
-#line 427 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 434 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp39_);
-#line 427 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 434 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = _tmp40_;
-#line 427 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 434 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 3570 "extension.c"
+#line 3546 "extension.c"
 }
 
 
@@ -3605,32 +3581,32 @@ gboolean adblock_extension_request_handled (AdblockExtension* self, const gchar*
 	const gchar* _tmp0_;
 	const gchar* _tmp1_;
 	AdblockDirective _tmp2_ = 0;
-#line 430 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 437 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 430 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 437 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (request_uri != NULL, FALSE);
-#line 430 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 437 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (page_uri != NULL, FALSE);
-#line 431 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 438 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = request_uri;
-#line 431 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 438 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = page_uri;
-#line 431 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 438 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = adblock_extension_get_directive_for_uri (self, _tmp0_, _tmp1_);
-#line 431 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 438 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = _tmp2_ == ADBLOCK_DIRECTIVE_BLOCK;
-#line 431 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 438 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 3595 "extension.c"
+#line 3571 "extension.c"
 }
 
 
 static void adblock_extension_class_init (AdblockExtensionClass * klass) {
-#line 47 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 47 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_parent_class = g_type_class_peek_parent (klass);
-#line 47 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 47 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	G_OBJECT_CLASS (klass)->finalize = adblock_extension_finalize;
-#line 3604 "extension.c"
+#line 3580 "extension.c"
 }
 
 
@@ -3640,23 +3616,23 @@ static void adblock_extension_instance_init (AdblockExtension * self) {
 
 static void adblock_extension_finalize (GObject* obj) {
 	AdblockExtension * self;
-#line 47 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 47 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, ADBLOCK_TYPE_EXTENSION, AdblockExtension);
-#line 48 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 48 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (self->config);
-#line 49 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 49 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (self->custom);
-#line 50 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 50 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_string_free0 (self->hider_selectors);
-#line 51 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 51 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_adblock_status_icon_unref0 (self->status_icon);
-#line 52 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 52 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_adblock_subscription_manager_unref0 (self->manager);
-#line 55 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 55 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (self->js_hider_function_body);
-#line 47 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 47 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	G_OBJECT_CLASS (adblock_extension_parent_class)->finalize (obj);
-#line 3630 "extension.c"
+#line 3606 "extension.c"
 }
 
 
@@ -3686,63 +3662,63 @@ void adblock_debug (const gchar* format, ...) {
 	const gchar* _tmp9_;
 	gchar* _tmp10_;
 	gchar* _tmp11_;
-#line 435 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 442 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_if_fail (format != NULL);
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = g_getenv ("MIDORI_DEBUG");
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_strdup (_tmp0_);
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = _tmp1_;
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = _tmp2_;
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp3_ == NULL) {
-#line 3672 "extension.c"
+#line 3648 "extension.c"
 		gchar* _tmp4_;
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp4_ = g_strdup ("");
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (_tmp2_);
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp2_ = _tmp4_;
-#line 3680 "extension.c"
+#line 3656 "extension.c"
 	}
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = _tmp2_;
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp6_ = string_contains (_tmp5_, "adblock:match");
-#line 436 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 443 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	debug_match = _tmp6_;
-#line 437 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 444 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7_ = debug_match;
-#line 437 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 444 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (!_tmp7_) {
-#line 438 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 445 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (_tmp2_);
-#line 438 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 445 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return;
-#line 3696 "extension.c"
+#line 3672 "extension.c"
 	}
-#line 440 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 447 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	va_start (args, format);
-#line 441 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 448 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp8_ = stdout;
-#line 441 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 448 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp9_ = format;
-#line 441 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 448 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp10_ = g_strconcat (_tmp9_, "\n", NULL);
-#line 441 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 448 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp11_ = _tmp10_;
-#line 441 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 448 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	vfprintf (_tmp8_, _tmp11_, args);
-#line 441 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 448 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp11_);
-#line 435 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 442 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	va_end (args);
-#line 435 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 442 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp2_);
-#line 3716 "extension.c"
+#line 3692 "extension.c"
 }
 
 
@@ -3760,7 +3736,7 @@ static gchar string_get (const gchar* self, glong index) {
 	result = _tmp1_;
 #line 966 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	return result;
-#line 3734 "extension.c"
+#line 3710 "extension.c"
 }
 
 
@@ -3781,55 +3757,55 @@ gchar* adblock_fixup_regex (const gchar* prefix, const gchar* src) {
 	GString* _tmp22_;
 	const gchar* _tmp23_;
 	gchar* _tmp24_;
-#line 444 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 451 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (prefix != NULL, NULL);
-#line 445 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 452 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = src;
-#line 445 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 452 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp0_ == NULL) {
-#line 446 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 453 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = NULL;
-#line 446 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 453 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 3765 "extension.c"
+#line 3741 "extension.c"
 	}
-#line 448 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 455 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_string_new ("");
-#line 448 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 455 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	fixed = _tmp1_;
-#line 449 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 456 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = fixed;
-#line 449 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 456 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = prefix;
-#line 449 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 456 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_string_append (_tmp2_, _tmp3_);
-#line 451 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 458 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	i = (guint) 0;
-#line 452 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 459 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = src;
-#line 452 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 459 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = string_get (_tmp4_, (glong) 0);
-#line 452 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 459 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp5_ == '*') {
-#line 3785 "extension.c"
+#line 3761 "extension.c"
 		guint _tmp6_;
-#line 453 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 460 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp6_ = i;
-#line 453 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 460 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		i = _tmp6_ + 1;
-#line 3791 "extension.c"
+#line 3767 "extension.c"
 	}
-#line 454 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 461 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7_ = src;
-#line 454 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 461 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp8_ = strlen (_tmp7_);
-#line 454 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 461 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp9_ = _tmp8_;
-#line 454 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 461 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	l = (guint) _tmp9_;
-#line 455 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 462 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	while (TRUE) {
-#line 3803 "extension.c"
+#line 3779 "extension.c"
 		guint _tmp10_;
 		guint _tmp11_;
 		const gchar* _tmp12_;
@@ -3838,120 +3814,120 @@ gchar* adblock_fixup_regex (const gchar* prefix, const gchar* src) {
 		gchar c;
 		gchar _tmp15_;
 		guint _tmp21_;
-#line 455 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 462 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp10_ = i;
-#line 455 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 462 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp11_ = l;
-#line 455 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 462 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (!(_tmp10_ < _tmp11_)) {
-#line 455 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 462 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			break;
-#line 3820 "extension.c"
+#line 3796 "extension.c"
 		}
-#line 456 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 463 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp12_ = src;
-#line 456 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 463 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp13_ = i;
-#line 456 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 463 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp14_ = string_get (_tmp12_, (glong) _tmp13_);
-#line 456 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 463 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		c = _tmp14_;
-#line 457 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 464 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp15_ = c;
-#line 457 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 464 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		switch (_tmp15_) {
-#line 457 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 464 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			case '*':
-#line 3836 "extension.c"
+#line 3812 "extension.c"
 			{
 				GString* _tmp16_;
-#line 459 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 466 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp16_ = fixed;
-#line 459 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 466 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				g_string_append (_tmp16_, ".*");
-#line 459 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 466 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				break;
-#line 3845 "extension.c"
+#line 3821 "extension.c"
 			}
-#line 457 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 464 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			case '|':
-#line 457 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 464 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			case '^':
-#line 457 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 464 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			case '+':
-#line 3853 "extension.c"
+#line 3829 "extension.c"
 			{
-#line 463 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 470 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				break;
-#line 3857 "extension.c"
+#line 3833 "extension.c"
 			}
-#line 457 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 464 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			case '?':
-#line 457 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 464 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			case '[':
-#line 457 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 464 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			case ']':
-#line 3865 "extension.c"
+#line 3841 "extension.c"
 			{
 				GString* _tmp17_;
 				gchar _tmp18_;
-#line 467 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 474 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp17_ = fixed;
-#line 467 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 474 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp18_ = c;
-#line 467 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 474 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				g_string_append_printf (_tmp17_, "\\%c", (gint) _tmp18_);
-#line 467 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 474 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				break;
-#line 3877 "extension.c"
+#line 3853 "extension.c"
 			}
 			default:
 			{
 				GString* _tmp19_;
 				gchar _tmp20_;
-#line 469 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 476 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp19_ = fixed;
-#line 469 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 476 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp20_ = c;
-#line 469 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 476 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				g_string_append_c (_tmp19_, _tmp20_);
-#line 469 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 476 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				break;
-#line 3891 "extension.c"
+#line 3867 "extension.c"
 			}
 		}
-#line 471 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 478 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp21_ = i;
-#line 471 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 478 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		i = _tmp21_ + 1;
-#line 3898 "extension.c"
+#line 3874 "extension.c"
 	}
-#line 473 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 480 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp22_ = fixed;
-#line 473 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 480 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp23_ = _tmp22_->str;
-#line 473 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 480 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp24_ = g_strdup (_tmp23_);
-#line 473 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 480 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = _tmp24_;
-#line 473 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 480 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_string_free0 (fixed);
-#line 473 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 480 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 3912 "extension.c"
+#line 3888 "extension.c"
 }
 
 
 MidoriExtension* extension_init (void) {
 	MidoriExtension* result = NULL;
 	AdblockExtension* _tmp0_;
-#line 487 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 494 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = adblock_extension_new ();
-#line 487 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 494 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = (MidoriExtension*) _tmp0_;
-#line 487 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 494 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 3925 "extension.c"
+#line 3901 "extension.c"
 }
 
 
@@ -3965,86 +3941,86 @@ gchar* get_test_file (const gchar* contents) {
 	gchar* _tmp5_ = NULL;
 	gchar* file;
 	GError * _inner_error_ = NULL;
-#line 491 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 498 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_return_val_if_fail (contents != NULL, NULL);
-#line 492 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 499 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = tmp_folder;
-#line 492 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 499 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp0_ == NULL) {
-#line 3945 "extension.c"
+#line 3921 "extension.c"
 		gchar* _tmp1_ = NULL;
-#line 493 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 500 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp1_ = midori_paths_make_tmp_dir ("adblockXXXXXX");
-#line 493 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 500 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (tmp_folder);
-#line 493 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 500 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		tmp_folder = _tmp1_;
-#line 3953 "extension.c"
+#line 3929 "extension.c"
 	}
-#line 494 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 501 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = contents;
-#line 494 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 501 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = g_compute_checksum_for_string (G_CHECKSUM_MD5, _tmp2_, (gsize) (-1));
-#line 494 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 501 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	checksum = _tmp3_;
-#line 495 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 502 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = tmp_folder;
-#line 495 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 502 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = g_build_path (G_DIR_SEPARATOR_S, _tmp4_, checksum, NULL);
-#line 495 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 502 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	file = _tmp5_;
-#line 3967 "extension.c"
+#line 3943 "extension.c"
 	{
 		const gchar* _tmp6_;
-#line 497 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 504 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp6_ = contents;
-#line 497 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 504 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_file_set_contents (file, _tmp6_, (gssize) (-1), &_inner_error_);
-#line 497 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 504 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_inner_error_ != NULL) {
-#line 3976 "extension.c"
-			goto __catch10_g_error;
+#line 3952 "extension.c"
+			goto __catch5_g_error;
 		}
 	}
-	goto __finally10;
-	__catch10_g_error:
+	goto __finally5;
+	__catch5_g_error:
 	{
 		GError* file_error = NULL;
 		const gchar* _tmp7_;
-#line 496 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 503 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		file_error = _inner_error_;
-#line 496 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 503 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_inner_error_ = NULL;
-#line 499 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 506 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp7_ = file_error->message;
-#line 499 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_error ("extension.vala:499: %s", _tmp7_);
-#line 496 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 506 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		g_error ("extension.vala:506: %s", _tmp7_);
+#line 503 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_error_free0 (file_error);
-#line 3995 "extension.c"
+#line 3971 "extension.c"
 	}
-	__finally10:
-#line 496 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	__finally5:
+#line 503 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_inner_error_ != NULL) {
-#line 496 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 503 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (file);
-#line 496 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 503 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (checksum);
-#line 496 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 503 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 496 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 503 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_clear_error (&_inner_error_);
-#line 496 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 503 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return NULL;
-#line 4010 "extension.c"
+#line 3986 "extension.c"
 	}
-#line 501 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 508 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = file;
-#line 501 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 508 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (checksum);
-#line 501 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 508 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 4018 "extension.c"
+#line 3994 "extension.c"
 }
 
 
@@ -4053,51 +4029,51 @@ void test_case_config_copy (const TestCaseConfig* self, TestCaseConfig* dest) {
 	gchar* _tmp1_;
 	guint _tmp2_;
 	gboolean _tmp3_;
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = (*self).content;
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_strdup (_tmp0_);
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*dest).content);
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).content = _tmp1_;
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = (*self).size;
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).size = _tmp2_;
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = (*self).enabled;
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).enabled = _tmp3_;
-#line 4043 "extension.c"
+#line 4019 "extension.c"
 }
 
 
 void test_case_config_destroy (TestCaseConfig* self) {
-#line 505 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 512 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*self).content);
-#line 4050 "extension.c"
+#line 4026 "extension.c"
 }
 
 
 TestCaseConfig* test_case_config_dup (const TestCaseConfig* self) {
 	TestCaseConfig* dup;
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	dup = g_new0 (TestCaseConfig, 1);
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_case_config_copy (self, dup);
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return dup;
-#line 4062 "extension.c"
+#line 4038 "extension.c"
 }
 
 
 void test_case_config_free (TestCaseConfig* self) {
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_case_config_destroy (self);
-#line 504 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 511 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_free (self);
-#line 4071 "extension.c"
+#line 4047 "extension.c"
 }
 
 
@@ -4116,7 +4092,7 @@ static gchar* bool_to_string (gboolean self) {
 	gchar* result = NULL;
 #line 37 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	if (self) {
-#line 4090 "extension.c"
+#line 4066 "extension.c"
 		gchar* _tmp0_;
 #line 38 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		_tmp0_ = g_strdup ("true");
@@ -4124,7 +4100,7 @@ static gchar* bool_to_string (gboolean self) {
 		result = _tmp0_;
 #line 38 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		return result;
-#line 4098 "extension.c"
+#line 4074 "extension.c"
 	} else {
 		gchar* _tmp1_;
 #line 40 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
@@ -4133,7 +4109,7 @@ static gchar* bool_to_string (gboolean self) {
 		result = _tmp1_;
 #line 40 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		return result;
-#line 4107 "extension.c"
+#line 4083 "extension.c"
 	}
 }
 
@@ -4143,35 +4119,35 @@ void test_adblock_config (void) {
 	AdblockConfig* _tmp1_;
 	guint _tmp2_;
 	guint _tmp3_;
-#line 518 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 525 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = adblock_config_new (NULL, NULL);
-#line 518 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 525 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = _tmp0_;
-#line 518 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 525 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = adblock_config_get_size (_tmp1_);
-#line 518 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 525 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = _tmp2_;
-#line 518 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 525 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp3_ == ((guint) 0), "new Adblock.Config (null, null).size == 0");
-#line 518 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 525 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (_tmp1_);
-#line 4129 "extension.c"
+#line 4105 "extension.c"
 	{
 		TestCaseConfig* conf_collection = NULL;
 		gint conf_collection_length1 = 0;
 		gint _conf_collection_size_ = 0;
 		gint conf_it = 0;
-#line 520 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 527 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		conf_collection = configs;
-#line 520 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 527 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		conf_collection_length1 = G_N_ELEMENTS (configs);
-#line 520 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 527 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (conf_it = 0; conf_it < G_N_ELEMENTS (configs); conf_it = conf_it + 1) {
-#line 4141 "extension.c"
+#line 4117 "extension.c"
 			TestCaseConfig conf = {0};
-#line 520 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 527 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			conf = conf_collection[conf_it];
-#line 4145 "extension.c"
+#line 4121 "extension.c"
 			{
 				TestCaseConfig _tmp4_;
 				const gchar* _tmp5_;
@@ -4190,35 +4166,35 @@ void test_adblock_config (void) {
 				gboolean _tmp28_;
 				TestCaseConfig _tmp29_;
 				gboolean _tmp30_;
-#line 521 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 528 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp4_ = conf;
-#line 521 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 528 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp5_ = _tmp4_.content;
-#line 521 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 528 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp6_ = get_test_file (_tmp5_);
-#line 521 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 528 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp7_ = _tmp6_;
-#line 521 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 528 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp8_ = adblock_config_new (_tmp7_, NULL);
-#line 521 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 528 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp9_ = _tmp8_;
-#line 521 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 528 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_free0 (_tmp7_);
-#line 521 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 528 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				config = _tmp9_;
-#line 522 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 529 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp10_ = config;
-#line 522 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 529 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp11_ = adblock_config_get_size (_tmp10_);
-#line 522 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 529 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp12_ = _tmp11_;
-#line 522 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 529 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp13_ = conf;
-#line 522 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 529 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp14_ = _tmp13_.size;
-#line 522 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 529 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (_tmp12_ != _tmp14_) {
-#line 4192 "extension.c"
+#line 4168 "extension.c"
 					AdblockConfig* _tmp15_;
 					guint _tmp16_;
 					guint _tmp17_;
@@ -4230,49 +4206,49 @@ void test_adblock_config (void) {
 					gchar* _tmp23_;
 					TestCaseConfig _tmp24_;
 					const gchar* _tmp25_;
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp15_ = config;
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp16_ = adblock_config_get_size (_tmp15_);
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp17_ = _tmp16_;
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp18_ = g_strdup_printf ("%u", _tmp17_);
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp19_ = _tmp18_;
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp20_ = conf;
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp21_ = _tmp20_.size;
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp22_ = g_strdup_printf ("%u", _tmp21_);
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp23_ = _tmp22_;
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp24_ = conf;
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp25_ = _tmp24_.content;
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-					g_error ("extension.vala:523: Wrong size %s rather than %s:\n%s", _tmp19_, _tmp23_, _tmp25_);
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+					g_error ("extension.vala:530: Wrong size %s rather than %s:\n%s", _tmp19_, _tmp23_, _tmp25_);
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (_tmp23_);
-#line 523 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 530 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (_tmp19_);
-#line 4232 "extension.c"
+#line 4208 "extension.c"
 				}
-#line 525 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 532 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp26_ = config;
-#line 525 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 532 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp27_ = adblock_config_get_enabled (_tmp26_);
-#line 525 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 532 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp28_ = _tmp27_;
-#line 525 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 532 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp29_ = conf;
-#line 525 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 532 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp30_ = _tmp29_.enabled;
-#line 525 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 532 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (_tmp28_ != _tmp30_) {
-#line 4246 "extension.c"
+#line 4222 "extension.c"
 					AdblockConfig* _tmp31_;
 					gboolean _tmp32_;
 					gboolean _tmp33_;
@@ -4284,39 +4260,39 @@ void test_adblock_config (void) {
 					gchar* _tmp39_;
 					TestCaseConfig _tmp40_;
 					const gchar* _tmp41_;
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp31_ = config;
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp32_ = adblock_config_get_enabled (_tmp31_);
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp33_ = _tmp32_;
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp34_ = bool_to_string (_tmp33_);
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp35_ = _tmp34_;
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp36_ = conf;
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp37_ = _tmp36_.enabled;
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp38_ = bool_to_string (_tmp37_);
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp39_ = _tmp38_;
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp40_ = conf;
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp41_ = _tmp40_.content;
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-					g_error ("extension.vala:526: Wrongly got enabled=%s rather than %s:\n%s", _tmp35_, _tmp39_, _tmp41_);
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+					g_error ("extension.vala:533: Wrongly got enabled=%s rather than %s:\n%s", _tmp35_, _tmp39_, _tmp41_);
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (_tmp39_);
-#line 526 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 533 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (_tmp35_);
-#line 4286 "extension.c"
+#line 4262 "extension.c"
 				}
-#line 520 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 527 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (config);
-#line 4290 "extension.c"
+#line 4266 "extension.c"
 			}
 		}
 	}
@@ -4327,47 +4303,47 @@ void test_case_sub_copy (const TestCaseSub* self, TestCaseSub* dest) {
 	const gchar* _tmp0_;
 	gchar* _tmp1_;
 	gboolean _tmp2_;
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = (*self).uri;
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_strdup (_tmp0_);
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*dest).uri);
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).uri = _tmp1_;
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = (*self).active;
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).active = _tmp2_;
-#line 4313 "extension.c"
+#line 4289 "extension.c"
 }
 
 
 void test_case_sub_destroy (TestCaseSub* self) {
-#line 532 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 539 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*self).uri);
-#line 4320 "extension.c"
+#line 4296 "extension.c"
 }
 
 
 TestCaseSub* test_case_sub_dup (const TestCaseSub* self) {
 	TestCaseSub* dup;
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	dup = g_new0 (TestCaseSub, 1);
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_case_sub_copy (self, dup);
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return dup;
-#line 4332 "extension.c"
+#line 4308 "extension.c"
 }
 
 
 void test_case_sub_free (TestCaseSub* self) {
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_case_sub_destroy (self);
-#line 531 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 538 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_free (self);
-#line 4341 "extension.c"
+#line 4317 "extension.c"
 }
 
 
@@ -4448,52 +4424,52 @@ void test_adblock_subs (void) {
 	guint _tmp178_;
 	guint _tmp179_;
 	GError * _inner_error_ = NULL;
-#line 546 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 553 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = get_test_file ("\n" \
 "[settings]\n" \
 "filters=http://foo.com;http-//bar.com;https://spam.com;http-://eggs.co" \
 "m;file:///bla;file-///blub;http://foo.com;\n");
-#line 546 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 553 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = _tmp0_;
-#line 546 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 553 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = adblock_config_new (_tmp1_, NULL);
-#line 546 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 553 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = _tmp2_;
-#line 546 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 553 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp1_);
-#line 546 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 553 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	config = _tmp3_;
-#line 551 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 558 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = config;
-#line 551 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 558 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = adblock_config_get_enabled (_tmp4_);
-#line 551 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 558 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp6_ = _tmp5_;
-#line 551 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 558 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp6_, "config.enabled");
-#line 4442 "extension.c"
+#line 4418 "extension.c"
 	{
 		TestCaseSub* sub_collection = NULL;
 		gint sub_collection_length1 = 0;
 		gint _sub_collection_size_ = 0;
 		gint sub_it = 0;
-#line 552 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 559 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		sub_collection = subs;
-#line 552 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 559 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		sub_collection_length1 = G_N_ELEMENTS (subs);
-#line 552 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 559 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (sub_it = 0; sub_it < G_N_ELEMENTS (subs); sub_it = sub_it + 1) {
-#line 4454 "extension.c"
+#line 4430 "extension.c"
 			TestCaseSub sub = {0};
-#line 552 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 559 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			sub = sub_collection[sub_it];
-#line 4458 "extension.c"
+#line 4434 "extension.c"
 			{
 				gboolean found;
 				gboolean _tmp28_;
-#line 553 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 560 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				found = FALSE;
-#line 4464 "extension.c"
+#line 4440 "extension.c"
 				{
 					AdblockConfig* _tmp7_;
 					AdblockConfig* _tmp8_;
@@ -4503,25 +4479,25 @@ void test_adblock_subs (void) {
 					guint _tmp11_;
 					guint _subscription_size;
 					gint _subscription_index;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp7_ = config;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp8_ = _g_object_ref0 (_tmp7_);
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_subscription_list = _tmp8_;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp9_ = _subscription_list;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp10_ = adblock_config_get_size (_tmp9_);
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp11_ = _tmp10_;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_subscription_size = _tmp11_;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_subscription_index = -1;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					while (TRUE) {
-#line 4492 "extension.c"
+#line 4468 "extension.c"
 						gint _tmp12_;
 						gint _tmp13_;
 						guint _tmp14_;
@@ -4534,163 +4510,163 @@ void test_adblock_subs (void) {
 						const gchar* _tmp20_;
 						TestCaseSub _tmp21_;
 						const gchar* _tmp22_;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp12_ = _subscription_index;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_subscription_index = _tmp12_ + 1;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp13_ = _subscription_index;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp14_ = _subscription_size;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						if (!(((guint) _tmp13_) < _tmp14_)) {
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							break;
-#line 4517 "extension.c"
+#line 4493 "extension.c"
 						}
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp15_ = _subscription_list;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp16_ = _subscription_index;
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp17_ = adblock_config_get (_tmp15_, (guint) _tmp16_);
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						subscription = _tmp17_;
-#line 555 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 562 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp18_ = subscription;
-#line 555 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 562 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp19_ = adblock_subscription_get_uri (_tmp18_);
-#line 555 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 562 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp20_ = _tmp19_;
-#line 555 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 562 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp21_ = sub;
-#line 555 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 562 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp22_ = _tmp21_.uri;
-#line 555 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 562 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						if (g_strcmp0 (_tmp20_, _tmp22_) == 0) {
-#line 4539 "extension.c"
+#line 4515 "extension.c"
 							AdblockSubscription* _tmp23_;
 							gboolean _tmp24_;
 							gboolean _tmp25_;
 							TestCaseSub _tmp26_;
 							gboolean _tmp27_;
-#line 556 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 563 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							_tmp23_ = subscription;
-#line 556 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 563 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							_tmp24_ = adblock_subscription_get_active (_tmp23_);
-#line 556 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 563 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							_tmp25_ = _tmp24_;
-#line 556 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 563 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							_tmp26_ = sub;
-#line 556 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 563 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							_tmp27_ = _tmp26_.active;
-#line 556 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 563 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							_vala_assert (_tmp25_ == _tmp27_, "subscription.active == sub.active");
-#line 557 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 564 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 							found = TRUE;
-#line 4559 "extension.c"
+#line 4535 "extension.c"
 						}
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_g_object_unref0 (subscription);
-#line 4563 "extension.c"
+#line 4539 "extension.c"
 					}
-#line 554 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 561 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_object_unref0 (_subscription_list);
-#line 4567 "extension.c"
+#line 4543 "extension.c"
 				}
-#line 560 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 567 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp28_ = found;
-#line 560 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 567 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (!_tmp28_) {
-#line 4573 "extension.c"
+#line 4549 "extension.c"
 					TestCaseSub _tmp29_;
 					const gchar* _tmp30_;
-#line 561 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 568 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp29_ = sub;
-#line 561 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 568 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp30_ = _tmp29_.uri;
-#line 561 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-					g_error ("extension.vala:561: %s not found", _tmp30_);
-#line 4582 "extension.c"
+#line 568 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+					g_error ("extension.vala:568: %s not found", _tmp30_);
+#line 4558 "extension.c"
 				}
 			}
 		}
 	}
-#line 565 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 572 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp31_ = config;
-#line 565 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 572 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp32_ = adblock_config_get_size (_tmp31_);
-#line 565 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 572 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp33_ = _tmp32_;
-#line 565 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 572 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp33_ == ((guint) 6), "config.size == 6");
-#line 567 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 574 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp34_ = config;
-#line 567 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 574 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp35_ = adblock_subscription_new ("https://spam.com");
-#line 567 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 574 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp36_ = _tmp35_;
-#line 567 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 574 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp37_ = adblock_config_add (_tmp34_, _tmp36_);
-#line 567 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 574 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (!_tmp37_, "!config.add (new Adblock.Subscription (\"https://spam.com\"))");
-#line 567 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 574 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (_tmp36_);
-#line 570 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 577 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp38_ = config;
-#line 570 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 577 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_config_save (_tmp38_);
-#line 571 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 578 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp39_ = config;
-#line 571 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 578 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp40_ = adblock_config_get_path (_tmp39_);
-#line 571 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 578 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp41_ = _tmp40_;
-#line 571 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 578 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp42_ = adblock_config_new (_tmp41_, NULL);
-#line 571 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 578 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	copy = _tmp42_;
-#line 572 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 579 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp43_ = copy;
-#line 572 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 579 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp44_ = adblock_config_get_size (_tmp43_);
-#line 572 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 579 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp45_ = _tmp44_;
-#line 572 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 579 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp46_ = config;
-#line 572 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 579 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp47_ = adblock_config_get_size (_tmp46_);
-#line 572 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 579 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp48_ = _tmp47_;
-#line 572 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 579 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp45_ == _tmp48_, "copy.size == config.size");
-#line 573 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 580 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp49_ = copy;
-#line 573 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 580 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp50_ = adblock_config_get_enabled (_tmp49_);
-#line 573 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 580 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp51_ = _tmp50_;
-#line 573 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 580 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp52_ = config;
-#line 573 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 580 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp53_ = adblock_config_get_enabled (_tmp52_);
-#line 573 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 580 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp54_ = _tmp53_;
-#line 573 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 580 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp51_ == _tmp54_, "copy.enabled == config.enabled");
-#line 4649 "extension.c"
+#line 4625 "extension.c"
 	{
 		gint i;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		i = 0;
-#line 4654 "extension.c"
+#line 4630 "extension.c"
 		{
 			gboolean _tmp55_;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp55_ = TRUE;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			while (TRUE) {
-#line 4661 "extension.c"
+#line 4637 "extension.c"
 				gboolean _tmp56_;
 				gint _tmp58_;
 				AdblockConfig* _tmp59_;
@@ -4720,129 +4696,129 @@ void test_adblock_subs (void) {
 				AdblockSubscription* _tmp83_;
 				gboolean _tmp84_;
 				gboolean _tmp85_;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp56_ = _tmp55_;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (!_tmp56_) {
-#line 4695 "extension.c"
+#line 4671 "extension.c"
 					gint _tmp57_;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp57_ = i;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					i = _tmp57_ + 1;
-#line 4701 "extension.c"
+#line 4677 "extension.c"
 				}
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp55_ = FALSE;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp58_ = i;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp59_ = config;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp60_ = adblock_config_get_size (_tmp59_);
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp61_ = _tmp60_;
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (!(((guint) _tmp58_) < _tmp61_)) {
-#line 574 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 581 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					break;
-#line 4717 "extension.c"
+#line 4693 "extension.c"
 				}
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp62_ = copy;
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp63_ = i;
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp64_ = adblock_config_get (_tmp62_, (guint) _tmp63_);
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp65_ = _tmp64_;
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp66_ = adblock_subscription_get_uri (_tmp65_);
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp67_ = _tmp66_;
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp68_ = config;
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp69_ = i;
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp70_ = adblock_config_get (_tmp68_, (guint) _tmp69_);
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp71_ = _tmp70_;
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp72_ = adblock_subscription_get_uri (_tmp71_);
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp73_ = _tmp72_;
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_vala_assert (g_strcmp0 (_tmp67_, _tmp73_) == 0, "copy[i].uri == config[i].uri");
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (_tmp71_);
-#line 575 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 582 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (_tmp65_);
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp74_ = copy;
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp75_ = i;
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp76_ = adblock_config_get (_tmp74_, (guint) _tmp75_);
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp77_ = _tmp76_;
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp78_ = adblock_subscription_get_active (_tmp77_);
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp79_ = _tmp78_;
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp80_ = config;
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp81_ = i;
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp82_ = adblock_config_get (_tmp80_, (guint) _tmp81_);
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp83_ = _tmp82_;
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp84_ = adblock_subscription_get_active (_tmp83_);
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp85_ = _tmp84_;
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_vala_assert (_tmp79_ == _tmp85_, "copy[i].active == config[i].active");
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (_tmp83_);
-#line 576 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 583 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (_tmp77_);
-#line 4779 "extension.c"
+#line 4755 "extension.c"
 			}
 		}
 	}
-#line 579 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 586 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp86_ = config;
-#line 579 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 586 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_config_set_enabled (_tmp86_, FALSE);
-#line 580 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 587 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp87_ = config;
-#line 580 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 587 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp88_ = adblock_config_get_path (_tmp87_);
-#line 580 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 587 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp89_ = _tmp88_;
-#line 580 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 587 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp90_ = adblock_config_new (_tmp89_, NULL);
-#line 580 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 587 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (copy);
-#line 580 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 587 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	copy = _tmp90_;
-#line 581 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 588 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp91_ = copy;
-#line 581 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 588 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp92_ = adblock_config_get_enabled (_tmp91_);
-#line 581 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 588 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp93_ = _tmp92_;
-#line 581 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 588 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp94_ = config;
-#line 581 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 588 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp95_ = adblock_config_get_enabled (_tmp94_);
-#line 581 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 588 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp96_ = _tmp95_;
-#line 581 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 588 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp93_ == _tmp96_, "copy.enabled == config.enabled");
-#line 4813 "extension.c"
+#line 4789 "extension.c"
 	{
 		AdblockConfig* _tmp97_;
 		AdblockConfig* _tmp98_;
@@ -4852,25 +4828,25 @@ void test_adblock_subs (void) {
 		guint _tmp101_;
 		guint _sub_size;
 		gint _sub_index;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp97_ = config;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp98_ = _g_object_ref0 (_tmp97_);
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_list = _tmp98_;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp99_ = _sub_list;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp100_ = adblock_config_get_size (_tmp99_);
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp101_ = _tmp100_;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_size = _tmp101_;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_sub_index = -1;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		while (TRUE) {
-#line 4841 "extension.c"
+#line 4817 "extension.c"
 			gint _tmp102_;
 			gint _tmp103_;
 			guint _tmp104_;
@@ -4882,71 +4858,71 @@ void test_adblock_subs (void) {
 			AdblockSubscription* _tmp109_;
 			gboolean _tmp110_;
 			gboolean _tmp111_;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp102_ = _sub_index;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_sub_index = _tmp102_ + 1;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp103_ = _sub_index;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp104_ = _sub_size;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			if (!(((guint) _tmp103_) < _tmp104_)) {
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				break;
-#line 4865 "extension.c"
+#line 4841 "extension.c"
 			}
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp105_ = _sub_list;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp106_ = _sub_index;
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp107_ = adblock_config_get (_tmp105_, (guint) _tmp106_);
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			sub = _tmp107_;
-#line 584 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 591 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp108_ = sub;
-#line 584 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 591 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp109_ = sub;
-#line 584 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 591 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp110_ = adblock_subscription_get_active (_tmp109_);
-#line 584 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 591 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp111_ = _tmp110_;
-#line 584 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 591 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			adblock_subscription_set_active (_tmp108_, !_tmp111_);
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_g_object_unref0 (sub);
-#line 4887 "extension.c"
+#line 4863 "extension.c"
 		}
-#line 583 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 590 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (_sub_list);
-#line 4891 "extension.c"
+#line 4867 "extension.c"
 	}
-#line 585 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 592 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp112_ = config;
-#line 585 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 592 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp113_ = adblock_config_get_path (_tmp112_);
-#line 585 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 592 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp114_ = _tmp113_;
-#line 585 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 592 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp115_ = adblock_config_new (_tmp114_, NULL);
-#line 585 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 592 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (copy);
-#line 585 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 592 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	copy = _tmp115_;
-#line 4905 "extension.c"
+#line 4881 "extension.c"
 	{
 		guint i;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		i = (guint) 0;
-#line 4910 "extension.c"
+#line 4886 "extension.c"
 		{
 			gboolean _tmp116_;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			_tmp116_ = TRUE;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			while (TRUE) {
-#line 4917 "extension.c"
+#line 4893 "extension.c"
 				gboolean _tmp117_;
 				guint _tmp119_;
 				AdblockConfig* _tmp120_;
@@ -4965,67 +4941,67 @@ void test_adblock_subs (void) {
 				gboolean _tmp133_;
 				gboolean _tmp134_;
 				gboolean _tmp135_;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp117_ = _tmp116_;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (!_tmp117_) {
-#line 4940 "extension.c"
+#line 4916 "extension.c"
 					guint _tmp118_;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp118_ = i;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					i = _tmp118_ + 1;
-#line 4946 "extension.c"
+#line 4922 "extension.c"
 				}
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp116_ = FALSE;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp119_ = i;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp120_ = config;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp121_ = adblock_config_get_size (_tmp120_);
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp122_ = _tmp121_;
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (!(_tmp119_ < _tmp122_)) {
-#line 586 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 593 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					break;
-#line 4962 "extension.c"
+#line 4938 "extension.c"
 				}
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp123_ = config;
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp124_ = i;
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp125_ = adblock_config_get (_tmp123_, _tmp124_);
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp126_ = _tmp125_;
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp127_ = adblock_subscription_get_active (_tmp126_);
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp128_ = _tmp127_;
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp129_ = copy;
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp130_ = i;
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp131_ = adblock_config_get (_tmp129_, _tmp130_);
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp132_ = _tmp131_;
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp133_ = adblock_subscription_get_active (_tmp132_);
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp134_ = _tmp133_;
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp135_ = _tmp128_ != _tmp134_;
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (_tmp132_);
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_object_unref0 (_tmp126_);
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (_tmp135_) {
-#line 4996 "extension.c"
+#line 4972 "extension.c"
 					gchar* contents = NULL;
 					const gchar* _tmp141_ = NULL;
 					AdblockConfig* _tmp142_;
@@ -5056,188 +5032,188 @@ void test_adblock_subs (void) {
 						const gchar* _tmp137_;
 						const gchar* _tmp138_;
 						gchar* _tmp139_ = NULL;
-#line 590 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 597 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp136_ = config;
-#line 590 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 597 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp137_ = adblock_config_get_path (_tmp136_);
-#line 590 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 597 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp138_ = _tmp137_;
-#line 590 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 597 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						g_file_get_contents (_tmp138_, &_tmp139_, NULL, &_inner_error_);
-#line 590 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 597 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_g_free0 (contents);
-#line 590 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 597 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						contents = _tmp139_;
-#line 590 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 597 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						if (_inner_error_ != NULL) {
-#line 5041 "extension.c"
-							goto __catch11_g_error;
+#line 5017 "extension.c"
+							goto __catch6_g_error;
 						}
 					}
-					goto __finally11;
-					__catch11_g_error:
+					goto __finally6;
+					__catch6_g_error:
 					{
 						GError* file_error = NULL;
 						const gchar* _tmp140_;
-#line 589 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 596 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						file_error = _inner_error_;
-#line 589 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 596 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_inner_error_ = NULL;
-#line 592 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 599 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp140_ = file_error->message;
-#line 592 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-						g_error ("extension.vala:592: %s", _tmp140_);
-#line 589 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 599 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+						g_error ("extension.vala:599: %s", _tmp140_);
+#line 596 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_g_error_free0 (file_error);
-#line 5060 "extension.c"
+#line 5036 "extension.c"
 					}
-					__finally11:
-#line 589 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+					__finally6:
+#line 596 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					if (_inner_error_ != NULL) {
-#line 589 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 596 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_g_free0 (contents);
-#line 589 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 596 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_g_object_unref0 (copy);
-#line 589 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 596 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_g_object_unref0 (config);
-#line 589 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 596 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 589 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 596 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						g_clear_error (&_inner_error_);
-#line 589 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 596 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						return;
-#line 5077 "extension.c"
+#line 5053 "extension.c"
 					}
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp142_ = copy;
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp143_ = i;
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp144_ = adblock_config_get (_tmp142_, _tmp143_);
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp145_ = _tmp144_;
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp146_ = adblock_subscription_get_active (_tmp145_);
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp147_ = _tmp146_;
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp148_ = _tmp147_;
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_object_unref0 (_tmp145_);
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					if (_tmp148_) {
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp141_ = "active";
-#line 5099 "extension.c"
+#line 5075 "extension.c"
 					} else {
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp141_ = "disabled";
-#line 5103 "extension.c"
+#line 5079 "extension.c"
 					}
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp150_ = config;
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp151_ = i;
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp152_ = adblock_config_get (_tmp150_, _tmp151_);
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp153_ = _tmp152_;
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp154_ = adblock_subscription_get_active (_tmp153_);
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp155_ = _tmp154_;
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp156_ = _tmp155_;
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_object_unref0 (_tmp153_);
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					if (_tmp156_) {
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp149_ = "active";
-#line 5125 "extension.c"
+#line 5101 "extension.c"
 					} else {
-#line 595 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 602 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp149_ = "disabled";
-#line 5129 "extension.c"
+#line 5105 "extension.c"
 					}
-#line 594 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 601 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp157_ = copy;
-#line 594 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 601 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp158_ = i;
-#line 594 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 601 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp159_ = adblock_config_get (_tmp157_, _tmp158_);
-#line 594 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 601 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp160_ = _tmp159_;
-#line 594 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 601 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp161_ = adblock_subscription_get_uri (_tmp160_);
-#line 594 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 601 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp162_ = _tmp161_;
-#line 594 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 601 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp163_ = _tmp141_;
-#line 594 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 601 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp164_ = _tmp149_;
-#line 594 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-					g_error ("extension.vala:594: %s is %s but should be %s:\n%s", _tmp162_, _tmp163_, _tmp164_, contents);
-#line 594 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 601 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+					g_error ("extension.vala:601: %s is %s but should be %s:\n%s", _tmp162_, _tmp163_, _tmp164_, contents);
+#line 601 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_object_unref0 (_tmp160_);
-#line 587 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 594 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (contents);
-#line 5153 "extension.c"
+#line 5129 "extension.c"
 				}
 			}
 		}
 	}
-#line 600 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 607 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp165_ = adblock_subscription_new ("http://en.de");
-#line 600 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 607 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	s = _tmp165_;
-#line 601 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 608 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp166_ = config;
-#line 601 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 608 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp167_ = adblock_config_add (_tmp166_, s);
-#line 601 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 608 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp167_, "config.add (s)");
-#line 602 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 609 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp168_ = config;
-#line 602 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 609 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp169_ = adblock_config_get_size (_tmp168_);
-#line 602 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 609 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp170_ = _tmp169_;
-#line 602 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 609 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp170_ == ((guint) 7), "config.size == 7");
-#line 603 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 610 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp171_ = config;
-#line 603 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 610 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_config_remove (_tmp171_, s);
-#line 604 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 611 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp172_ = config;
-#line 604 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 611 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp173_ = adblock_config_get_size (_tmp172_);
-#line 604 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 611 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp174_ = _tmp173_;
-#line 604 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 611 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp174_ == ((guint) 6), "config.size == 6");
-#line 606 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 613 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp175_ = config;
-#line 606 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 613 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp176_ = adblock_config_add (_tmp175_, s);
-#line 606 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 613 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp176_, "config.add (s)");
-#line 607 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 614 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp177_ = config;
-#line 607 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 614 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp178_ = adblock_config_get_size (_tmp177_);
-#line 607 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 614 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp179_ = _tmp178_;
-#line 607 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 614 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp179_ == ((guint) 7), "config.size == 7");
-#line 545 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 552 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (s);
-#line 545 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 552 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (copy);
-#line 545 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 552 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (config);
-#line 5208 "extension.c"
+#line 5184 "extension.c"
 }
 
 
@@ -5324,29 +5300,29 @@ void test_adblock_init (void) {
 	AdblockDirective* _tmp86_;
 	AdblockDirective _tmp87_;
 	GError * _inner_error_ = NULL;
-#line 612 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 619 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = adblock_extension_new ();
-#line 612 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 619 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	extension = _tmp0_;
-#line 613 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 620 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_extension_init (extension);
-#line 614 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 621 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = extension->config;
-#line 614 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 621 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = adblock_config_get_enabled (_tmp1_);
-#line 614 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 621 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = _tmp2_;
-#line 614 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 621 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp3_, "extension.config.enabled");
-#line 616 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 623 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = extension->config;
-#line 616 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 623 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = adblock_config_get_size (_tmp4_);
-#line 616 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 623 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp6_ = _tmp5_;
-#line 616 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 623 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp6_ != ((guint) 3)) {
-#line 5317 "extension.c"
+#line 5293 "extension.c"
 		AdblockConfig* _tmp7_;
 		guint _tmp8_;
 		guint _tmp9_;
@@ -5354,366 +5330,366 @@ void test_adblock_init (void) {
 		gchar* _tmp11_;
 		gchar* _tmp12_ = NULL;
 		gchar* _tmp13_;
-#line 617 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 624 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp7_ = extension->config;
-#line 617 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 624 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp8_ = adblock_config_get_size (_tmp7_);
-#line 617 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 624 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp9_ = _tmp8_;
-#line 617 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 624 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp10_ = g_strdup_printf ("%u", _tmp9_);
-#line 617 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 624 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp11_ = _tmp10_;
-#line 617 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 624 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp12_ = g_strdup_printf ("Expected 3 initial subs, got %s", _tmp11_);
-#line 617 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 624 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp13_ = _tmp12_;
-#line 617 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_error ("extension.vala:617: %s", _tmp13_);
-#line 617 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 624 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		g_error ("extension.vala:624: %s", _tmp13_);
+#line 624 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (_tmp13_);
-#line 617 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 624 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (_tmp11_);
-#line 5345 "extension.c"
+#line 5321 "extension.c"
 	}
-#line 619 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 626 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp14_ = extension->status_icon;
-#line 619 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 626 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp15_ = _tmp14_->state;
-#line 619 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 626 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp15_ == ADBLOCK_STATE_ENABLED, "extension.status_icon.state == Adblock.State.ENABLED");
-#line 622 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 629 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp16_ = midori_paths_get_res_filename ("adblock.list");
-#line 622 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 629 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	path = _tmp16_;
-#line 5357 "extension.c"
+#line 5333 "extension.c"
 	{
 		gchar* _tmp17_ = NULL;
 		gchar* _tmp18_;
-#line 625 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 632 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp17_ = g_filename_to_uri (path, NULL, &_inner_error_);
-#line 625 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 632 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp18_ = _tmp17_;
-#line 625 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 632 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_inner_error_ != NULL) {
-#line 5367 "extension.c"
-			goto __catch12_g_error;
+#line 5343 "extension.c"
+			goto __catch7_g_error;
 		}
-#line 625 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 632 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (uri);
-#line 625 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 632 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		uri = _tmp18_;
-#line 5374 "extension.c"
+#line 5350 "extension.c"
 	}
-	goto __finally12;
-	__catch12_g_error:
+	goto __finally7;
+	__catch7_g_error:
 	{
 		GError* _error_ = NULL;
 		const gchar* _tmp19_;
-#line 624 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 631 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_error_ = _inner_error_;
-#line 624 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 631 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_inner_error_ = NULL;
-#line 627 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 634 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp19_ = _error_->message;
-#line 627 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_error ("extension.vala:627: %s", _tmp19_);
-#line 624 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 634 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		g_error ("extension.vala:634: %s", _tmp19_);
+#line 631 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_error_free0 (_error_);
-#line 5391 "extension.c"
+#line 5367 "extension.c"
 	}
-	__finally12:
-#line 624 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	__finally7:
+#line 631 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_inner_error_ != NULL) {
-#line 624 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 631 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (uri);
-#line 624 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 631 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (path);
-#line 624 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 631 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (extension);
-#line 624 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 631 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 624 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 631 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_clear_error (&_inner_error_);
-#line 624 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 631 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return;
-#line 5408 "extension.c"
+#line 5384 "extension.c"
 	}
-#line 629 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 636 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp20_ = adblock_subscription_new (uri);
-#line 629 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 636 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	sub = _tmp20_;
-#line 630 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 637 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp21_ = extension->config;
-#line 630 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 637 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_config_add (_tmp21_, sub);
-#line 631 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 638 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp22_ = extension->status_icon;
-#line 631 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 638 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp23_ = _tmp22_->state;
-#line 631 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 638 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp23_ == ADBLOCK_STATE_ENABLED, "extension.status_icon.state == Adblock.State.ENABLED");
-#line 632 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 639 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp24_ = extension->config;
-#line 632 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 639 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp25_ = adblock_config_get_size (_tmp24_);
-#line 632 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 639 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp26_ = _tmp25_;
-#line 632 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 639 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp26_ == ((guint) 4), "extension.config.size == 4");
-#line 5432 "extension.c"
+#line 5408 "extension.c"
 	{
-#line 634 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 641 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		adblock_subscription_parse (sub, &_inner_error_);
-#line 634 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 641 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_inner_error_ != NULL) {
-#line 5438 "extension.c"
-			goto __catch13_g_error;
+#line 5414 "extension.c"
+			goto __catch8_g_error;
 		}
 	}
-	goto __finally13;
-	__catch13_g_error:
+	goto __finally8;
+	__catch8_g_error:
 	{
 		GError* _error_ = NULL;
 		const gchar* _tmp27_;
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_error_ = _inner_error_;
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_inner_error_ = NULL;
-#line 636 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 643 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp27_ = _error_->message;
-#line 636 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_error ("extension.vala:636: %s", _tmp27_);
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 643 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		g_error ("extension.vala:643: %s", _tmp27_);
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_error_free0 (_error_);
-#line 5457 "extension.c"
+#line 5433 "extension.c"
 	}
-	__finally13:
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	__finally8:
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_inner_error_ != NULL) {
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (sub);
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (uri);
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (path);
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (extension);
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_clear_error (&_inner_error_);
-#line 633 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 640 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return;
-#line 5476 "extension.c"
+#line 5452 "extension.c"
 	}
-#line 639 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 646 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp28_ = adblock_extension_request_handled (extension, "https://ads.bogus.name/blub", "https://ads.bogus.name/blub");
-#line 639 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 646 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (!_tmp28_, "!extension.request_handled (\"https://ads.bogus.name/blub\", \"https://ads.bogus.name/blub\")");
-#line 641 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 648 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp29_ = adblock_extension_request_handled (extension, "https://foo.com", "https://ads.bogus.name/blub/favicon.ico");
-#line 641 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 648 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (!_tmp29_, "!extension.request_handled (\"https://foo.com\", \"https://ads.bogus.name/blub/favicon.ico\")");
-#line 642 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 649 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp30_ = extension->status_icon;
-#line 642 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 649 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp31_ = _tmp30_->state;
-#line 642 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 649 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp31_ == ADBLOCK_STATE_ENABLED, "extension.status_icon.state == Adblock.State.ENABLED");
-#line 644 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 651 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp32_ = adblock_subscription_get_title (sub);
-#line 644 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 651 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp33_ = _tmp32_;
-#line 644 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 651 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (g_strcmp0 (_tmp33_, "Exercise") == 0, "sub.title == \"Exercise\"");
-#line 645 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 652 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp34_ = adblock_subscription_get_directive (sub, "https://ads.bogus.name/blub", "");
-#line 645 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 652 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp35_ = _tmp34_;
-#line 645 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 652 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp36_ = ADBLOCK_DIRECTIVE_BLOCK;
-#line 645 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 652 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_adblock_directive_equal (_tmp35_, &_tmp36_) == TRUE, "sub.get_directive (\"https://ads.bogus.name/blub\", \"\") == Adblock.Directive.BLOCK");
-#line 645 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 652 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp35_);
-#line 647 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 654 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp37_ = adblock_extension_request_handled (extension, "https://ads.bogus.name/blub", "https://foo.com");
-#line 647 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 654 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp37_, "extension.request_handled (\"https://ads.bogus.name/blub\", \"https://foo.com\")");
-#line 648 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 655 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp38_ = extension->status_icon;
-#line 648 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 655 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp39_ = _tmp38_->state;
-#line 648 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 655 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp39_ == ADBLOCK_STATE_BLOCKED, "extension.status_icon.state == Adblock.State.BLOCKED");
-#line 649 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 656 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp40_ = extension->hider_selectors;
-#line 649 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 656 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp41_ = _tmp40_->str;
-#line 649 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 656 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (g_strcmp0 (_tmp41_, "") != 0, "extension.hider_selectors.str != \"\"");
-#line 651 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 658 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp42_ = extension->config;
-#line 651 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 658 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_config_set_enabled (_tmp42_, FALSE);
-#line 652 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 659 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp43_ = adblock_extension_request_handled (extension, "https://ads.bogus.name/blub", "https://foo.com");
-#line 652 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 659 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (!_tmp43_, "!extension.request_handled (\"https://ads.bogus.name/blub\", \"https://foo.com\")");
-#line 655 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 662 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp44_ = extension->config;
-#line 655 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 662 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_config_remove (_tmp44_, sub);
-#line 656 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 663 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp45_ = extension->hider_selectors;
-#line 656 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 663 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp46_ = _tmp45_->str;
-#line 656 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 663 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (g_strcmp0 (_tmp46_, "") == 0, "extension.hider_selectors.str == \"\"");
-#line 657 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 664 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp47_ = extension->config;
-#line 657 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 664 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp48_ = adblock_config_get_size (_tmp47_);
-#line 657 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 664 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp49_ = _tmp48_;
-#line 657 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 664 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp49_ == ((guint) 3), "extension.config.size == 3");
-#line 659 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 666 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp50_ = extension->config;
-#line 659 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 666 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_config_set_enabled (_tmp50_, TRUE);
-#line 660 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 667 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp51_ = extension->custom;
-#line 660 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 667 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_subscription_add_rule (_tmp51_, "/adpage.");
-#line 661 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 668 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp52_ = extension->custom;
-#line 661 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 668 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp53_ = adblock_subscription_get_directive (_tmp52_, "http://www.engadget.com/_uac/adpage.html", "http://foo.com");
-#line 661 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 668 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp54_ = _tmp53_;
-#line 661 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 668 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp55_ = ADBLOCK_DIRECTIVE_BLOCK;
-#line 661 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 668 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_adblock_directive_equal (_tmp54_, &_tmp55_) == TRUE, "extension.custom.get_directive (\"http://www.engadget.com/_uac/adpage.html\", \"http://foo.com\") == Adblock.Directive.BLOCK");
-#line 661 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 668 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp54_);
-#line 662 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 669 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp56_ = adblock_extension_request_handled (extension, "http://www.engadget.com/_uac/adpage.html", "http://foo.com");
-#line 662 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 669 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp56_, "extension.request_handled (\"http://www.engadget.com/_uac/adpage.html\", \"http://foo.com\")");
-#line 663 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 670 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp57_ = extension->status_icon;
-#line 663 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 670 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp58_ = _tmp57_->state;
-#line 663 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 670 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp58_ == ADBLOCK_STATE_BLOCKED, "extension.status_icon.state == Adblock.State.BLOCKED");
-#line 665 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 672 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp59_ = extension->custom;
-#line 665 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 672 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp60_ = adblock_subscription_get_directive (_tmp59_, "http://www.engadget.com/_uac/adpage.html", "http://foo.com");
-#line 665 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 672 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp61_ = _tmp60_;
-#line 665 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 672 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp62_ = ADBLOCK_DIRECTIVE_BLOCK;
-#line 665 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 672 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_adblock_directive_equal (_tmp61_, &_tmp62_) == TRUE, "extension.custom.get_directive (\"http://www.engadget.com/_uac/adpage.html\", \"http://foo.com\") == Adblock.Directive.BLOCK");
-#line 665 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 672 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp61_);
-#line 666 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 673 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp63_ = adblock_extension_request_handled (extension, "http://www.engadget.com/_uac/adpage.html", "http://foo.com");
-#line 666 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 673 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp63_, "extension.request_handled (\"http://www.engadget.com/_uac/adpage.html\", \"http://foo.com\")");
-#line 668 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 675 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp64_ = extension->custom;
-#line 668 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 675 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_subscription_add_rule (_tmp64_, "/images/*.png");
-#line 669 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 676 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp65_ = extension->custom;
-#line 669 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 676 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp66_ = adblock_subscription_get_directive (_tmp65_, "http://alpha.beta.com/images/yota.png", "https://foo.com");
-#line 669 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 676 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp67_ = _tmp66_;
-#line 669 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 676 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp68_ = ADBLOCK_DIRECTIVE_BLOCK;
-#line 669 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 676 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_adblock_directive_equal (_tmp67_, &_tmp68_) == TRUE, "extension.custom.get_directive (\"http://alpha.beta.com/images/yota.png\", \"https://foo.com\") == Adblock.Directive.BLOCK");
-#line 669 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 676 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp67_);
-#line 670 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 677 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp69_ = adblock_extension_request_handled (extension, "http://alpha.beta.com/images/yota.png", "https://foo.com");
-#line 670 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 677 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp69_, "extension.request_handled (\"http://alpha.beta.com/images/yota.png\", \"https://foo.com\")");
-#line 672 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 679 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp70_ = adblock_extension_request_handled (extension, "http://alpha.beta.com/images/yota.png", "https://foo.com");
-#line 672 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 679 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp70_, "extension.request_handled (\"http://alpha.beta.com/images/yota.png\", \"https://foo.com\")");
-#line 674 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 681 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp71_ = adblock_extension_request_handled (extension, "http://alpha.beta.com/images/yota.jpg", "https://foo.com");
-#line 674 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 681 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (!_tmp71_, "!extension.request_handled (\"http://alpha.beta.com/images/yota.jpg\", \"https://foo.com\")");
-#line 675 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 682 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp72_ = extension->custom;
-#line 675 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 682 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp73_ = adblock_subscription_get_directive (_tmp72_, "http://alpha.beta.com/images/yota.jpg", "https://foo.com");
-#line 675 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 682 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp74_ = _tmp73_;
-#line 675 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 682 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp75_ = ADBLOCK_DIRECTIVE_BLOCK;
-#line 675 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 682 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_adblock_directive_equal (_tmp74_, &_tmp75_) != TRUE, "extension.custom.get_directive (\"http://alpha.beta.com/images/yota.jpg\", \"https://foo.com\") != Adblock.Directive.BLOCK");
-#line 675 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 682 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp74_);
-#line 677 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 684 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp76_ = extension->custom;
-#line 677 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 684 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_subscription_add_rule (_tmp76_, "@@http://alpha.beta.com/images/drop*bear.png");
-#line 678 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 685 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp77_ = adblock_extension_request_handled (extension, "http://alpha.beta.com/images/drop-bear.png", "https://foo.com");
-#line 678 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 685 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (!_tmp77_, "!extension.request_handled (\"http://alpha.beta.com/images/drop-bear.png\", \"https://foo.com\")");
-#line 679 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 686 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp78_ = adblock_extension_request_handled (extension, "http://alpha.beta.com/images/dropzone_bear.png", "https://foo.com");
-#line 679 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 686 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (!_tmp78_, "!extension.request_handled (\"http://alpha.beta.com/images/dropzone_bear.png\", \"https://foo.com\")");
-#line 680 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 687 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp79_ = extension->custom;
-#line 680 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 687 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp80_ = adblock_subscription_get_directive (_tmp79_, "http://alpha.beta.com/images/drop-bear.png", "https://foo.com");
-#line 680 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 687 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp81_ = _tmp80_;
-#line 680 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 687 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp82_ = ADBLOCK_DIRECTIVE_BLOCK;
-#line 680 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 687 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_adblock_directive_equal (_tmp81_, &_tmp82_) != TRUE, "extension.custom.get_directive (\"http://alpha.beta.com/images/drop-bear.png\", \"https://foo.com\") != Adblock.Directive.BLOCK");
-#line 680 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 687 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp81_);
-#line 682 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 689 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp83_ = adblock_extension_request_handled (extension, "http://alpha.beta.com/images/bear.png", "https://foo.com");
-#line 682 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 689 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_tmp83_, "extension.request_handled (\"http://alpha.beta.com/images/bear.png\", \"https://foo.com\")");
-#line 683 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 690 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp84_ = extension->custom;
-#line 683 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 690 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp85_ = adblock_subscription_get_directive (_tmp84_, "http://alpha.beta.com/images/bear.png", "https://foo.com");
-#line 683 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 690 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp86_ = _tmp85_;
-#line 683 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 690 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp87_ = ADBLOCK_DIRECTIVE_BLOCK;
-#line 683 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 690 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_vala_assert (_adblock_directive_equal (_tmp86_, &_tmp87_) == TRUE, "extension.custom.get_directive (\"http://alpha.beta.com/images/bear.png\", \"https://foo.com\") == Adblock.Directive.BLOCK");
-#line 683 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 690 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (_tmp86_);
-#line 610 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 617 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (sub);
-#line 610 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 617 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (uri);
-#line 610 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 617 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (path);
-#line 610 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 617 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (extension);
-#line 5684 "extension.c"
+#line 5660 "extension.c"
 }
 
 
@@ -5722,53 +5698,53 @@ void test_case_line_copy (const TestCaseLine* self, TestCaseLine* dest) {
 	gchar* _tmp1_;
 	const gchar* _tmp2_;
 	gchar* _tmp3_;
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = (*self).line;
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_strdup (_tmp0_);
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*dest).line);
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).line = _tmp1_;
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = (*self).fixed;
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = g_strdup (_tmp2_);
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*dest).fixed);
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).fixed = _tmp3_;
-#line 5709 "extension.c"
+#line 5685 "extension.c"
 }
 
 
 void test_case_line_destroy (TestCaseLine* self) {
-#line 687 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 694 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*self).line);
-#line 688 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 695 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*self).fixed);
-#line 5718 "extension.c"
+#line 5694 "extension.c"
 }
 
 
 TestCaseLine* test_case_line_dup (const TestCaseLine* self) {
 	TestCaseLine* dup;
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	dup = g_new0 (TestCaseLine, 1);
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_case_line_copy (self, dup);
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return dup;
-#line 5730 "extension.c"
+#line 5706 "extension.c"
 }
 
 
 void test_case_line_free (TestCaseLine* self) {
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_case_line_destroy (self);
-#line 686 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 693 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_free (self);
-#line 5739 "extension.c"
+#line 5715 "extension.c"
 }
 
 
@@ -5789,17 +5765,17 @@ void test_adblock_fixup_regexp (void) {
 		gint line_collection_length1 = 0;
 		gint _line_collection_size_ = 0;
 		gint line_it = 0;
-#line 709 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 716 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		line_collection = lines;
-#line 709 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 716 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		line_collection_length1 = G_N_ELEMENTS (lines);
-#line 709 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 716 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (line_it = 0; line_it < G_N_ELEMENTS (lines); line_it = line_it + 1) {
-#line 5766 "extension.c"
+#line 5742 "extension.c"
 			TestCaseLine line = {0};
-#line 709 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 716 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			line = line_collection[line_it];
-#line 5770 "extension.c"
+#line 5746 "extension.c"
 			{
 				TestCaseLine _tmp0_;
 				const gchar* _tmp1_;
@@ -5809,27 +5785,27 @@ void test_adblock_fixup_regexp (void) {
 				gchar* _tmp5_;
 				TestCaseLine _tmp6_;
 				const gchar* _tmp7_;
-#line 710 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 717 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp0_ = line;
-#line 710 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 717 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp1_ = _tmp0_.line;
-#line 710 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 717 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp2_ = line;
-#line 710 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 717 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp3_ = _tmp2_.line;
-#line 710 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 717 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp4_ = adblock_fixup_regex ("", _tmp3_);
-#line 710 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 717 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp5_ = _tmp4_;
-#line 710 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 717 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp6_ = line;
-#line 710 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 717 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp7_ = _tmp6_.fixed;
-#line 710 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 717 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				katze_assert_str_equal (_tmp1_, _tmp5_, _tmp7_);
-#line 710 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 717 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_free0 (_tmp5_);
-#line 5800 "extension.c"
+#line 5776 "extension.c"
 			}
 		}
 	}
@@ -5840,47 +5816,47 @@ void test_case_pattern_copy (const TestCasePattern* self, TestCasePattern* dest)
 	const gchar* _tmp0_;
 	gchar* _tmp1_;
 	AdblockDirective _tmp2_;
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = (*self).uri;
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_strdup (_tmp0_);
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*dest).uri);
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).uri = _tmp1_;
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = (*self).directive;
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).directive = _tmp2_;
-#line 5823 "extension.c"
+#line 5799 "extension.c"
 }
 
 
 void test_case_pattern_destroy (TestCasePattern* self) {
-#line 715 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 722 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*self).uri);
-#line 5830 "extension.c"
+#line 5806 "extension.c"
 }
 
 
 TestCasePattern* test_case_pattern_dup (const TestCasePattern* self) {
 	TestCasePattern* dup;
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	dup = g_new0 (TestCasePattern, 1);
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_case_pattern_copy (self, dup);
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return dup;
-#line 5842 "extension.c"
+#line 5818 "extension.c"
 }
 
 
 void test_case_pattern_free (TestCasePattern* self) {
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_case_pattern_destroy (self);
-#line 714 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 721 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_free (self);
-#line 5851 "extension.c"
+#line 5827 "extension.c"
 }
 
 
@@ -5901,31 +5877,31 @@ gchar* pretty_directive (AdblockDirective* directive) {
 	AdblockDirective* _tmp2_;
 	GEnumValue* _tmp3_;
 	gchar* _tmp4_;
-#line 744 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 751 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = directive;
-#line 744 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 751 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp0_ == NULL) {
-#line 5876 "extension.c"
+#line 5852 "extension.c"
 		gchar* _tmp1_;
-#line 745 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 752 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp1_ = g_strdup ("none");
-#line 745 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 752 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = _tmp1_;
-#line 745 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 752 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 5884 "extension.c"
+#line 5860 "extension.c"
 	}
-#line 746 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 753 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = directive;
-#line 746 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 753 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = g_enum_get_value (g_type_class_ref (ADBLOCK_TYPE_DIRECTIVE), *_tmp2_);
-#line 746 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 753 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = g_strdup ((_tmp3_ != NULL) ? _tmp3_->value_name : NULL);
-#line 746 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 753 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = _tmp4_;
-#line 746 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 753 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 5896 "extension.c"
+#line 5872 "extension.c"
 }
 
 
@@ -5936,125 +5912,125 @@ void test_adblock_pattern (void) {
 	AdblockSubscription* _tmp4_;
 	AdblockSubscription* sub;
 	GError * _inner_error_ = NULL;
-#line 750 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 757 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = midori_paths_get_res_filename ("adblock.list");
-#line 750 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 757 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	path = _tmp0_;
-#line 5911 "extension.c"
+#line 5887 "extension.c"
 	{
 		gchar* _tmp1_ = NULL;
 		gchar* _tmp2_;
-#line 753 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 760 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp1_ = g_filename_to_uri (path, NULL, &_inner_error_);
-#line 753 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 760 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp2_ = _tmp1_;
-#line 753 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 760 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_inner_error_ != NULL) {
-#line 5921 "extension.c"
-			goto __catch14_g_error;
+#line 5897 "extension.c"
+			goto __catch9_g_error;
 		}
-#line 753 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 760 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (uri);
-#line 753 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 760 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		uri = _tmp2_;
-#line 5928 "extension.c"
+#line 5904 "extension.c"
 	}
-	goto __finally14;
-	__catch14_g_error:
+	goto __finally9;
+	__catch9_g_error:
 	{
 		GError* _error_ = NULL;
 		const gchar* _tmp3_;
-#line 752 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 759 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_error_ = _inner_error_;
-#line 752 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 759 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_inner_error_ = NULL;
-#line 755 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 762 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp3_ = _error_->message;
-#line 755 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_error ("extension.vala:755: %s", _tmp3_);
-#line 752 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 762 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		g_error ("extension.vala:762: %s", _tmp3_);
+#line 759 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_error_free0 (_error_);
-#line 5945 "extension.c"
+#line 5921 "extension.c"
 	}
-	__finally14:
-#line 752 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	__finally9:
+#line 759 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_inner_error_ != NULL) {
-#line 752 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 759 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (uri);
-#line 752 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 759 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (path);
-#line 752 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 759 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 752 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 759 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_clear_error (&_inner_error_);
-#line 752 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 759 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return;
-#line 5960 "extension.c"
+#line 5936 "extension.c"
 	}
-#line 757 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 764 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp4_ = adblock_subscription_new (uri);
-#line 757 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 764 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	sub = _tmp4_;
-#line 5966 "extension.c"
+#line 5942 "extension.c"
 	{
-#line 759 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 766 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		adblock_subscription_parse (sub, &_inner_error_);
-#line 759 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 766 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_inner_error_ != NULL) {
-#line 5972 "extension.c"
-			goto __catch15_g_error;
+#line 5948 "extension.c"
+			goto __catch10_g_error;
 		}
 	}
-	goto __finally15;
-	__catch15_g_error:
+	goto __finally10;
+	__catch10_g_error:
 	{
 		GError* _error_ = NULL;
 		const gchar* _tmp5_;
-#line 758 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 765 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_error_ = _inner_error_;
-#line 758 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 765 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_inner_error_ = NULL;
-#line 761 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 768 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp5_ = _error_->message;
-#line 761 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_error ("extension.vala:761: %s", _tmp5_);
-#line 758 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 768 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		g_error ("extension.vala:768: %s", _tmp5_);
+#line 765 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_error_free0 (_error_);
-#line 5991 "extension.c"
+#line 5967 "extension.c"
 	}
-	__finally15:
-#line 758 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	__finally10:
+#line 765 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_inner_error_ != NULL) {
-#line 758 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 765 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (sub);
-#line 758 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 765 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (uri);
-#line 758 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 765 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (path);
-#line 758 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 765 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 758 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 765 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_clear_error (&_inner_error_);
-#line 758 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 765 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return;
-#line 6008 "extension.c"
+#line 5984 "extension.c"
 	}
 	{
 		TestCasePattern* pattern_collection = NULL;
 		gint pattern_collection_length1 = 0;
 		gint _pattern_collection_size_ = 0;
 		gint pattern_it = 0;
-#line 763 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 770 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		pattern_collection = patterns;
-#line 763 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 770 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		pattern_collection_length1 = G_N_ELEMENTS (patterns);
-#line 763 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 770 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (pattern_it = 0; pattern_it < G_N_ELEMENTS (patterns); pattern_it = pattern_it + 1) {
-#line 6021 "extension.c"
+#line 5997 "extension.c"
 			TestCasePattern pattern = {0};
-#line 763 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 770 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			pattern = pattern_collection[pattern_it];
-#line 6025 "extension.c"
+#line 6001 "extension.c"
 			{
 				TestCasePattern _tmp6_;
 				const gchar* _tmp7_;
@@ -6064,40 +6040,40 @@ void test_adblock_pattern (void) {
 				AdblockDirective* _tmp12_;
 				TestCasePattern _tmp13_;
 				AdblockDirective _tmp14_;
-#line 764 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 771 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp6_ = pattern;
-#line 764 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 771 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp7_ = _tmp6_.uri;
-#line 764 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 771 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp8_ = adblock_subscription_get_directive (sub, _tmp7_, "");
-#line 764 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 771 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				directive = _tmp8_;
-#line 765 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 772 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp9_ = directive;
-#line 765 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 772 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (_tmp9_ == NULL) {
-#line 6047 "extension.c"
+#line 6023 "extension.c"
 					AdblockDirective _tmp10_;
 					AdblockDirective* _tmp11_;
-#line 766 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 773 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp10_ = ADBLOCK_DIRECTIVE_ALLOW;
-#line 766 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 773 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp11_ = __adblock_directive_dup0 (&_tmp10_);
-#line 766 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 773 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (directive);
-#line 766 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 773 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					directive = _tmp11_;
-#line 6058 "extension.c"
+#line 6034 "extension.c"
 				}
-#line 767 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 774 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp12_ = directive;
-#line 767 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 774 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp13_ = pattern;
-#line 767 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 774 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp14_ = _tmp13_.directive;
-#line 767 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 774 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (_adblock_directive_equal (_tmp12_, &_tmp14_) != TRUE) {
-#line 6068 "extension.c"
+#line 6044 "extension.c"
 					TestCasePattern _tmp15_;
 					AdblockDirective _tmp16_;
 					gchar* _tmp17_ = NULL;
@@ -6107,45 +6083,45 @@ void test_adblock_pattern (void) {
 					AdblockDirective* _tmp21_;
 					gchar* _tmp22_ = NULL;
 					gchar* _tmp23_;
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp15_ = pattern;
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp16_ = _tmp15_.directive;
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp17_ = pretty_directive (&_tmp16_);
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp18_ = _tmp17_;
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp19_ = pattern;
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp20_ = _tmp19_.uri;
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp21_ = directive;
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp22_ = pretty_directive (_tmp21_);
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp23_ = _tmp22_;
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-					g_error ("extension.vala:768: %s expected for %s but got %s", _tmp18_, _tmp20_, _tmp23_);
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+					g_error ("extension.vala:775: %s expected for %s but got %s", _tmp18_, _tmp20_, _tmp23_);
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (_tmp23_);
-#line 768 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 775 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (_tmp18_);
-#line 6102 "extension.c"
+#line 6078 "extension.c"
 				}
-#line 763 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 770 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_free0 (directive);
-#line 6106 "extension.c"
+#line 6082 "extension.c"
 			}
 		}
 	}
-#line 749 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 756 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (sub);
-#line 749 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 756 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (uri);
-#line 749 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 756 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (path);
-#line 6116 "extension.c"
+#line 6092 "extension.c"
 }
 
 
@@ -6160,7 +6136,7 @@ static gchar* g_date_time_to_string (GDateTime* self) {
 	result = _tmp0_;
 #line 2473 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	return result;
-#line 6131 "extension.c"
+#line 6107 "extension.c"
 }
 
 
@@ -6169,29 +6145,29 @@ gchar* pretty_date (GDateTime* date) {
 	GDateTime* _tmp0_;
 	GDateTime* _tmp2_;
 	gchar* _tmp3_ = NULL;
-#line 775 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 782 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = date;
-#line 775 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 782 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_tmp0_ == NULL) {
-#line 6144 "extension.c"
+#line 6120 "extension.c"
 		gchar* _tmp1_;
-#line 776 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 783 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp1_ = g_strdup ("N/A");
-#line 776 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 783 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		result = _tmp1_;
-#line 776 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 783 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return result;
-#line 6152 "extension.c"
+#line 6128 "extension.c"
 	}
-#line 777 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 784 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = date;
-#line 777 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 784 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = g_date_time_to_string (_tmp2_);
-#line 777 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 784 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	result = _tmp3_;
-#line 777 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 784 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return result;
-#line 6162 "extension.c"
+#line 6138 "extension.c"
 }
 
 
@@ -6200,51 +6176,51 @@ void test_update_example_copy (const TestUpdateExample* self, TestUpdateExample*
 	gchar* _tmp1_;
 	gboolean _tmp2_;
 	gboolean _tmp3_;
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = (*self).content;
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_strdup (_tmp0_);
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*dest).content);
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).content = _tmp1_;
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = (*self).result;
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).result = _tmp2_;
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = (*self).valid;
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).valid = _tmp3_;
-#line 6187 "extension.c"
+#line 6163 "extension.c"
 }
 
 
 void test_update_example_destroy (TestUpdateExample* self) {
-#line 781 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 788 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*self).content);
-#line 6194 "extension.c"
+#line 6170 "extension.c"
 }
 
 
 TestUpdateExample* test_update_example_dup (const TestUpdateExample* self) {
 	TestUpdateExample* dup;
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	dup = g_new0 (TestUpdateExample, 1);
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_update_example_copy (self, dup);
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return dup;
-#line 6206 "extension.c"
+#line 6182 "extension.c"
 }
 
 
 void test_update_example_free (TestUpdateExample* self) {
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_update_example_destroy (self);
-#line 780 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 787 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_free (self);
-#line 6215 "extension.c"
+#line 6191 "extension.c"
 }
 
 
@@ -6299,13 +6275,13 @@ static guint8* string_get_data (const gchar* self, int* result_length1) {
 	if (result_length1) {
 #line 1263 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 		*result_length1 = _tmp4__length1;
-#line 6270 "extension.c"
+#line 6246 "extension.c"
 	}
 #line 1263 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	result = _tmp4_;
 #line 1263 "/usr/share/vala-0.20/vapi/glib-2.0.vapi"
 	return result;
-#line 6276 "extension.c"
+#line 6252 "extension.c"
 }
 
 
@@ -6325,96 +6301,96 @@ void test_subscription_update (void) {
 		GFile* _tmp1_ = NULL;
 		GFile* _tmp2_;
 		gchar* _tmp3_ = NULL;
-#line 804 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 811 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp1_ = g_file_new_tmp ("midori_adblock_update_test_XXXXXX", &_tmp0_, &_inner_error_);
-#line 804 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 811 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (iostream);
-#line 804 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 811 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		iostream = _tmp0_;
-#line 804 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 811 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp2_ = _tmp1_;
-#line 804 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 811 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		if (_inner_error_ != NULL) {
-#line 6306 "extension.c"
-			goto __catch16_g_error;
+#line 6282 "extension.c"
+			goto __catch11_g_error;
 		}
-#line 804 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 811 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (file);
-#line 804 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 811 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		file = _tmp2_;
-#line 805 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 812 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp3_ = g_file_get_uri (file);
-#line 805 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 812 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (uri);
-#line 805 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 812 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		uri = _tmp3_;
-#line 6319 "extension.c"
+#line 6295 "extension.c"
 	}
-	goto __finally16;
-	__catch16_g_error:
+	goto __finally11;
+	__catch11_g_error:
 	{
 		GError* _error_ = NULL;
 		const gchar* _tmp4_;
-#line 803 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 810 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_error_ = _inner_error_;
-#line 803 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 810 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_inner_error_ = NULL;
-#line 807 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 814 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_tmp4_ = _error_->message;
-#line 807 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-		g_error ("extension.vala:807: %s", _tmp4_);
-#line 803 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 814 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+		g_error ("extension.vala:814: %s", _tmp4_);
+#line 810 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_error_free0 (_error_);
-#line 6336 "extension.c"
+#line 6312 "extension.c"
 	}
-	__finally16:
-#line 803 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+	__finally11:
+#line 810 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	if (_inner_error_ != NULL) {
-#line 803 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 810 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (file);
-#line 803 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 810 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_object_unref0 (iostream);
-#line 803 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 810 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		_g_free0 (uri);
-#line 803 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 810 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 803 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 810 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		g_clear_error (&_inner_error_);
-#line 803 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 810 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		return;
-#line 6353 "extension.c"
+#line 6329 "extension.c"
 	}
-#line 809 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 816 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp5_ = adblock_subscription_new (uri);
-#line 809 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 816 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	sub = _tmp5_;
-#line 810 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 817 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp6_ = adblock_updater_new ();
-#line 810 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 817 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	updater = _tmp6_;
-#line 811 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 818 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp7_ = sub;
-#line 811 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 818 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp8_ = updater;
-#line 811 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 818 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	adblock_subscription_add_feature (_tmp7_, (AdblockFeature*) _tmp8_);
-#line 6369 "extension.c"
+#line 6345 "extension.c"
 	{
 		TestUpdateExample* example_collection = NULL;
 		gint example_collection_length1 = 0;
 		gint _example_collection_size_ = 0;
 		gint example_it = 0;
-#line 813 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 820 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		example_collection = examples;
-#line 813 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 820 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		example_collection_length1 = G_N_ELEMENTS (examples);
-#line 813 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 820 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (example_it = 0; example_it < G_N_ELEMENTS (examples); example_it = example_it + 1) {
-#line 6381 "extension.c"
+#line 6357 "extension.c"
 			TestUpdateExample example = {0};
-#line 813 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 820 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			example = example_collection[example_it];
-#line 6385 "extension.c"
+#line 6361 "extension.c"
 			{
 				TestUpdateExample _tmp16_;
 				gboolean _tmp17_;
@@ -6435,88 +6411,88 @@ void test_subscription_update (void) {
 					gint _tmp12__length1;
 					AdblockSubscription* _tmp13_;
 					AdblockSubscription* _tmp14_;
-#line 815 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 822 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp9_ = example;
-#line 815 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 822 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp10_ = _tmp9_.content;
-#line 815 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 822 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp11_ = string_get_data (_tmp10_, &_tmp11__length1);
-#line 815 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 822 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp12_ = _tmp11_;
-#line 815 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 822 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp12__length1 = _tmp11__length1;
-#line 815 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 822 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					g_file_replace_contents (file, _tmp12_, (gsize) _tmp12__length1, NULL, FALSE, G_FILE_CREATE_NONE, NULL, NULL, &_inner_error_);
-#line 815 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 822 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					if (_inner_error_ != NULL) {
-#line 6420 "extension.c"
-						goto __catch17_g_error;
+#line 6396 "extension.c"
+						goto __catch12_g_error;
 					}
-#line 816 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 823 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp13_ = sub;
-#line 816 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 823 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					adblock_subscription_clear (_tmp13_);
-#line 817 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 824 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp14_ = sub;
-#line 817 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 824 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					adblock_subscription_parse (_tmp14_, &_inner_error_);
-#line 817 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 824 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					if (_inner_error_ != NULL) {
-#line 6433 "extension.c"
-						goto __catch17_g_error;
+#line 6409 "extension.c"
+						goto __catch12_g_error;
 					}
 				}
-				goto __finally17;
-				__catch17_g_error:
+				goto __finally12;
+				__catch12_g_error:
 				{
 					GError* _error_ = NULL;
 					const gchar* _tmp15_;
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_error_ = _inner_error_;
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_inner_error_ = NULL;
-#line 819 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 826 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp15_ = _error_->message;
-#line 819 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-					g_error ("extension.vala:819: %s", _tmp15_);
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 826 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+					g_error ("extension.vala:826: %s", _tmp15_);
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_error_free0 (_error_);
-#line 6452 "extension.c"
+#line 6428 "extension.c"
 				}
-				__finally17:
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+				__finally12:
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (_inner_error_ != NULL) {
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_object_unref0 (updater);
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_object_unref0 (sub);
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_object_unref0 (file);
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_object_unref0 (iostream);
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (uri);
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					g_clear_error (&_inner_error_);
-#line 814 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 821 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					return;
-#line 6473 "extension.c"
+#line 6449 "extension.c"
 				}
-#line 821 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 828 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp16_ = example;
-#line 821 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 828 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp17_ = _tmp16_.valid;
-#line 821 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 828 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp18_ = sub;
-#line 821 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 828 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp19_ = adblock_subscription_get_valid (_tmp18_);
-#line 821 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 828 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp20_ = _tmp19_;
-#line 821 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 828 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (_tmp17_ != _tmp20_) {
-#line 6487 "extension.c"
+#line 6463 "extension.c"
 					const gchar* _tmp21_ = NULL;
 					TestUpdateExample _tmp22_;
 					gboolean _tmp23_;
@@ -6528,62 +6504,62 @@ void test_subscription_update (void) {
 					const gchar* _tmp29_;
 					TestUpdateExample _tmp30_;
 					const gchar* _tmp31_;
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp22_ = example;
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp23_ = _tmp22_.valid;
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					if (_tmp23_) {
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp21_ = "";
-#line 6507 "extension.c"
+#line 6483 "extension.c"
 					} else {
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp21_ = "in";
-#line 6511 "extension.c"
+#line 6487 "extension.c"
 					}
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp25_ = sub;
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp26_ = adblock_subscription_get_valid (_tmp25_);
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp27_ = _tmp26_;
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					if (_tmp27_) {
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp24_ = "";
-#line 6523 "extension.c"
+#line 6499 "extension.c"
 					} else {
-#line 823 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 830 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp24_ = "in";
-#line 6527 "extension.c"
+#line 6503 "extension.c"
 					}
-#line 822 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 829 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp28_ = _tmp21_;
-#line 822 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 829 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp29_ = _tmp24_;
-#line 822 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 829 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp30_ = example;
-#line 822 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 829 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp31_ = _tmp30_.content;
-#line 822 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-					g_error ("extension.vala:822: Subscription expected to be %svalid but %svalid:\n" \
+#line 829 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+					g_error ("extension.vala:829: Subscription expected to be %svalid but %svalid:\n" \
 "%s", _tmp28_, _tmp29_, _tmp31_);
-#line 6539 "extension.c"
+#line 6515 "extension.c"
 				}
-#line 824 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 831 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp32_ = example;
-#line 824 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 831 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp33_ = _tmp32_.result;
-#line 824 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 831 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp34_ = updater;
-#line 824 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 831 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp35_ = adblock_updater_get_needs_update (_tmp34_);
-#line 824 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 831 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp36_ = _tmp35_;
-#line 824 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 831 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (_tmp33_ != _tmp36_) {
-#line 6553 "extension.c"
+#line 6529 "extension.c"
 					const gchar* _tmp37_ = NULL;
 					TestUpdateExample _tmp38_;
 					gboolean _tmp39_;
@@ -6600,71 +6576,71 @@ void test_subscription_update (void) {
 					GDateTime* _tmp50_;
 					gchar* _tmp51_ = NULL;
 					gchar* _tmp52_;
-#line 826 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 833 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp38_ = example;
-#line 826 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 833 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp39_ = _tmp38_.result;
-#line 826 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 833 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					if (_tmp39_) {
-#line 826 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 833 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp37_ = "";
-#line 6578 "extension.c"
+#line 6554 "extension.c"
 					} else {
-#line 826 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 833 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 						_tmp37_ = " not";
-#line 6582 "extension.c"
+#line 6558 "extension.c"
 					}
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp40_ = _tmp37_;
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp41_ = example;
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp42_ = _tmp41_.content;
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp43_ = updater;
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp44_ = adblock_updater_get_last_updated (_tmp43_);
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp45_ = _tmp44_;
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp46_ = pretty_date (_tmp45_);
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp47_ = _tmp46_;
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp48_ = updater;
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp49_ = adblock_updater_get_expires (_tmp48_);
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp50_ = _tmp49_;
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp51_ = pretty_date (_tmp50_);
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp52_ = _tmp51_;
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-					g_error ("extension.vala:825: Update%s expected for:\n" \
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+					g_error ("extension.vala:832: Update%s expected for:\n" \
 "%s\n" \
 "Last Updated: %s\n" \
 "Expires: %s", _tmp40_, _tmp42_, _tmp47_, _tmp52_);
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (_tmp52_);
-#line 825 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 832 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_g_free0 (_tmp47_);
-#line 6616 "extension.c"
+#line 6592 "extension.c"
 				}
 			}
 		}
 	}
-#line 799 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 806 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (updater);
-#line 799 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 806 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (sub);
-#line 799 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 806 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (file);
-#line 799 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 806 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_object_unref0 (iostream);
-#line 799 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 806 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (uri);
-#line 6631 "extension.c"
+#line 6607 "extension.c"
 }
 
 
@@ -6673,53 +6649,53 @@ void test_sub_uri_copy (const TestSubUri* self, TestSubUri* dest) {
 	gchar* _tmp1_;
 	const gchar* _tmp2_;
 	gchar* _tmp3_;
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp0_ = (*self).src_uri;
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp1_ = g_strdup (_tmp0_);
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*dest).src_uri);
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).src_uri = _tmp1_;
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp2_ = (*self).dst_uri;
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_tmp3_ = g_strdup (_tmp2_);
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*dest).dst_uri);
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	(*dest).dst_uri = _tmp3_;
-#line 6656 "extension.c"
+#line 6632 "extension.c"
 }
 
 
 void test_sub_uri_destroy (TestSubUri* self) {
-#line 832 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 839 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*self).src_uri);
-#line 833 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 840 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 ((*self).dst_uri);
-#line 6665 "extension.c"
+#line 6641 "extension.c"
 }
 
 
 TestSubUri* test_sub_uri_dup (const TestSubUri* self) {
 	TestSubUri* dup;
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	dup = g_new0 (TestSubUri, 1);
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_sub_uri_copy (self, dup);
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	return dup;
-#line 6677 "extension.c"
+#line 6653 "extension.c"
 }
 
 
 void test_sub_uri_free (TestSubUri* self) {
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_sub_uri_destroy (self);
-#line 831 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 838 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_free (self);
-#line 6686 "extension.c"
+#line 6662 "extension.c"
 }
 
 
@@ -6741,17 +6717,17 @@ void test_subscription_uri_parsing (void) {
 		gint example_collection_length1 = 0;
 		gint _example_collection_size_ = 0;
 		gint example_it = 0;
-#line 846 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 853 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		example_collection = suburis;
-#line 846 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 853 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		example_collection_length1 = G_N_ELEMENTS (suburis);
-#line 846 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 853 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 		for (example_it = 0; example_it < G_N_ELEMENTS (suburis); example_it = example_it + 1) {
-#line 6714 "extension.c"
+#line 6690 "extension.c"
 			TestSubUri example = {0};
-#line 846 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 853 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 			example = example_collection[example_it];
-#line 6718 "extension.c"
+#line 6694 "extension.c"
 			{
 				TestSubUri _tmp0_;
 				const gchar* _tmp1_;
@@ -6759,119 +6735,119 @@ void test_subscription_uri_parsing (void) {
 				const gchar* _tmp3_;
 				TestSubUri _tmp4_;
 				const gchar* _tmp5_;
-#line 847 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 854 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp0_ = example;
-#line 847 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 854 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp1_ = _tmp0_.src_uri;
-#line 847 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 854 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp2_ = adblock_parse_subscription_uri (_tmp1_);
-#line 847 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 854 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_g_free0 (parsed_uri);
-#line 847 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 854 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				parsed_uri = _tmp2_;
-#line 848 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 855 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp3_ = parsed_uri;
-#line 848 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 855 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp4_ = example;
-#line 848 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 855 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				_tmp5_ = _tmp4_.dst_uri;
-#line 848 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 855 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 				if (g_strcmp0 (_tmp3_, _tmp5_) != 0) {
-#line 6744 "extension.c"
+#line 6720 "extension.c"
 					TestSubUri _tmp6_;
 					const gchar* _tmp7_;
 					const gchar* _tmp8_;
 					TestSubUri _tmp9_;
 					const gchar* _tmp10_;
-#line 849 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 856 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp6_ = example;
-#line 849 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 856 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp7_ = _tmp6_.dst_uri;
-#line 849 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 856 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp8_ = parsed_uri;
-#line 849 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 856 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp9_ = example;
-#line 849 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 856 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 					_tmp10_ = _tmp9_.src_uri;
-#line 849 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
-					g_error ("extension.vala:849: Subscription expected to be %svalid but %svalid:\n" \
+#line 856 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+					g_error ("extension.vala:856: Subscription expected to be %svalid but %svalid:\n" \
 "%s", _tmp7_, _tmp8_, _tmp10_);
-#line 6762 "extension.c"
+#line 6738 "extension.c"
 				}
 			}
 		}
 	}
-#line 844 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 851 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	_g_free0 (parsed_uri);
-#line 6769 "extension.c"
+#line 6745 "extension.c"
 }
 
 
 static void _test_adblock_config_gcallback (void) {
-#line 855 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 862 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_adblock_config ();
-#line 6776 "extension.c"
+#line 6752 "extension.c"
 }
 
 
 static void _test_adblock_subs_gcallback (void) {
-#line 856 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 863 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_adblock_subs ();
-#line 6783 "extension.c"
+#line 6759 "extension.c"
 }
 
 
 static void _test_adblock_init_gcallback (void) {
-#line 857 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 864 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_adblock_init ();
-#line 6790 "extension.c"
+#line 6766 "extension.c"
 }
 
 
 static void _test_adblock_fixup_regexp_gcallback (void) {
-#line 858 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 865 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_adblock_fixup_regexp ();
-#line 6797 "extension.c"
+#line 6773 "extension.c"
 }
 
 
 static void _test_adblock_pattern_gcallback (void) {
-#line 859 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 866 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_adblock_pattern ();
-#line 6804 "extension.c"
+#line 6780 "extension.c"
 }
 
 
 static void _test_subscription_update_gcallback (void) {
-#line 860 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 867 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_subscription_update ();
-#line 6811 "extension.c"
+#line 6787 "extension.c"
 }
 
 
 static void _test_subscription_uri_parsing_gcallback (void) {
-#line 861 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 868 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	test_subscription_uri_parsing ();
-#line 6818 "extension.c"
+#line 6794 "extension.c"
 }
 
 
 void extension_test (void) {
-#line 855 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 862 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_test_add_func ("/extensions/adblock2/config", _test_adblock_config_gcallback);
-#line 856 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 863 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_test_add_func ("/extensions/adblock2/subs", _test_adblock_subs_gcallback);
-#line 857 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 864 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_test_add_func ("/extensions/adblock2/init", _test_adblock_init_gcallback);
-#line 858 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 865 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_test_add_func ("/extensions/adblock2/parse", _test_adblock_fixup_regexp_gcallback);
-#line 859 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 866 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_test_add_func ("/extensions/adblock2/pattern", _test_adblock_pattern_gcallback);
-#line 860 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 867 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_test_add_func ("/extensions/adblock2/update", _test_subscription_update_gcallback);
-#line 861 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
+#line 868 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/extension.vala"
 	g_test_add_func ("/extensions/adblock2/subsparse", _test_subscription_uri_parsing_gcallback);
-#line 6837 "extension.c"
+#line 6813 "extension.c"
 }
 
 

@@ -3491,6 +3491,22 @@ msgstr "Block advertisements according to a filter list"
 msgid "Configure Advertisement filters"
 msgstr "Configure Advertisement filters"
 
+#: ../extensions/adblock/widgets.vala:79
+msgid "Preferences"
+msgstr "Preferences"
+
+#: ../extensions/adblock/widgets.vala:91
+msgid "Disable"
+msgstr "Disable"
+
+#: ../extensions/adblock/widgets.vala:123
+msgid "Type the locally saved the filter file and hit Entry.Form:file://filepath+filename,such as file:///home/test.txt."
+msgstr "Type the locally saved the filter file and hit Entry.Form:file://filepath+filename,such as file:///home/test.txt."
+
+#: ../extensions/adblock/widgets.vala:99
+msgid "Display hidden elements"
+msgstr "Display hidden elements"
+
 #: ../extensions/adblock/extension.vala:168
 msgid "Bl_ock image"
 msgstr "Bl_ock image"

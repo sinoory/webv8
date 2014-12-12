@@ -128,27 +128,27 @@ static AdblockDirective* _adblock_directive_dup (AdblockDirective* self);
 AdblockWhitelist* adblock_whitelist_construct (GType object_type, AdblockOptions* options) {
 	AdblockWhitelist * self = NULL;
 	AdblockOptions* _tmp0_;
-#line 15 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 15 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	g_return_val_if_fail (options != NULL, NULL);
-#line 16 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 16 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	_tmp0_ = options;
-#line 16 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 16 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	self = (AdblockWhitelist*) adblock_filter_construct (object_type, _tmp0_);
-#line 15 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 15 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	return self;
 #line 140 "whitelist.c"
 }
 
 
 AdblockWhitelist* adblock_whitelist_new (AdblockOptions* options) {
-#line 15 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 15 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	return adblock_whitelist_construct (ADBLOCK_TYPE_WHITELIST, options);
 #line 147 "whitelist.c"
 }
 
 
 static gpointer _g_regex_ref0 (gpointer self) {
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	return self ? g_regex_ref (self) : NULL;
 #line 154 "whitelist.c"
 }
@@ -156,18 +156,18 @@ static gpointer _g_regex_ref0 (gpointer self) {
 
 static AdblockDirective* _adblock_directive_dup (AdblockDirective* self) {
 	AdblockDirective* dup;
-#line 25 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 25 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	dup = g_new0 (AdblockDirective, 1);
-#line 25 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 25 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	memcpy (dup, self, sizeof (AdblockDirective));
-#line 25 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 25 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	return dup;
 #line 166 "whitelist.c"
 }
 
 
 static gpointer __adblock_directive_dup0 (gpointer self) {
-#line 25 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 25 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	return self ? _adblock_directive_dup (self) : NULL;
 #line 173 "whitelist.c"
 }
@@ -179,27 +179,27 @@ static AdblockDirective* adblock_whitelist_real_match (AdblockFeature* base, con
 	GHashTable* _tmp0_;
 	GList* _tmp1_ = NULL;
 	GError * _inner_error_ = NULL;
-#line 19 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 19 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	self = (AdblockWhitelist*) base;
-#line 19 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 19 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	g_return_val_if_fail (request_uri != NULL, NULL);
-#line 19 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 19 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	g_return_val_if_fail (page_uri != NULL, NULL);
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	_tmp0_ = ((AdblockFilter*) self)->rules;
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	_tmp1_ = g_hash_table_get_keys (_tmp0_);
 #line 193 "whitelist.c"
 	{
 		GList* white_collection = NULL;
 		GList* white_it = NULL;
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 		white_collection = _tmp1_;
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 		for (white_it = white_collection; white_it != NULL; white_it = white_it->next) {
 #line 201 "whitelist.c"
 			const gchar* white = NULL;
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 			white = (const gchar*) white_it->data;
 #line 205 "whitelist.c"
 			{
@@ -216,96 +216,96 @@ static AdblockDirective* adblock_whitelist_real_match (AdblockFeature* base, con
 				const gchar* _tmp11_ = NULL;
 				const gchar* _tmp12_;
 				gboolean _tmp13_ = FALSE;
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp2_ = ((AdblockFilter*) self)->rules;
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp3_ = white;
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp4_ = g_hash_table_lookup (_tmp2_, _tmp3_);
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp5_ = _g_regex_ref0 ((GRegex*) _tmp4_);
-#line 21 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 21 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				regex = _tmp5_;
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp6_ = regex;
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp7_ = request_uri;
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp8_ = g_regex_match_full (_tmp6_, _tmp7_, (gssize) (-1), 0, 0, NULL, &_inner_error_);
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp9_ = _tmp8_;
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				if (_inner_error_ != NULL) {
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					g_propagate_error (error, _inner_error_);
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					_g_regex_unref0 (regex);
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					_g_list_free0 (white_collection);
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					return NULL;
 #line 248 "whitelist.c"
 				}
-#line 22 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 22 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				if (!_tmp9_) {
-#line 23 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 23 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					result = NULL;
-#line 23 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 23 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					_g_regex_unref0 (regex);
-#line 23 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 23 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					_g_list_free0 (white_collection);
-#line 23 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 23 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					return result;
 #line 260 "whitelist.c"
 				}
-#line 24 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 24 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp10_ = regex;
-#line 24 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 24 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp11_ = g_regex_get_pattern (_tmp10_);
-#line 24 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 24 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp12_ = request_uri;
-#line 24 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 24 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_tmp13_ = g_regex_match_simple (_tmp11_, _tmp12_, G_REGEX_UNGREEDY, G_REGEX_MATCH_NOTEMPTY);
-#line 24 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 24 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				if (_tmp13_) {
 #line 272 "whitelist.c"
 					AdblockDirective _tmp14_;
 					AdblockDirective* _tmp15_;
-#line 25 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 25 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					_tmp14_ = ADBLOCK_DIRECTIVE_ALLOW;
-#line 25 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 25 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					_tmp15_ = __adblock_directive_dup0 (&_tmp14_);
-#line 25 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 25 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					result = _tmp15_;
-#line 25 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 25 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					_g_regex_unref0 (regex);
-#line 25 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 25 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					_g_list_free0 (white_collection);
-#line 25 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 25 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 					return result;
 #line 287 "whitelist.c"
 				}
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 				_g_regex_unref0 (regex);
 #line 291 "whitelist.c"
 			}
 		}
-#line 20 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 20 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 		_g_list_free0 (white_collection);
 #line 296 "whitelist.c"
 	}
-#line 27 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 27 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	result = NULL;
-#line 27 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 27 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	return result;
 #line 302 "whitelist.c"
 }
 
 
 static void adblock_whitelist_class_init (AdblockWhitelistClass * klass) {
-#line 14 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 14 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	adblock_whitelist_parent_class = g_type_class_peek_parent (klass);
-#line 14 "/home/zrl/epiphany_webkit/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
+#line 14 "/home/luyue/new/Webkit2Browser/Source/midori/extensions/adblock/whitelist.vala"
 	ADBLOCK_FEATURE_CLASS (klass)->match = adblock_whitelist_real_match;
 #line 311 "whitelist.c"
 }

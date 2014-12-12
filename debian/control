@@ -85,7 +85,14 @@ Build-Depends: debhelper (>= 8.0.0),
 	git-svn,
 	subversion,
 	ninja-build,
-	libgstreamer1.0-dev
+	libgstreamer1.0-dev,
+	libgstreamer-plugins-base1.0-0,
+	libgstreamer1.0-0,
+	libgstreamer-plugins-bad1.0-dev,
+	libgstreamer-plugins-good1.0-dev,
+	libgstreamer-plugins-good1.0-0,
+	libgstreamer-plugins-bad1.0-0,
+	libgstreamer-plugins-base1.0-dev
 Standards-Version: 0.2
 Homepage: <insert the upstream URL, if relevant>
 #Vcs-Git: git://git.debian.org/collab-maint/zrltest.git
