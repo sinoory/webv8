@@ -37,7 +37,8 @@ namespace Midori {
         public bool zoom_text_and_images { get; set; default = true; }
 #else
     public class Settings : WebKit.Settings {
-        public bool zoom_text_and_images { get {
+//lxx add, it's definition is below
+/*        public bool zoom_text_and_images { get {
             return !zoom_text_only;
         } set {
             zoom_text_only = !value;
@@ -47,6 +48,7 @@ namespace Midori {
         } set {
             WebKit.WebContext.get_default ().set_spell_checking_enabled (value);
         } }
+*/
 #endif
         public bool remember_last_window_size { get; set; default = true; }
         public int last_window_width { get; set; default = 0; }
@@ -178,6 +180,26 @@ namespace Midori {
         public bool strip_referer { get; set; default = true; }
         /* Since: 0.4.2 */
         public bool first_party_cookies_only { get; set; default = true; }
+		  public bool much_tab_warning { get; set; default = false; } //lianxx add, 20141210
+	     public bool show_homepage_button {get; set; default = true; } //lianxx add, 20141210
+	     public bool ask_every_time_before_download_file {get; set; default = false; } //lianxx add, 20141210
+		  public bool zoom_text_and_images {get; set; default = true; } //lianxx add, 20141211
+		  public bool auto_load_images {get; set; default = true; } //lianxx add, 20141211 
+		  public bool enable_scripts {get; set; default = true; } //lianxx add, 20141211 
+		  public string default_font_family {get; set; default = "monospace"; } //lianxx add, 20141211 
+		  public int default_font_size {get; set; default = 16; } //lianxx add, 20141211 
+        public bool page_content_cache {get; set; default = true;} //lianxx add, 20141212
+		  public int history_setting {get; set; default = 0;} //lianxx add, 20141212
+		  public bool clear_browse_record {get; set; default = false;} //lianxx add, 20141212
+		  public bool clear_download_record {get; set; default = false;} //lianxx add, 20141212
+		  public bool clear_cookie_and_others {get; set; default = false;} //lianxx add, 20141212
+		  public bool clear_cached_images_and_files {get; set; default = false;} //lianxx add, 20141212
+		  public bool clear_passwords {get; set; default = false;} //lianxx add, 20141212
+		  public int cookie_setting {get; set; default = 0;} //lianxx add, 20141212
+		  public int track_location {get; set; default = 1;} //lianxx add, 20141212
+		  public bool certificate_revocation {get; set; default = false;} //lianxx add, 20141212
+		  public bool media_access {get; set; default = false;} //lianxx add, 20141212
+
         // [IntegerType (min = 0, int.max)]
         public int maximum_cookie_age { get; set; default = 30; }
         // [IntegerType (min = 0, int.max)]

@@ -149,8 +149,8 @@
                 </child>
                 <child>
                   <object class="GtkRadioButton" id="radiobutton4_general">
-                    <property name="label" translatable="yes">默认</property>
-                    <property name="width_request">100</property>
+                    <property name="label" translatable="yes">始终在当前标签页打开网页</property>
+                    <property name="width_request">170</property>
                     <property name="height_request">30</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -260,7 +260,7 @@
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="checkbutton4_general">
-                    <property name="label" translatable="yes">显示标题栏和菜单栏</property>
+                    <property name="label" translatable="yes">显示菜单栏</property>
                     <property name="width_request">300</property>
                     <property name="height_request">30</property>
                     <property name="visible">True</property>

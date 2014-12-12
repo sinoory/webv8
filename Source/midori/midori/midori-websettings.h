@@ -14,6 +14,8 @@
 
 #include <katze/katze.h>
 
+#include <midori/midori-core.h>//lxx add,20141208
+
 G_BEGIN_DECLS
 
 #define MIDORI_TYPE_WEB_SETTINGS \
@@ -185,6 +187,101 @@ typedef enum
     MIDORI_SITE_DATA_ACCEPT,
     MIDORI_SITE_DATA_PRESERVE,
 } MidoriSiteDataPolicy;
+
+#if 1
+struct  _MidoriWebSettings
+{
+	WebKitSettingsPrivate *priv;
+#if 1
+   gchar* current_uri; //lxx add for homepage
+         	//lxx add+,20141210
+		guint32 fontNum;
+		guint32 fontSizeNum;
+		guint32 pageZoomNum;	
+	//lxx add-,20141210 
+	
+    GtkWidget *entry1_general;
+    GtkWidget *button1_general;
+    GtkWidget *radiobutton1_general;
+    GtkWidget *radiobutton2_general;
+    GtkWidget *radiobutton3_general;
+    GtkWidget *radiobutton4_general;
+    GtkWidget *radiobutton5_general;
+    GtkWidget *radiobutton6_general;
+    GtkWidget * checkbutton1_general;
+    GtkWidget *checkbutton2_general;
+    GtkWidget *checkbutton3_general;
+    GtkWidget *checkbutton4_general;
+    GtkWidget *checkbutton5_general;
+
+    GtkWidget *comboboxtext1_content;
+    GtkWidget *comboboxtext2_content;
+    GtkWidget *comboboxtext3_content;
+    GtkWidget *checkbutton1_content;
+    GtkWidget *radiobutton1_content;
+    GtkWidget *radiobutton2_content;
+    GtkWidget *radiobutton3_content;
+    GtkWidget *radiobutton4_content;
+
+    GtkWidget *checkbutton3_privacy;
+    GtkWidget *comboboxtext1_privacy;
+    GtkWidget *checkbutton4_privacy;
+    GtkWidget *checkbutton5_privacy;
+    GtkWidget *checkbutton6_privacy;
+    GtkWidget *checkbutton7_privacy;
+    GtkWidget *checkbutton8_privacy;
+    GtkWidget *radiobutton1_privacy;
+    GtkWidget *radiobutton2_privacy;
+    GtkWidget *radiobutton3_privacy;
+    GtkWidget *checkbutton9_privacy;
+    GtkWidget *radiobutton4_privacy;
+    GtkWidget *radiobutton5_privacy;
+    GtkWidget *radiobutton6_privacy;
+    GtkWidget *button3_privacy;
+
+    GtkWidget *checkbutton1_security;
+    GtkWidget *radiobutton1_security;
+    GtkWidget *radiobutton2_security;
+//lianxx add 14.11.13
+    GtkWidget *button1_advanced;
+    GtkWidget *button2_advanced;    
+	 GtkWidget *button3_advanced;	 
+    GtkWidget *button4_advanced;
+    GtkWidget *checkbutton1_advanced;
+	 GtkWidget *entry1_advanced;
+//luyue add
+   GtkWidget *button1_security;
+
+#endif
+	
+    MidoriSettings parent_instance;
+
+    MidoriToolbarStyle toolbar_style : 3;
+    MidoriStartup load_on_startup : 2;
+    MidoriNewTabType new_tab_type: 3;
+    MidoriPreferredEncoding preferred_encoding : 3;
+    gint close_buttons_left;
+    MidoriNewPage open_new_pages_in : 2;
+    gboolean first_party_cookies_only : 1;
+    MidoriProxy proxy_type : 2;
+    MidoriIdentity identify_as : 3;
+
+    gchar* http_accept_language;
+    gchar* accept;
+    gchar* ident_string;
+
+    gint clear_private_data;
+    gchar* clear_data;
+    gchar* site_data_rules;
+    gboolean enforce_font_family;
+    gchar* user_stylesheet_uri;
+    gchar* user_stylesheet_uri_cached;
+    GHashTable* user_stylesheets;
+    gboolean print_without_dialog;
+
+};
+
+#endif
 
 MidoriSiteDataPolicy
 midori_web_settings_get_site_data_policy   (MidoriWebSettings* settings,

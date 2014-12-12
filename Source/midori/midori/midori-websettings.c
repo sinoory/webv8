@@ -46,33 +46,7 @@
 #define WEB_SETTINGS_STRING(x) "WebKitWebSettings::"x""
 #endif
 
-struct _MidoriWebSettings
-{
-    MidoriSettings parent_instance;
 
-    MidoriToolbarStyle toolbar_style : 3;
-    MidoriStartup load_on_startup : 2;
-    MidoriNewTabType new_tab_type: 3;
-    MidoriPreferredEncoding preferred_encoding : 3;
-    gint close_buttons_left;
-    MidoriNewPage open_new_pages_in : 2;
-    gboolean first_party_cookies_only : 1;
-    MidoriProxy proxy_type : 2;
-    MidoriIdentity identify_as : 3;
-
-    gchar* http_accept_language;
-    gchar* accept;
-    gchar* ident_string;
-
-    gint clear_private_data;
-    gchar* clear_data;
-    gchar* site_data_rules;
-    gboolean enforce_font_family;
-    gchar* user_stylesheet_uri;
-    gchar* user_stylesheet_uri_cached;
-    GHashTable* user_stylesheets;
-    gboolean print_without_dialog;
-};
 
 struct _MidoriWebSettingsClass
 {
@@ -1675,4 +1649,5 @@ midori_settings_save_to_file (MidoriWebSettings* settings,
     saved = sokoke_key_file_save_to_file (key_file, filename, error);
     g_key_file_free (key_file);
     return saved;
+
 }

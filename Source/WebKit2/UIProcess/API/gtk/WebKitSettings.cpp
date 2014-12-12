@@ -1757,11 +1757,12 @@ void webkit_settings_set_enable_javascript(WebKitSettings* settings, gboolean en
     bool currentValue = priv->preferences->javaScriptEnabled();
     if (currentValue == enabled)
         return;
-        
+/*lxx add        
     if(!priv->IsStartState) { 
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_JAVASCRIPT], bvalue.release());  //Update new preference value.
     } 
+*/
    
     priv->preferences->setJavaScriptEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-javascript");
@@ -1797,12 +1798,12 @@ void webkit_settings_set_auto_load_images(WebKitSettings* settings, gboolean ena
     bool currentValue = priv->preferences->loadsImagesAutomatically();
     if (currentValue == enabled)
         return;
-   
+/*lxx add   
      if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_AUTO_LOAD_IMAGES], bvalue.release());  //Update new preference value.
     } 
-
+*/
     priv->preferences->setLoadsImagesAutomatically(enabled);
     g_object_notify(G_OBJECT(settings), "auto-load-images");
 }
@@ -2235,12 +2236,13 @@ void webkit_settings_set_default_font_family(WebKitSettings* settings, const gch
     WebKitSettingsPrivate* priv = settings->priv;
     if (!g_strcmp0(priv->defaultFontFamily.data(), defaultFontFamily))
         return;
-
+/*lxx add
     if(!priv->IsStartState) {
       std::string strval(defaultFontFamily);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_DEFAULT_FONT_FAMILY], strvalue.release()); //Update new preference value.
     }
+*/
 
     String standardFontFamily = String::fromUTF8(defaultFontFamily);
     priv->preferences->setStandardFontFamily(standardFontFamily);
@@ -2536,11 +2538,12 @@ void webkit_settings_set_default_font_size(WebKitSettings* settings, guint32 fon
     uint32_t currentSize = priv->preferences->defaultFontSize();
     if (currentSize == fontSize)
         return;
-
+/*lxx add
      if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)fontSize));
       priv->user_pref_store_->SetValue(key[PROP_DEFAULT_FONT_SIZE], ivalue.release()); //Update new preference value.
     } 
+*/
  
     priv->preferences->setDefaultFontSize(fontSize);
     g_object_notify(G_OBJECT(settings), "default-font-size");
@@ -3137,12 +3140,12 @@ void webkit_settings_set_zoom_text_only(WebKitSettings* settings, gboolean zoomT
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->zoomTextOnly == zoomTextOnly)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)zoomTextOnly));
       priv->user_pref_store_->SetValue(key[PROP_ZOOM_TEXT_ONLY], bvalue.release()); //Update new preference value.
     } 
-
+*/
     priv->zoomTextOnly = zoomTextOnly;
     g_object_notify(G_OBJECT(settings), "zoom-text-only");
 }
@@ -3730,12 +3733,12 @@ void webkit_settings_set_much_tab_warning(WebKitSettings* settings, gboolean muc
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->muchTabWarning == muchTabWarning)
         return;
-
+/*lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)muchTabWarning));
       priv->user_pref_store_->SetValue(key[PROP_MUCH_TAB_WARNING], bvalue.release()); //Update new preference value.
     }
-
+*/
     priv->muchTabWarning = muchTabWarning;
 }
 
@@ -3754,11 +3757,12 @@ void webkit_settings_set_show_homepage_button(WebKitSettings* settings, gboolean
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->showHomepageButton == showHomepageButton)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)showHomepageButton));
       priv->user_pref_store_->SetValue(key[PROP_SHOW_HOMEPAGE_BUTTON], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->showHomepageButton = showHomepageButton;
 }
@@ -3778,11 +3782,12 @@ void webkit_settings_set_show_bookmarkbar(WebKitSettings* settings, gboolean sho
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->showBookmarkbar == showBookmarkbar)
         return;
-
+/*lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)showBookmarkbar));
       priv->user_pref_store_->SetValue(key[PROP_SHOW_BOOKMARKBAR], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->showBookmarkbar = showBookmarkbar;
 }
@@ -3802,11 +3807,12 @@ void webkit_settings_set_show_titlebar_and_menubar(WebKitSettings* settings, gbo
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->showTitlebarAndMenubar == showTitlebarAndMenubar)
         return;
-
+/*lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)showTitlebarAndMenubar));
       priv->user_pref_store_->SetValue(key[PROP_SHOW_TITLEBAR_AND_MENUBAR], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->showTitlebarAndMenubar = showTitlebarAndMenubar;
 }
@@ -3826,11 +3832,12 @@ void webkit_settings_set_show_fullscreen(WebKitSettings* settings, gboolean show
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->showFullscreen == showFullscreen)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)showFullscreen));
       priv->user_pref_store_->SetValue(key[PROP_SHOW_FULLSCREEN], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->showFullscreen = showFullscreen;
 }
@@ -3850,11 +3857,12 @@ void webkit_settings_set_page_content_cache(WebKitSettings* settings, gboolean p
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->pageContentCache == pageContentCache)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)pageContentCache));
       priv->user_pref_store_->SetValue(key[PROP_PAGE_CONTENT_CACHE], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->pageContentCache = pageContentCache;
 }
@@ -3874,11 +3882,12 @@ void webkit_settings_set_clear_browse_record(WebKitSettings* settings, gboolean 
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->clearBrowseRecord == clearBrowseRecord)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)clearBrowseRecord));
       priv->user_pref_store_->SetValue(key[PROP_CLEAR_BROWSE_RECORD], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->clearBrowseRecord = clearBrowseRecord;
 }
@@ -3898,11 +3907,12 @@ void webkit_settings_set_clear_download_record(WebKitSettings* settings, gboolea
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->clearDownloadRecord == clearDownloadRecord)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)clearDownloadRecord));
       priv->user_pref_store_->SetValue(key[PROP_CLEAR_DOWNLOAD_RECORD], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->clearDownloadRecord = clearDownloadRecord;
 }
@@ -3922,11 +3932,12 @@ void webkit_settings_set_clear_cookie_and_others(WebKitSettings* settings, gbool
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->clearCookieAndOthers == clearCookieAndOthers)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)clearCookieAndOthers));
       priv->user_pref_store_->SetValue(key[PROP_CLEAR_COOKIE_AND_OTHERS], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->clearCookieAndOthers = clearCookieAndOthers;
 }
@@ -3945,11 +3956,12 @@ void webkit_settings_set_clear_cached_images_and_files(WebKitSettings* settings,
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->clearCachedImagesAndFiles == clearCachedImagesAndFiles)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)clearCachedImagesAndFiles));
       priv->user_pref_store_->SetValue(key[PROP_CLEAR_CACHED_IMAGES_AND_FILES], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->clearCachedImagesAndFiles = clearCachedImagesAndFiles;
 }
@@ -3969,11 +3981,12 @@ void webkit_settings_set_clear_passwords(WebKitSettings* settings, gboolean clea
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->clearPasswords == clearPasswords)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)clearPasswords));
       priv->user_pref_store_->SetValue(key[PROP_CLEAR_PASSWORDS], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->clearPasswords = clearPasswords;
 }
@@ -3993,12 +4006,12 @@ void webkit_settings_set_certificate_revocation(WebKitSettings* settings, gboole
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->certificateRevocation == certificateRevocation)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)certificateRevocation));
       priv->user_pref_store_->SetValue(key[PROP_CERTIFICATE_REVOCATION], bvalue.release()); //Update new preference value.
     }
-
+*/
     priv->certificateRevocation = certificateRevocation;
 }
 
@@ -4018,11 +4031,12 @@ void webkit_settings_set_ask_everytime_before_down(WebKitSettings* settings, gbo
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->askEverytimeBeforeDown == askEverytimeBeforeDown)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)askEverytimeBeforeDown));
       priv->user_pref_store_->SetValue(key[PROP_ASK_EVERYTIME_BEFORE_DOWN], bvalue.release()); //Update new preference value.
     }
+*/
 
     priv->askEverytimeBeforeDown = askEverytimeBeforeDown;
 }
@@ -4042,11 +4056,12 @@ void webkit_settings_set_on_startup(WebKitSettings* settings, guint32 onStartup)
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->onStartup == onStartup)
         return;
-
+/* lxx add
      if(!priv->IsStartState) {
        scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)onStartup));
        priv->user_pref_store_->SetValue(key[PROP_ON_STARTUP], ivalue.release()); //Update new preference value.
      }
+*/
 
      priv->onStartup = onStartup;
 }
@@ -4065,11 +4080,12 @@ void webkit_settings_set_open_newpage(WebKitSettings* settings, guint32 openNewp
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->openNewpage == openNewpage)
         return;
-
+/* lxx add
      if(!priv->IsStartState) {
        scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)openNewpage));
        priv->user_pref_store_->SetValue(key[PROP_OPEN_NEWPAGE], ivalue.release()); //Update new preference value.
      }
+*/
 
      priv->openNewpage = openNewpage;
 }
@@ -4088,11 +4104,12 @@ void webkit_settings_set_page_zoom(WebKitSettings* settings, gdouble pageZoom)
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->pageZoom == pageZoom)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> dvalue(new base::FundamentalValue((double)pageZoom));
       priv->user_pref_store_->SetValue(key[PROP_PAGE_ZOOM], dvalue.release()); //Update new preference value.
     }
+*/
    
     priv->pageZoom = pageZoom;
     g_object_notify(G_OBJECT(settings), "page-zoom");
@@ -4113,11 +4130,12 @@ void webkit_settings_set_history_setting(WebKitSettings* settings, guint32 histo
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->historySetting == historySetting)
         return;
-
+/* lxx add
      if(!priv->IsStartState) {
        scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)historySetting));
        priv->user_pref_store_->SetValue(key[PROP_HISTORY_SETTING], ivalue.release()); //Update new preference value.
      }
+*/
    
      priv->historySetting = historySetting;
 }
@@ -4137,11 +4155,12 @@ void webkit_settings_set_cookie_setting(WebKitSettings* settings, guint32 cookie
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->cookieSetting == cookieSetting)
         return;
-
+/* lxx add
      if(!priv->IsStartState) {
        scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)cookieSetting));
        priv->user_pref_store_->SetValue(key[PROP_COOKIE_SETTING], ivalue.release()); //Update new preference value.
      }
+*/
    
      priv->cookieSetting = cookieSetting;
 }
@@ -4161,11 +4180,12 @@ void webkit_settings_set_track_location(WebKitSettings* settings, guint32 trackL
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->trackLocation == trackLocation)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)trackLocation));
       priv->user_pref_store_->SetValue(key[PROP_TRACK_LOCATION], ivalue.release()); //Update new preference value.
     }
+*/
    
     priv->trackLocation = trackLocation;
 }
@@ -4185,11 +4205,12 @@ void webkit_settings_set_media_access(WebKitSettings* settings, guint32 mediaAcc
     WebKitSettingsPrivate* priv = settings->priv;
     if (priv->mediaAccess == mediaAccess)
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> ivalue(new base::FundamentalValue((int)mediaAccess));
       priv->user_pref_store_->SetValue(key[PROP_MEDIA_ACCESS], ivalue.release()); //Update new preference value.
     }
+*/
    
     priv->mediaAccess = mediaAccess;
 }
@@ -4211,12 +4232,13 @@ void webkit_settings_set_home_page(WebKitSettings* settings, const char* homepag
     WebKitSettingsPrivate* priv = settings->priv;
     if (!g_strcmp0(priv->homepage.data(), homepage))
         return;
-
+/* lxx add
     if(!priv->IsStartState) {
       std::string strval(homepage);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_HOME_PAGE], strvalue.release()); //Update new preference value.
     }
+*/
 
     priv->homepage = homepage;
 }
@@ -4239,12 +4261,13 @@ void webkit_settings_set_path_of_download_file(WebKitSettings* settings, const c
     WebKitSettingsPrivate* priv = settings->priv;
     if (!g_strcmp0(priv->storePathOfDownloadFile.data(), storePath))
         return;
-
+/*
     if(!priv->IsStartState) {
       std::string strval(storePath);
       scoped_ptr<base::StringValue> strvalue(new base::StringValue(strval));
       priv->user_pref_store_->SetValue(key[PROP_STORE_PATH_OF_DOWNFILE], strvalue.release()); //Update new preference value.
     }
+*/
 
     priv->storePathOfDownloadFile = storePath;
 }
@@ -4334,11 +4357,11 @@ DeletePreferencesFile(void)
     base::FilePath home = base::GetHomeDir();
     if (!home.empty()) 
 	   {
-      config_file = home.Append(".config/preferences");
+      config_file = home.Append(".config/midori/config");
             }
 	  else 
              {
-      std::string tmp_file = "/tmp/preferences";
+      std::string tmp_file = "/tmp/midori/config";
       base::FilePath tmp(tmp_file);
       config_file = tmp;
               }
