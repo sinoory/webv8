@@ -81,17 +81,17 @@ namespace Adblock {
 
         internal void parse_line (string? line) throws Error {
             if (line.has_prefix ("@@")) {
-//                if (line.contains("$") && line.contains ("domain"))
-//                    return;
+                if (line.contains("$") && line.contains ("domain"))
+                    return;
                 if (line.has_prefix ("@@||"))
-//                  add_url_pattern ("^", "whitelist", line.offset (4));
-                    add_url_pattern ("", "fulluri", line.offset (4));
+                  add_url_pattern ("^", "whitelist", line.offset (4));
+//                    add_url_pattern ("", "fulluri", line.offset (4));
                 else if (line.has_prefix ("@@|"))
-//                    add_url_pattern ("^", "whitelist", line.offset (3));
-                      add_url_pattern ("", "fulluri", line.offset (3));
+                    add_url_pattern ("^", "whitelist", line.offset (3));
+//                      add_url_pattern ("", "fulluri", line.offset (3));
                 else
-//                    add_url_pattern ("", "whitelist", line.offset (2));
-                      add_url_pattern ("", "fulluri", line.offset (2));
+                    add_url_pattern ("", "whitelist", line.offset (2));
+//                      add_url_pattern ("", "fulluri", line.offset (2));
                 return;
             }
             /* TODO: [include] [exclude] */
@@ -123,8 +123,8 @@ namespace Adblock {
             /* URL blocker rule */
             if (line.has_prefix ("|")) {
                 /* TODO: handle options and domains excludes */
- //               if (line.contains("$"))
- //                   return;
+//                if (line.contains("$"))
+//                    return;
 
                 if (line.has_prefix ("||"))
                     add_url_pattern ("", "fulluri", line.offset (2));
