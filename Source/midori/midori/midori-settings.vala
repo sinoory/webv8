@@ -8,6 +8,9 @@
  version 2.1 of the License, or (at your option) any later version.
 
  See the file COPYING for the full license text.
+
+ Modified by ZRL
+ 2014.12.15 修改新标签页打开方式默认值，即不在后台打开，新标签打开时就切换到新页面。修改参考open_tabs_in_the_background()
 */
 
 namespace Midori {
@@ -153,7 +156,7 @@ namespace Midori {
         public bool flash_window_on_new_bg_tabs { get; set; default = false; }
 
         public bool close_buttons_on_tabs { get; set; default = true; }
-        public bool open_tabs_in_the_background { get; set; default = true; }
+        public bool open_tabs_in_the_background { get; set; default = false; } // ZRL modify default as false.
         public bool open_tabs_next_to_current { get; set; default = true; }
         // [Deprecated (since = "0.5.7")]
         public bool always_show_tabbar { get; set; default = true; }
