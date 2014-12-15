@@ -123,8 +123,8 @@ namespace Adblock {
             /* URL blocker rule */
             if (line.has_prefix ("|")) {
                 /* TODO: handle options and domains excludes */
-//                if (line.contains("$"))
-//                    return;
+                if (line.contains("$"))
+                    return;
 
                 if (line.has_prefix ("||"))
                     add_url_pattern ("", "fulluri", line.offset (2));

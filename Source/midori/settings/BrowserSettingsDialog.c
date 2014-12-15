@@ -25,7 +25,7 @@
 
 #include "BrowserSettingsDialog.h"
 //#include "BrowserCellRendererVariant.h"
-//#include "Certificate.h"
+#include "../midori/Certificate.h"
 
 //lxx add +, 20141210
 #if 1
@@ -1171,9 +1171,7 @@ g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
 //luyue add
 static void certificateManagerCallback(GtkToggleButton *button, MidoriWebSettings *settings)
 {
-g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-	return;
-//   display_certificatemanager_info();   
+   display_certificatemanager(); 
 }
 #endif
 /*Build settings window from the glade file. Connecting widgets we interest. sunhaiming add.*/
