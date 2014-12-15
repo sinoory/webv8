@@ -316,11 +316,13 @@ midori_panel_init (MidoriPanel* panel)
         _("Align sidepanel to the right"));
     g_signal_connect (toolitem, "clicked",
         G_CALLBACK (midori_panel_button_align_clicked_cb), panel);
+#if 0 //delete right align button
     #if HAVE_OSX
     gtk_toolbar_insert (GTK_TOOLBAR (labelbar), toolitem, 0);
     #else
     gtk_toolbar_insert (GTK_TOOLBAR (labelbar), toolitem, -1);
     #endif
+#endif //delete right align button
     panel->button_align = toolitem;
     toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_CLOSE);
     gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolitem), _("Close panel"));
