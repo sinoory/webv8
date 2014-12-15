@@ -3434,6 +3434,7 @@ static void
 _action_preferences_activate (GtkAction*     action,
                               MidoriBrowser* browser)
 {
+#if 0
     static GtkWidget* dialog = NULL;
 
     if (!dialog)
@@ -3442,12 +3443,31 @@ _action_preferences_activate (GtkAction*     action,
         g_signal_emit (browser, signals[SHOW_PREFERENCES], 0, dialog);
         g_signal_connect (dialog, "response",
             G_CALLBACK (midori_preferences_response_help_cb), browser);
-        g_signal_connect (dialog, "destroy",
+        /**/   g_signal_connect (dialog, "destroy",
             G_CALLBACK (gtk_widget_destroyed), &dialog);
+   
         gtk_widget_show (dialog);
     }
     else
         gtk_window_present (GTK_WINDOW (dialog));
+#else
+
+static GtkWidget* dialog = NULL;
+
+if (!dialog)
+{
+	dialog = browser_settings_window_new(browser->settings); 
+	g_signal_connect (dialog, "destroy",
+            G_CALLBACK (gtk_widget_destroyed), &dialog);
+
+	gtk_widget_show (dialog);
+}
+else
+	gtk_window_present (GTK_WINDOW (dialog));
+
+
+#endif
+g_print("Hello world preferences\n");
 }
 
 static gboolean
