@@ -5033,7 +5033,7 @@ _action_about_activate (GtkAction*     action,
     GtkWidget* dialog = gtk_about_dialog_new ();
     g_object_set (dialog,
         "wrap-license", FALSE,
-        "copyright", "Copyright © 2013-2014 XXXXXXXXXXX",
+        "copyright", "Copyright © 2013-2014 cdosrepobuild <cdosrepobuild@iscas.ac.cn>",
 #endif
         "transient-for", browser,
         "logo-icon-name", gtk_window_get_icon_name (GTK_WINDOW (browser)),

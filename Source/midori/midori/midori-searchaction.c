@@ -7,6 +7,9 @@
  version 2.1 of the License, or (at your option) any later version.
 
  See the file COPYING for the full license text.
+
+ Modified by ZRL
+ 2014.12.15 修改搜索引擎配置文件获取目录，参考midori_search_engines_new_from_folder()
 */
 
 #include "midori-searchaction.h"
@@ -1616,10 +1619,15 @@ midori_search_engines_new_from_file (const gchar* filename,
     return search_engines;
 }
 
+// ZRL 默认从res目录读取搜索引擎配置文件
 KatzeArray*
 midori_search_engines_new_from_folder (GString* error_messages)
 {
+#if 0
     gchar* config_file = midori_paths_get_config_filename_for_reading ("search");
+#else
+    gchar* config_file = midori_paths_get_res_filename("search");
+#endif
     GError* error = NULL;
     KatzeArray* search_engines = midori_search_engines_new_from_file (config_file, &error);
     /* We ignore for instance empty files */

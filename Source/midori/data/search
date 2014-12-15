@@ -1,0 +1,6 @@
+[Baidu]
+name=Baidu Search
+text=Web Search
+uri=http://www.baidu.com/s?wd=%s
+token=bd
+

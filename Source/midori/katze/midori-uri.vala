@@ -111,8 +111,15 @@ namespace Midori {
                 return keywords;
             string escaped = GLib.Uri.escape_string (keywords, ":/", true);
             /* Allow DuckDuckGo to distinguish Midori and in turn share revenue */
+            stdout.printf ("ZRL midori-uri.vala uri = %s \n", uri);
+// ZRL 纠错，指向百度搜索引擎
+#if 0
             if (uri == "https://duckduckgo.com/?q=%s")
                 return "https://duckduckgo.com/?q=%s&t=midori".printf (escaped);
+#else
+            if (uri == "https://duckduckgo.com/?q=%s")
+                return "http://www.baidu.com/s/?wd=%s".printf (escaped);
+#endif
             if (uri.str ("%s") != null)
                 return uri.printf (escaped);
             return uri + escaped;

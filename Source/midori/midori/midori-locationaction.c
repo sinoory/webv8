@@ -668,8 +668,11 @@ midori_location_action_popup_timeout_cb (gpointer data)
         if (action->history != NULL)
             midori_autocompleter_add (action->autocompleter,
                 MIDORI_COMPLETION (midori_history_completion_new ()));
+// ZRL 屏蔽地址栏内搜索方式
+#if 0
         midori_autocompleter_add (action->autocompleter,
             MIDORI_COMPLETION (midori_search_completion_new ()));
+#endif
     }
 
     if (!midori_autocompleter_can_complete (action->autocompleter, action->key))
