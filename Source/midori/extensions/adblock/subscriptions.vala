@@ -84,8 +84,8 @@ namespace Adblock {
                 if (line.contains("$") && line.contains ("domain"))
                     return;
                 if (line.has_prefix ("@@||"))
-                  add_url_pattern ("^", "whitelist", line.offset (4));
-//                    add_url_pattern ("", "fulluri", line.offset (4));
+//                  add_url_pattern ("^", "whitelist", line.offset (4));
+                    add_url_pattern ("", "fulluri", line.offset (4));
                 else if (line.has_prefix ("@@|"))
                     add_url_pattern ("^", "whitelist", line.offset (3));
 //                      add_url_pattern ("", "fulluri", line.offset (3));
