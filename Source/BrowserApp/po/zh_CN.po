@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: midori\n"
+"Project-Id-Version: cdosbrowser\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: cdosrepobuild <cdosrepobuild@iscas.ac.cn>\n"
 "MIME-Version: 1.0\n"
@@ -43,19 +43,19 @@ msgstr "新建窗口"
 
 #: ../data/midori.desktop.in.h:8
 msgid "New Private Browsing Window"
-msgstr "新建私人浏览窗口"
+msgstr "新建隐私浏览窗口"
 
 #: ../data/midori-private.desktop.in.h:1
 msgid "Midori Private Browsing"
-msgstr "私人浏览模式"
+msgstr "隐私浏览模式"
 
 #: ../data/midori-private.desktop.in.h:2 ../midori/midori-view.c:3897
 msgid "Private Browsing"
-msgstr "私人浏览"
+msgstr "隐私浏览"
 
 #: ../data/midori-private.desktop.in.h:3
 msgid "Open a new private browsing window"
-msgstr "打开新的私人浏览窗口"
+msgstr "打开新的隐私浏览窗口"
 
 #: ../midori/main.c:52
 #, c-format
@@ -80,7 +80,7 @@ msgstr "文件夹"
 
 #: ../midori/main.c:83
 msgid "Private browsing, no changes are saved"
-msgstr "私人浏览，未保存更改"
+msgstr "隐私浏览模式，未保存更改"
 
 #: ../midori/main.c:86
 msgid "Portable mode, all runtime files are stored in one place"
@@ -269,7 +269,7 @@ msgstr "意外的动作 ‘%s’。"
 #: ../midori/midori-browser.c:723
 #, c-format
 msgid "%s (Private Browsing)"
-msgstr "%s(私人浏览)"
+msgstr "%s(隐私浏览)"
 
 #: ../midori/midori-browser.c:769 ../midori/midori-browser.c:3946
 #, c-format
@@ -370,7 +370,7 @@ msgid ""
 "automatically."
 msgstr ""
 "要使用上面的 URI 打开一个新闻聚合器。通常有名为 “新建订阅”、 “新建新闻源” 或类似的菜单或按钮。\n"
-"您也可以进入首选项、Midori 中的应用程序，并选择一个新闻聚合器。您下次点击新闻源图标时，将自动添加它。"
+"您也可以通过首选项选择应用程序，并选择一个新闻聚合器。您下次点击新闻源图标时，将自动添加它。"
 
 #: ../midori/midori-browser.c:2698 ../extensions/feed-panel/main.c:350
 msgid "New feed"
@@ -437,7 +437,7 @@ msgstr "Firefox(%s)"
 
 #: ../midori/midori-browser.c:4358
 msgid "Midori 0.2.6"
-msgstr "Midori 0.2.6"
+msgstr "CDOSBrowser 0.0.1"
 
 #: ../midori/midori-browser.c:4376
 msgid "Import bookmarks…"
@@ -473,7 +473,7 @@ msgstr "Netscape 书签"
 
 #: ../midori/midori-browser.c:4546
 msgid "Midori can only export to XBEL (*.xbel) and Netscape (*.html)"
-msgstr "Midori 只能导出为 XBEL(*.xbel) 和 Netscape(*.html)"
+msgstr "本浏览器只能导出为 XBEL(*.xbel) 和 Netscape(*.html)"
 
 #: ../midori/midori-browser.c:4558
 msgid "Failed to export bookmarks"
@@ -498,24 +498,7 @@ msgstr "此库文件是自由软件；您可以以自由软件基金会发布的
 #: ../midori/midori-browser.c:4780
 msgid "translator-credits"
 msgstr ""
-"张翼 <yatzhang@gmail.com>, 2009.\n"
-"Hunt Xu <mhuntxu@gmail.com>, 2009, 2010, 2011.\n"
-"Chipong Luo <chipong.luo@yahoo.com>, 2011, 2012.\n"
-"\n"
-"Launchpad Contributions:\n"
-"  Chipong Luo https://launchpad.net/~chipong-l\n"
-"  Chipong Luo https://launchpad.net/~chipong-luo\n"
-"  George Wells https://launchpad.net/~cimmia\n"
-"  Guanlin zhu https://launchpad.net/~784123822-6\n"
-"  Hunt Xu https://launchpad.net/~huntxu-live\n"
-"  Senzung https://launchpad.net/~chaoyan\n"
-"  Wang Dianjin https://launchpad.net/~tuhaihe\n"
-"  WebKit Team https://launchpad.net/~webkit-team\n"
-"  Wylmer Wang https://launchpad.net/~wantinghard\n"
-"  Yangyu Huang https://launchpad.net/~yangyu-huang\n"
-"  colindemian https://launchpad.net/~dengmengpc\n"
-"  tomttou https://launchpad.net/~tomttou\n"
-"  wushanjun https://launchpad.net/~sjwuny"
+"cdosrepobuild <cdosrepobuild@iscas.ac.cn>.\n"
 
 #: ../midori/midori-browser.c:5032 ../midori/midori-browser.c:5266
 msgid "_Duplicate Current Tab"
@@ -535,7 +518,7 @@ msgstr "打开一个新标签"
 
 #: ../midori/midori-browser.c:5075
 msgid "New P_rivate Browsing Window"
-msgstr "新建私人浏览窗口(_R)"
+msgstr "新建隐私浏览窗口(_R)"
 
 #: ../midori/midori-browser.c:5079
 msgid "Open a file"
@@ -623,7 +606,7 @@ msgstr "编码(_E)"
 
 #: ../midori/midori-browser.c:5165
 msgid "View So_urce"
-msgstr "查看源码(_U)"
+msgstr "查看网页源码(_U)"
 
 #: ../midori/midori-browser.c:5168
 msgid "View _DOM Source"
@@ -1187,7 +1170,7 @@ msgstr "重试"
 #: ../midori/midori-view.c:1346
 #, c-format
 msgid "Oops - %s"
-msgstr "唉呀 - %s"
+msgstr "崩溃 - %s"
 
 #: ../midori/midori-view.c:1347
 #, c-format
@@ -1322,7 +1305,7 @@ msgstr "检查页面-%s"
 
 #: ../midori/midori-view.c:3898
 msgid "Midori doesn't store any personal data:"
-msgstr "Midori 没有存储任何个人数据："
+msgstr "本浏览器没有存储任何个人数据："
 
 #: ../midori/midori-view.c:3899
 msgid "No history or web cookies are being saved."
@@ -1338,7 +1321,7 @@ msgstr "已禁用 HTML5 存储、本地数据库和应用程序缓存。"
 
 #: ../midori/midori-view.c:3902
 msgid "Midori prevents websites from tracking the user:"
-msgstr "Midori 阻止网站追踪用户："
+msgstr "本浏览器阻止网站追踪用户："
 
 #: ../midori/midori-view.c:3903
 msgid "Referrer URLs are stripped down to the hostname."
@@ -1494,7 +1477,7 @@ msgstr "启动"
 
 #: ../midori/midori-preferences.c:307
 msgid "When Midori starts:"
-msgstr "Midori 启动时："
+msgstr "浏览器启动时："
 
 #: ../midori/midori-preferences.c:312
 msgid "Homepage:"
@@ -1692,7 +1675,7 @@ msgstr "识别为"
 
 #: ../midori/midori-preferences.c:582
 msgid "Privacy"
-msgstr "私人"
+msgstr "隐私"
 
 #: ../midori/midori-preferences.c:584
 msgid "Delete old Cookies after:"
@@ -2752,7 +2735,7 @@ msgstr "扩展程序实例"
 #: ../extensions/nojs/nojs.c:722
 #: ../extensions/cookie-permissions/cookie-permission-manager.c:1007
 msgid "The Midori extension instance for this extension"
-msgstr "这个扩展程序的 Midori 扩展程序实例"
+msgstr "这个扩展程序的 cdosbrowser 扩展程序实例"
 
 #: ../extensions/nojs/nojs.c:728
 #: ../extensions/cookie-permissions/cookie-permission-manager.c:1013
@@ -2762,7 +2745,7 @@ msgstr "应用程序实例"
 #: ../extensions/nojs/nojs.c:729
 #: ../extensions/cookie-permissions/cookie-permission-manager.c:1014
 msgid "The Midori application instance this extension belongs to"
-msgstr "这个扩展程序属于 Midori 应用程序实例"
+msgstr "这个扩展程序属于本浏览器应用程序实例"
 
 #: ../extensions/nojs/nojs.c:735
 #: ../extensions/cookie-permissions/cookie-permission-manager.c:1020
@@ -2822,7 +2805,7 @@ msgstr "鼠标手势"
 
 #: ../extensions/mouse-gestures.c:514
 msgid "Control Midori by moving the mouse"
-msgstr "通过移动鼠标控制 Midori"
+msgstr "通过移动鼠标控制浏览器"
 
 #: ../extensions/shortcuts.c:109
 msgid "Reload page or stop loading"
@@ -3027,7 +3010,7 @@ msgstr "禁用所有扩展(_E)"
 
 #: ../midori/midori-frontend.c:357
 msgid "Show a dialog after Midori crashed"
-msgstr "Midori 崩溃后显示对话框"
+msgstr "浏览器崩溃后显示对话框"
 
 #: ../midori/midori-frontend.c:362
 msgid "Discard old tabs"
@@ -3043,7 +3026,7 @@ msgstr "在调试器内运行(_D)"
 
 #: ../midori/midori-frontend.c:461
 msgid "An instance of Midori is already running but not responding.\n"
-msgstr "已有一个 Midori 实例在运行但无响应。\n"
+msgstr "已有一个浏览器实例在运行但无响应。\n"
 
 #: ../midori/midori-frontend.c:494
 #, c-format
