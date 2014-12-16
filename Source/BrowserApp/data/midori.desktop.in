@@ -1,0 +1,31 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+_Name=CDOS Browser
+_GenericName=Web Browser
+_X-GNOME-Fullname=CDOS Web Browser
+_Comment=Browse the Web
+_X-GNOME-Keywords=Internet;WWW;Explorer
+_X-AppInstall-Keywords=Internet;WWW;Explorer
+Categories=GTK;Network;WebBrowser;
+MimeType=text/html;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/geo;image/svg+xml;
+Exec=cdosbrowser %U
+Icon=cdosbrowser
+Terminal=false
+StartupNotify=true
+X-Osso-Type=application/x-executable
+X-Osso-Service=cdosbrowser
+Actions=TabNew;WindowNew;Private;
+
+[Desktop Action TabNew]
+_Name=New Tab
+Exec=cdosbrowser -e TabNew
+
+[Desktop Action WindowNew]
+_Name=New Window
+Exec=cdosbrowser -e WindowNew
+
+[Desktop Action Private]
+_Name=New Private Browsing Window
+Exec=cdosbrowser --private
+

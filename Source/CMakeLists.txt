@@ -26,7 +26,7 @@ add_subdirectory(Chromium)
 add_subdirectory(BrowserApp) #browser app dir
 if (ENABLE_MIDORI)
     message(STATUS "Build midori App...............")
-    add_subdirectory(midori) #browser app dir
+#    add_subdirectory(midori) #browser app dir
 endif()
 
 WEBKIT_INCLUDE_CONFIG_FILES_IF_EXISTS()

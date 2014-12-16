@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+_Name=CDOS Private Browsing
+_GenericName=Private Browsing
+_Comment=Open a new private browsing window
+Categories=GTK;Network;WebBrowser;
+Exec=cdosbrowser --private %U
+Icon=cdosbrowser
+Terminal=false
+StartupNotify=true
+NotShowIn=Pantheon;
+X-Osso-Type=application/x-executable
+X-Osso-Service=cdosbrowser
+

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+<id type="desktop">cdosbrowser.desktop</id>
+<licence>CC0</licence>
+<description>
+<p>
+CDOS Browser is a WebKit-based browser.
+</p>
+</description>
+<url type="homepage">http://www.cas.cn/</url>
+<updatecontact>cdosrepobuild <cdosrepobuild@iscas.ac.cn></updatecontact>
+</application>

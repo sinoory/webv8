@@ -1,0 +1,53 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>新建标签页</title>
+    <link rel="stylesheet" href="newtab.css" type="text/css" media="all" />
+    <script src="newtab.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body onload="load()">
+
+<div class="osd">
+    <span id="dialing"></span>
+</div>
+<div id="content">
+    <noscript>&lt;style&gt;.cross { display:none }&lt;/style&gt;</noscript>
+    <style> div.shortcut { height: 34%; width: 29%; }</style>
+    <style> body { overflow:hidden } #content { margin-left: 6%; }</style>
+    <div class="shortcut" id="s"  hidden>
+        <div class="preview">
+            <a class="cross" href="#" onclick="clearShortcut(this);">
+            </a>
+            <table style="position: fixed; margin:30px 0 0 14px;" >
+              <tr>
+                <td>网址:</td>
+                <td style="width:80%;"><input id="urltext" value="http://" /></td>
+              </tr>
+              <tr>
+                <td>标题:</td>
+                <td style="width:80%;"><input type="text" id="titletext" /></td>
+              </tr>
+              <tr>
+                <th colspan=2>
+                    <button>确定</button>
+                    <button>取消</button>
+                </th>
+              </tr>
+            </table>
+            <a href="">
+                <img src="">
+            </a>
+        </div>
+        <div class="title" onclick="renameShortcut(this);" onmouseover="handMouse" mouseout="defaultMouse" ></div>
+    </div>
+    <div class="shortcut" id="cs">
+        <div class="preview new">
+            <a class="add" href="#" onclick="return getAction(&quot;s&quot;);"></a>
+        </div>
+        <div class="title" style="cursor:default">点击添加快捷方式</div>
+    </div>
+</div>
+
+
+</body>
+</html>
