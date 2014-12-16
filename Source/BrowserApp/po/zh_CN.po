@@ -857,6 +857,14 @@ msgstr "位置(_L)…"
 msgid "Open a particular location"
 msgstr "打开特定位置"
 
+#: ../midori/midori-browser.c:6126
+msgid "Add to Bookmarks bar"
+msgstr "添加到书签栏"
+
+#: ../midori/midori-browser.c:6127
+msgid "Search or enter an address"
+msgstr "输入网址或搜索关键字"
+
 #: ../midori/midori-browser.c:5858
 msgid "_Web Search…"
 msgstr "网络搜索(_W)…"

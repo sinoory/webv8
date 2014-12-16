@@ -6119,11 +6119,12 @@ midori_browser_init (MidoriBrowser* browser)
     gtk_action_group_add_action (browser->action_group, action);
     g_object_unref (action);
 
+    // ZRL 修改字符串翻译 2014.12.16
     action = g_object_new (MIDORI_TYPE_LOCATION_ACTION,
         "name", "Location",
         "label", _("_Location…"),
         "stock-id", GTK_STOCK_JUMP_TO,
-        "tooltip", _("Open a particular location"),
+        "tooltip", _("Add to Bookmarks bar"),
         "placeholder-text", _("Search or enter an address"),
         NULL);
 
