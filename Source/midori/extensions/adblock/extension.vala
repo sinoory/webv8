@@ -346,6 +346,7 @@ namespace Adblock {
         internal void init () {
             hider_selectors = new StringBuilder ();
             load_config ();
+            config.enabled = false;
             manager = new SubscriptionManager (config);
             status_icon = new StatusIcon (config, manager);
             foreach (Subscription sub in config) {

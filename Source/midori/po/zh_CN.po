@@ -3446,7 +3446,7 @@ msgstr "配置广告过滤器"
 
 #: ../extensions/adblock/widget.vala:79
 msgid "Preferences"
-msgstr "偏好"
+msgstr "设置"
 
 #: ../extensions/adblock/widget.vala:91
 msgid "Disable"
@@ -3460,6 +3460,18 @@ msgstr "输入本地保存的过滤器文件，然后点击entry键。"
 #: ../extensions/adblock/widget.vala:99
 msgid "Display hidden elements"
 msgstr "显示隐藏元素"
+
+#: ../extensions/adblock/widget.vala:64
+msgid "Enabled"
+msgstr "开启"
+
+#: ../extensions/adblock/widget.vala:70
+msgid "Disabled"
+msgstr "关闭"
+
+#: ../extensions/adblock/widget.vala:72
+msgid "Adblock state: %s"
+msgstr "广告屏蔽状态: %s"
 
 #: ../extensions/adblock/extension.vala:168
 msgid "Bl_ock image"

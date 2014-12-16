@@ -3507,6 +3507,18 @@ msgstr "Type the locally saved the filter file and hit Entry.Form:file://filepat
 msgid "Display hidden elements"
 msgstr "Display hidden elements"
 
+#: ../extensions/adblock/widget.vala:64
+msgid "Enabled"
+msgstr "Enabled"
+
+#: ../extensions/adblock/widget.vala:70
+msgid "Disabled"
+msgstr "Disabled"
+
+#: ../extensions/adblock/widget.vala:72
+msgid "Adblock state: %s"
+msgstr "Adblock state: %s"
+
 #: ../extensions/adblock/extension.vala:168
 msgid "Bl_ock image"
 msgstr "Bl_ock image"
