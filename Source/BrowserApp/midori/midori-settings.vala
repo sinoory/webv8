@@ -11,6 +11,7 @@
 
  Modified by ZRL
  2014.12.15 修改新标签页打开方式默认值，即不在后台打开，新标签打开时就切换到新页面。修改参考open_tabs_in_the_background()
+ 2014.12.16 修改menubar和书签栏默认显示，和默认homepage为新标签页。
 */
 
 namespace Midori {
@@ -132,9 +133,9 @@ namespace Midori {
         /* Since: 0.1.3 */
         public bool right_align_sidepanel { get; set; default = false; }
 
-        public bool show_menubar { get; set; default = false; }
+        public bool show_menubar { get; set; default = true; } // ZRL 默认显示menubar
         public bool show_navigationbar { get; set; default = true; }
-        public bool show_bookmarkbar { get; set; default = false; }
+        public bool show_bookmarkbar { get; set; default = true; } // ZRL 默认显示书签栏
         public bool show_panel { get; set; default = false; }
         public bool show_statusbar { get; set; default = true; }
         /* Since: 0.1.2 */
@@ -161,7 +162,7 @@ namespace Midori {
         // [Deprecated (since = "0.5.7")]
         public bool always_show_tabbar { get; set; default = true; }
 
-        public string homepage { get; set; default = "about:search"; }
+        public string homepage { get; set; default = "about:new"; } // ZRL 修改默认主页为新标签页
         public string tabhome { get; set; default = "about:dial"; }
         static string default_download_folder () {
             return Environment.get_user_special_dir (UserDirectory.DOWNLOAD)
