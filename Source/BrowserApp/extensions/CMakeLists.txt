@@ -77,7 +77,7 @@ list(REMOVE_ITEM EXTENSIONS
       "domain-keys_valac.stamp" "domain-keys.h" "domain-keys.c"
       "notes_valac.stamp" "notes.c" "notes.h"
       "flummi_valac.stamp" "flummi.c" "flummi.h"
-      "about_valac.stamp" "about.h" "about.c"
+      "about_valac.stamp" "about.h" "about.c" "CMakeDirectoryInformation.cmake"
 )
 
 # FIXME: re-enable webmedia extension

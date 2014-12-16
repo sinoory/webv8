@@ -5,7 +5,7 @@ set (SYSCONFDIR ${CMAKE_INSTALL_FULL_SYSCONFDIR})
 set (XDG_CONFIG_DIR "${MIDORI_PROJECT_NAME}")
 
 file (GLOB_RECURSE CONFIG_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *)
-list (REMOVE_ITEM CONFIG_FILES "CMakeLists.txt")
+list (REMOVE_ITEM CONFIG_FILES "CMakeLists.txt" "cmake_install.cmake" "CTestTestfile.cmake" "Makefile" "CMakeDirectoryInformation.cmake" "progress.marks")
 
 if (${CMAKE_INSTALL_PREFIX} STREQUAL "/usr")
     set(CMAKE_INSTALL_SYSCONFDIR ${CMAKE_INSTALL_FULL_DATADIR})

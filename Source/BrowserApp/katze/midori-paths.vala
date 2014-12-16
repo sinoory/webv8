@@ -365,10 +365,9 @@ namespace Midori {
             if (package == PACKAGE_NAME) {
                 /* Fallback to build folder */
                 path = Path.build_filename ((File.new_for_path (exec_path).get_path ()), "extensions");
-                if (Posix.access (path, Posix.F_OK) == 0) {
-                    //stdout.printf ("ZRL get_lib_path2 = %s \n", path);
+                //stdout.printf ("ZRL get_lib_path2 = %s \n", path);
+                if (Posix.access (path, Posix.F_OK) == 0)
                     return path;
-                }
             }
 
 // ZRL add extra path for lib search.
@@ -482,9 +481,6 @@ namespace Midori {
         public static string get_preset_filename (string? folder, string filename) {
             assert (exec_path != null);
 
-            #if HAVE_WIN32
-            return Path.build_filename (exec_path, "etc", "xdg", PACKAGE_NAME, folder ?? "", filename);
-            #else
             foreach (string config_dir in Environment.get_system_config_dirs ()) {
                 string path = Path.build_filename (config_dir, PACKAGE_NAME, folder ?? "", filename);
                 //stdout.printf ("ZRL get_preset_filename1 = %s, filename = %s\n", path, filename);
@@ -497,12 +493,11 @@ namespace Midori {
             return build_folder ("config", folder, filename) ??
               Path.build_filename (SYSCONFDIR, "xdg", PACKAGE_NAME, folder ?? "", filename);
 #else
-            string tmp1 = build_folder ("config", folder, filename) ??
-              Path.build_filename (SYSCONFDIR, "xdg", PACKAGE_NAME, folder ?? "", filename);
-            stdout.printf ("ZRL get_preset_filename2 = %s, filename = %s\n", tmp1, filename);
-            return tmp1;
+            string path = build_folder ("config", folder, filename) ??
+              Path.build_filename (SYSCONFDIR, PACKAGE_NAME, folder ?? "", filename);
+            //stdout.printf ("ZRL get_preset_filename2 = %s, filename = %s\n", path, filename);
+            return path;
 #endif
-            #endif
         }
 
         public static void clear_icons () {
