@@ -3374,6 +3374,7 @@ _action_window_activate_item_alt (GtkAction*      action,
     midori_browser_set_current_item (browser, item);
 }
 
+// ZRL 屏蔽mailto和HelpFAQ
 static void
 _action_compact_menu_populate_popup (GtkAction*     action,
                                      GtkMenu*       default_menu,
@@ -3387,7 +3388,7 @@ _action_compact_menu_populate_popup (GtkAction*     action,
     midori_context_action_add_by_name (menu, "Find");
     midori_context_action_add_by_name (menu, "Print");
     midori_context_action_add_by_name (menu, "Fullscreen");
-    midori_context_action_add_by_name (menu, "MailTo");
+//    midori_context_action_add_by_name (menu, "MailTo"); // ZRL disable.
     midori_context_action_add (menu, NULL);
     midori_context_action_add_by_name (menu, "Homepage");   //zgh
     gsize j = 0;
@@ -3402,7 +3403,7 @@ _action_compact_menu_populate_popup (GtkAction*     action,
     g_signal_emit (browser, signals[POPULATE_TOOL_MENU], 0, default_menu);
     midori_context_action_add (menu, NULL);
     #ifndef HAVE_GRANITE
-    midori_context_action_add_by_name (menu, "HelpFAQ");
+//    midori_context_action_add_by_name (menu, "HelpFAQ"); // ZRL disable.
     midori_context_action_add_by_name (menu, "HelpBugs");
     #endif
     midori_context_action_add_by_name (menu, "Preferences");
@@ -5362,9 +5363,11 @@ static const GtkActionEntry entries[] =
     { "Print", GTK_STOCK_PRINT,
         NULL, "<Ctrl>p",
         N_("Print the current page"), G_CALLBACK (_action_print_activate) },
+#if 0 /* ZRL disable it.*/
     { "MailTo", NULL,
         N_("Send Page Link Via Email"), "<Ctrl>m",
         NULL, G_CALLBACK (_action_mail_to_activate) },
+#endif
     { "Quit", GTK_STOCK_QUIT,
         N_("Close a_ll Windows"), "<Ctrl><Shift>q",
         NULL, G_CALLBACK (_action_quit_activate) },
@@ -5542,9 +5545,11 @@ static const GtkActionEntry entries[] =
         NULL, NULL },
 
     { "Help", NULL, N_("_Help") },
+#if 0 /*ZRL disable 常见问题*/
     { "HelpFAQ", GTK_STOCK_HELP,
         N_("_Frequent Questions"), "F1",
         NULL, G_CALLBACK (_action_help_link_activate) },
+#endif
     { "HelpBugs", NULL,
         N_("_Report a Problem…"), NULL,
         NULL, G_CALLBACK (_action_help_link_activate) },

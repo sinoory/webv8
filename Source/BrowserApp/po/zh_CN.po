@@ -1,19 +1,9 @@
-# Simplified Chinese translations for
-# the midori package.
-# This file is distributed under the same license as
-# the midori package.
-# Stanley Zhang <yatzhang@gmail.com>, 2009.
-# Hunt Xu <mhuntxu@gmail.com>, 2009, 2010, 2011, 2012.
-# Chipong Luo <chipong.luo@yahoo.com>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: midori\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-21 10:52-0600\n"
-"PO-Revision-Date: 2014-10-31 08:50+0000\n"
-"Last-Translator: colindemian <dengmengpc@gmail.com>\n"
-"Language-Team: Chinese (Simplified) <xfce-i18n-cn@xfce.org>\n"
+"Last-Translator: cdosrepobuild <cdosrepobuild@iscas.ac.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -196,7 +186,7 @@ msgstr "新建标签(_T)"
 
 #: ../midori/midori-app.c:1160
 msgid "_Transfers"
-msgstr "传输(_T)"
+msgstr "下载管理器(_T)"
 
 #: ../midori/midori-app.c:1161
 msgid "Netscape p_lugins"
@@ -2948,7 +2938,7 @@ msgstr "上次打开的标签(_T)"
 
 #: ../midori/midori-privatedata.c:198
 msgid "Clear private data when _quitting Midori"
-msgstr "退出 Midori 时清除隐私数据(_Q)"
+msgstr "退出浏览器时清除隐私数据(_Q)"
 
 #. i18n: Logins and passwords in websites and web forms
 #: ../midori/midori-privatedata.c:321
@@ -3211,7 +3201,7 @@ msgstr "无法获取应用程序图标 - %s: %s"
 #: ../extensions/apps.vala:100
 #, c-format
 msgid "Midori (%s)"
-msgstr "Midori (%s)"
+msgstr "CDOS浏览器 (%s)"
 
 #: ../extensions/apps.vala:119 ../extensions/apps.vala:150
 #: ../extensions/apps.vala:154
@@ -3270,7 +3260,7 @@ msgstr "管理作为应用程序安装的网站"
 
 #: ../extensions/transfers.vala:98
 msgid "Transfers"
-msgstr "传输"
+msgstr "下载管理器"
 
 #: ../extensions/transfers.vala:111 ../extensions/transfers.vala:391
 msgid "Clear All"
@@ -3304,7 +3294,7 @@ msgstr "下载了“<b>%s</b>”和其他 %d 个文件。"
 
 #: ../extensions/transfers.vala:452
 msgid "Transfer completed"
-msgstr "传输已完成"
+msgstr "下载已完成"
 
 #: ../extensions/transfers.vala:507 ../extensions/transfers.vala:508
 msgid "Some files are being downloaded"
@@ -3312,15 +3302,15 @@ msgstr "有些文件正在下载"
 
 #: ../extensions/transfers.vala:510
 msgid "_Quit Midori"
-msgstr "退出 Midori(_Q)"
+msgstr "退出浏览器(_Q)"
 
 #: ../extensions/transfers.vala:512
 msgid "The transfers will be cancelled if Midori quits."
-msgstr "如果退出 Midori 则取消传输。"
+msgstr "如果退出浏览器，则取消下载。"
 
 #: ../extensions/transfers.vala:561
 msgid "Transfer Manager"
-msgstr "传输管理器"
+msgstr "下载管理器"
 
 #: ../extensions/transfers.vala:562
 msgid "View downloaded files"
@@ -3446,7 +3436,7 @@ msgstr "配置广告过滤器"
 
 #: ../extensions/adblock/widget.vala:79
 msgid "Preferences"
-msgstr "设置"
+msgstr "偏好"
 
 #: ../extensions/adblock/widget.vala:91
 msgid "Disable"
