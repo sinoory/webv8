@@ -3436,7 +3436,7 @@ msgstr "配置广告过滤器"
 
 #: ../extensions/adblock/widget.vala:79
 msgid "Preferences"
-msgstr "偏好"
+msgstr "设置"
 
 #: ../extensions/adblock/widget.vala:91
 msgid "Disable"
