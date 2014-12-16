@@ -1,6 +1,8 @@
 /*
  Modified by ZRL
  2014.12.10 修复网页中打开新窗口或新Tab时，不加载网页问题。参考midori_view_new_view_cb()
+ 2014.12.16 修复点击地址栏搜索图标crash问题，打开原光辉屏蔽的代码，但注销信号接收。参见midori_browser_init()
+ 2014.12.16 屏蔽撤销关闭书签功能
 */
 
 #include "midori-browser.h"
@@ -480,7 +482,7 @@ midori_browser_update_history (KatzeItem*   item,
 
     zeitgeist_log_insert_events_no_reply (zeitgeist_log_get_default (),
         zeitgeist_event_new_full (inter, ZEITGEIST_ZG_USER_ACTIVITY,
-                                  "application://midori.desktop",
+                                  "application://cdosbrowser.desktop",
                                   zeitgeist_subject_new_full (
             katze_item_get_uri (item),
             strstr (type, "bookmark") ? ZEITGEIST_NFO_BOOKMARK : ZEITGEIST_NFO_WEBSITE,
@@ -3682,8 +3684,8 @@ _action_source_view (GtkAction*     action,
         source = midori_view_new_with_item (NULL, browser->settings);
         source_view = midori_view_get_web_view (MIDORI_VIEW (source));
         // ZRL disable this.
-#if 
-        //midori_tab_set_view_source (MIDORI_TAB (source), TRUE);
+#if 0
+        midori_tab_set_view_source (MIDORI_TAB (source), TRUE);
 #endif
         webkit_web_view_load_uri (WEBKIT_WEB_VIEW (source_view), source_uri);
         midori_browser_add_tab (browser, source);
@@ -5274,7 +5276,9 @@ midori_browser_notebook_context_menu_cb (MidoriNotebook*      notebook,
     midori_context_action_add_action_group (menu, browser->action_group);
     midori_context_action_add (menu, NULL);
     midori_context_action_add_by_name (menu, "TabNew");
+#if 0 // ZRL 屏蔽撤销关闭书签功能
     midori_context_action_add_by_name (menu, "UndoTabClose");
+#endif
 }
 
 static void
@@ -5286,7 +5290,9 @@ midori_browser_notebook_tab_context_menu_cb (MidoriNotebook*      notebook,
     midori_context_action_add_action_group (menu, browser->action_group);
     midori_context_action_add (menu, NULL);
     midori_context_action_add_by_name (menu, "TabNew");
+#if 0 // ZRL 屏蔽撤销关闭书签功能
     midori_context_action_add_by_name (menu, "UndoTabClose");
+#endif
     if (MIDORI_IS_VIEW (tab))
     {
         GtkAction* action = gtk_action_new ("TabDuplicate", _("_Duplicate Current Tab"), NULL, NULL);
@@ -6149,13 +6155,15 @@ midori_browser_init (MidoriBrowser* browser)
         action, "<Ctrl>L");
     g_object_unref (action);
 
-#if 0 //zgh 本地搜索
+    // ZRL 修复点击地址栏搜索图标crash的问题。
     action = g_object_new (MIDORI_TYPE_SEARCH_ACTION,
         "name", "Search",
         "label", _("_Web Search…"),
         "stock-id", GTK_STOCK_FIND,
         "tooltip", _("Run a web search"),
         NULL);
+
+#if 0 // ZRL 注销信号，保证搜索按钮不处理任何事件。
     g_object_connect (action,
                       "signal::activate",
                       _action_search_activate, browser,
@@ -6168,10 +6176,11 @@ midori_browser_init (MidoriBrowser* browser)
                       "signal::notify::default-item",
                       _action_search_notify_default_item, browser,
                       NULL);
+#endif
     gtk_action_group_add_action_with_accel (browser->action_group,
         action, "<Ctrl>K");
     g_object_unref (action);
-#endif
+
     action = g_object_new (MIDORI_TYPE_PANED_ACTION,
         "name", "LocationSearch",
         NULL);
@@ -6320,7 +6329,9 @@ midori_browser_init (MidoriBrowser* browser)
     _action_set_visible (browser, "BookmarksExport", browser->bookmarks != NULL);
     _action_set_visible (browser, "Bookmarkbar", browser->bookmarks != NULL);
     _action_set_visible (browser, "Trash", browser->trash != NULL);
+#if 0 // ZRL 屏蔽撤销关闭标签功能
     _action_set_visible (browser, "UndoTabClose", browser->trash != NULL);
+#endif
     _action_set_visible (browser, "Forward", FALSE);    //zgh
 
     /* Create the navigationbar */

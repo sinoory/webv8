@@ -1,6 +1,9 @@
 /*
  Modified by LuYue
  2014.12.04 增加网站证书显示功能
+ 
+ Modified by ZRL
+ 2014.12.16 修复点击地址栏搜索图标crash问题，禁止显示menu弹出菜单，待未来扩展搜索功能时再打开。
 */
 
 #include "midori-locationaction.h"
@@ -1497,10 +1500,13 @@ midori_location_action_icon_released_cb (GtkWidget*           widget,
         /* No "security" window for blank pages */
         if (midori_uri_is_blank (MIDORI_LOCATION_ACTION (action)->text))
         {
+// ZRL 不响应地址栏搜索图标弹出menu菜单动作
+#if 0
             GtkMenu* menu = midori_search_action_get_menu (widget,
                                                            search_action, 
                                                            midori_location_action_engine_activate_cb );
             katze_widget_popup (widget, menu, NULL, KATZE_MENU_POSITION_LEFT);
+#endif
             return;
         }
        //modify by luyue start 2014/12/4

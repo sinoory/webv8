@@ -2517,7 +2517,9 @@ midori_view_get_page_context_action (MidoriView*          view,
     if (context == WEBKIT_HIT_TEST_RESULT_CONTEXT_DOCUMENT)
     {
         midori_context_action_add (menu, NULL);
+#if 0 // ZRL 屏蔽撤销关闭标签功能
         midori_context_action_add_by_name (menu, "UndoTabClose");
+#endif
         #ifndef HAVE_WEBKIT2
         WebKitWebView* web_view = WEBKIT_WEB_VIEW (view->web_view);
         if (webkit_web_view_get_focused_frame (web_view) != webkit_web_view_get_main_frame (web_view))
