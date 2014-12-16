@@ -3,6 +3,7 @@
  2014.12.10 修复网页中打开新窗口或新Tab时，不加载网页问题。参考midori_view_new_view_cb()
  2014.12.16 修复点击地址栏搜索图标crash问题，打开原光辉屏蔽的代码，但注销信号接收。参见midori_browser_init()
  2014.12.16 屏蔽撤销关闭书签功能
+ 2014.12.16 实现网页的保存功能。参见midori_browser_save_uri()
 */
 
 #include "midori-browser.h"
@@ -1383,12 +1384,22 @@ midori_browser_save_uri (MidoriBrowser* browser,
     g_free (suggested_filename);
     if (midori_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
     {
+// ZRL 实现网页的保存功能。
+#if 0
         char *uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
         if (uri != NULL)
         {
             midori_view_save_source (view, uri, NULL, false);
             g_free (uri);
         }
+#else
+        char *filename = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
+        if (uri != NULL)
+        {
+            midori_view_save_source (view, uri, filename, false);
+            g_free (filename);
+        }
+#endif
         katze_assign (last_dir,
             gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER (dialog)));
     }
