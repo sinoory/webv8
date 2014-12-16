@@ -379,7 +379,7 @@ msgstr "新建源"
 #: ../midori/midori-browser.c:2729 ../midori/midori-browser.c:5222
 #: ../panels/midori-bookmarks.c:762
 msgid "Add a new bookmark"
-msgstr "添加新书签"
+msgstr "将此页加入书签"
 
 #: ../midori/midori-browser.c:3197 ../midori/midori-searchaction.c:448
 msgid "Empty"
@@ -498,7 +498,7 @@ msgstr "此库文件是自由软件；您可以以自由软件基金会发布的
 #: ../midori/midori-browser.c:4780
 msgid "translator-credits"
 msgstr ""
-"cdosrepobuild <cdosrepobuild@iscas.ac.cn>.\n"
+"cdosrepobuild <cdosrepobuild@iscas.ac.cn>."
 
 #: ../midori/midori-browser.c:5032 ../midori/midori-browser.c:5266
 msgid "_Duplicate Current Tab"
@@ -1777,7 +1777,7 @@ msgstr "未能保存搜索引擎。%s"
 
 #: ../midori/midori-historycompletion.vala:17
 msgid "Bookmarks and History"
-msgstr "书签和历史"
+msgstr "书签和历史记录"
 
 #: ../midori/midori-historydatabase.vala:28
 #, c-format
