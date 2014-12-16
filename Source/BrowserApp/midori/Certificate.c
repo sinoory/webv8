@@ -3320,6 +3320,9 @@ void display_certificatemanager()
    GtkTreeSelection *selection;
    GtkButton *ok_button, *ok_button1, *ok_button2, *ok_button3;
    GtkButton *manager_rootimport_button;
+   GtkButton *personal_show_button, *personal_export_button, *personal_import_button, *personal_delete_button;
+   GtkButton *server_show_button, *server_export_button, *server_import_button, *server_delete_button;
+   GtkButton *other_show_button, *other_export_button, *other_delete_button;
    char managerglade_path[CERTITLELENGTH]={0};
 
    if(manager_window) 
@@ -3341,6 +3344,14 @@ void display_certificatemanager()
    //您的证书
    store1=gtk_list_store_new(2,G_TYPE_STRING,G_TYPE_STRING);
    list1=gtk_tree_view_new_with_model(GTK_TREE_MODEL(store1));
+   personal_show_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button1"));
+   personal_export_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button2"));
+   personal_import_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button3"));
+   personal_delete_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button4"));
+   gtk_widget_set_sensitive((GtkWidget *)personal_show_button,FALSE);
+   gtk_widget_set_sensitive((GtkWidget *)personal_export_button,FALSE);
+   gtk_widget_set_sensitive((GtkWidget *)personal_import_button,FALSE);
+   gtk_widget_set_sensitive((GtkWidget *)personal_delete_button,FALSE);
    renderer=gtk_cell_renderer_text_new();
    column=gtk_tree_view_column_new_with_attributes("证书名称     ",renderer,"text",0,NULL);
    gtk_tree_view_append_column(GTK_TREE_VIEW(list1), column);
@@ -3353,6 +3364,15 @@ void display_certificatemanager()
    //服务器
    store2=gtk_list_store_new(3,G_TYPE_STRING,G_TYPE_STRING,G_TYPE_STRING);
    list2=gtk_tree_view_new_with_model(GTK_TREE_MODEL(store2));
+   server_show_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button6"));
+   server_export_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button7"));
+   server_import_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button8"));
+   server_delete_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button9"));
+   gtk_widget_set_sensitive((GtkWidget *)server_show_button,FALSE);
+   gtk_widget_set_sensitive((GtkWidget *)server_export_button,FALSE);
+   gtk_widget_set_sensitive((GtkWidget *)server_import_button,FALSE);
+   gtk_widget_set_sensitive((GtkWidget *)server_delete_button,FALSE);
+
    column=gtk_tree_view_column_new_with_attributes("证书名称      ",renderer,"text",0,NULL);
    gtk_tree_view_append_column(GTK_TREE_VIEW(list2), column);
    column=gtk_tree_view_column_new_with_attributes("服务器        ",renderer,"text",0,NULL);
@@ -3392,6 +3412,12 @@ void display_certificatemanager()
    //其他
    store4=gtk_list_store_new(2,G_TYPE_STRING,G_TYPE_STRING);
    list4=gtk_tree_view_new_with_model(GTK_TREE_MODEL(store4));
+   other_show_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button17"));
+   other_export_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button18"));
+   other_delete_button=(GtkButton *)GTK_WIDGET(gtk_builder_get_object (builder,"button19"));
+   gtk_widget_set_sensitive((GtkWidget *)other_show_button,FALSE);
+   gtk_widget_set_sensitive((GtkWidget *)other_export_button,FALSE);
+   gtk_widget_set_sensitive((GtkWidget *)other_delete_button,FALSE);
    column=gtk_tree_view_column_new_with_attributes("证书名称       ",renderer,"text",0,NULL);
    gtk_tree_view_append_column(GTK_TREE_VIEW(list4), column);
    column=gtk_tree_view_column_new_with_attributes("过期时间",renderer,"text",0,NULL);
