@@ -812,11 +812,27 @@ midori_view_web_view_resource_request_cb (WebKitWebView*         web_view,
     const gchar* uri = webkit_network_request_get_uri (request);
 #endif
 
-    printf("ZRL midori-view.c midori_view_uri_scheme_res() uri = %s \n", uri);
-
     /* Only apply custom URIs to special pages for security purposes */
     if (!midori_tab_get_special (MIDORI_TAB (view))) {
-        printf("ZRL midori-view.c midori_view_uri_scheme_res() !midori_tab_get_special \n");
+        // ZRL 修复有时候进入about:页面，但却被判断view不属于特殊页面，导致res等特殊资源无法加载的问题。
+        if (g_str_has_prefix (uri, "res://"))
+        {
+            gchar* filepath = midori_paths_get_res_filename (&uri[6]);
+            gchar* contents;
+            gsize length;
+            printf("ZRL midori-view.c midori_view_uri_scheme_res() should not be here! filepath = %s \n", filepath);
+            if (g_file_get_contents (filepath, &contents, &length, NULL))
+            {
+                gchar* content_type = g_content_type_guess (filepath, (guchar*)contents, length, NULL);
+                gchar* mime_type = g_content_type_get_mime_type (content_type);
+                GInputStream* stream = g_memory_input_stream_new_from_data (contents, length, g_free);
+                webkit_uri_scheme_request_finish (request, stream, length, mime_type);
+                g_object_unref (stream);
+                g_free (mime_type);
+                g_free (content_type);
+            }
+            g_free (filepath);
+        }
         return;
     }
 
@@ -836,7 +852,6 @@ midori_view_web_view_resource_request_cb (WebKitWebView*         web_view,
             GInputStream* stream = g_memory_input_stream_new_from_data (contents, -1, g_free);
             webkit_uri_scheme_request_finish (request, stream, -1, mime_type);
 #else
-            printf("ZRL midori-view.c midori_view_uri_scheme_res() setstream filepath = %s \n", filepath);
             GInputStream* stream = g_memory_input_stream_new_from_data (contents, length, g_free);
             webkit_uri_scheme_request_finish (request, stream, length, mime_type);
 #endif

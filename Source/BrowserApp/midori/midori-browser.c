@@ -5904,7 +5904,10 @@ static const gchar* ui_markup =
             "<menuitem action='FindPrevious'/>"
             "<menuitem action='BookmarkAdd'/>"
             "<menuitem action='BookmarkFolderAdd'/>"
+// ZRL 暂时屏蔽搜索框功能
+#if ENABLE_SEARCH_ACTION 
             "<menuitem action='ManageSearchEngines'/>"
+#endif
             "<menuitem action='ClearPrivateData'/>"
             "<menuitem action='TabPrevious'/>"
             "<menuitem action='TabNext'/>"
