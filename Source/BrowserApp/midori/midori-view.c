@@ -811,9 +811,13 @@ midori_view_web_view_resource_request_cb (WebKitWebView*         web_view,
     const gchar* uri = webkit_network_request_get_uri (request);
 #endif
 
+    printf("ZRL midori-view.c midori_view_uri_scheme_res() uri = %s \n", uri);
+
     /* Only apply custom URIs to special pages for security purposes */
-    if (!midori_tab_get_special (MIDORI_TAB (view)))
+    if (!midori_tab_get_special (MIDORI_TAB (view))) {
+        printf("ZRL midori-view.c midori_view_uri_scheme_res() !midori_tab_get_special \n");
         return;
+    }
 
     if (g_str_has_prefix (uri, "res://"))
     {
@@ -821,6 +825,7 @@ midori_view_web_view_resource_request_cb (WebKitWebView*         web_view,
         #ifdef HAVE_WEBKIT2
         gchar* contents;
         gsize length;
+        printf("ZRL midori-view.c midori_view_uri_scheme_res() filepath = %s \n", filepath);
         if (g_file_get_contents (filepath, &contents, &length, NULL))
         {
             gchar* content_type = g_content_type_guess (filepath, (guchar*)contents, length, NULL);
@@ -830,6 +835,7 @@ midori_view_web_view_resource_request_cb (WebKitWebView*         web_view,
             GInputStream* stream = g_memory_input_stream_new_from_data (contents, -1, g_free);
             webkit_uri_scheme_request_finish (request, stream, -1, mime_type);
 #else
+            printf("ZRL midori-view.c midori_view_uri_scheme_res() setstream filepath = %s \n", filepath);
             GInputStream* stream = g_memory_input_stream_new_from_data (contents, length, g_free);
             webkit_uri_scheme_request_finish (request, stream, length, mime_type);
 #endif

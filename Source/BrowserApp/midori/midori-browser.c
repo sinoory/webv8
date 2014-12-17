@@ -6166,7 +6166,7 @@ midori_browser_init (MidoriBrowser* browser)
         action, "<Ctrl>L");
     g_object_unref (action);
 
-    // ZRL 修复点击地址栏搜索图标crash的问题。
+#if 0 // ZRL 恢复光辉的修改。
     action = g_object_new (MIDORI_TYPE_SEARCH_ACTION,
         "name", "Search",
         "label", _("_Web Search…"),
@@ -6174,7 +6174,6 @@ midori_browser_init (MidoriBrowser* browser)
         "tooltip", _("Run a web search"),
         NULL);
 
-#if 0 // ZRL 注销信号，保证搜索按钮不处理任何事件。
     g_object_connect (action,
                       "signal::activate",
                       _action_search_activate, browser,
@@ -6187,10 +6186,11 @@ midori_browser_init (MidoriBrowser* browser)
                       "signal::notify::default-item",
                       _action_search_notify_default_item, browser,
                       NULL);
-#endif
+
     gtk_action_group_add_action_with_accel (browser->action_group,
         action, "<Ctrl>K");
     g_object_unref (action);
+#endif
 
     action = g_object_new (MIDORI_TYPE_PANED_ACTION,
         "name", "LocationSearch",
