@@ -6,6 +6,7 @@
  2014.12.05 解决网页中通过link打开新窗口不显示内容问题，见webkit_web_view_web_view_ready_cb
  2014.12.10 修复网页中打开新窗口或新Tab时，不加载网页问题。修改webkit_web_view_create_web_view_cb()，并回退12.05针对webkit_web_view_web_view_ready_cb()的修改
  2014.12.11 修复12306.cn左键新窗口或新Tab打开购票页面时crash的问题。为midori-view增加load_commited，并在midori_view_web_view_navigation_decision_cb()使用
+ 2014.12.17 屏蔽search action，见ENABLE_SEARCH_ACTION
 */
 
 #include "midori-view.h"
@@ -2316,6 +2317,8 @@ midori_view_inspect_element_activate_cb (GtkAction* action,
     webkit_web_inspector_show (inspector);
 }
 
+// ZRL 暂时屏蔽搜索框功能
+#if ENABLE_SEARCH_ACTION
 static void
 midori_view_add_search_engine_cb (GtkWidget*  widget,
                                   MidoriView* view)
@@ -2326,6 +2329,7 @@ midori_view_add_search_engine_cb (GtkWidget*  widget,
     KatzeItem* item = g_object_get_data (G_OBJECT (widget), "item");
     midori_search_action_get_editor (MIDORI_SEARCH_ACTION (action), item, TRUE);
 }
+#endif
 
 /**
  * midori_view_get_page_context_action:
@@ -2364,6 +2368,8 @@ midori_view_get_page_context_action (MidoriView*          view,
         midori_context_action_add (menu, NULL);
         midori_context_action_add_by_name (menu, "SelectAll");
         midori_context_action_add (menu, NULL);
+// ZRL 暂时屏蔽搜索框功能
+#if ENABLE_SEARCH_ACTION
         KatzeItem* item = midori_search_action_get_engine_for_form (
             WEBKIT_WEB_VIEW (view->web_view), view->ellipsize);
         if (item != NULL)
@@ -2374,6 +2380,7 @@ midori_view_get_page_context_action (MidoriView*          view,
                               G_CALLBACK (midori_view_add_search_engine_cb), view);
             midori_context_action_add (menu, action);
         }
+#endif
         /* FIXME: input methods */
         /* FIXME: font */
         /* FIXME: insert unicode character */

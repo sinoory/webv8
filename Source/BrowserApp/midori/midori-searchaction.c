@@ -1,6 +1,7 @@
 /*
  Modified by ZRL
  2014.12.15 修改搜索引擎配置文件获取目录，参考midori_search_engines_new_from_folder()
+ 2014.12.17 屏蔽search action，见ENABLE_SEARCH_ACTION
 */
 
 #include "midori-searchaction.h"
@@ -14,6 +15,8 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 
+// ZRL 暂时屏蔽搜索框功能
+#if ENABLE_SEARCH_ACTION 
 struct _MidoriSearchAction
 {
     GtkAction parent_instance;
@@ -1569,6 +1572,7 @@ midori_search_action_get_dialog (MidoriSearchAction* search_action)
     search_action->dialog = dialog;
     return dialog;
 }
+#endif
 
 KatzeArray*
 midori_search_engines_new_from_file (const gchar* filename,

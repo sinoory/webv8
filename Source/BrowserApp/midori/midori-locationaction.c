@@ -4,6 +4,7 @@
  
  Modified by ZRL
  2014.12.16 修复点击地址栏搜索图标crash问题，禁止显示menu弹出菜单，待未来扩展搜索功能时再打开。
+ 2014.12.17 屏蔽search action，见ENABLE_SEARCH_ACTION
 */
 
 #include "midori-locationaction.h"
@@ -663,7 +664,7 @@ midori_location_action_popup_timeout_cb (gpointer data)
             midori_autocompleter_add (action->autocompleter,
                 MIDORI_COMPLETION (midori_history_completion_new ()));
 // ZRL 屏蔽地址栏内搜索方式
-#if 0
+#if ENABLE_SEARCH_ACTION
         midori_autocompleter_add (action->autocompleter,
             MIDORI_COMPLETION (midori_search_completion_new ()));
 #endif
@@ -1465,6 +1466,8 @@ midori_location_action_show_page_info (GtkWidget* widget,
 }
 #endif
 
+// ZRL 暂时屏蔽搜索框功能
+#if ENABLE_SEARCH_ACTION
 static void
 midori_location_action_engine_activate_cb (GtkWidget*          menuitem,
                                            MidoriSearchAction* search_action)
@@ -1474,6 +1477,7 @@ midori_location_action_engine_activate_cb (GtkWidget*          menuitem,
     item = (KatzeItem*)g_object_get_data (G_OBJECT (menuitem), "engine");
     midori_search_action_set_default_item (search_action, item);
 }
+#endif
 
 void
 midori_location_action_icon_released_cb (GtkWidget*           widget,
@@ -1484,9 +1488,12 @@ midori_location_action_icon_released_cb (GtkWidget*           widget,
     /* The dialog should "toggle" like a menu, as far as users go */
     MidoriBrowser* browser = midori_browser_get_for_widget (widget);
     GtkActionGroup* actions = midori_browser_get_action_group (browser);
+// ZRL 暂时屏蔽搜索框功能
+#if ENABLE_SEARCH_ACTION
     MidoriSearchAction *search_action = MIDORI_SEARCH_ACTION (
         gtk_action_group_get_action (actions, "Search") 
     );
+#endif
 
     static GtkWidget* dialog = NULL;
     if (icon_pos == GTK_ENTRY_ICON_PRIMARY && dialog != NULL)

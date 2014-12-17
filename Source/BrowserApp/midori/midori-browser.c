@@ -4,6 +4,7 @@
  2014.12.16 修复点击地址栏搜索图标crash问题，打开原光辉屏蔽的代码，但注销信号接收。参见midori_browser_init()
  2014.12.16 屏蔽撤销关闭书签功能
  2014.12.16 实现网页的保存功能。参见midori_browser_save_uri()
+ 2014.12.17 屏蔽search action，见ENABLE_SEARCH_ACTION
 */
 
 #include "midori-browser.h"
@@ -4787,6 +4788,8 @@ wrong_format:
     g_free (path);
 }
 
+// ZRL 暂时屏蔽搜索框功能
+#if ENABLE_SEARCH_ACTION
 static void
 _action_manage_search_engines_activate (GtkAction*     action,
                                         MidoriBrowser* browser)
@@ -4804,6 +4807,7 @@ _action_manage_search_engines_activate (GtkAction*     action,
     else
         gtk_window_present (GTK_WINDOW (dialog));
 }
+#endif
 
 static void
 _action_clear_private_data_activate (GtkAction*     action,
@@ -5518,9 +5522,12 @@ static const GtkActionEntry entries[] =
     { "BookmarksExport", NULL,
         N_("_Export bookmarks…"), "",
         NULL, G_CALLBACK (_action_bookmarks_export_activate) },
+// ZRL 暂时屏蔽搜索框功能
+#if ENABLE_SEARCH_ACTION 
     { "ManageSearchEngines", GTK_STOCK_PROPERTIES,
         N_("_Manage Search Engines…"), "<Ctrl><Alt>s",
         NULL, G_CALLBACK (_action_manage_search_engines_activate) },
+#endif
     { "ClearPrivateData", NULL,
         N_("_Clear Private Data…"), "<Ctrl><Shift>Delete",
         NULL, G_CALLBACK (_action_clear_private_data_activate) },
@@ -6166,7 +6173,8 @@ midori_browser_init (MidoriBrowser* browser)
         action, "<Ctrl>L");
     g_object_unref (action);
 
-#if 0 // ZRL 恢复光辉的修改。
+// ZRL 暂时屏蔽地址栏旁搜索框功能
+#if ENABLE_SEARCH_ACTION 
     action = g_object_new (MIDORI_TYPE_SEARCH_ACTION,
         "name", "Search",
         "label", _("_Web Search…"),
@@ -6877,6 +6885,8 @@ _midori_browser_update_settings (MidoriBrowser* browser)
     _toggle_tabbar_smartly (browser, FALSE);
     _midori_browser_set_toolbar_items (browser, toolbar_items);
 
+// ZRL 屏蔽搜索框功能
+#if ENABLE_SEARCH_ACTION
     if (browser->search_engines)
     {
         const gchar* default_search = midori_settings_get_location_entry_search (
@@ -6893,6 +6903,7 @@ _midori_browser_update_settings (MidoriBrowser* browser)
             midori_search_action_set_default_item (MIDORI_SEARCH_ACTION (
                 _action_by_name (browser, "Search")), item);
     }
+#endif
 
     g_object_set (browser->panel, "show-titles", !compact_sidepanel,
         "right-aligned", right_align_sidepanel,
@@ -7215,6 +7226,8 @@ midori_browser_set_property (GObject*      object,
         katze_object_assign (browser->search_engines, g_value_dup_object (value));
         midori_location_action_set_search_engines (MIDORI_LOCATION_ACTION (
             _action_by_name (browser, "Location")), browser->search_engines);
+// ZRL 去除search action功能，即地址栏旁的搜索框
+#if ENABLE_SEARCH_ACTION
         midori_search_action_set_search_engines (MIDORI_SEARCH_ACTION (
             _action_by_name (browser, "Search")), browser->search_engines);
         /* FIXME: Connect to updates */
@@ -7232,6 +7245,7 @@ midori_browser_set_property (GObject*      object,
                 midori_search_action_set_default_item (MIDORI_SEARCH_ACTION (
                     _action_by_name (browser, "Search")), item);
         }
+#endif
         break;
     }
     case PROP_HISTORY:
