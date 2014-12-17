@@ -357,24 +357,27 @@ midori_history_get_toolbar (MidoriViewable* viewable)
         gtk_widget_set_tooltip_text (GTK_WIDGET (toolitem),
                                      _("Bookmark the selected history item"));
         gtk_tool_item_set_is_important (toolitem, TRUE);
-        g_signal_connect (toolitem, "clicked",
-            G_CALLBACK (midori_history_bookmark_add_cb), history);
+//20141217 zlf delete
+//        g_signal_connect (toolitem, "clicked",
+//            G_CALLBACK (midori_history_bookmark_add_cb), history);
         gtk_toolbar_insert (GTK_TOOLBAR (toolbar), toolitem, -1);
         gtk_widget_show (GTK_WIDGET (toolitem));
         history->bookmark = GTK_WIDGET (toolitem);
         toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_DELETE);
         gtk_widget_set_tooltip_text (GTK_WIDGET (toolitem),
                                      _("Delete the selected history item"));
-        g_signal_connect (toolitem, "clicked",
-            G_CALLBACK (midori_history_delete_clicked_cb), history);
+//20141217 zlf delete
+//        g_signal_connect (toolitem, "clicked",
+//            G_CALLBACK (midori_history_delete_clicked_cb), history);
         gtk_toolbar_insert (GTK_TOOLBAR (toolbar), toolitem, -1);
         gtk_widget_show (GTK_WIDGET (toolitem));
         history->delete = GTK_WIDGET (toolitem);
         toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_CLEAR);
         gtk_widget_set_tooltip_text (GTK_WIDGET (toolitem),
                                      _("Clear the entire history"));
-        g_signal_connect (toolitem, "clicked",
-            G_CALLBACK (midori_history_clear_clicked_cb), history);
+//20141217 zlf delete
+//        g_signal_connect (toolitem, "clicked",
+//            G_CALLBACK (midori_history_clear_clicked_cb), history);
         gtk_toolbar_insert (GTK_TOOLBAR (toolbar), toolitem, -1);
         gtk_widget_show (GTK_WIDGET (toolitem));
         history->clear = GTK_WIDGET (toolitem);

@@ -772,6 +772,7 @@ midori_bookmarks_get_toolbar (MidoriViewable* viewable)
         g_signal_connect (toolitem, "clicked",
             G_CALLBACK (midori_bookmarks_edit_clicked_cb), bookmarks);
         gtk_toolbar_insert (GTK_TOOLBAR (toolbar), toolitem, -1);
+        gtk_tool_item_set_is_important (toolitem, TRUE);//20141217 zlf add
         gtk_widget_show (GTK_WIDGET (toolitem));
         bookmarks->edit = GTK_WIDGET (toolitem);
         toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_DELETE);
@@ -780,6 +781,7 @@ midori_bookmarks_get_toolbar (MidoriViewable* viewable)
         g_signal_connect (toolitem, "clicked",
             G_CALLBACK (midori_bookmarks_delete_clicked_cb), bookmarks);
         gtk_toolbar_insert (GTK_TOOLBAR (toolbar), toolitem, -1);
+        gtk_tool_item_set_is_important (toolitem, TRUE);//20141217 zlf add
         gtk_widget_show (GTK_WIDGET (toolitem));
         bookmarks->delete = GTK_WIDGET (toolitem);
         midori_bookmarks_toolbar_update (bookmarks);

@@ -96,6 +96,8 @@ struct _MidoriBrowser
     guint last_web_search;
 
     gboolean bookmarkbar_populate;
+	//20141217 zlf
+    GtkWidget* sari_panel_windows;
 };
 
 G_DEFINE_TYPE (MidoriBrowser, midori_browser, GTK_TYPE_WINDOW)
@@ -142,6 +144,15 @@ enum
 };
 
 static guint signals[LAST_SIGNAL];
+//20141217 zlf
+static gboolean
+midori_panel_close_cb (MidoriPanel*   panel,
+                       MidoriBrowser* browser);
+static void midori_browser_HS_actiave(GtkAction*     action,
+                              MidoriBrowser* browser);
+
+static gboolean
+test_fun (GtkWidget* window, MidoriBrowser*  browser);
 
 static void
 midori_browser_dispose (GObject* object);
@@ -5057,6 +5068,8 @@ _action_about_activate (GtkAction*     action,
     g_signal_connect_swapped (dialog, "response",
                               G_CALLBACK (gtk_widget_destroy), dialog);
 #endif
+//20141217 zlf
+midori_browser_HS_actiave(NULL,browser);
 }
 
 static void
@@ -7877,3 +7890,62 @@ midori_browser_quit (MidoriBrowser* browser)
 
     g_signal_emit (browser, signals[QUIT], 0);
 }
+//20141217 zlf
+static gboolean
+test_fun (GtkWidget* window, MidoriBrowser*  browser)
+{
+
+
+    gtk_widget_hide(window);
+
+
+    browser->sari_panel_windows = NULL;
+    
+    return TRUE;
+}
+
+
+
+#include "midori-history.h"
+#include "panels/midori-history.h"
+
+static void midori_browser_HS_actiave(GtkAction*     action,
+                              MidoriBrowser* browser)
+{
+    static MidoriPanel *hs_panel = NULL;
+    GtkWidget*  addon = NULL ;
+
+    GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
+    GtkWidget* hpaned = gtk_widget_get_parent (vpaned); //vbox
+
+    if (!browser->sari_panel_windows)
+    {
+        //create the panel windows zlf
+        browser->sari_panel_windows= gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        
+        g_signal_connect(G_OBJECT(browser->sari_panel_windows), "delete-event", test_fun, NULL);
+
+        gtk_window_set_title(GTK_WINDOW(browser->sari_panel_windows), "管理器");
+        gtk_window_set_default_size(GTK_WINDOW(browser->sari_panel_windows), 460, 360);
+        hs_panel = browser->panel;
+        gtk_widget_show (GTK_WIDGET (hs_panel));
+        g_object_ref (browser->panel);
+
+
+
+        gtk_container_remove (GTK_CONTAINER (hpaned), hs_panel);
+        gtk_container_add(GTK_CONTAINER(browser->sari_panel_windows), hs_panel);
+     
+//        g_signal_connect (hs_panel, "destroy",
+//           NULL, &hs_panel);
+  
+        gtk_widget_show_all (browser->sari_panel_windows);
+        g_object_unref (browser->panel);
+
+    }
+    else{
+        gtk_window_present (GTK_WINDOW (browser->sari_panel_windows));
+    }
+
+}
+

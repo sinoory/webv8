@@ -771,8 +771,9 @@ midori_bookmarks_get_toolbar (MidoriViewable* viewable)
         gtk_widget_set_tooltip_text (GTK_WIDGET (toolitem),
                                      _("Add a new bookmark"));
         gtk_tool_item_set_is_important (toolitem, TRUE);
-        g_signal_connect (toolitem, "clicked",
-            G_CALLBACK (midori_bookmarks_add_clicked_cb), bookmarks);
+//20141217 zlf delete
+//        g_signal_connect (toolitem, "clicked",
+//            G_CALLBACK (midori_bookmarks_add_clicked_cb), bookmarks);
         gtk_toolbar_insert (GTK_TOOLBAR (toolbar), toolitem, -1);
         gtk_widget_show (GTK_WIDGET (toolitem));
         toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_EDIT);
@@ -786,8 +787,9 @@ midori_bookmarks_get_toolbar (MidoriViewable* viewable)
         toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_DELETE);
         gtk_widget_set_tooltip_text (GTK_WIDGET (toolitem),
                                      _("Delete the selected bookmark"));
-        g_signal_connect (toolitem, "clicked",
-            G_CALLBACK (midori_bookmarks_delete_clicked_cb), bookmarks);
+//20141217 zlf delete
+//        g_signal_connect (toolitem, "clicked",
+//            G_CALLBACK (midori_bookmarks_delete_clicked_cb), bookmarks);
         gtk_toolbar_insert (GTK_TOOLBAR (toolbar), toolitem, -1);
         gtk_widget_show (GTK_WIDGET (toolitem));
         bookmarks->delete = GTK_WIDGET (toolitem);
@@ -802,8 +804,9 @@ midori_bookmarks_get_toolbar (MidoriViewable* viewable)
         gtk_widget_set_name (GTK_WIDGET (toolitem), "BookmarkFolderAdd");
         gtk_widget_set_tooltip_text (GTK_WIDGET (toolitem),
                                      _("Add a new folder"));
-        g_signal_connect (toolitem, "clicked",
-            G_CALLBACK (midori_bookmarks_add_clicked_cb), bookmarks);
+//20141217 zlf delete
+//        g_signal_connect (toolitem, "clicked",
+//            G_CALLBACK (midori_bookmarks_add_clicked_cb), bookmarks);
         gtk_toolbar_insert (GTK_TOOLBAR (toolbar), toolitem, -1);
         gtk_widget_show (GTK_WIDGET (toolitem));
 

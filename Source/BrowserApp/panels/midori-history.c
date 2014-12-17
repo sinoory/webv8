@@ -361,6 +361,7 @@ midori_history_get_toolbar (MidoriViewable* viewable)
         g_signal_connect (toolitem, "clicked",
             G_CALLBACK (midori_history_delete_clicked_cb), history);
         gtk_toolbar_insert (GTK_TOOLBAR (toolbar), toolitem, -1);
+        gtk_tool_item_set_is_important (toolitem, TRUE);//20141217 zlf add
         gtk_widget_show (GTK_WIDGET (toolitem));
         history->delete = GTK_WIDGET (toolitem);
         toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_CLEAR);
@@ -369,6 +370,7 @@ midori_history_get_toolbar (MidoriViewable* viewable)
         g_signal_connect (toolitem, "clicked",
             G_CALLBACK (midori_history_clear_clicked_cb), history);
         gtk_toolbar_insert (GTK_TOOLBAR (toolbar), toolitem, -1);
+        gtk_tool_item_set_is_important (toolitem, TRUE); //20141217 zlf add
         gtk_widget_show (GTK_WIDGET (toolitem));
         history->clear = GTK_WIDGET (toolitem);
         midori_history_toolbar_update (history);

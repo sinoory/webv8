@@ -469,7 +469,7 @@ namespace Apps {
 
             var viewable = new Sidebar (array, app_folder, profile_folder);
             viewable.show ();
-            browser.panel.append_page (viewable);
+/*            browser.panel.append_page (viewable); 20141217 zlf*/ 
             widgets.append (viewable);
         }
 
