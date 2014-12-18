@@ -5402,7 +5402,48 @@ midori_panel_notify_show_titles_cb (MidoriPanel*   panel,
     g_signal_handlers_unblock_by_func (browser->settings,
         midori_browser_settings_notify, browser);
 }
+//20141217 zlf add
+static void
+midori_panel_notify_open_in_window_cb(MidoriPanel*   panel,
+                                      GParamSpec*    pspec,
+                                      MidoriBrowser* browser)
+{
+    gboolean open_in_window = katze_object_get_boolean (panel, "open-panels-in-windows");
 
+    GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
+    GtkWidget* hpaned = gtk_widget_get_parent (vpaned); //vbox
+    
+    g_object_ref (browser->panel);
+    g_object_ref (vpaned);
+
+    if (open_in_window)//show in independent window
+    {
+        if(!browser->sari_panel_windows){
+            browser->sari_panel_windows = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+            g_signal_connect(G_OBJECT(browser->sari_panel_windows), "delete-event", test_fun, browser);
+            gtk_window_set_title(GTK_WINDOW(browser->sari_panel_windows), "管理器");
+            gtk_window_set_default_size(GTK_WINDOW(browser->sari_panel_windows), 460, 360);
+        }else{
+            gtk_window_present(browser->sari_panel_windows);
+        }
+
+        gtk_container_remove (GTK_CONTAINER (hpaned), browser->panel);
+        gtk_container_add(GTK_CONTAINER(browser->sari_panel_windows), browser->panel);
+        gtk_widget_show_all(browser->sari_panel_windows);
+    }
+    else //show in browser window
+    {
+        if(browser->sari_panel_windows){
+            gtk_container_remove (browser->sari_panel_windows, browser->panel);    
+            gtk_paned_pack1 (GTK_PANED (hpaned), browser->panel, FALSE, FALSE);
+            gtk_widget_hide(browser->sari_panel_windows);
+        }
+    }
+
+    g_object_unref (browser->panel);
+    g_object_unref (vpaned);
+    return;
+}
 static void
 midori_panel_notify_right_aligned_cb (MidoriPanel*   panel,
                                       GParamSpec*    pspec,
@@ -6699,6 +6740,8 @@ midori_browser_init (MidoriBrowser* browser)
         midori_panel_notify_show_titles_cb, browser,
         "signal::notify::right-aligned",
         midori_panel_notify_right_aligned_cb, browser,
+        "signal::notify::open-panels-in-windows",//201411217 zlf add
+        midori_panel_notify_open_in_window_cb, browser,        //20141217 zlf add
         "signal::close",
         midori_panel_close_cb, browser,
         NULL);

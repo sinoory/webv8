@@ -28,6 +28,7 @@ struct _MidoriPanel
     GtkWidget* labelbar;
     GtkWidget* toolbar;
     GtkToolItem* button_align;
+    GtkToolItem* button_close;//20141217 zlf add 
     GtkToolItem* button_openinwindow;//20141217 zlf add 
     GtkWidget* toolbar_label;
     GtkWidget* frame;
@@ -357,13 +358,12 @@ midori_panel_init (MidoriPanel* panel)
     gtk_tool_item_set_tooltip_text (GTK_TOOL_ITEM (toolitem), _("Close panel"));
     g_signal_connect (toolitem, "clicked",
         G_CALLBACK (midori_panel_button_close_clicked_cb), panel);
-#if 0 //delete panel close button 20141217
     #if HAVE_OSX
     gtk_toolbar_insert (GTK_TOOLBAR (labelbar), toolitem, 0);
     #else
     gtk_toolbar_insert (GTK_TOOLBAR (labelbar), toolitem, -1);
     #endif
-#endif 0 //delete panel close button
+    panel->button_close= toolitem;
     gtk_box_pack_start (GTK_BOX (vbox), labelbar, FALSE, FALSE, 0);
     gtk_widget_show_all (vbox);
 
@@ -1039,6 +1039,18 @@ void midori_panel_open_in_window(MidoriPanel* panel,
         open_in_window ? GTK_STOCK_FULLSCREEN : GTK_STOCK_LEAVE_FULLSCREEN);
     panel->open_panels_in_windows= !open_in_window;
 
+    if(panel->open_panels_in_windows){
+        gtk_container_remove(panel->labelbar,panel->button_close);
+    }else{
+        GtkToolItem *toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_CLOSE);
+        gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolitem), _("Close panel"));
+        gtk_tool_item_set_tooltip_text (GTK_TOOL_ITEM (toolitem), _("Close panel"));
+        g_signal_connect (toolitem, "clicked",
+            G_CALLBACK (midori_panel_button_close_clicked_cb), panel);
+        gtk_toolbar_insert (GTK_TOOLBAR (panel->labelbar), toolitem, -1);
+        panel->button_close= toolitem;
+        gtk_widget_show_all(panel->labelbar);
+    }
     g_object_notify (G_OBJECT (panel), "open-panels-in-windows");
 }
 
