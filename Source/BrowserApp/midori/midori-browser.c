@@ -3471,6 +3471,9 @@ _action_bookmarks_populate_folder (GtkAction*     action,
     if (folder == KATZE_ARRAY (browser->bookmarks))
     {
         GtkWidget* menuitem;
+        menuitem = gtk_action_create_menu_item (_action_by_name (browser, "ManageBookmarks"));
+        gtk_menu_shell_append (menu, menuitem);
+        gtk_widget_show (menuitem);
         menuitem = gtk_action_create_menu_item (_action_by_name (browser, "BookmarkAdd"));
         gtk_menu_shell_append (menu, menuitem);
         gtk_widget_show (menuitem);
@@ -5823,7 +5826,10 @@ static const GtkActionEntry entries[] =
     { "ManageHistorys", STOCK_HISTORY,
         N_("ManageHistorys"), "<Alt><Shift>h",
         N_("ManageHistorys"), G_CALLBACK (midori_browser_HS_actiave/*_action_managehistorys_activate*/) },
-		
+		//add by zgh 20141218
+		 { "ManageBookmarks", STOCK_BOOKMARKS,
+		  N_("ManageBookmarks"), "<Alt><Shift>b",
+		  N_("ManageBookmarks"), G_CALLBACK (midori_browser_HS_actiave) },
     { "BookmarkAdd", STOCK_BOOKMARK_ADD,
         NULL, "<Ctrl>d",
         N_("Add a new bookmark"), G_CALLBACK (_action_bookmark_add_activate) },
@@ -6198,6 +6204,7 @@ static const gchar* ui_markup =
             "</menu>"
 #endif
             "<menu action='Bookmarks'>"
+                "<menuitem action='ManageBookmarks'/>"
                 "<menuitem action='BookmarksAdd'/>"
                 "<menuitem action='BookmarksImport'/>"
                 "<menuitem action='BookmarksExport'/>"

@@ -661,6 +661,9 @@ msgstr "转到上一子页面"
 msgid "ManageHistorys"
 msgstr "管理所有历史记录"
 
+msgid "ManageBookmarks"
+msgstr "管理所有书签"
+
 # add by zgh 
 msgid "ClearHistorys"
 msgstr "清除所有历史记录"
