@@ -4172,10 +4172,7 @@ midori_view_set_uri (MidoriView*  view,
             midori_tab_set_uri (MIDORI_TAB (view), uri);
             katze_item_set_uri (view->item, midori_tab_get_uri (MIDORI_TAB (view)));
             katze_assign (view->title, NULL);
-            //ZRL disable this.
-#if 0
             midori_tab_set_view_source (MIDORI_TAB (view), FALSE);
-#endif
             webkit_web_view_load_uri (WEBKIT_WEB_VIEW (view->web_view), uri);
         }
     }

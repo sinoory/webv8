@@ -871,6 +871,9 @@ public:
     bool autoSizingShouldExpandToViewHeight() const { return m_autoSizingShouldExpandToViewHeight; }
     void setAutoSizingShouldExpandToViewHeight(bool);
 
+    bool mainFrameInViewSourceMode() const { return m_mainFrameInViewSourceMode; }
+    void setMainFrameInViewSourceMode(bool);
+
     void didReceiveAuthenticationChallengeProxy(uint64_t frameID, PassRefPtr<AuthenticationChallengeProxy>);
 
     int64_t spellDocumentTag();
@@ -1514,6 +1517,8 @@ private:
     bool m_enableHorizontalRubberBanding;
 
     bool m_backgroundExtendsBeyondPage;
+
+    bool m_mainFrameInViewSourceMode;
 
     bool m_shouldRecordNavigationSnapshots;
     bool m_isShowingNavigationGestureSnapshot;

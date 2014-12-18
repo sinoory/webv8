@@ -1914,6 +1914,15 @@ void Document::pageSizeAndMarginsInPixels(int pageIndex, IntSize& pageSize, int&
     marginLeft = style->marginLeft().isAuto() ? marginLeft : intValueForLength(style->marginLeft(), width);
 }
 
+void Document::setIsViewSource(bool isViewSource)
+{
+    m_isViewSource = isViewSource;
+    if (!m_isViewSource)
+        return;
+
+    setSecurityOrigin(SecurityOrigin::createUnique());
+}
+
 void Document::createStyleResolver()
 {
     bool matchAuthorAndUserStyles = true;

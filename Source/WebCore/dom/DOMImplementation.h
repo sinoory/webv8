@@ -66,7 +66,7 @@ public:
     PassRefPtr<HTMLDocument> createHTMLDocument(const String& title);
 
     // Other methods (not part of DOM)
-    static PassRefPtr<Document> createDocument(const String& MIMEType, Frame*, const URL&);
+    static PassRefPtr<Document> createDocument(const String& MIMEType, Frame*, const URL&, bool inViewSourceMode);
 
     WEBCORE_EXPORT static bool isXMLMIMEType(const String& MIMEType);
     WEBCORE_EXPORT static bool isTextMIMEType(const String& MIMEType);

@@ -376,7 +376,10 @@ messages -> WebPage LegacyReceiver {
 #if PLATFORM(GTK) && USE(TEXTURE_MAPPER_GL)
     SetAcceleratedCompositingWindowId(uint64_t nativeWindowHandle)
 #endif
-  
+ 
+#    SetMainFrameInViewSourceMode(bool inViewSourceMode) -> (bool handled)
+    SetMainFrameInViewSourceMode(bool inViewSourceMode)
+
     SetScrollPinningBehavior(uint32_t pinning)
 
     GetBytecodeProfile(uint64_t callbackID)
