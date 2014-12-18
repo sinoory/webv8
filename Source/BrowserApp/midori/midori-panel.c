@@ -294,8 +294,7 @@ midori_panel_init (MidoriPanel* panel)
     panel->show_titles = TRUE;
     panel->show_controls = TRUE;
     panel->right_aligned = FALSE;
-    panel->open_panels_in_windows = FALSE;//20141217 zlf add
-
+    panel->open_panels_in_windows = TRUE;//20141217 zlf add
     /* Create the sidebar */
     panel->toolbar = gtk_toolbar_new ();
     gtk_toolbar_set_icon_size (GTK_TOOLBAR (panel->toolbar), GTK_ICON_SIZE_BUTTON);
@@ -329,7 +328,7 @@ midori_panel_init (MidoriPanel* panel)
 
     gtk_box_pack_start (GTK_BOX (hbox), panel->toolbar, FALSE, FALSE, 0);
 
-    toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_FULLSCREEN);
+    toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_LEAVE_FULLSCREEN);
     g_signal_connect (toolitem, "clicked",
         G_CALLBACK (midori_panel_button_open_in_window_cb), panel);
     #if HAVE_OSX
@@ -358,11 +357,13 @@ midori_panel_init (MidoriPanel* panel)
     gtk_tool_item_set_tooltip_text (GTK_TOOL_ITEM (toolitem), _("Close panel"));
     g_signal_connect (toolitem, "clicked",
         G_CALLBACK (midori_panel_button_close_clicked_cb), panel);
+#if 0 //delete close button
     #if HAVE_OSX
     gtk_toolbar_insert (GTK_TOOLBAR (labelbar), toolitem, 0);
     #else
     gtk_toolbar_insert (GTK_TOOLBAR (labelbar), toolitem, -1);
     #endif
+#endif    
     panel->button_close= toolitem;
     gtk_box_pack_start (GTK_BOX (vbox), labelbar, FALSE, FALSE, 0);
     gtk_widget_show_all (vbox);
