@@ -45,6 +45,7 @@ namespace Midori {
             return download.get_data<string> ("midori-download-filename");
         }
         public static void set_filename (WebKit.Download download, string name) {
+            stdout.printf("set_filename::filename[%s]\n", name);
             download.set_data<string> ("midori-download-filename", name);
         }
 #endif
@@ -163,14 +164,15 @@ namespace Midori {
 #else
             string filename = Midori.Download.get_basename_for_display (download.destination);
 
-            string size = "%s".printf (format_size (download.get_received_data_length ()));
-            string speed = "";
-            speed = format_size ((uint64)((download.get_received_data_length () * 1.0) / download.elapsed_time));
-            speed = _(" (%s/s)").printf (speed);
-            string progress = "%d%%".printf( (int) (download.get_estimated_progress ()*100));
-            if (is_finished (download))
-                return "%s\n %s".printf (filename, size);
-            return "%s\n %s - %s".printf (filename, speed, progress);
+            //string size = "%s".printf (format_size (download.get_received_data_length ()));
+            //string speed = "";
+            //speed = format_size ((uint64)((download.get_received_data_length () * 1.0) / download.elapsed_time));
+            //speed = _(" (%s/s)").printf (speed);
+            //string progress = "%d%%".printf( (int) (download.get_estimated_progress ()*100));
+            //if (is_finished (download))
+                //return "%s\n %s".printf (filename, size);
+            //return "%s\n %s - %s".printf (filename, speed, progress);
+            return "%s".printf (filename);
 #endif
         }
 
@@ -245,10 +247,11 @@ namespace Midori {
             return true;
         }
 
-        void new_download_cancel_cb (Gtk.Widget widget) {
+        void new_download_cancel_cb (Gtk.Widget widget, Gtk.Widget dialog) {
             //gtk_widget_get_parent_window (widget)
-            widget.get_parent_window().destroy();
+            //widget.get_parent_window().destroy();
             //widget.destroy();
+            dialog.destroy();
         }
 
         public static bool  new_download () { //throws Error {
@@ -295,8 +298,43 @@ namespace Midori {
             hbox4.pack_start (dbtn, false, false, 0);
             hbox4.pack_start (cbtn, false, false, 0);
 
+            cbtn.clicked.connect (() => {
+                dialog.destroy();
+            });
+
+            entry1.changed.connect (() => {
+                entry3.set_text(File.new_for_uri (entry1.get_text()).get_basename());
+            });
+
+            dbtn.clicked.connect (() => {
+                WebKit.WebContext m_webContext = WebKit.WebContext.get_default();
+                string? uri = entry1.get_text();
+                WebKit.Download downloadt = m_webContext.download_uri(uri);
+                set_filename(downloadt, entry3.get_text());
+                downloadt.get_request();
+            });
+
+            
             //g_signal_connect(G_OBJECT(cbtn), "clicked", G_CALLBACK(_action_download_cancel_activate), dialog);
-            cbtn.clicked.connect(new_download_cancel_cb);
+            //cbtn.clicked.connect(new_download_cancel_cb);
+            /*
+
+            string filename = File.new_for_uri (uri).get_basename ();
+            GFile *destFile = g_file_new_for_uri(gtk_entry_get_text(GTK_ENTRY(btn)));
+            gchar *filename = g_file_get_basename(destFile);
+            gtk_entry_set_text(GTK_ENTRY(dialog), filename);
+            g_free(filename);
+            g_object_unref(destFile);
+
+            
+            g_signal_connect (G_OBJECT (entry1), "changed", G_CALLBACK (_action_download_filename_change_activate), entry3);
+            GtkWidget *dbtn = gtk_button_new_with_label("下载");
+            //g_signal_connect(G_OBJECT(dialog->dbtn), "clicked", G_CALLBACK(downloadBtnCallback), dialog);
+            
+            cbtn.clicked.connect ((cbtn, dialog) => {
+                dialog.destroy();
+            )};
+            */
             
             vbox.pack_start (hbox1, false, false, 0);
             vbox.pack_start (hbox3, false, false, 0);

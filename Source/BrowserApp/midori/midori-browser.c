@@ -4725,74 +4725,6 @@ _action_download_activate (GtkAction*     action,
                                MidoriBrowser* browser)
 {
     g_print("_action_download_activate\n");
-
-    /*
-    GtkWidget* dialog;
-
-    dialog = gtk_dialog_new_with_buttons ("Download Manager Dialog", GTK_WINDOW (browser),
-            GTK_DIALOG_DESTROY_WITH_PARENT |GTK_DIALOG_MODAL |GTK_DIALOG_NO_SEPARATOR, NULL, NULL);
-    //dialog = gtk_dialog_new_empty ("Download Manager Dialog",
-               //                             GTK_WINDOW (browser),
-                 //                           GTK_DIALOG_DESTROY_WITH_PARENT |GTK_DIALOG_MODAL |GTK_DIALOG_NO_SEPARATOR);
-    GtkBox *contentArea = GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
-    gtk_box_set_spacing(contentArea, 4);
-
-    gtk_window_set_default_size(GTK_WINDOW(dialog), 600, 150);
-    gtk_window_set_title(GTK_WINDOW(dialog), "下载文件");
-    gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), FALSE);
-    gtk_container_set_border_width(GTK_CONTAINER(dialog), 20);
-	
-    GtkWidget *h1box,*h3box,*h4box,*vbox;
-    GtkWidget *cbtn;
-    GtkWidget *label1, *label3;
-
-    h1box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    h3box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    h4box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-
-    label1 = gtk_label_new("网址:                  ");
-    GtkWidget *entry1 = gtk_entry_new();
-    //g_signal_connect (G_OBJECT (entry1), "changed", G_CALLBACK (filenameCallback), dialog);
-
-    gtk_box_pack_start(GTK_BOX(h1box), label1, FALSE, FALSE, 0);  
-    gtk_box_pack_start(GTK_BOX(h1box), entry1, TRUE, TRUE, 0); 
-
-    label3 = gtk_label_new("文件名:               ");
-    GtkWidget *entry3 = gtk_entry_new();
-
-    gtk_box_pack_start(GTK_BOX(h3box), label3, FALSE, FALSE, 0);  
-    gtk_box_pack_start(GTK_BOX(h3box), entry3, TRUE, TRUE, 0);
-
-    g_signal_connect (G_OBJECT (entry1), "changed", G_CALLBACK (_action_download_filename_change_activate), entry3);
-    GtkWidget *dbtn = gtk_button_new_with_label("下载");
-    //g_signal_connect(G_OBJECT(dialog->dbtn), "clicked", G_CALLBACK(downloadBtnCallback), dialog);
-
-    cbtn = gtk_button_new_with_label("取消");
-    g_signal_connect(G_OBJECT(cbtn), "clicked", G_CALLBACK(_action_download_cancel_activate), dialog);
-
-    gtk_box_pack_start(GTK_BOX(h4box), dbtn, FALSE, FALSE, 0);  
-    gtk_box_pack_start(GTK_BOX(h4box), cbtn, FALSE, FALSE, 0);
-
-    gtk_box_pack_start(GTK_BOX(vbox),GTK_WIDGET(h1box),FALSE,FALSE,0);  
-    //gtk_box_pack_start(GTK_BOX(vbox),GTK_WIDGET(h2box),FALSE,FALSE,0); 
-    gtk_box_pack_start(GTK_BOX(vbox),GTK_WIDGET(h3box),FALSE,FALSE,0); 
-    gtk_box_pack_start(GTK_BOX(vbox),GTK_WIDGET(h4box),FALSE,FALSE,0);
-
-    gtk_container_add(GTK_CONTAINER(contentArea),vbox);
-    gtk_widget_show_all(GTK_WIDGET(contentArea));  
-
-
-    //gtk_widget_show_all (content_area);
-    midori_dialog_run (GTK_DIALOG (dialog));
-    g_print("_action_download_activate\n");
-    
-    WebKitWebContext* m_webContext = webkit_web_context_get_default();
-    const gchar *downloadUri = "http://127.0.0.1:8000/uex_15.0.0.9_i386.deb";
-    WebKitDownload* download = webkit_web_context_download_uri(m_webContext, downloadUri);
-    //webkit_download_set_destination(download, g_filename_to_uri(destination, 0, 0));
-    WebKitURIRequest* request = webkit_download_get_request(download);
-    */
     midori_panel_set_current_page (MIDORI_PANEL(browser->panel), 2);
     g_signal_emit (MIDORI_PANEL(browser->panel), signals[SWITCH_DOWNLOAD], 0, 2);
     // gtk_widget_show (GTK_WIDGET (browser->panel));//delete by zlf
@@ -5820,7 +5752,7 @@ static const GtkActionEntry entries[] =
     //by sunh     
     { "DownloadDialog", STOCK_DOWNLOAD,
         "Download", "<Ctrl>l",
-        N_("Download Dialog"), G_CALLBACK (_action_download_activate) },
+        N_("Transfers"), G_CALLBACK (_action_download_activate) },
     //by sunh end
 	
 //add by zgh    20141210

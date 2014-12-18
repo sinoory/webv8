@@ -270,6 +270,8 @@ namespace Transfers {
         }
 
         public Sidebar (Katze.Array array) {
+            //Gtk.Widget 
+            var scrolled = new Gtk.ScrolledWindow(null, null);
             Gtk.TreeViewColumn column;
 
             treeview = new Gtk.TreeView.with_model (store);
@@ -277,6 +279,9 @@ namespace Transfers {
 
             store.set_sort_column_id (0, Gtk.SortType.ASCENDING);
             store.set_sort_func (0, tree_sort_func);
+
+            //gtk_tree_view_column_set_max_width (GtkTreeViewColumn *tree_column, gint               max_width)
+
 
             column = new Gtk.TreeViewColumn ();
             Gtk.CellRendererPixbuf renderer_icon = new Gtk.CellRendererPixbuf ();
@@ -287,6 +292,7 @@ namespace Transfers {
             column = new Gtk.TreeViewColumn ();
             //gtk_tree_view_column_set_title
             column.set_title("文件名");
+            //column.set_max_width(150);
             column.set_sizing (Gtk.TreeViewColumnSizing.AUTOSIZE);
             Gtk.CellRendererProgress renderer_progress = new Gtk.CellRendererProgress ();
             column.pack_start (renderer_progress, true);
@@ -296,7 +302,7 @@ namespace Transfers {
 
             column = new Gtk.TreeViewColumn ();
             column.set_title("大小");
-            column.set_sizing (Gtk.TreeViewColumnSizing.AUTOSIZE);
+            column.set_sizing (Gtk.TreeViewColumnSizing.GROW_ONLY); //GTK_TREE_VIEW_COLUMN_GROW_ONLY
             Gtk.CellRendererText size = new Gtk.CellRendererText ();
             column.pack_start (size, true);
             column.set_expand (false);
@@ -324,6 +330,7 @@ namespace Transfers {
 
             column = new Gtk.TreeViewColumn ();
             column.set_title("网址");
+            column.set_max_width(300);
             column.set_sizing (Gtk.TreeViewColumnSizing.AUTOSIZE);
             Gtk.CellRendererText website = new Gtk.CellRendererText ();
             column.pack_start (website, true);
@@ -332,6 +339,7 @@ namespace Transfers {
             treeview.append_column (column);
 
             /*
+            treeview = new Gtk.TreeView.with_model (store);
             column = new Gtk.TreeViewColumn ();
             Gtk.CellRendererPixbuf renderer_button = new Gtk.CellRendererPixbuf ();
             column.pack_start (renderer_button, false);
@@ -344,6 +352,23 @@ namespace Transfers {
             treeview.popup_menu.connect (menu_popup);
             treeview.show ();
             pack_start (treeview, true, true, 0);
+            
+            //(scrolled.get_content_area () as Gtk.Box).pack_start (treeview, false, false, 0);
+            //scrolled.get_content_area ().show_all ();
+            /*
+            void GTK_TREE_VIEW_COLUMN_FIXED
+gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
+                                 GtkTreeViewColumnSizing  type)
+                        Gtk.TreeView treeview;GTK_POLICY_AUTOMATIC Gtk.PolicyType.AUTOMATIC
+            GtkWidget *scrolledWindow = gtk_scrolled_window_new(NULL, NULL);
+
+            download_list_init(dialog);
+            gtk_container_add(GTK_CONTAINER(scrolledWindow), dialog->downloadList);
+            gtk_widget_show(dialog->downloadList);
+
+            gtk_box_pack_start(contentArea, scrolledWindow, TRUE, TRUE, 0);
+            gtk_widget_show(scrolledWindow);
+            */
 
             this.array = array;
             array.add_item.connect (transfer_added);
@@ -480,7 +505,7 @@ namespace Transfers {
             model.get (iter, 0, out transfer);
             string tooltip = Midori.Download.get_tooltip (transfer.download);
             renderer.set ("text", tooltip,
-                          "value", (int)(transfer.progress * 100));
+                            "value", (int)(transfer.progress * 100));
         }
 
         void on_render_size (Gtk.CellLayout column, Gtk.CellRenderer renderer,
@@ -507,7 +532,9 @@ namespace Transfers {
             Transfer transfer;
             model.get (iter, 0, out transfer);
             string website = Midori.Download.get_website (transfer.download);
-            renderer.set ("text", website);
+            renderer.set ("text", website,
+                            "ellipsize-set", true,
+                            "ellipsize", Pango.EllipsizeMode.MIDDLE);
         }
 
         
@@ -548,9 +575,11 @@ namespace Transfers {
 #endif
             progress.ellipsize = Pango.EllipsizeMode.MIDDLE;
             string filename = Midori.Download.get_basename_for_display (transfer.destination);
+            
             progress.text = filename;
             int width;
             Sokoke.widget_get_text_size (progress, "M", out width, null);
+            stdout.printf("TransferButton::filename[%s]-width[%d]\n", filename, width);
             progress.set_size_request (width * 10, 1);
             box.pack_start (progress, false, false, 0);
 
@@ -597,6 +626,7 @@ namespace Transfers {
         Gtk.ToolButton clear;
 
         void clear_clicked () {
+            stdout.printf("clear_clicked 2\n");
             foreach (GLib.Object item in array.get_items ()) {
                 var transfer = item as Transfer;
                 if (transfer.finished)
