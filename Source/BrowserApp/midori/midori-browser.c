@@ -4790,7 +4790,8 @@ _action_download_activate (GtkAction*     action,
     */
     midori_panel_set_current_page (MIDORI_PANEL(browser->panel), 2);
     g_signal_emit (MIDORI_PANEL(browser->panel), signals[SWITCH_DOWNLOAD], 0, 2);
-    gtk_widget_show (GTK_WIDGET (browser->panel));
+    // gtk_widget_show (GTK_WIDGET (browser->panel));//delete by zlf
+    midori_browser_HS_actiave(NULL,browser);//20141217 add zlf
     
 }
 
