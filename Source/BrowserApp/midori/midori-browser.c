@@ -3545,10 +3545,12 @@ _action_compact_menu_populate_popup (GtkAction*     action,
 //    midori_context_action_add_by_name (menu, "MailTo"); // ZRL disable.
     midori_context_action_add (menu, NULL);
     midori_context_action_add_by_name (menu, "Homepage");   //zgh
+#if 0  // 20141217 zlf-delete
     gsize j = 0;
     GtkWidget* widget;
     while ((widget = midori_panel_get_nth_page (MIDORI_PANEL (browser->panel), j++)))
         midori_context_action_add (menu, g_object_get_data (G_OBJECT (widget), "midori-panel-action"));
+#endif  // 20141217 zlf-delete
     midori_context_action_add (menu, NULL);
     midori_context_action_add_by_name (menu, "BookmarkAdd");
     midori_context_action_add_by_name (menu, "BookmarksImport");
