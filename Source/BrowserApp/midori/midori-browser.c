@@ -5296,8 +5296,6 @@ _action_about_activate (GtkAction*     action,
     g_signal_connect_swapped (dialog, "response",
                               G_CALLBACK (gtk_widget_destroy), dialog);
 #endif
-//20141217 zlf
-midori_browser_HS_actiave(NULL,browser);
 }
 
 static void
