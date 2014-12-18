@@ -35,6 +35,7 @@
 #include "FrameLoaderClient.h"
 #include "FTPDirectoryDocument.h"
 #include "HTMLDocument.h"
+#include "HTMLViewSourceDocument.h"
 #include "Image.h"
 #include "ImageDocument.h"
 #include "MainFrame.h"
@@ -299,8 +300,10 @@ PassRefPtr<HTMLDocument> DOMImplementation::createHTMLDocument(const String& tit
     return d.release();
 }
 
-PassRefPtr<Document> DOMImplementation::createDocument(const String& type, Frame* frame, const URL& url)
+PassRefPtr<Document> DOMImplementation::createDocument(const String& type, Frame* frame, const URL& url,bool inViewSourceMode)
 {
+        if (inViewSourceMode)
+        return HTMLViewSourceDocument::create(frame, url, type);
     // Plugins cannot take HTML and XHTML from us, and we don't even need to initialize the plugin database for those.
     if (type == "text/html")
         return HTMLDocument::create(frame, url);

@@ -1656,6 +1656,7 @@ set(WebCore_SOURCES
     html/HTMLTrackElement.cpp
     html/HTMLUListElement.cpp
     html/HTMLVideoElement.cpp
+    html/HTMLViewSourceDocument.cpp
     html/HiddenInputType.cpp
     html/ImageData.cpp
     html/ImageDocument.cpp
@@ -1757,7 +1758,9 @@ set(WebCore_SOURCES
     html/parser/HTMLSrcsetParser.cpp
     html/parser/HTMLTokenizer.cpp
     html/parser/HTMLTreeBuilder.cpp
+    html/parser/HTMLViewSourceParser.cpp
     html/parser/TextDocumentParser.cpp
+    html/parser/TextViewSourceParser.cpp
     html/parser/XSSAuditor.cpp
     html/parser/XSSAuditorDelegate.cpp
 

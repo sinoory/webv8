@@ -356,6 +356,7 @@ WebPageProxy::WebPageProxy(PageClient& pageClient, WebProcessProxy& process, uin
     , m_enableVerticalRubberBanding(true)
     , m_enableHorizontalRubberBanding(true)
     , m_backgroundExtendsBeyondPage(false)
+    , m_mainFrameInViewSourceMode(false)
     , m_shouldRecordNavigationSnapshots(false)
     , m_isShowingNavigationGestureSnapshot(false)
     , m_pageCount(0)
@@ -5062,6 +5063,16 @@ void WebPageProxy::cancelComposition()
     process().send(Messages::WebPage::CancelComposition(), m_pageID);
 }
 #endif // PLATFORM(GTK)
+
+void WebPageProxy::setMainFrameInViewSourceMode(bool mainFrameInViewSourceMode)
+{
+    if (m_mainFrameInViewSourceMode == mainFrameInViewSourceMode)
+        return;
+
+    m_mainFrameInViewSourceMode = mainFrameInViewSourceMode;
+    if (isValid())
+       m_process->send(Messages::WebPage::SetMainFrameInViewSourceMode(mainFrameInViewSourceMode), m_pageID);
+}
 
 void WebPageProxy::didSaveToPageCache()
 {

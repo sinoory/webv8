@@ -110,7 +110,8 @@ PassRefPtr<Document> DocumentWriter::createDocument(const URL& url)
 #endif
     if (!m_frame->loader().client().hasHTMLView())
         return Document::createNonRenderedPlaceholder(m_frame, url);
-    return DOMImplementation::createDocument(m_mimeType, m_frame, url);
+//    return DOMImplementation::createDocument(m_mimeType, m_frame, url);
+return DOMImplementation::createDocument(m_mimeType, m_frame, url, m_frame->inViewSourceMode());
 }
 
 void DocumentWriter::begin(const URL& urlReference, bool dispatch, Document* ownerDocument)

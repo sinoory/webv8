@@ -173,6 +173,9 @@ namespace WebCore {
         bool shouldUsePrintingLayout() const;
         WEBCORE_EXPORT FloatSize resizePageRectsKeepingRatio(const FloatSize& originalSize, const FloatSize& expectedSize);
 
+        bool inViewSourceMode() const;
+        void setInViewSourceMode(bool = true);
+
         void setDocument(PassRefPtr<Document>);
 
         WEBCORE_EXPORT void setPageZoomFactor(float);
@@ -314,6 +317,7 @@ namespace WebCore {
         float m_pageZoomFactor;
         float m_textZoomFactor;
 
+        bool m_inViewSourceMode;
         int m_activeDOMObjectsAndAnimationsSuspendedCount;
     };
 
@@ -365,6 +369,16 @@ namespace WebCore {
     inline HTMLFrameOwnerElement* Frame::ownerElement() const
     {
         return m_ownerElement;
+    }
+
+    inline bool Frame::inViewSourceMode() const
+    {
+        return m_inViewSourceMode;
+    }
+
+    inline void Frame::setInViewSourceMode(bool mode)
+    {
+        m_inViewSourceMode = mode;
     }
 
     inline FrameTree& Frame::tree() const

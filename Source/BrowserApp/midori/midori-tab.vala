@@ -161,8 +161,6 @@ namespace Midori {
 #endif
         }
 
-//ZRL no view_source in Webkitgtk2-4.0
-#if 0
 #if HAVE_WEBKIT2
         /* Since: 0.5.1 */
         public bool view_source { get {
@@ -182,14 +180,8 @@ namespace Midori {
         }
         }
 #endif
-#endif
 
         public bool can_view_source () {
-//ZRL no view_source in Webkitgtk2-4.0
-#if 0
-            if (view_source)
-                return false;
-#endif
             string content_type = ContentType.from_mime_type (mime_type);
 #if HAVE_WIN32
             /* On Win32 text/plain maps to ".txt" but is_a expects "text" */
@@ -240,11 +232,6 @@ namespace Midori {
         public bool can_save () {
             if (is_blank () || special)
                 return false;
-// ZRL no view_source API in webkitgtk2-4.0
-/*
-            if (view_source)
-                return false;
-*/
 #if !HAVE_WEBKIT2
             if (web_view.get_main_frame ().get_data_source ().get_data () == null)
                 return false;

@@ -3830,10 +3830,7 @@ _action_source_view (GtkAction*     action,
     /* TODO: midori_view_save_source isn't async and not WebKit2-friendly */
     GtkWidget* source = midori_view_new_with_item (NULL, browser->settings);
     GtkWidget* source_view = midori_view_get_web_view (MIDORI_VIEW (source));
-    //ZRL disable this.
-#if 0
     midori_tab_set_view_source (MIDORI_TAB (source), TRUE);
-#endif
     webkit_web_view_load_uri (WEBKIT_WEB_VIEW (source_view), midori_tab_get_uri (MIDORI_TAB (view)));
     midori_browser_add_tab (browser, source);
     #else
@@ -3853,10 +3850,7 @@ _action_source_view (GtkAction*     action,
 
         source = midori_view_new_with_item (NULL, browser->settings);
         source_view = midori_view_get_web_view (MIDORI_VIEW (source));
-        // ZRL disable this.
-#if 0
         midori_tab_set_view_source (MIDORI_TAB (source), TRUE);
-#endif
         webkit_web_view_load_uri (WEBKIT_WEB_VIEW (source_view), source_uri);
         midori_browser_add_tab (browser, source);
     }
