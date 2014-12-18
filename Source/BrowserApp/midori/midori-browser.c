@@ -736,6 +736,8 @@ midori_view_notify_uri_cb (GtkWidget*     widget,
         _action_set_sensitive (browser, "Back", midori_view_can_go_back (view));
         _action_set_sensitive (browser, "Forward", midori_tab_can_go_forward (MIDORI_TAB (view)));
         g_object_notify (G_OBJECT (browser), "uri");
+
+		browser->settings->current_uri = uri; //lxx add for uri
     }
 }
 
@@ -7351,9 +7353,47 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
     }
     else if (name == g_intern_string ("inactivity-reset"))
         midori_browser_set_inactivity_reset (browser, g_value_get_uint (&value));
-    else if (!g_object_class_find_property (G_OBJECT_GET_CLASS (web_settings),
-                                             name))
+    else if (!g_object_class_find_property (G_OBJECT_GET_CLASS (web_settings),name))
          g_warning (_("Unexpected setting '%s'"), name);
+#if 1
+   else if(name == g_intern_string("default-font-family"))
+	{
+		gchar *strval = NULL;
+		g_object_get(browser->settings, "default-font-family", &strval, NULL);
+		webkit_settings_set_default_font_family(browser->settings, strval);	
+
+		g_free(strval);
+	}
+   else if(name == g_intern_string("default-font-size"))
+	{
+		guint32 size = webkit_settings_get_default_font_size(browser->settings);
+		gint fontSize = katze_object_get_int (browser->settings, "default-font-size");
+		webkit_settings_set_default_font_size(browser->settings, fontSize);
+		guint32 size2 = webkit_settings_get_default_font_size(browser->settings);
+	}
+   else if(name == g_intern_string("zoom-level"))
+	{
+		gdouble dvalue = 0.0;
+		g_object_get(browser->settings, "zoom-level", &dvalue, NULL);
+		GtkWidget* view = midori_browser_get_current_tab (browser);
+		midori_view_set_zoom_level (MIDORI_VIEW (view), dvalue);
+	}
+   else if(name == g_intern_string("zoom-text-and-images"))
+	{
+		bool bvalue = katze_object_get_boolean(browser->settings, "zoom-text-and-images");
+		webkit_settings_set_zoom_text_only(browser->settings, !bvalue);
+	}
+   else if(name == g_intern_string("auto-load-images"))
+	{
+		bool bvalue = katze_object_get_boolean(browser->settings, "auto-load-images");
+		webkit_settings_set_auto_load_images(browser->settings, bvalue);
+	}
+   else if(name == g_intern_string("enable-scripts"))
+	{
+		bool bvalue = katze_object_get_boolean(browser->settings, "enable-scripts");
+		webkit_settings_set_enable_javascript(browser->settings, bvalue);
+	}
+#endif
     g_value_unset (&value);
 }
 

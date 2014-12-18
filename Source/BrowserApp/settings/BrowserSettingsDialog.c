@@ -82,19 +82,19 @@ const gdouble zoom_factor[] = {0.25, 0.33, 0.5, 0.67, 0.75, 0.9, 1.0, 1.1, 1.25,
 
 static void initOnStartupRadioButton(MidoriWebSettings *settings)
 {
-	//g_object_get (settings, "homepage", &homepageuri, NULL);
+
 	gint ivalue = katze_object_get_int (settings, "load-on-startup");
-	g_print("lxx add %s(%d) of %s %d\n", __FUNCTION__, __LINE__, __FILE__, ivalue);
+
 
     switch(ivalue) {
-    case 0:
+    case 0://blank page
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton1_general), TRUE);
         break;
-    case 1:
-        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton2_general), TRUE);
-        break;
-    case 2:
+    case 1://homepage
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton3_general), TRUE);
+        break;
+    case 2://last opened pages
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton2_general), TRUE);
         break;
     default:
         printf("error PROP_ON_STARTUP ivalue = %i\n", ivalue);
@@ -105,20 +105,13 @@ static void initOnStartupRadioButton(MidoriWebSettings *settings)
 
 static void initHomePageEntry(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-//return;
     gchar *strval = katze_object_get_string(settings, "homepage");
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
     gtk_entry_set_text(GTK_ENTRY(settings->entry1_general), strval);
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
     g_free (strval);
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
 }
 
 static void initOpenNewpageRadioButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-//return;
 	gint ivalue = katze_object_get_int (settings, "open-new-pages-in");
 
     switch(ivalue) {
@@ -139,8 +132,6 @@ static void initOpenNewpageRadioButton(MidoriWebSettings *settings)
 
 static void initMuchTabWarningCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = katze_object_get_boolean(settings, "much_tab_warning");
 
     if(TRUE == bvalue) {
@@ -150,10 +141,10 @@ static void initMuchTabWarningCheckButton(MidoriWebSettings *settings)
     }
 }
 
-static void initShowHomepageCheckButton(MidoriWebSettings *settings)
+static void initshowStatusBarCheckButton(MidoriWebSettings *settings)
 {
-    bool bvalue = katze_object_get_boolean(settings, "show_homepage_button");
-//g_print("lxx add %s(%d) of %s %d\n", __FUNCTION__, __LINE__, __FILE__, bvalue);//lxx add
+    bool bvalue = katze_object_get_boolean(settings, "show-statusbar");
+
     if(TRUE == bvalue) {
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->checkbutton2_general), TRUE);     
     } else {
@@ -163,8 +154,6 @@ static void initShowHomepageCheckButton(MidoriWebSettings *settings)
 
 static void initShowBookmarkbarCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = katze_object_get_boolean(settings, "show_bookmarkbar");
 
     if(TRUE == bvalue) {
@@ -176,8 +165,6 @@ static void initShowBookmarkbarCheckButton(MidoriWebSettings *settings)
 
 static void initShowMenubarCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = katze_object_get_boolean(settings, "show_menubar");
 
     if(TRUE == bvalue) {
@@ -187,26 +174,8 @@ static void initShowMenubarCheckButton(MidoriWebSettings *settings)
     }
 }
 
-static void initShowFullscreenCheckButton(MidoriWebSettings *settings)
-{
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-return;
-    bool bvalue;
-    g_object_get(settings,
-             key[PROP_SHOW_FULLSCREEN], &bvalue,
-             NULL);
-    if(TRUE == bvalue) {
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->checkbutton5_general), TRUE);     
-    } else {
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->checkbutton5_general), FALSE); 
-    }
-}
-
 static void initFontComboBox(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
-#if 1
     int index = 0;
     gchar *strval;
     bool bfound = FALSE;
@@ -227,14 +196,10 @@ static void initFontComboBox(MidoriWebSettings *settings)
       gtk_combo_box_set_active(GTK_COMBO_BOX(settings->comboboxtext1_content), 0);
     } 
     g_free (strval);
-#endif
 }
 
 static void initFontSizeComboBox(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
-#if 1
     int index = 0;
     bool bfound = FALSE;
     gint ivalue;
@@ -253,12 +218,10 @@ static void initFontSizeComboBox(MidoriWebSettings *settings)
       printf("error, undefined font size: %i to init font_size combobox\n", ivalue);
       gtk_combo_box_set_active(GTK_COMBO_BOX(settings->comboboxtext2_content), 0);
     } 
-#endif
 }
 
 static void initPageZoomComboBox(MidoriWebSettings *settings)
 {
-#if 1
     int index = 0;
     bool bfound = FALSE;
     gdouble dvalue;
@@ -271,26 +234,22 @@ static void initPageZoomComboBox(MidoriWebSettings *settings)
         break;    
       }
     }
-//g_print("lxx add %s(%d) of %s %d\n", __FUNCTION__, __LINE__, __FILE__, dvalue);//lxx add
+
     if(bfound) {  
       gtk_combo_box_set_active(GTK_COMBO_BOX(settings->comboboxtext3_content), index);
     } else {
       printf("error, undefined page zoom: %f to init page_zoom combobox\n", dvalue);
       gtk_combo_box_set_active(GTK_COMBO_BOX(settings->comboboxtext3_content), 0);
     } 
-/**/
-#endif
 }
 
 static void initZoomTextOnlyCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-//return;
     bool bvalue = 1;
     g_object_get(settings,
              "zoom-text-and-images", &bvalue,
              NULL);
-g_print("lxx add %s(%d) of %s  %d\n", __FUNCTION__, __LINE__, __FILE__, bvalue);//lxx add
+
     if(TRUE == bvalue) {
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->checkbutton1_content), FALSE);     
     } else {
@@ -300,8 +259,6 @@ g_print("lxx add %s(%d) of %s  %d\n", __FUNCTION__, __LINE__, __FILE__, bvalue);
 
 static void initShowImageRadioButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-//return;
     bool bvalue;
     g_object_get(settings,
              "auto_load_images", &bvalue,
@@ -315,8 +272,6 @@ static void initShowImageRadioButton(MidoriWebSettings *settings)
 
 static void initRunJavascriptRadioButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue;
     g_object_get(settings,
              "enable_scripts", &bvalue,
@@ -330,8 +285,6 @@ static void initRunJavascriptRadioButton(MidoriWebSettings *settings)
 
 static void initPageContentCacheCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue;
     g_object_get(settings,
              "page-content-cache", &bvalue,
@@ -345,8 +298,6 @@ static void initPageContentCacheCheckButton(MidoriWebSettings *settings)
 
 static void initHistorySettingComboBox(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     gint ivalue;
     g_object_get(settings,
              "history-setting", &ivalue,
@@ -356,8 +307,6 @@ static void initHistorySettingComboBox(MidoriWebSettings *settings)
 
 static void initClearBrowseRecordCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue;
     g_object_get(settings,
              "clear-browse-record", &bvalue,
@@ -371,8 +320,6 @@ static void initClearBrowseRecordCheckButton(MidoriWebSettings *settings)
 
 static void initClearDownloadRecordCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue;
     g_object_get(settings,
              "clear-download-record", &bvalue,
@@ -386,8 +333,6 @@ static void initClearDownloadRecordCheckButton(MidoriWebSettings *settings)
 
 static void initClearCookieAndOthersCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue;
     g_object_get(settings,
              "clear-cookie-and-others", &bvalue,
@@ -401,8 +346,6 @@ static void initClearCookieAndOthersCheckButton(MidoriWebSettings *settings)
 
 static void initClearCachedImagesAndFilesCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue;
     g_object_get(settings,
              "clear-cached-images-and-files", &bvalue,
@@ -416,8 +359,6 @@ static void initClearCachedImagesAndFilesCheckButton(MidoriWebSettings *settings
 
 static void initClearPasswordsCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue;
     g_object_get(settings,
              "clear-passwords", &bvalue,
@@ -431,8 +372,6 @@ static void initClearPasswordsCheckButton(MidoriWebSettings *settings)
 
 static void initCookieSettingRadioButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     int ivalue;
     g_object_get(settings,
              "cookie-setting", &ivalue,
@@ -456,8 +395,6 @@ static void initCookieSettingRadioButton(MidoriWebSettings *settings)
 
 static void initTrackLocationRadioButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     int ivalue;
     g_object_get(settings,
              "track-location", &ivalue,
@@ -481,8 +418,6 @@ static void initTrackLocationRadioButton(MidoriWebSettings *settings)
 
 static void initCertificateRevocationCheckButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue;
     g_object_get(settings,
              "certificate-revocation", &bvalue,
@@ -497,8 +432,6 @@ static void initCertificateRevocationCheckButton(MidoriWebSettings *settings)
 
 static void initMediaAccessRadioButton(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     int ivalue;
     g_object_get(settings,
              "media-access", &ivalue,
@@ -520,8 +453,6 @@ static void initMediaAccessRadioButton(MidoriWebSettings *settings)
 //lxx add +, 14.11.17
 static void initAskEverytimeBeforeDownloadfile(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
 	bool bvalue = katze_object_get_boolean(settings, "ask_every_time_before_download_file");;
 
 	if(TRUE == bvalue) 
@@ -536,7 +467,6 @@ static void initAskEverytimeBeforeDownloadfile(MidoriWebSettings *settings)
 
 static void initStorePathOfDownloadPathEntry(MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
 	 gchar *strval = katze_object_get_string(settings, "download-folder");
 
     gtk_entry_set_text(GTK_ENTRY(settings->entry1_advanced), strval);
@@ -552,10 +482,9 @@ static void browserSettingsWindowConstructed(MidoriWebSettings *settings)
     initHomePageEntry(settings);
     initOpenNewpageRadioButton(settings);
     initMuchTabWarningCheckButton(settings);
-    initShowHomepageCheckButton(settings);
+    initshowStatusBarCheckButton(settings);
     initShowBookmarkbarCheckButton(settings);
     initShowMenubarCheckButton(settings);
-    initShowFullscreenCheckButton(settings);
     initFontComboBox(settings);
     initFontSizeComboBox(settings);
     initPageZoomComboBox(settings);
@@ -580,7 +509,6 @@ static void browserSettingsWindowConstructed(MidoriWebSettings *settings)
 //clear data callback 
 static void clearDataCallback(GtkButton *button, MidoriWebSettings *settings) 
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
 return;
     //clear browse record.
     if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->checkbutton4_privacy))) {
@@ -623,19 +551,16 @@ static void currentPageToHomePageCallback(GtkButton *button, MidoriWebSettings *
 
 static void onStartupCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);
-//	return;
-#if 1
     int ivalue;
     if(gtk_toggle_button_get_active(togglebutton)) {
       if((void *)settings->radiobutton1_general == (void *)togglebutton) {
         ivalue = 0;
       }
       else if((void *)settings->radiobutton2_general == (void *)togglebutton) {
-        ivalue = 1;
+        ivalue = 2;
       }
       else if((void *)settings->radiobutton3_general == (void *)togglebutton) {
-        ivalue = 2;
+        ivalue = 1;
       } 
       else {
         printf("error onStartupCallback\n"); 
@@ -646,13 +571,10 @@ static void onStartupCallback(GtkToggleButton *togglebutton, MidoriWebSettings *
                NULL);
 
     }
-#endif
 } 
 #if 1
 static void openNewpageCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     int ivalue;
     if(gtk_toggle_button_get_active(togglebutton)) {
       if((void *)settings->radiobutton4_general == (void *)togglebutton) {
@@ -676,8 +598,6 @@ static void openNewpageCallback(GtkToggleButton *togglebutton, MidoriWebSettings
 
 static void muchTabWarningCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "much_tab_warning", bvalue,
@@ -685,20 +605,16 @@ static void muchTabWarningCallback(GtkToggleButton *togglebutton, MidoriWebSetti
 } 
 
 
-static void showHomepageButtonCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
+static void showStatusBarCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
-             "show_homepage_button", bvalue,
+             "show-statusbar", bvalue,
              NULL);
 } 
 
 static void showBookmarkbarCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "show_bookmarkbar", bvalue,
@@ -707,8 +623,6 @@ static void showBookmarkbarCallback(GtkToggleButton *togglebutton, MidoriWebSett
 
 static void showMenubarCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "show_menubar", bvalue,
@@ -716,21 +630,11 @@ static void showMenubarCallback(GtkToggleButton *togglebutton, MidoriWebSettings
 } 
 
 
-static void showFullscreenCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
-{
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-	return;
-    bool bvalue = gtk_toggle_button_get_active(togglebutton); 
-    g_object_set(settings,
-             key[PROP_SHOW_FULLSCREEN], bvalue,
-             NULL);
-} 
+
 
 
 static void defaultFontCallback(GtkComboBox *widget, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-//	return;
     int CurrentSelect = gtk_combo_box_get_active(widget); 
     g_object_set(settings,
              "default-font-family", font[CurrentSelect],
@@ -739,8 +643,6 @@ static void defaultFontCallback(GtkComboBox *widget, MidoriWebSettings *settings
 
 static void defaultFontsizeCallback(GtkComboBox *widget, MidoriWebSettings *settings)
 { 
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     int CurrentSelect = gtk_combo_box_get_active(widget); 
     g_object_set(settings,
              "default-font-size", font_size[CurrentSelect],
@@ -749,8 +651,6 @@ static void defaultFontsizeCallback(GtkComboBox *widget, MidoriWebSettings *sett
 
 static void pageZoomCallback(GtkComboBox *widget, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-//	return;
     int CurrentSelect = gtk_combo_box_get_active(widget);
     g_object_set(settings,
              "zoom-level", zoom_factor[CurrentSelect],
@@ -759,20 +659,15 @@ static void pageZoomCallback(GtkComboBox *widget, MidoriWebSettings *settings)
 
 static void zoomTextOnlyCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-//	return;
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
-g_print("lxx add %s(%d) of %s %d\n", __FUNCTION__, __LINE__, __FILE__, bvalue);//lxx add
+
     g_object_set(settings,
              "zoom-text-and-images", !bvalue,
              NULL);
-g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
 }
 
 static void showImageCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-//	return;
     bool bvalue;
     if(gtk_toggle_button_get_active(togglebutton)) {
       if((void *)settings->radiobutton1_content == (void *)togglebutton) {
@@ -793,8 +688,6 @@ static void showImageCallback(GtkToggleButton *togglebutton, MidoriWebSettings *
 
 static void runJavascriptCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue;
     if(gtk_toggle_button_get_active(togglebutton)) {
       if((void *)settings->radiobutton3_content == (void *)togglebutton) {
@@ -815,8 +708,6 @@ static void runJavascriptCallback(GtkToggleButton *togglebutton, MidoriWebSettin
 
 static void pageContentCacheCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "page-content-cache", bvalue,
@@ -825,8 +716,6 @@ static void pageContentCacheCallback(GtkToggleButton *togglebutton, MidoriWebSet
 
 static void historySettingCallback(GtkComboBox *widget, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     int CurrentSelect = gtk_combo_box_get_active(widget); 
     g_object_set(settings,
              "history-setting", CurrentSelect,
@@ -836,8 +725,6 @@ static void historySettingCallback(GtkComboBox *widget, MidoriWebSettings *setti
 
 static void clearBrowseRecordCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "clear-browse-record", bvalue,
@@ -847,8 +734,6 @@ static void clearBrowseRecordCallback(GtkToggleButton *togglebutton, MidoriWebSe
 
 static void clearDownloadRecordCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "clear-download-record", bvalue,
@@ -858,8 +743,6 @@ static void clearDownloadRecordCallback(GtkToggleButton *togglebutton, MidoriWeb
 
 static void clearCookieAndOthersCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "clear-cookie-and-others", bvalue,
@@ -868,8 +751,6 @@ static void clearCookieAndOthersCallback(GtkToggleButton *togglebutton, MidoriWe
 
 static void clearCachedImagesAndFilesCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "clear-cached-images-and-files", bvalue,
@@ -878,8 +759,6 @@ static void clearCachedImagesAndFilesCallback(GtkToggleButton *togglebutton, Mid
 
 static void clearPasswordsCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "clear-passwords", bvalue,
@@ -887,8 +766,6 @@ static void clearPasswordsCallback(GtkToggleButton *togglebutton, MidoriWebSetti
 }
 static void cookieSettingCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     int ivalue;
     WebKitCookieAcceptPolicy cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS;
     if(gtk_toggle_button_get_active(togglebutton)) {
@@ -918,8 +795,6 @@ static void cookieSettingCallback(GtkToggleButton *togglebutton, MidoriWebSettin
 
 static void trackLocationCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     int ivalue;
     if(gtk_toggle_button_get_active(togglebutton)) {
       if((void *)settings->radiobutton4_privacy == (void *)togglebutton) {
@@ -943,8 +818,6 @@ static void trackLocationCallback(GtkToggleButton *togglebutton, MidoriWebSettin
 
 static void certificateRevocationCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "certificate-revocation", bvalue,
@@ -953,8 +826,6 @@ static void certificateRevocationCallback(GtkToggleButton *togglebutton, MidoriW
 
 static void mediaAccessCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     int ivalue;
     if(gtk_toggle_button_get_active(togglebutton)) {
       if((void *)settings->radiobutton1_security == (void *)togglebutton) {
@@ -975,23 +846,18 @@ static void mediaAccessCallback(GtkToggleButton *togglebutton, MidoriWebSettings
 //lxx add +, 14.11.13 
 static void setCuprumDefaultBrowserCallback(GtkButton *button, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
 	system("xdg-settings set default-web-browser midori.desktop");//	system("xdg-settings set default-web-browser cuprumbrowser.desktop");
 	printf("function setCuprumDefaultBrowserCallback has been called\n");
 }
 
 static void networkSettingCallback(GtkButton *button, MidoriWebSettings *settings)
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
 	system("/usr/bin/cinnamon-settings network");
 	printf("function networkSettingCallback has been called\n");
 }
 
 static void do_reset_browser()
 {
-//g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
 	if(DeletePreferencesFile())
 	{
 		printf("PreferencesFile has been deleted\n");
@@ -1004,8 +870,6 @@ static void do_reset_browser()
 
 static void resetNetworkSettingCallback(GtkButton *button, MidoriWebSettings *settings)
 {
-g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
 #if 0//使用创建一个主窗口的方式来解决
 	GtkWidget *window;
 	GtkWidget *table;
@@ -1071,15 +935,10 @@ g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
 		gtk_widget_destroy(dialog);
 	}
 	gtk_widget_destroy (dialog);
-
-	printf("function resetNetworkSettingCallback has been called\n");
-
 }
 
 static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSettings *settings)
 {
-g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-//	return;
 #if 0
 GtkWidget* widget;
 
@@ -1159,8 +1018,6 @@ printf("function alterDownloadSaveCatalogCallback has been called\n");
 
 static void askEverytimeBeforeDownloadCallback(GtkToggleButton *button, MidoriWebSettings *settings)
 {
-g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-
     bool bvalue = gtk_toggle_button_get_active(button); 
     g_object_set(settings,
              "ask_every_time_before_download_file", bvalue,
@@ -1185,13 +1042,8 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
    char *exe_path = NULL;
    exe_path = midori_paths_get_res_filename("layout/settings.glade");
    builder = gtk_builder_new();
+
    gtk_builder_add_from_file(builder, exe_path, NULL);
-
-//    settings->fontNum = sizeof(font)/sizeof(font[0]);
- //   settings->fontSizeNum = sizeof(font_size)/sizeof(font_size[0]);
- //   settings->pageZoomNum = sizeof(zoom_factor)/sizeof(zoom_factor[0]);
-
-g_print("lxx add %s(%d) of %s %s\n", __FUNCTION__, __LINE__, __FILE__, exe_path);//lxx add
 
    window = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
 
@@ -1223,16 +1075,13 @@ g_print("lxx add %s(%d) of %s %s\n", __FUNCTION__, __LINE__, __FILE__, exe_path)
    g_signal_connect(G_OBJECT(settings->checkbutton1_general), "toggled", G_CALLBACK(muchTabWarningCallback), settings);
 
    settings->checkbutton2_general = GTK_WIDGET(gtk_builder_get_object(builder, "checkbutton2_general"));
-   g_signal_connect(G_OBJECT(settings->checkbutton2_general), "toggled", G_CALLBACK(showHomepageButtonCallback), settings);
+   g_signal_connect(G_OBJECT(settings->checkbutton2_general), "toggled", G_CALLBACK(showStatusBarCallback), settings);
 
    settings->checkbutton3_general = GTK_WIDGET(gtk_builder_get_object(builder, "checkbutton3_general"));
    g_signal_connect(G_OBJECT(settings->checkbutton3_general), "toggled", G_CALLBACK(showBookmarkbarCallback), settings);
 
    settings->checkbutton4_general = GTK_WIDGET(gtk_builder_get_object(builder, "checkbutton4_general"));
    g_signal_connect(G_OBJECT(settings->checkbutton4_general), "toggled", G_CALLBACK(showMenubarCallback), settings);
-
-   settings->checkbutton5_general = GTK_WIDGET(gtk_builder_get_object(builder, "checkbutton5_general"));
-   g_signal_connect(G_OBJECT(settings->checkbutton5_general), "toggled", G_CALLBACK(showFullscreenCallback), settings);
 
    settings->comboboxtext1_content = GTK_WIDGET(gtk_builder_get_object(builder, "comboboxtext1_content"));
    g_signal_connect(G_OBJECT(settings->comboboxtext1_content), "changed", G_CALLBACK(defaultFontCallback), settings);
@@ -1332,9 +1181,6 @@ g_print("lxx add %s(%d) of %s %s\n", __FUNCTION__, __LINE__, __FILE__, exe_path)
    settings->entry1_advanced = GTK_WIDGET(gtk_builder_get_object(builder, "entry1_advanced"));
 
    browserSettingsWindowConstructed(settings);
-
-g_print("lxx add %s(%d) of %s %p\n", __FUNCTION__, __LINE__, __FILE__, window);
-
    g_object_unref (G_OBJECT (builder));
    return window;
 }
