@@ -140,8 +140,9 @@ namespace Midori {
         public bool show_statusbar { get; set; default = true; }
         /* Since: 0.1.2 */
         public bool show_crash_dialog { get; set; default = true; }
+	// ZRL 增加下载图标
         public string toolbar_items { get; set; default =
-            "TabNew,Back,Forward,Homepage,ReloadStop,BookmarkAdd,Location,Search,Trash,CompactMenu,Preferences"; }
+            "TabNew,Back,Forward,Homepage,ReloadStop,BookmarkAdd,DownloadDialog,Location,Search,Trash,CompactMenu,Preferences"; }
         /* Since: 0.1.4 */
         // [Deprecated (since = "0.4.7")]
         public bool find_while_typing { get; set; default = false; }

@@ -58,6 +58,49 @@ namespace Midori {
             return download.estimated_progress;
 #endif
         }
+        public static string get_website (WebKit.Download download) {
+            string? website = download.request.uri;
+            return "%s".printf (website);
+        }
+
+        public static string get_remaining (WebKit.Download download) {
+            //WebKitURIResponse *response = webkit_download_get_response(download);
+            //dialog->contentLength = webkit_uri_response_get_content_length(response);
+            ///WebKit.WebContext m_webContext = WebKit.WebContext.get_default();
+            WebKit.URIResponse response = download.get_response();
+            uint64 total_size = response.get_content_length(), current_size = download.get_received_data_length ();
+            double elapsed = download.elapsed_time,
+               diff = elapsed / current_size,
+               estimated = (total_size - current_size) * diff;
+            int hour = 3600, minute = 60;
+            int hours = (int)(estimated / hour),
+                minutes = (int)((estimated - (hours * hour)) / minute),
+                seconds = (int)((estimated - (hours * hour) - (minutes * minute)));
+            string hours_ = ngettext ("%d hour", "%d hours", hours).printf (hours);
+            string minutes_ = ngettext ("%d minute", "%d minutes", minutes).printf (minutes);
+            string seconds_ = ngettext ("%d second", "%d seconds", seconds).printf (seconds);
+
+            string eta = "";
+            if (estimated > 0) {
+                if (hours > 0)
+                    eta = hours_ + ", " + minutes_;
+                else if (minutes >= 10)
+                    eta = minutes_;
+                else if (minutes < 10 && minutes > 0)
+                    eta = minutes_ + ", " + seconds_;
+                else if (seconds > 0)
+                    eta = seconds_;
+                if (eta != "")
+            /* i18n: Download tooltip (estimated time) : - 1 hour, 5 minutes remaning */
+                    eta = _("%s").printf (eta);
+            }
+            return "%s".printf (eta);
+        }
+        
+        public static string get_size (WebKit.Download download) {
+            string size = "%s".printf (format_size (download.get_received_data_length ()));
+            return "%s".printf (size);
+        }
 
         public static string get_tooltip (WebKit.Download download) {
 #if !HAVE_WEBKIT2
@@ -185,6 +228,138 @@ namespace Midori {
             }
             return status == 1;
 
+        }
+
+        public static bool re_download (WebKit.Download download) { //throws Error {
+            /*
+            WebKitWebContext* m_webContext = webkit_web_context_get_default();
+            const gchar *downloadUri = "http://127.0.0.1:8000/uex_15.0.0.9_i386.deb";
+            WebKitDownload* download = webkit_web_context_download_uri(m_webContext, downloadUri);
+            //webkit_download_set_destination(download, g_filename_to_uri(destination, 0, 0));
+            WebKitURIRequest* request = webkit_download_get_request(download);
+            */
+            WebKit.WebContext m_webContext = WebKit.WebContext.get_default();
+            string? original_uri = download.request.uri;
+            WebKit.Download downloadt = m_webContext.download_uri(original_uri);
+            downloadt.get_request();
+            return true;
+        }
+
+        void new_download_cancel_cb (Gtk.Widget widget) {
+            //gtk_widget_get_parent_window (widget)
+            widget.get_parent_window().destroy();
+            //widget.destroy();
+        }
+
+        public static bool  new_download () { //throws Error {
+            stdout.printf("new _download\n");
+
+            var dialog = new Gtk.Dialog.with_buttons ("手动下载",
+                null,
+                Gtk.DialogFlags.DESTROY_WITH_PARENT, //|Gtk.DialogFlags.MODAL,
+                null, null);
+
+            dialog.set_default_size(600, 150);
+
+            //dialog.set_icon_name (Gtk.STOCK_PROPERTIES);
+//            dialog.set_response_sensitive (Gtk.ResponseType.HELP, false);
+
+            var hbox1 = new Gtk.HBox (false, 0);
+            var hbox3 = new Gtk.HBox (false, 0);
+            var hbox4 = new Gtk.HBox (false, 0);
+            var vbox = new Gtk.VBox (false, 0);
+            hbox1.set_spacing(5);
+            hbox3.set_spacing(5);
+            hbox4.set_spacing(5);
+            vbox.set_spacing(10);
+            (dialog.get_content_area () as Gtk.Box).pack_start (vbox, false, false, 0);
+            dialog.get_content_area ().set_spacing(4);
+            dialog.get_content_area ().set_border_width(20);
+            
+            //this.description_label.set_markup (this.description);
+            //this.description_label.set_line_wrap (true);
+            //vbox.pack_start (this.description_label, false, false, 4);
+
+            var label1 = new Gtk.Label("网址:                   ");
+            var entry1 = new Gtk.Entry ();
+            hbox1.pack_start (label1, false, false, 0);
+            hbox1.pack_start (entry1, true, true, 0);
+
+            var label3 = new Gtk.Label("文件名:               ");
+            var entry3 = new Gtk.Entry ();
+            hbox3.pack_start (label3, false, false, 0);
+            hbox3.pack_start (entry3, true, true, 0);
+
+            var dbtn = new Gtk.Button.with_label("下载");
+            var cbtn = new Gtk.Button.with_label("取消");
+            hbox4.pack_start (dbtn, false, false, 0);
+            hbox4.pack_start (cbtn, false, false, 0);
+
+            //g_signal_connect(G_OBJECT(cbtn), "clicked", G_CALLBACK(_action_download_cancel_activate), dialog);
+            cbtn.clicked.connect(new_download_cancel_cb);
+            
+            vbox.pack_start (hbox1, false, false, 0);
+            vbox.pack_start (hbox3, false, false, 0);
+            vbox.pack_start (hbox4, false, false, 0);
+            dialog.get_content_area ().show_all ();
+            dialog.show ();
+            /*
+            GtkWidget* dialog;
+
+            dialog = gtk_dialog_new_with_buttons ("Download Manager Dialog", GTK_WINDOW (browser),
+                    GTK_DIALOG_DESTROY_WITH_PARENT |GTK_DIALOG_MODAL |GTK_DIALOG_NO_SEPARATOR, NULL, NULL);
+            GtkBox *contentArea = GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
+            gtk_box_set_spacing(contentArea, 4);
+
+            gtk_window_set_default_size(GTK_WINDOW(dialog), 600, 150);
+            gtk_window_set_title(GTK_WINDOW(dialog), "下载文件");
+            gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), FALSE);
+            gtk_container_set_border_width(GTK_CONTAINER(dialog), 20);
+
+            GtkWidget *h1box,*h3box,*h4box,*vbox;
+            GtkWidget *cbtn;
+            GtkWidget *label1, *label3;
+
+            //void gtk_box_set_spacing (GtkBox *box, gint    spacing)
+            h1box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+            h3box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+            h4box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+            vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+
+            label1 = gtk_label_new("网址:                  ");
+            GtkWidget *entry1 = gtk_entry_new();
+
+            gtk_box_pack_start(GTK_BOX(h1box), label1, FALSE, FALSE, 0);  
+            gtk_box_pack_start(GTK_BOX(h1box), entry1, TRUE, TRUE, 0); 
+
+            label3 = gtk_label_new("文件名:               ");
+            GtkWidget *entry3 = gtk_entry_new();
+
+            gtk_box_pack_start(GTK_BOX(h3box), label3, FALSE, FALSE, 0);  
+            gtk_box_pack_start(GTK_BOX(h3box), entry3, TRUE, TRUE, 0);
+
+            g_signal_connect (G_OBJECT (entry1), "changed", G_CALLBACK (_action_download_filename_change_activate), entry3);
+            GtkWidget *dbtn = gtk_button_new_with_label("下载");
+            //g_signal_connect(G_OBJECT(dialog->dbtn), "clicked", G_CALLBACK(downloadBtnCallback), dialog);
+
+            cbtn = gtk_button_new_with_label("取消");
+            g_signal_connect(G_OBJECT(cbtn), "clicked", G_CALLBACK(_action_download_cancel_activate), dialog);
+
+            gtk_box_pack_start(GTK_BOX(h4box), dbtn, FALSE, FALSE, 0);  
+            gtk_box_pack_start(GTK_BOX(h4box), cbtn, FALSE, FALSE, 0);
+
+            gtk_box_pack_start(GTK_BOX(vbox),GTK_WIDGET(h1box),FALSE,FALSE,0);  
+            gtk_box_pack_start(GTK_BOX(vbox),GTK_WIDGET(h3box),FALSE,FALSE,0); 
+            gtk_box_pack_start(GTK_BOX(vbox),GTK_WIDGET(h4box),FALSE,FALSE,0);
+
+            gtk_container_add(GTK_CONTAINER(contentArea),vbox);
+            gtk_widget_show_all(GTK_WIDGET(contentArea));  
+
+            midori_dialog_run (GTK_DIALOG (dialog));        
+            */
+
+            stdout.printf("new_download end\n");
+            return true;
         }
 
         public static bool action_clear (WebKit.Download download, Gtk.Widget widget) throws Error {
