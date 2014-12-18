@@ -35,5 +35,6 @@
 #define STOCK_EDIT_FIND          "edit-find"
 #define STOCK_STOP               "stop"
 #define STOCK_URL                "text-html"
+#define STOCK_DOWNLOAD           "gtk-go-down"
 
 #endif /* !__MIDORI_STOCK_H__ */

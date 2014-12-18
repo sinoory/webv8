@@ -20,6 +20,7 @@
 #include "midori-websettings.h"
 #include "midori-platform.h"
 #include <midori/cdosbrowser-core.h> /* Vala API */
+#include <function_control.h>
 
 /* For convenience, include localization header */
 #include <glib/gi18n-lib.h>

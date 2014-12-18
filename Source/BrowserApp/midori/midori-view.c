@@ -2545,7 +2545,7 @@ midori_view_get_page_context_action (MidoriView*          view,
     if (context == WEBKIT_HIT_TEST_RESULT_CONTEXT_DOCUMENT)
     {
         midori_context_action_add (menu, NULL);
-#if 0 // ZRL 屏蔽撤销关闭标签功能
+#if ENABLE_TRASH // ZRL 屏蔽撤销关闭标签功能
         midori_context_action_add_by_name (menu, "UndoTabClose");
 #endif
         #ifndef HAVE_WEBKIT2
@@ -2573,7 +2573,9 @@ midori_view_get_page_context_action (MidoriView*          view,
 
         midori_context_action_add (menu, NULL);
         midori_context_action_add_by_name (menu, "BookmarkAdd");
+#if ENABLE_ADDSPEEDDIAL
         midori_context_action_add_by_name (menu, "AddSpeedDial");
+#endif
         midori_context_action_add_by_name (menu, "SaveAs");
         midori_context_action_add_by_name (menu, "SourceView");
         midori_context_action_add_by_name (menu, "SourceViewDom");

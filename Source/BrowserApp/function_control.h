@@ -8,4 +8,7 @@
 //该宏的作用是控制搜索框，以及搜索引擎配置功能
 #define ENABLE_SEARCH_ACTION 0
 
+//控制撤销关闭标签功能
+#define ENABLE_TRASH 0
+
 #endif

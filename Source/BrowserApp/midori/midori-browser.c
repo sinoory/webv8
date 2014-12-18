@@ -254,8 +254,10 @@ midori_browser_trash_clear_cb (KatzeArray*    trash,
                                MidoriBrowser* browser)
 {
     gboolean trash_empty = katze_array_is_empty (browser->trash);
+#if ENABLE_TRASH // ZRL 屏蔽撤销关闭标签功能
     _action_set_sensitive (browser, "UndoTabClose", !trash_empty);
     _action_set_sensitive (browser, "Trash", !trash_empty);
+#endif
 }
 
 static void
@@ -302,9 +304,13 @@ _midori_browser_update_interface (MidoriBrowser* browser,
     _action_set_sensitive (browser, "Next",
         midori_view_get_next_page (view) != NULL);
 
+#if ENABLE_ADDSPEEDDIAL
     _action_set_sensitive (browser, "AddSpeedDial", !midori_view_is_blank (view));
+#endif
     _action_set_sensitive (browser, "BookmarkAdd", !midori_view_is_blank (view));
+#if ENABLE_MAILTO
     _action_set_sensitive (browser, "MailTo", !midori_view_is_blank (view));
+#endif
     _action_set_sensitive (browser, "SaveAs", midori_tab_can_save (MIDORI_TAB (view)));
     _action_set_sensitive (browser, "ZoomIn", midori_view_can_zoom_in (view));
     _action_set_sensitive (browser, "ZoomOut", midori_view_can_zoom_out (view));
@@ -2832,7 +2838,11 @@ _action_compact_add_activate (GtkAction*     action,
 {
     GtkWidget* dialog;
     GtkBox* box;
+#if ENABLE_ADDSPEEDDIAL
     const gchar* actions[] = { "BookmarkAdd", "AddSpeedDial", "AddNewsFeed" };
+#else
+    const gchar* actions[] = { "BookmarkAdd", "AddNewsFeed" };
+#endif
     guint i;
 
     dialog = g_object_new (GTK_TYPE_DIALOG,
@@ -3120,12 +3130,22 @@ midori_browser_toolbar_item_button_press_event_cb (GtkWidget*      toolitem,
 const gchar**
 midori_browser_get_toolbar_actions (MidoriBrowser* browser)
 {
+// ZRL 去除已经删除的元素：TabClose，以免引起运行时的报错或警告
+#if 0
     static const gchar* actions[] = {
             "WindowNew", "TabNew", "Open", "SaveAs", "Print", "Find",
             "Fullscreen", "Preferences", "Window", "Bookmarks",
             "ReloadStop", "ZoomIn", "TabClose", "NextForward", "Location",
             "ZoomOut", "Separator", "Back", "Forward", "Homepage",
             "Panel", "Trash", "Search", "BookmarkAdd", "Previous", "Next", NULL };
+#else
+    static const gchar* actions[] = {
+            "WindowNew", "TabNew", "Open", "SaveAs", "Print", "Find",
+            "Fullscreen", "Preferences", "Window", "Bookmarks",
+            "ReloadStop", "ZoomIn", "NextForward", "Location",
+            "ZoomOut", "Separator", "Back", "Forward", "Homepage",
+            "Panel", "Search", "BookmarkAdd", "DownloadDialog", "Previous", "Next", NULL };
+#endif
 
     return actions;
 }
@@ -5304,7 +5324,7 @@ midori_browser_notebook_context_menu_cb (MidoriNotebook*      notebook,
     midori_context_action_add_action_group (menu, browser->action_group);
     midori_context_action_add (menu, NULL);
     midori_context_action_add_by_name (menu, "TabNew");
-#if 0 // ZRL 屏蔽撤销关闭书签功能
+#if ENABLE_TRASH // ZRL 屏蔽撤销关闭书签功能
     midori_context_action_add_by_name (menu, "UndoTabClose");
 #endif
 }
@@ -5318,7 +5338,7 @@ midori_browser_notebook_tab_context_menu_cb (MidoriNotebook*      notebook,
     midori_context_action_add_action_group (menu, browser->action_group);
     midori_context_action_add (menu, NULL);
     midori_context_action_add_by_name (menu, "TabNew");
-#if 0 // ZRL 屏蔽撤销关闭书签功能
+#if ENABLE_TRASH // ZRL 屏蔽撤销关闭书签功能
     midori_context_action_add_by_name (menu, "UndoTabClose");
 #endif
     if (MIDORI_IS_VIEW (tab))
@@ -5375,11 +5395,11 @@ static const GtkActionEntry entries[] =
     { "SaveAs", GTK_STOCK_SAVE_AS,
         N_("_Save Page As…"), "<Ctrl>s",
         N_("Save to a file"), G_CALLBACK (_action_save_as_activate) },
-        #if 0 //zgh
+#if ENABLE_ADDSPEEDDIAL
     { "AddSpeedDial", NULL,
         N_("Add to Speed _dial"), "<Ctrl>h",
         NULL, G_CALLBACK (_action_add_speed_dial_activate) },
-        #endif
+#endif
     { "AddNewsFeed", NULL,
         N_("Subscribe to News _feed"), NULL,
         NULL, G_CALLBACK (_action_add_news_feed_activate) },
@@ -5397,11 +5417,9 @@ static const GtkActionEntry entries[] =
     { "Print", GTK_STOCK_PRINT,
         NULL, "<Ctrl>p",
         N_("Print the current page"), G_CALLBACK (_action_print_activate) },
-#if 0 /* ZRL disable it.*/
     { "MailTo", NULL,
         N_("Send Page Link Via Email"), "<Ctrl>m",
         NULL, G_CALLBACK (_action_mail_to_activate) },
-#endif
     { "Quit", GTK_STOCK_QUIT,
         N_("Close a_ll Windows"), "<Ctrl><Shift>q",
         NULL, G_CALLBACK (_action_quit_activate) },
@@ -5519,10 +5537,11 @@ static const GtkActionEntry entries[] =
     { "TrashEmpty", GTK_STOCK_CLEAR,
         N_("Empty Trash"), "",
         NULL, G_CALLBACK (_action_trash_empty_activate) },
+#if ENABLE_TRASH // ZRL 屏蔽撤销关闭标签功能
     { "UndoTabClose", GTK_STOCK_UNDELETE,
         N_("Undo _Close Tab"), "<Ctrl><Shift>t",
         NULL, G_CALLBACK (_action_undo_tab_close_activate) },
-
+#endif
     { "BookmarkAdd", STOCK_BOOKMARK_ADD,
         NULL, "<Ctrl>d",
         N_("Add a new bookmark"), G_CALLBACK (_action_bookmark_add_activate) },
@@ -5811,7 +5830,9 @@ static const gchar* ui_markup =
                 "<separator/>"
 #if 0 //zgh
                 "<menuitem action='SaveAs'/>"
+#if ENABLE_ADDSPEEDDIAL
                 "<menuitem action='AddSpeedDial'/>"
+#endif
                 "<separator/>"
                 "<menuitem action='TabClose'/>"
                 "<menuitem action='WindowClose'/>"
@@ -5930,7 +5951,9 @@ static const gchar* ui_markup =
             "<menuitem action='TabDuplicate'/>"
             "<menuitem action='TabCloseOther'/>"
             "<menuitem action='LastSession'/>"
+#if ENABLE_TRASH
             "<menuitem action='UndoTabClose'/>"
+#endif
             "<menuitem action='TrashEmpty'/>"
             "<menuitem action='Preferences'/>"
             "<menuitem action='InspectPage'/>"
@@ -6363,7 +6386,9 @@ midori_browser_init (MidoriBrowser* browser)
     _action_set_visible (browser, "BookmarksImport", browser->bookmarks != NULL);
     _action_set_visible (browser, "BookmarksExport", browser->bookmarks != NULL);
     _action_set_visible (browser, "Bookmarkbar", browser->bookmarks != NULL);
+#if ENABLE_TRASH
     _action_set_visible (browser, "Trash", browser->trash != NULL);
+#endif
 #if 0 // ZRL 屏蔽撤销关闭标签功能
     _action_set_visible (browser, "UndoTabClose", browser->trash != NULL);
 #endif
@@ -7223,18 +7248,22 @@ midori_browser_set_property (GObject*      object,
         break;
     case PROP_TRASH:
         /* FIXME: Disconnect handlers */
+#if ENABLE_TRASH
         katze_object_assign (browser->trash, g_value_dup_object (value));
         g_object_set (_action_by_name (browser, "Trash"),
                       "array", browser->trash, "reversed", TRUE,
                       NULL);
         _action_set_visible (browser, "Trash", browser->trash != NULL);
+#if 0 // ZRL 屏蔽撤销关闭标签功能
         _action_set_visible (browser, "UndoTabClose", browser->trash != NULL);
+#endif
         if (browser->trash != NULL)
         {
             g_signal_connect_after (browser->trash, "clear",
                 G_CALLBACK (midori_browser_trash_clear_cb), browser);
             midori_browser_trash_clear_cb (browser->trash, browser);
         }
+#endif
         break;
     case PROP_SEARCH_ENGINES:
     {

@@ -72,7 +72,9 @@ midori_web_app_new (const gchar* webapp,
 
     midori_browser_set_action_visible (browser, "Menubar", FALSE);
     midori_browser_set_action_visible (browser, "CompactMenu", FALSE);
+#if ENABLE_ADDSPEEDDIAL
     midori_browser_set_action_visible (browser, "AddSpeedDial", FALSE);
+#endif
     midori_browser_set_action_visible (browser, "Navigationbar", FALSE);
 
     MidoriWebSettings* settings = midori_settings_new_full (NULL);
@@ -217,7 +219,9 @@ midori_private_app_new (const gchar* config,
 
     midori_browser_set_action_visible (browser, "Tools", FALSE);
     midori_browser_set_action_visible (browser, "ClearPrivateData", FALSE);
+#if ENABLE_ADDSPEEDDIAL
     midori_browser_set_action_visible (browser, "AddSpeedDial", FALSE);
+#endif
     #if GTK_CHECK_VERSION (3, 0, 0)
     g_object_set (gtk_widget_get_settings (GTK_WIDGET (browser)),
                   "gtk-application-prefer-dark-theme", TRUE,
