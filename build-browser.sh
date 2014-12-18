@@ -11,7 +11,7 @@ INSTALL_DEP=0
 USE_32BITS=0
 ARCH_64BITS="x86_64"
 ARCH=$(arch)
-if [ ${ARCH} == ${CUR_ARCH} ];then
+if [ ${ARCH} == ${ARCH_64BITS} ];then
 	USE_32BITS=0
 	echo "Using 64 bit Linux"
 else

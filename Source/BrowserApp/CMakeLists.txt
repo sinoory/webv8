@@ -286,8 +286,11 @@ add_custom_target (uninstall
 
 #install(FILES AUTHORS ChangeLog DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
+add_definitions("-DBROWSER_WEB_EXTENSION_PATH=\"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}\"")
+
 add_subdirectory (midori)
 add_subdirectory (extensions)
+add_subdirectory (web-extension)
 add_subdirectory (po)
 add_subdirectory (icons)
 add_subdirectory (data)

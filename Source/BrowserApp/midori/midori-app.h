@@ -34,12 +34,19 @@ G_BEGIN_DECLS
 
 typedef struct _MidoriApp                MidoriApp;
 typedef struct _MidoriAppClass           MidoriAppClass;
+//static guint web_extension_count = 0;
+
+guint*
+midori_app_get_web_extension_count(void);
 
 GType
 midori_app_get_type               (void) G_GNUC_CONST;
 
 MidoriApp*
 midori_app_new                    (const gchar*       name);
+
+MidoriApp*
+midori_app_get_default            (void);
 
 MidoriApp*
 midori_app_new_proxy              (MidoriApp*         app);
@@ -69,6 +76,9 @@ midori_app_instance_send_uris     (MidoriApp*         app,
 gboolean
 midori_app_send_command           (MidoriApp*         app,
                                    gchar**            command);
+void
+midori_app_watch_web_extension    (MidoriApp* app,
+                                   const char *web_extension_id);
 
 void
 midori_app_add_browser            (MidoriApp*         app,

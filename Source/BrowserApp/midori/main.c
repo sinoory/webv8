@@ -1,8 +1,8 @@
 /*
-
 */
 
 #include "midori-frontend.h"
+#include "midori-app.h"
 #include "midori-platform.h"
 #include "midori-privatedata.h"
 #include "midori-searchaction.h"
@@ -45,6 +45,25 @@ snapshot_load_finished_cb (GtkWidget*      web_view,
     gtk_main_quit ();
 }
 #endif
+
+//extern guint web_extension_count;
+
+static void 
+initialize_web_extensions (WebKitWebContext* web_context)
+{
+  GVariant *user_data;
+  gboolean private_profile;
+  char *web_extension_id;
+
+  //webkit_web_context_set_web_extensions_directory (web_context, /*BROWSER_WEB_EXTENSION_PATH*/"/home/wangjiayu/workspace/web-extension/Webkit2Browser/lib/web-extension");
+  webkit_web_context_set_web_extensions_directory (web_context, BROWSER_WEB_EXTENSION_PATH);
+  guint* webExtensionsCount = midori_app_get_web_extension_count();
+  web_extension_id = g_strdup_printf ("%u-%u", getpid (), ++(*webExtensionsCount));
+
+  private_profile = false;
+  user_data = g_variant_new ("(sb)", web_extension_id, private_profile);
+  webkit_web_context_set_web_extensions_initialization_user_data (web_context, user_data);
+}
 
 int
 main (int    argc,
@@ -120,6 +139,9 @@ main (int    argc,
     // ZRL ignore TLS error. Otherwise, mail.cstnet.cn cannot be accessed. 2014.12.02
     WebKitWebContext* context = webkit_web_context_get_default ();
     webkit_web_context_set_tls_errors_policy(context, WEBKIT_TLS_ERRORS_POLICY_IGNORE);
+    g_signal_connect (context, "initialize-web-extensions",
+                    G_CALLBACK (initialize_web_extensions),
+                    NULL);
 
     if (debug)
     {

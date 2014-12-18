@@ -16,6 +16,7 @@
 #include "midori-platform.h"
 #include "cdosbrowser-core.h"
 #include "midori-findbar.h"
+#include "midori-web-extension-proxy.h"
 
 #include "marshal.h"
 
@@ -113,6 +114,7 @@ struct _MidoriView
     gint alerts;
 
     GtkWidget* tab_label;
+    GtkWidget *password_info_bar;//for auth request response
     GtkWidget* menu_item;
     PangoEllipsizeMode ellipsize;
     KatzeItem* item;
@@ -124,6 +126,8 @@ struct _MidoriView
     GtkWidget* overlay_label;
     GtkWidget* overlay_find;
     #endif
+    /* Web Extension */
+    EphyWebExtensionProxy *web_extension;
 
     // ZRL 标记该view是否已是LOAD_COMMITED状态，用它辅助判断是否可以获取证书信息
     gboolean load_commited;
@@ -3188,6 +3192,119 @@ midori_view_notify_vadjustment_cb (MidoriView* view,
 }
 #endif
 
+typedef struct {
+  MidoriView *web_view;
+  guint request_id;
+} FormAuthRequestData;
+
+static GtkWidget *
+midori_web_view_create_form_auth_save_confirmation_info_bar (MidoriView *web_view,
+                                                           const char *hostname,
+                                                           const char *username)
+{
+  GtkWidget *info_bar;
+  GtkWidget *action_area;
+  GtkWidget *content_area;
+  GtkWidget *label;
+  char *message;
+
+  //LOG ("Going to show infobar about %s", webkit_web_view_get_uri (WEBKIT_WEB_VIEW (web_view)));
+
+  info_bar = gtk_info_bar_new_with_buttons (_("Save"), GTK_RESPONSE_YES,
+                                            NULL);
+  gtk_info_bar_set_show_close_button (GTK_INFO_BAR (info_bar), TRUE);
+
+  action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (info_bar));
+  gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area),
+                                  GTK_ORIENTATION_HORIZONTAL);
+
+  label = gtk_label_new (NULL);
+  /* Translators: The %s the hostname where this is happening. 
+   * Example: mail.google.com.
+   */
+  message = g_markup_printf_escaped (_("Do you want to save your password for “%s”?"),
+                                     hostname);
+  gtk_label_set_markup (GTK_LABEL (label), message);
+  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+  g_free (message);
+
+  content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (info_bar));
+  gtk_container_add (GTK_CONTAINER (content_area), label);
+  gtk_widget_show (label);
+
+  /*ephy_embed_add_top_widget (EPHY_GET_EMBED_FROM_EPHY_WEB_VIEW (web_view),
+                             info_bar, FALSE);
+  */
+  gtk_box_pack_end (GTK_BOX (web_view),
+                      GTK_WIDGET (info_bar),
+                      FALSE, FALSE, 0);
+
+  /* We track the info_bar, so we only ever show one */
+  if (web_view->password_info_bar)
+    gtk_widget_destroy (web_view->password_info_bar);
+
+  web_view->password_info_bar = info_bar;
+  g_object_add_weak_pointer (G_OBJECT (info_bar),
+                             (gpointer *)&web_view->password_info_bar);
+
+  return info_bar;
+}
+
+static void
+form_auth_data_save_confirmation_response (GtkInfoBar *info_bar,
+                                           gint response_id,
+                                           FormAuthRequestData *data)
+{
+  gtk_widget_destroy (GTK_WIDGET (info_bar));
+  if (data->web_view->web_extension) {
+    ephy_web_extension_proxy_form_auth_data_save_confirmation_response (data->web_view->web_extension,
+                                                                        data->request_id,
+                                                                        response_id == GTK_RESPONSE_YES);
+  }
+
+  g_slice_free (FormAuthRequestData, data);
+}
+
+form_auth_data_save_requested (EphyWebExtensionProxy *web_extension,
+                               guint request_id,
+                               guint64 page_id,
+                               const char *hostname,
+                               const char *username,
+                               MidoriView *web_view)
+{
+  GtkWidget *info_bar;
+  FormAuthRequestData *data;
+
+  if (webkit_web_view_get_page_id (midori_view_get_web_view(web_view)) != page_id)
+    return;
+
+  info_bar = midori_web_view_create_form_auth_save_confirmation_info_bar (web_view, hostname, username);
+  data = g_slice_new (FormAuthRequestData);
+  data->web_view = web_view;
+  data->request_id = request_id;
+  g_signal_connect (info_bar, "response",
+                    G_CALLBACK (form_auth_data_save_confirmation_response),
+                    data);
+
+  gtk_widget_show (info_bar);
+}
+
+static void
+page_created_cb (MidoriApp* app,
+                 guint64 page_id,
+                 EphyWebExtensionProxy *web_extension,
+                 MidoriView *web_view)
+{
+  if (webkit_web_view_get_page_id (midori_view_get_web_view(web_view)) != page_id)
+    return;
+
+  web_view->web_extension = web_extension;
+  g_object_add_weak_pointer (G_OBJECT (web_view->web_extension), (gpointer *)&web_view->web_extension);
+  g_signal_connect_object (web_view->web_extension, "form-auth-data-save-requested",
+                           G_CALLBACK (form_auth_data_save_requested),
+                           web_view, 0);
+}
+
 static void
 midori_view_init (MidoriView* view)
 {
@@ -3219,6 +3336,11 @@ midori_view_init (MidoriView* view)
 
     g_signal_connect (view->item, "meta-data-changed",
         G_CALLBACK (midori_view_item_meta_data_changed), view);
+
+    MidoriApp *app = midori_app_get_default ();
+    g_signal_connect (app, "page-created",
+                           G_CALLBACK (page_created_cb),
+                           view);
 }
 
 static void

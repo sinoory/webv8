@@ -1,7 +1,3 @@
-/*
-
-*/
-
 #if HAVE_CONFIG_H
     #include <config.h>
 #endif
@@ -9,6 +5,8 @@
 #include "midori-app.h"
 #include "midori-platform.h"
 #include "cdosbrowser-core.h"
+#include "midori-web-extension-proxy.h"
+#include "midori-web-extension-names.h"
 
 #include <string.h>
 #include <gtk/gtk.h>
@@ -30,7 +28,6 @@
 #ifdef HAVE_SIGNAL_H
     #include <signal.h>
 #endif
-
 struct _MidoriApp
 {
     GApplication parent_instance;
@@ -45,6 +42,11 @@ struct _MidoriApp
     KatzeArray* browsers;
 
     MidoriBrowser* browser;
+    guint web_extensions_page_created_signal_id;
+    guint web_extensions_form_auth_save_signal_id;
+    //GList* web_extensions;
+    EphyWebExtensionProxy* web_extensions;
+    GDBusConnection *bus;
 };
 
 static gchar* app_name = NULL;
@@ -86,6 +88,10 @@ enum {
     ADD_BROWSER,
     REMOVE_BROWSER,
     QUIT,
+    PREPARE_CLOSE,
+    RESTORED_WINDOW,
+    WEB_VIEW_CREATED,
+    PAGE_CREATED,
 
     LAST_SIGNAL
 };
@@ -230,6 +236,12 @@ midori_app_signal_handler (int signal_id)
 }
 #endif
 
+MidoriApp*
+midori_app_get_default (void)
+{
+    return app_singleton;
+}
+
 static void
 _midori_app_quit (MidoriApp* app)
 {
@@ -302,6 +314,16 @@ midori_app_class_init (MidoriAppClass* class)
         NULL,
         g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
+
+    signals[PAGE_CREATED] = g_signal_new (
+        "page-created",
+        G_TYPE_FROM_CLASS (class),
+        G_SIGNAL_RUN_FIRST,
+        0, NULL, NULL,
+        g_cclosure_marshal_generic,
+        G_TYPE_NONE, 2,
+        G_TYPE_UINT64,
+        EPHY_TYPE_WEB_EXTENSION_PROXY);
 
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = midori_app_finalize;
@@ -544,15 +566,176 @@ midori_app_open_cb (MidoriApp* app,
     }
 }
 
+static gint
+web_extension_compare (EphyWebExtensionProxy *proxy,
+                       const char *name_owner)
+{
+  return g_strcmp0 (ephy_web_extension_proxy_get_name_owner (proxy), name_owner);
+}
+
 static void
-midori_app_startup_cb (GApplication* app,
+web_extension_destroyed (MidoriApp* app,
+                         GObject *web_extension)
+{
+  //app->web_extensions = g_list_remove (app->web_extensions, web_extension);
+}
+
+void
+midori_app_watch_web_extension (MidoriApp* app,
+                                const char *web_extension_id)
+{
+  EphyWebExtensionProxy *web_extension;
+  char *service_name;
+  if (!app->bus)
+    return;
+
+  service_name = g_strdup_printf ("%s-%s", EPHY_WEB_EXTENSION_SERVICE_NAME, web_extension_id);
+  web_extension = ephy_web_extension_proxy_new (app->bus, service_name);
+  //app->web_extensions = g_list_prepend (app->web_extensions, web_extension);
+  app->web_extensions = web_extension;
+  g_object_weak_ref (G_OBJECT (web_extension), (GWeakNotify)web_extension_destroyed, app);
+  g_free (service_name);
+}
+
+static void
+midori_app_unwatch_web_extension (EphyWebExtensionProxy *web_extension,
+                                  MidoriApp* app)
+{
+  g_object_weak_unref (G_OBJECT (web_extension), (GWeakNotify)web_extension_destroyed, app);
+}
+
+
+static EphyWebExtensionProxy *
+browser_find_web_extension (MidoriApp* app,
+                            const char *name_owner)
+{
+  GList *l;
+
+  l = g_list_find_custom (app->web_extensions, name_owner, (GCompareFunc)web_extension_compare);
+
+  if (!l)
+    g_warning ("Could not find extension with name owner `%s´.", name_owner);
+
+  return l ? EPHY_WEB_EXTENSION_PROXY (l->data) : NULL;
+}
+
+static void
+web_extension_page_created (GDBusConnection *connection,
+                            const char *sender_name,
+                            const char *object_path,
+                            const char *interface_name,
+                            const char *signal_name,
+                            GVariant *parameters,
+                            MidoriApp* app)
+{
+  EphyWebExtensionProxy *web_extension;
+  guint64 page_id;
+
+  g_variant_get (parameters, "(t)", &page_id);
+  //web_extension = browser_find_web_extension (app, sender_name);
+  web_extension = app->web_extensions;
+  if (!web_extension)
+    return;
+  g_signal_emit (app, signals[PAGE_CREATED], 0, page_id, web_extension);
+}
+
+static void
+web_extension_form_auth_save_requested (GDBusConnection *connection,
+                                        const char *sender_name,
+                                        const char *object_path,
+                                        const char *interface_name,
+                                        const char *signal_name,
+                                        GVariant *parameters,
+                                        MidoriApp* app)
+{
+  EphyWebExtensionProxy *web_extension;
+  guint request_id;
+  guint64 page_id;
+  const char *hostname;
+  const char *username;
+
+  g_variant_get (parameters, "(ut&s&s)", &request_id, &page_id, &hostname, &username);
+  //web_extension = browser_find_web_extension (app, sender_name);
+  web_extension = app->web_extensions;
+  if (!web_extension)
+    return;
+  ephy_web_extension_proxy_form_auth_save_requested (web_extension, request_id, page_id, hostname, username);
+}
+
+static void
+browser_setup_web_extensions_connection (MidoriApp* app)
+{
+  GError *error = NULL;
+
+  app->bus = g_application_get_dbus_connection (G_APPLICATION (app));
+  if (!app->bus) {
+    g_warning ("Application not connected to session bus: %s\n", error->message);
+    g_error_free (error);
+    return;
+  }
+
+  app->web_extensions_page_created_signal_id =
+    g_dbus_connection_signal_subscribe (app->bus,
+                                        NULL,
+                                        EPHY_WEB_EXTENSION_INTERFACE,
+                                        "PageCreated",
+                                        EPHY_WEB_EXTENSION_OBJECT_PATH,
+                                        NULL,
+                                        G_DBUS_SIGNAL_FLAGS_NONE,
+                                        (GDBusSignalCallback)web_extension_page_created,
+                                        app,
+                                        NULL);
+  app->web_extensions_form_auth_save_signal_id =
+    g_dbus_connection_signal_subscribe (app->bus,
+                                        NULL,
+                                        EPHY_WEB_EXTENSION_INTERFACE,
+                                        "FormAuthDataSaveConfirmationRequired",
+                                        EPHY_WEB_EXTENSION_OBJECT_PATH,
+                                        NULL,
+                                        G_DBUS_SIGNAL_FLAGS_NONE,
+                                        (GDBusSignalCallback)web_extension_form_auth_save_requested,
+                                        app,
+                                        NULL);
+}
+
+static guint web_extension_count = 0;
+
+guint* 
+midori_app_get_web_extension_count()
+{
+    return &web_extension_count;
+}
+static void
+midori_app_startup_cb (MidoriApp* app,
                        gpointer      user_data)
 {
     g_signal_connect (app, "activate",
                       G_CALLBACK (midori_app_activate_cb), NULL);
     g_signal_connect (app, "open",
                       G_CALLBACK (midori_app_open_cb), NULL);
+    browser_setup_web_extensions_connection(app);
+    char* web_extension_id = g_strdup_printf ("%u-%u", getpid (), web_extension_count);
+    midori_app_watch_web_extension (app, web_extension_id);
 }
+
+static void 
+midori_app_shutdown_cb (MidoriApp* app,
+                       gpointer    user_data)
+{
+  if (app->web_extensions_page_created_signal_id > 0) {
+    g_dbus_connection_signal_unsubscribe (app->bus, app->web_extensions_page_created_signal_id);
+    app->web_extensions_page_created_signal_id = 0;
+  }
+
+  if (app->web_extensions_form_auth_save_signal_id > 0) {
+    g_dbus_connection_signal_unsubscribe (app->bus, app->web_extensions_form_auth_save_signal_id);
+    app->web_extensions_form_auth_save_signal_id = 0;
+  }
+
+  //g_list_foreach (app->web_extensions, (GFunc)midori_app_unwatch_web_extension, app);
+  midori_app_unwatch_web_extension(app->web_extensions, app);
+}
+
 
 static void
 midori_app_network_changed (GNetworkMonitor* monitor,
@@ -606,6 +789,8 @@ midori_app_create_instance (MidoriApp* app)
                   "flags", G_APPLICATION_HANDLES_OPEN,
                   NULL);
     g_signal_connect (app, "startup", G_CALLBACK (midori_app_startup_cb), NULL);
+    g_signal_connect (app, "shutdown", G_CALLBACK (midori_app_shutdown_cb), NULL);
+    
 
     g_signal_connect (g_network_monitor_get_default (), "network-changed",
                        G_CALLBACK (midori_app_network_changed), app);
