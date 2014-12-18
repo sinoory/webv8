@@ -844,6 +844,38 @@ midori_view_notify_statusbar_text_cb (GtkWidget*     view,
     }
 }
 
+//add by zgh 20141216
+static KatzeArray*
+midori_history_read_from_db (MidoriBrowser* browser)
+{
+
+    sqlite3* db;
+    sqlite3_stmt* statement;
+    gint result = -1;
+    const gchar* sqlcmd;
+    
+    if (browser->history_database == NULL)
+        return katze_array_new (KATZE_TYPE_ITEM);
+
+    //db = midori_database_get_db (MIDORI_DATABASE (browser->history_database));
+    db = g_object_get_data (G_OBJECT (browser->history), "db");
+
+    if (!db)
+        return katze_array_new (KATZE_TYPE_ITEM);
+
+    sqlcmd = "SELECT uri, title, date "
+             "FROM history "
+             "ORDER BY date DESC LIMIT 0,15";
+    result = sqlite3_prepare_v2 (db, sqlcmd, -1, &statement, NULL);
+//    sqlite3_bind_int64 (statement, 1, req_day);
+
+    if (result != SQLITE_OK)
+        return katze_array_new (KATZE_TYPE_ITEM);
+
+    return katze_array_from_statement (statement);
+
+}
+
 static gboolean
 midori_bookmark_folder_button_reach_parent (GtkTreeModel* model, GtkTreeIter *iter, gint64 parentid)
 {
@@ -3137,14 +3169,14 @@ midori_browser_get_toolbar_actions (MidoriBrowser* browser)
             "Fullscreen", "Preferences", "Window", "Bookmarks",
             "ReloadStop", "ZoomIn", "TabClose", "NextForward", "Location",
             "ZoomOut", "Separator", "Back", "Forward", "Homepage",
-            "Panel", "Trash", "Search", "BookmarkAdd", "Previous", "Next", NULL };
+            "Panel", "Trash", "Search", "ManageHistorys", "BookmarkAdd", "Previous", "Next", NULL };
 #else
     static const gchar* actions[] = {
             "WindowNew", "TabNew", "Open", "SaveAs", "Print", "Find",
             "Fullscreen", "Preferences", "Window", "Bookmarks",
             "ReloadStop", "ZoomIn", "NextForward", "Location",
             "ZoomOut", "Separator", "Back", "Forward", "Homepage",
-            "Panel", "Search", "BookmarkAdd", "DownloadDialog", "Previous", "Next", NULL };
+            "Panel", "Search", "ManageHistorys",  "BookmarkAdd", "DownloadDialog", "Previous", "Next", NULL };
 #endif
 
     return actions;
@@ -3185,6 +3217,41 @@ midori_browser_toolbar_popup_context_menu_cb (GtkWidget*     widget,
     g_signal_emit (browser, signals[POPULATE_TOOLBAR_MENU], 0, context_menu);
     katze_widget_popup (widget, GTK_MENU (context_menu), NULL,
         button == -1 ? KATZE_MENU_POSITION_LEFT : KATZE_MENU_POSITION_CURSOR);
+    return TRUE;
+}
+
+//add by zgh 20141217
+static gboolean
+midori_history_activate_item (GtkAction* action,
+                                  KatzeItem* item,
+                                  MidoriBrowser* browser)
+{
+    return midori_browser_open_bookmark (browser, item);;
+}
+//add by zgh 20141217
+static gboolean
+midori_history_activate_item_alt (GtkAction*      action,
+                                      KatzeItem*      item,
+                                      GtkWidget*      proxy,
+                                      GdkEventButton* event,
+                                      MidoriBrowser*  browser)
+{
+    g_assert (event);
+#if 0   //zgh
+    if (MIDORI_EVENT_NEW_TAB (event))
+    {
+        GtkWidget* view = midori_browser_add_item (browser, item);
+        midori_browser_set_current_tab_smartly (browser, view);
+    }
+    else if (MIDORI_EVENT_CONTEXT_MENU (event))
+    {
+        midori_browser_bookmark_popup (proxy, NULL, item, browser);
+    }
+    else if (event->button == 1)
+    {
+        midori_bookmarkbar_activate_item (action, item, browser);
+    }
+#endif
     return TRUE;
 }
 
@@ -3332,6 +3399,48 @@ _action_tools_populate_popup (GtkAction*     action,
     midori_context_action_create_menu (menu, default_menu, TRUE);
 }
 
+//add by zgh 20141210
+static gboolean
+_action_historys_populate_folder (GtkAction*     action,
+                                   GtkMenuShell*  menu,
+                                   KatzeArray*    folder,   //zgh
+                                   MidoriBrowser* browser)
+{
+g_print("ZGH %s\n\n", __FUNCTION__);
+    KatzeArray* array;
+    if (browser->history_database == NULL)
+        return FALSE;
+    
+//    midori_bookmarks_db_populate_folder (browser->bookmarks, folder);
+    array = midori_history_read_from_db(browser);
+
+    /* Clear items from dummy array here */
+    gtk_container_foreach (GTK_CONTAINER (menu),
+        (GtkCallback)(gtk_widget_destroy), NULL);
+
+    /* "ManageHistorys" at the top */
+//    if (folder == KATZE_ARRAY (browser->history_database))
+    {
+    GtkWidget* widget = midori_panel_get_nth_page (MIDORI_PANEL (browser->panel), 1);
+    GtkWidget* menuitem;
+    menuitem = gtk_action_create_menu_item (g_object_get_data (G_OBJECT (widget), "midori-panel-action"));
+    gtk_menu_item_set_label(GTK_MENU_ITEM(menuitem), N_("管理历史记录"));
+    gtk_menu_shell_append (menu, menuitem);
+    gtk_widget_show (menuitem);
+    }
+    GtkWidget* menuitem = gtk_separator_menu_item_new ();
+    gtk_menu_shell_append (menu, menuitem);
+    gtk_widget_show (menuitem);
+
+    if (!katze_array_is_empty (array))  //zgh
+    {
+        katze_array_action_generate_menu (KATZE_ARRAY_ACTION (action), array,
+                                      menu, GTK_WIDGET (browser));
+    }
+
+    return TRUE;
+}
+
 static gboolean
 _action_bookmarks_populate_folder (GtkAction*     action,
                                    GtkMenuShell*  menu,
@@ -3451,7 +3560,7 @@ _action_compact_menu_populate_popup (GtkAction*     action,
 //    midori_context_action_add_by_name (menu, "HelpFAQ"); // ZRL disable.
     midori_context_action_add_by_name (menu, "HelpBugs");
     #endif
-    midori_context_action_add_by_name (menu, "Preferences");
+//    midori_context_action_add_by_name (menu, "Preferences");  //zgh   20141210
     midori_context_action_add_by_name (menu, "About");
     midori_context_action_create_menu (menu, default_menu, FALSE);
 }
@@ -3572,7 +3681,7 @@ _action_menubar_activate (GtkToggleAction* menubar_action,
     g_free (items);
 
     sokoke_widget_set_visible (browser->menubar, active);
-    _action_set_visible(browser, "Preferences", active);    //zgh
+//    _action_set_visible(browser, "Preferences", active);    //zgh 20141210
     g_object_set_data (G_OBJECT (browser), "midori-toolbars-visible",
         gtk_widget_get_visible (browser->menubar)
         || gtk_widget_get_visible (browser->navigationbar)
@@ -5211,6 +5320,17 @@ _action_help_link_activate (GtkAction*     action,
     }
 }
 
+//add by zgh 20141211
+static void
+_action_managehistorys_activate (GtkAction* action,
+                                MidoriBrowser* browser)
+{
+//    g_object_set (browser->settings, "show-panel", TRUE, NULL);
+    midori_panel_set_current_page (MIDORI_PANEL (browser->panel), 1);
+    g_object_set_data (G_OBJECT (browser), "last-page", 1);
+    sokoke_widget_set_visible (browser->panel, TRUE);
+}
+
 static void
 _action_panel_activate (GtkToggleAction* action,
                         MidoriBrowser*   browser)
@@ -5644,6 +5764,13 @@ static const GtkActionEntry entries[] =
         "Download", "<Ctrl>l",
         N_("Download Dialog"), G_CALLBACK (_action_download_activate) },
     //by sunh end
+	
+//add by zgh    20141210
+//    { "Historys",NULL, N_("_History") },
+    { "ManageHistorys", STOCK_HISTORY,
+        N_("ManageHistorys"), "<Alt><Shift>h",
+        N_("ManageHistorys"), G_CALLBACK (_action_managehistorys_activate) },
+		
     { "BookmarkAdd", STOCK_BOOKMARK_ADD,
         NULL, "<Ctrl>d",
         N_("Add a new bookmark"), G_CALLBACK (_action_bookmark_add_activate) },
@@ -5968,7 +6095,7 @@ static const gchar* ui_markup =
             "<menu action='View'>"
                 "<menu action='Toolbars'>"
                     "<menuitem action='Menubar'/>"
-                    "<menuitem action='Navigationbar'/>"
+//                    "<menuitem action='Navigationbar'/>"
                     "<menuitem action='Bookmarkbar'/>"
                     "<menuitem action='Statusbar'/>"
                 "</menu>"
@@ -6011,7 +6138,12 @@ static const gchar* ui_markup =
                 "<menuitem action='Trash'/>"
             "</menu>"
 #endif
-            //todo add 历史菜单
+#if 1
+            //add history by zgh
+            "<menu action='Historys'>"
+                "<menuitem action='ManageHistorys'/>"
+            "</menu>"
+#endif
             "<menu action='Bookmarks'>"
                 "<menuitem action='BookmarksAdd'/>"
                 "<menuitem action='BookmarksImport'/>"
@@ -6361,6 +6493,28 @@ midori_browser_init (MidoriBrowser* browser)
                       NULL);
     gtk_action_group_add_action_with_accel (browser->action_group, action, "");
     g_object_unref (action);
+#endif
+#if 1
+//add by zghhistory 20141211
+    dummy_array = katze_array_new (KATZE_TYPE_ARRAY);
+    katze_array_update (dummy_array);
+    action = g_object_new (KATZE_TYPE_ARRAY_ACTION,
+        "name", "Historys",
+        "label", _("_History"),
+        "stock-id", STOCK_HISTORY,
+        "array", dummy_array /* updated, unique */,
+        NULL);
+    g_object_connect (action,
+                      "signal::populate-folder",
+                      _action_historys_populate_folder, browser,
+                      "signal::activate-item-alt",
+                      midori_history_activate_item_alt, browser,
+                      "signal::activate-item",
+                      midori_history_activate_item, browser,
+                      NULL);
+    gtk_action_group_add_action_with_accel (browser->action_group, action, "");
+    g_object_unref (action);
+    g_object_unref (dummy_array);
 #endif
     dummy_array = katze_array_new (KATZE_TYPE_ARRAY);
     katze_array_update (dummy_array);

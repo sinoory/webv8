@@ -487,6 +487,8 @@ katze_array_action_menu_item_need_update (KatzeArrayAction* array_action,
     KatzeArray* array;
     gint last_array_update, last_proxy_update;
     gboolean handled;
+    
+    //add by zgh 20141218 todo 判断如果action属于历史的，就返回true
 
     array = g_object_get_data (G_OBJECT (proxy), "KatzeItem");
     /* last-update is set on all arrays; consider public API */
@@ -552,11 +554,9 @@ katze_array_action_proxy_clicked_cb (GtkWidget*        proxy,
 
     if (KATZE_IS_ITEM (array) && katze_item_get_uri ((KatzeItem*)array))
     {
-        g_print("Go! I belive I can fly!\n");
         katze_array_action_activate_item (array_action, KATZE_ITEM (array));
         return;
     }
-    g_print("No! sb eat your brain!\n");
 
     menu = gtk_menu_new ();
     gtk_menu_attach_to_widget (GTK_MENU (menu), proxy, NULL);

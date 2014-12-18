@@ -653,6 +653,14 @@ msgstr "返回上一页面"
 msgid "Go to the previous sub-page"
 msgstr "转到上一子页面"
 
+#. add by zgh history
+msgid "ManageHistorys"
+msgstr "管理所有历史记录"
+
+# add by zgh 
+msgid "ClearHistorys"
+msgstr "清除所有历史记录"
+
 #: ../midori/midori-browser.c:5208
 msgid "Next or Forward"
 msgstr "后退或前进"
