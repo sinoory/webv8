@@ -385,6 +385,10 @@ msgstr "将此页加入书签"
 msgid "Empty"
 msgstr "清空"
 
+# 历史记录为空
+msgid "History_Empty"
+msgstr "无历史记录"
+
 #: ../midori/midori-browser.c:3546 ../midori/midori-browser.c:3547
 msgid "Toggle text cursor navigation"
 msgstr "切换文字光标导航"

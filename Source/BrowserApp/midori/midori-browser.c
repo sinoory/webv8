@@ -3403,11 +3403,11 @@ _action_tools_populate_popup (GtkAction*     action,
 static gboolean
 _action_historys_populate_folder (GtkAction*     action,
                                    GtkMenuShell*  menu,
-                                   KatzeArray*    folder,   //zgh
+//                                   KatzeArray*    folder,   //zgh
                                    MidoriBrowser* browser)
 {
-g_print("ZGH %s\n\n", __FUNCTION__);
     KatzeArray* array;
+    GtkWidget* menuitem;
     if (browser->history_database == NULL)
         return FALSE;
     
@@ -3421,14 +3421,18 @@ g_print("ZGH %s\n\n", __FUNCTION__);
     /* "ManageHistorys" at the top */
 //    if (folder == KATZE_ARRAY (browser->history_database))
     {
+    #if 0
     GtkWidget* widget = midori_panel_get_nth_page (MIDORI_PANEL (browser->panel), 1);
     GtkWidget* menuitem;
     menuitem = gtk_action_create_menu_item (g_object_get_data (G_OBJECT (widget), "midori-panel-action"));
+    #endif
+    
+    menuitem = gtk_action_create_menu_item (_action_by_name (browser, "ManageHistorys"));
     gtk_menu_item_set_label(GTK_MENU_ITEM(menuitem), N_("管理历史记录"));
     gtk_menu_shell_append (menu, menuitem);
     gtk_widget_show (menuitem);
     }
-    GtkWidget* menuitem = gtk_separator_menu_item_new ();
+    menuitem = gtk_separator_menu_item_new ();
     gtk_menu_shell_append (menu, menuitem);
     gtk_widget_show (menuitem);
 
@@ -3436,6 +3440,13 @@ g_print("ZGH %s\n\n", __FUNCTION__);
     {
         katze_array_action_generate_menu (KATZE_ARRAY_ACTION (action), array,
                                       menu, GTK_WIDGET (browser));
+    }
+    else
+    {
+        menuitem = gtk_image_menu_item_new_with_label (_("History_Empty"));
+        gtk_widget_set_sensitive (menuitem, FALSE);
+        gtk_menu_shell_append (menu, menuitem);
+        gtk_widget_show (menuitem);
     }
 
     return TRUE;
@@ -5810,7 +5821,7 @@ static const GtkActionEntry entries[] =
 //    { "Historys",NULL, N_("_History") },
     { "ManageHistorys", STOCK_HISTORY,
         N_("ManageHistorys"), "<Alt><Shift>h",
-        N_("ManageHistorys"), G_CALLBACK (_action_managehistorys_activate) },
+        N_("ManageHistorys"), G_CALLBACK (midori_browser_HS_actiave/*_action_managehistorys_activate*/) },
 		
     { "BookmarkAdd", STOCK_BOOKMARK_ADD,
         NULL, "<Ctrl>d",
@@ -6546,7 +6557,7 @@ midori_browser_init (MidoriBrowser* browser)
         "array", dummy_array /* updated, unique */,
         NULL);
     g_object_connect (action,
-                      "signal::populate-folder",
+                      "signal::populate-popup",
                       _action_historys_populate_folder, browser,
                       "signal::activate-item-alt",
                       midori_history_activate_item_alt, browser,

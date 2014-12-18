@@ -487,8 +487,12 @@ katze_array_action_menu_item_need_update (KatzeArrayAction* array_action,
     KatzeArray* array;
     gint last_array_update, last_proxy_update;
     gboolean handled;
+    const gchar* action_name;
     
     //add by zgh 20141218 todo 判断如果action属于历史的，就返回true
+    action_name = gtk_action_get_name(array_action);
+    if (!strcmp(action_name, "Historys"))
+        return TRUE;
 
     array = g_object_get_data (G_OBJECT (proxy), "KatzeItem");
     /* last-update is set on all arrays; consider public API */
