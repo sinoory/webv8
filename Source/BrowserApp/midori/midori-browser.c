@@ -5428,6 +5428,7 @@ midori_panel_close_cb (MidoriPanel*   panel,
                        MidoriBrowser* browser)
 {
     _action_set_active (browser, "Panel", FALSE);
+    browser->sari_panel_windows = NULL;//zlf add
     return FALSE;
 }
 
@@ -8170,8 +8171,9 @@ midori_browser_get_for_widget (GtkWidget* widget)
             for (iter = top_levels; iter; iter = g_list_next (iter))
             {
                 browser = iter->data;
-
-                if (MIDORI_IS_BROWSER (browser) && gtk_widget_is_ancestor( GTK_WIDGET (browser), widget))
+//modify by zlf  correct the crash while click add a bookmark button on panel
+//            if (MIDORI_IS_BROWSER (browser) && gtk_widget_is_ancestor( GTK_WIDGET (browser), widget))
+                if (MIDORI_IS_BROWSER (browser) )
                 {
                     g_list_free (top_levels);
                     return MIDORI_BROWSER (browser);
