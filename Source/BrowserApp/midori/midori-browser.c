@@ -143,16 +143,22 @@ enum
     LAST_SIGNAL
 };
 
+enum
+{
+    PANEL_BOOKMARK,
+    PANEL_HISTORY,
+    PANEL_TRANSFER,
+};
 static guint signals[LAST_SIGNAL];
 //20141217 zlf
-static gboolean
-midori_panel_close_cb (MidoriPanel*   panel,
-                       MidoriBrowser* browser);
-static void midori_browser_HS_actiave(GtkAction*     action,
+static void midori_browser_actiave_bookmark_in_window(GtkAction*     action,
                               MidoriBrowser* browser);
-
-static gboolean
-test_fun (GtkWidget* window, MidoriBrowser*  browser);
+static void midori_browser_actiave_history_in_window(GtkAction*     action,
+                              MidoriBrowser* browser);
+static void midori_browser_actiave_transfer_in_window(GtkAction*     action,
+                              MidoriBrowser* browser);
+static void
+midori_panel_window_hide (GtkWidget* window, MidoriBrowser*  browser);
 
 static void
 midori_browser_dispose (GObject* object);
@@ -4720,10 +4726,10 @@ _action_download_activate (GtkAction*     action,
                                MidoriBrowser* browser)
 {
     g_print("_action_download_activate\n");
-    midori_panel_set_current_page (MIDORI_PANEL(browser->panel), 2);
-    g_signal_emit (MIDORI_PANEL(browser->panel), signals[SWITCH_DOWNLOAD], 0, 2);
+//    midori_panel_set_current_page (MIDORI_PANEL(browser->panel), 2);
+//    g_signal_emit (MIDORI_PANEL(browser->panel), signals[SWITCH_DOWNLOAD], 0, 2);
     // gtk_widget_show (GTK_WIDGET (browser->panel));//delete by zlf
-    midori_browser_HS_actiave(NULL,browser);//20141217 add zlf
+//    midori_browser_actiave_transfer_in_window(NULL,browser);//20141217 add zlf
     
 }
 
@@ -5364,7 +5370,7 @@ midori_panel_notify_open_in_window_cb(MidoriPanel*   panel,
     {
         if(!browser->sari_panel_windows){
             browser->sari_panel_windows = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-            g_signal_connect(G_OBJECT(browser->sari_panel_windows), "delete-event", test_fun, browser);
+            g_signal_connect(G_OBJECT(browser->sari_panel_windows), "delete-event", midori_panel_window_hide , browser);
             gtk_window_set_title(GTK_WINDOW(browser->sari_panel_windows), "管理器");
             gtk_window_set_default_size(GTK_WINDOW(browser->sari_panel_windows), 460, 360);
         }else{
@@ -5748,18 +5754,18 @@ static const GtkActionEntry entries[] =
     //by sunh     
     { "DownloadDialog", STOCK_DOWNLOAD,
         "Download", "<Ctrl>l",
-        N_("Transfers"), G_CALLBACK (_action_download_activate) },
+        N_("Transfers"), G_CALLBACK (midori_browser_actiave_transfer_in_window) },
     //by sunh end
 	
 //add by zgh    20141210
 //    { "Historys",NULL, N_("_History") },
     { "ManageHistorys", STOCK_HISTORY,
         N_("ManageHistorys"), "<Alt><Shift>h",
-        N_("ManageHistorys"), G_CALLBACK (midori_browser_HS_actiave/*_action_managehistorys_activate*/) },
+        N_("ManageHistorys"), G_CALLBACK (midori_browser_actiave_history_in_window/*_action_managehistorys_activate*/) },
 		//add by zgh 20141218
 		 { "ManageBookmarks", STOCK_BOOKMARKS,
 		  N_("ManageBookmarks"), "<Alt><Shift>b",
-		  N_("ManageBookmarks"), G_CALLBACK (midori_browser_HS_actiave) },
+		  N_("ManageBookmarks"), G_CALLBACK (midori_browser_actiave_bookmark_in_window) },
     { "BookmarkAdd", STOCK_BOOKMARK_ADD,
         NULL, "<Ctrl>d",
         N_("Add a new bookmark"), G_CALLBACK (_action_bookmark_add_activate) },
@@ -8208,8 +8214,8 @@ midori_browser_quit (MidoriBrowser* browser)
     g_signal_emit (browser, signals[QUIT], 0);
 }
 //20141217 zlf
-static gboolean
-test_fun (GtkWidget* window, MidoriBrowser*  browser)
+static void
+midori_panel_window_hide (GtkWidget* window, MidoriBrowser*  browser)
 {
 
 
@@ -8220,49 +8226,35 @@ test_fun (GtkWidget* window, MidoriBrowser*  browser)
     
     return TRUE;
 }
-
-
-
-#include "midori-history.h"
-#include "panels/midori-history.h"
-
-static void midori_browser_HS_actiave(GtkAction*     action,
+static void midori_browser_actiave_bookmark_in_window(GtkAction*     action,
                               MidoriBrowser* browser)
 {
-    static MidoriPanel *hs_panel = NULL;
-    GtkWidget*  addon = NULL ;
+#ifdef NEVER
+    midori_panel_set_current_page (MIDORI_PANEL(browser->panel), PANEL_BOOKMARK);
+    g_signal_emit (MIDORI_PANEL(browser->panel), signals[SWITCH_DOWNLOAD], 0, PANEL_BOOKMARK);
+#endif /* NEVER */
 
-    GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
-    GtkWidget* hpaned = gtk_widget_get_parent (vpaned); //vbox
+    midori_panel_open_in_window(browser->panel, TRUE, PANEL_BOOKMARK);
+}
 
-    if (!browser->sari_panel_windows)
-    {
-        //create the panel windows zlf
-        browser->sari_panel_windows= gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        
-        g_signal_connect(G_OBJECT(browser->sari_panel_windows), "delete-event", test_fun, NULL);
+static void midori_browser_actiave_history_in_window(GtkAction*     action,
+                              MidoriBrowser* browser)
+{
+#ifdef NEVER
+    midori_panel_set_current_page (MIDORI_PANEL(browser->panel), PANEL_HISTORY);
+    g_signal_emit (MIDORI_PANEL(browser->panel), signals[SWITCH_DOWNLOAD], 0, PANEL_HISTORY);
+#endif /* NEVER */
 
-        gtk_window_set_title(GTK_WINDOW(browser->sari_panel_windows), "管理器");
-        gtk_window_set_default_size(GTK_WINDOW(browser->sari_panel_windows), 460, 360);
-        hs_panel = browser->panel;
-        gtk_widget_show (GTK_WIDGET (hs_panel));
-        g_object_ref (browser->panel);
+    midori_panel_open_in_window(browser->panel, TRUE, PANEL_HISTORY);
+}
+static void midori_browser_actiave_transfer_in_window(GtkAction*     action,
+                              MidoriBrowser* browser)
+{
+#ifdef NEVER
+    midori_panel_set_current_page (MIDORI_PANEL(browser->panel), PANEL_TRANSFER);
+    g_signal_emit (MIDORI_PANEL(browser->panel), signals[SWITCH_DOWNLOAD], 0, PANEL_TRANSFER);
+#endif /* NEVER */
 
-
-
-        gtk_container_remove (GTK_CONTAINER (hpaned), hs_panel);
-        gtk_container_add(GTK_CONTAINER(browser->sari_panel_windows), hs_panel);
-     
-//        g_signal_connect (hs_panel, "destroy",
-//           NULL, &hs_panel);
-  
-        gtk_widget_show_all (browser->sari_panel_windows);
-        g_object_unref (browser->panel);
-
-    }
-    else{
-        gtk_window_present (GTK_WINDOW (browser->sari_panel_windows));
-    }
-
+    midori_panel_open_in_window(browser->panel, TRUE, PANEL_TRANSFER);
 }
 

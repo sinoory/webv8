@@ -72,6 +72,13 @@ enum {
 
     LAST_SIGNAL
 };
+//zlf
+enum
+{
+    PANEL_BOOKMARK,
+    PANEL_HISTORY,
+    PANEL_TRANSFER,
+};
 
 static guint signals[LAST_SIGNAL];
 
@@ -102,6 +109,9 @@ midori_panel_button_open_in_window_cb(GtkWidget*   toolitem,
                                       MidoriPanel* panel);
 
 void midori_panel_open_in_window(MidoriPanel* panel,
+                                gboolean     open_in_window,
+                                gint page_n);
+void _midori_panel_open_in_window(MidoriPanel* panel,
                                 gboolean     open_in_window);
 
 static void
@@ -326,7 +336,7 @@ midori_panel_init (MidoriPanel* panel)
     gtk_box_pack_end (GTK_BOX (hbox), labelbar, FALSE, FALSE, 0);
     gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-    gtk_box_pack_start (GTK_BOX (hbox), panel->toolbar, FALSE, FALSE, 0);
+//    gtk_box_pack_start (GTK_BOX (hbox), panel->toolbar, FALSE, FALSE, 0);
 
     toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_LEAVE_FULLSCREEN);
     g_signal_connect (toolitem, "clicked",
@@ -372,13 +382,13 @@ midori_panel_init (MidoriPanel* panel)
     panel->toolbook = gtk_notebook_new ();
     gtk_notebook_set_show_border (GTK_NOTEBOOK (panel->toolbook), FALSE);
     gtk_notebook_set_show_tabs (GTK_NOTEBOOK (panel->toolbook), FALSE);
-    gtk_box_pack_start (GTK_BOX (vbox), panel->toolbook, FALSE, FALSE, 0);
+//    gtk_box_pack_start (GTK_BOX (vbox), panel->toolbook, FALSE, FALSE, 0);
 
     /* Create the notebook */
     panel->notebook = gtk_notebook_new ();
     katze_widget_add_class (panel->notebook, "content-view");
-    gtk_notebook_set_show_border (GTK_NOTEBOOK (panel->notebook), FALSE);
-    gtk_notebook_set_show_tabs (GTK_NOTEBOOK (panel->notebook), FALSE);
+    gtk_notebook_set_show_border (GTK_NOTEBOOK (panel->notebook), TRUE);
+    gtk_notebook_set_show_tabs (GTK_NOTEBOOK (panel->notebook), TRUE);
     panel->frame = gtk_frame_new (NULL);
     gtk_container_add (GTK_CONTAINER (panel->frame), panel->notebook);
     gtk_box_pack_start (GTK_BOX (vbox), panel->frame, TRUE, TRUE, 0);
@@ -657,14 +667,21 @@ midori_panel_append_page (MidoriPanel*    panel,
         }
         gtk_container_add (GTK_CONTAINER (scrolled), widget);
     }
-    gtk_container_add (GTK_CONTAINER (panel->notebook), scrolled);
+//    gtk_container_add (GTK_CONTAINER (panel->notebook), scrolled);
 
     toolbar = midori_viewable_get_toolbar (viewable);
     gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_BOTH_HORIZ);
     gtk_toolbar_set_icon_size (GTK_TOOLBAR (toolbar), GTK_ICON_SIZE_BUTTON);
     gtk_toolbar_set_show_arrow (GTK_TOOLBAR (toolbar), FALSE);
     gtk_widget_show (toolbar);
-    gtk_container_add (GTK_CONTAINER (panel->toolbook), toolbar);
+//    gtk_container_add (GTK_CONTAINER (panel->toolbook), toolbar);
+    GtkWidget *vbox = gtk_vbox_new (FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (vbox), toolbar, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (vbox), scrolled, TRUE, TRUE, 0);
+    gtk_container_add (GTK_CONTAINER (panel->notebook), vbox);
+
+gtk_notebook_set_tab_label_text(GTK_CONTAINER (panel->notebook), vbox,
+                                                         midori_viewable_get_label (viewable));
     g_signal_connect (viewable, "destroy",
                       G_CALLBACK (midori_panel_widget_destroy_cb), toolbar);
 
@@ -1024,25 +1041,30 @@ static void
 midori_panel_button_open_in_window_cb(GtkWidget*   toolitem,
                                       MidoriPanel* panel)
 {
-        midori_panel_open_in_window(panel, panel->open_panels_in_windows) ;//zlf
+    gchar *openinwindow_stock_id = gtk_tool_button_get_stock_id(panel->button_openinwindow);
+
+    if(strcmp(openinwindow_stock_id,"gtk-fullscreen") ){
+        _midori_panel_open_in_window(panel, FALSE) ;//zlf
+    }else{
+        _midori_panel_open_in_window(panel, TRUE) ;//zlf
+    }
+
+
 }
-void midori_panel_open_in_window(MidoriPanel* panel,
+
+void _midori_panel_open_in_window(MidoriPanel* panel,
                                 gboolean     open_in_window)
 {
-    GtkWidget* box;
-
-    g_return_if_fail (MIDORI_IS_PANEL (panel));
-
-    box = gtk_widget_get_parent (panel->toolbar);
-    gtk_box_reorder_child (GTK_BOX (box), panel->toolbar,
-        open_in_window ? -1 : 0);
-    gtk_tool_button_set_stock_id (GTK_TOOL_BUTTON (panel->button_openinwindow),
-        open_in_window ? GTK_STOCK_FULLSCREEN : GTK_STOCK_LEAVE_FULLSCREEN);
-    panel->open_panels_in_windows= !open_in_window;
-
-    if(panel->open_panels_in_windows){
+    if(open_in_window){
+        gtk_tool_button_set_stock_id (GTK_TOOL_BUTTON (panel->button_openinwindow),GTK_STOCK_LEAVE_FULLSCREEN);
+        panel->open_panels_in_windows = TRUE;
         gtk_container_remove(panel->labelbar,panel->button_close);
-    }else{
+
+    }
+    else{
+        gtk_tool_button_set_stock_id (GTK_TOOL_BUTTON (panel->button_openinwindow),GTK_STOCK_FULLSCREEN);
+        panel->open_panels_in_windows = FALSE;
+        
         GtkToolItem *toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_CLOSE);
         gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolitem), _("Close panel"));
         gtk_tool_item_set_tooltip_text (GTK_TOOL_ITEM (toolitem), _("Close panel"));
@@ -1052,6 +1074,17 @@ void midori_panel_open_in_window(MidoriPanel* panel,
         panel->button_close= toolitem;
         gtk_widget_show_all(panel->labelbar);
     }
+    
     g_object_notify (G_OBJECT (panel), "open-panels-in-windows");
+
 }
 
+void midori_panel_open_in_window(MidoriPanel* panel,
+                                gboolean     open_in_window,
+                                gint page_n)
+{    
+    midori_panel_set_current_page (MIDORI_PANEL(panel), page_n);
+    g_signal_emit (MIDORI_PANEL(panel), signals[SWITCH_PAGE], 0);
+
+    _midori_panel_open_in_window(panel, open_in_window);
+}
