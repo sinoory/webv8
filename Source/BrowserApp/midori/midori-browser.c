@@ -320,9 +320,10 @@ _midori_browser_update_interface (MidoriBrowser* browser,
         midori_tab_can_view_source (MIDORI_TAB (view)));
     _action_set_sensitive (browser, "SourceView",
         midori_tab_can_view_source (MIDORI_TAB (view)));
+#if 0   //zgh 查看Dom代码功能去除
     _action_set_sensitive (browser, "SourceViewDom",
         midori_tab_can_view_source (MIDORI_TAB (view)));
-
+#endif
     action = _action_by_name (browser, "NextForward");
     if (midori_tab_can_go_forward (MIDORI_TAB (view)))
     {
@@ -5608,7 +5609,7 @@ static const GtkActionEntry entries[] =
     { "CompactAdd", GTK_STOCK_ADD,
         NULL, NULL,
         NULL, G_CALLBACK (_action_compact_add_activate) },
-        #if 0 //zgh
+        #if 1 //0 zgh
     { "TabClose", GTK_STOCK_CLOSE,
         N_("_Close Tab"), "<Ctrl>w",
         N_("Close the current tab"), G_CALLBACK (_action_tab_close_activate) },
@@ -6045,11 +6046,12 @@ static const gchar* ui_markup =
                 "<separator/>"
                 "<menuitem action='Open'/>"
                 "<separator/>"
-#if 0 //zgh
+
                 "<menuitem action='SaveAs'/>"
 #if ENABLE_ADDSPEEDDIAL
                 "<menuitem action='AddSpeedDial'/>"
 #endif
+#if 0 //zgh
                 "<separator/>"
                 "<menuitem action='TabClose'/>"
                 "<menuitem action='WindowClose'/>"

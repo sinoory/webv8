@@ -2544,6 +2544,9 @@ midori_view_get_page_context_action (MidoriView*          view,
         midori_tab_update_actions (MIDORI_TAB (view), actions, NULL, NULL);
         midori_context_action_add_by_name (menu, "Copy");
         midori_context_action_add_by_name (menu, "SelectAll");
+#if 1   //zgh 添加打印
+        midori_context_action_add_by_name (menu, "Print");
+#endif
     }
 
     if (context == WEBKIT_HIT_TEST_RESULT_CONTEXT_DOCUMENT)
@@ -2582,7 +2585,9 @@ midori_view_get_page_context_action (MidoriView*          view,
 #endif
         midori_context_action_add_by_name (menu, "SaveAs");
         midori_context_action_add_by_name (menu, "SourceView");
+#if ENABLE_SourceViewDom
         midori_context_action_add_by_name (menu, "SourceViewDom");
+#endif
         if (!g_object_get_data (G_OBJECT (browser), "midori-toolbars-visible"))
             midori_context_action_add_by_name (menu, "Navigationbar");
         if (state & GDK_WINDOW_STATE_FULLSCREEN)

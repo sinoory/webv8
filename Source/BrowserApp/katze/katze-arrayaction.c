@@ -712,7 +712,7 @@ katze_array_action_create_tool_item_for (KatzeArrayAction* array_action,
     const gchar* title;
     const gchar* uri;
 //    const gchar* desc;
-    gchar desc[512] = {0};
+    gchar desc[2048 + 1] = {0};
 
     GtkToolItem* toolitem;
     GtkWidget* itembox;
@@ -726,6 +726,9 @@ katze_array_action_create_tool_item_for (KatzeArrayAction* array_action,
     strcpy(desc, katze_item_get_name (item));
     strcat(desc,"\n");
     strcat(desc, katze_item_get_uri(item));
+
+    if (strlen(title)+strlen(uri) > 2048)
+        desc[2048] = 0;
 
     if (KATZE_ITEM_IS_SEPARATOR (item))
         return gtk_separator_tool_item_new ();

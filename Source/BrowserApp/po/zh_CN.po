@@ -3499,3 +3499,6 @@ msgstr "无法打开该网页"
 msgid "The page located at “%s” cannot be found. ""Check the web address for misspelled words and try again."
 msgstr "网页“%s”无法打开。请检查网址是否输入错误。"
 
+msgid "the bookmark is already exsit"
+msgstr "要添加的书签已存在"
+

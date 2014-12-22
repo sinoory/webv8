@@ -647,7 +647,16 @@ midori_bookmarks_db_add_item (MidoriBookmarksDb* bookmarks, KatzeItem* item)
     g_return_if_fail (NULL == katze_item_get_meta_string (item, "id"));
 //add by zgh     
     if (midori_bookmarks_db_exist_by_uri(bookmarks, katze_item_get_uri(item)))
-        midori_bookmarks_db_update_item(bookmarks, item);
+    {
+        GtkWidget* dialog = gtk_message_dialog_new(NULL,
+                                                    GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                    GTK_MESSAGE_WARNING,
+                                                    GTK_BUTTONS_CLOSE,
+                                                    _("the bookmark is already exsit"));
+        g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
+        gtk_widget_show (dialog);
+//        midori_bookmarks_db_update_item(bookmarks, item);
+        }
     else
     {
     //end add by zgh
