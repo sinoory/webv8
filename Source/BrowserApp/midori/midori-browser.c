@@ -5372,6 +5372,7 @@ midori_panel_notify_open_in_window_cb(MidoriPanel*   panel,
             browser->sari_panel_windows = gtk_window_new(GTK_WINDOW_TOPLEVEL);
             g_signal_connect(G_OBJECT(browser->sari_panel_windows), "delete-event", midori_panel_window_hide , browser);
             gtk_window_set_title(GTK_WINDOW(browser->sari_panel_windows), "管理器");
+            gtk_window_set_position(GTK_WINDOW(browser->sari_panel_windows),GTK_WIN_POS_CENTER); 
             gtk_window_set_default_size(GTK_WINDOW(browser->sari_panel_windows), 460, 360);
         }else{
             gtk_window_present(browser->sari_panel_windows);

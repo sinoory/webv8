@@ -339,6 +339,8 @@ midori_panel_init (MidoriPanel* panel)
 //    gtk_box_pack_start (GTK_BOX (hbox), panel->toolbar, FALSE, FALSE, 0);
 
     toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_LEAVE_FULLSCREEN);
+    gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolitem), _("Open in Window"));
+    gtk_tool_item_set_tooltip_text (GTK_TOOL_ITEM (toolitem), _("Open in Window"));
     g_signal_connect (toolitem, "clicked",
         G_CALLBACK (midori_panel_button_open_in_window_cb), panel);
     #if HAVE_OSX
@@ -376,7 +378,7 @@ midori_panel_init (MidoriPanel* panel)
 #endif    
     panel->button_close= toolitem;
     gtk_box_pack_start (GTK_BOX (vbox), labelbar, FALSE, FALSE, 0);
-    gtk_widget_show_all (vbox);
+//    gtk_widget_show_all (vbox);
 
     /* Create the toolbook */
     panel->toolbook = gtk_notebook_new ();
@@ -387,8 +389,12 @@ midori_panel_init (MidoriPanel* panel)
     /* Create the notebook */
     panel->notebook = gtk_notebook_new ();
     katze_widget_add_class (panel->notebook, "content-view");
-    gtk_notebook_set_show_border (GTK_NOTEBOOK (panel->notebook), TRUE);
+    gtk_notebook_set_show_border (GTK_NOTEBOOK (panel->notebook), FALSE);
     gtk_notebook_set_show_tabs (GTK_NOTEBOOK (panel->notebook), TRUE);
+#ifndef GTK_DISABLE_DEPRECATED
+//    gtk_notebook_set_tab_vborder(GTK_NOTEBOOK (panel->notebook), 60);
+//    gtk_notebook_set_tab_hborder(GTK_NOTEBOOK (panel->notebook), 20);
+#endif /* GTK_DISABLE_DEPRECATED */
     panel->frame = gtk_frame_new (NULL);
     gtk_container_add (GTK_CONTAINER (panel->frame), panel->notebook);
     gtk_box_pack_start (GTK_BOX (vbox), panel->frame, TRUE, TRUE, 0);
@@ -670,7 +676,7 @@ midori_panel_append_page (MidoriPanel*    panel,
 //    gtk_container_add (GTK_CONTAINER (panel->notebook), scrolled);
 
     toolbar = midori_viewable_get_toolbar (viewable);
-    gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_BOTH_HORIZ);
+    gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_BOTH);//GTK_TOOLBAR_ICONS GTK_TOOLBAR_TEXT GTK_TOOLBAR_BOTH GTK_TOOLBAR_BOTH_HORIZ
     gtk_toolbar_set_icon_size (GTK_TOOLBAR (toolbar), GTK_ICON_SIZE_BUTTON);
     gtk_toolbar_set_show_arrow (GTK_TOOLBAR (toolbar), FALSE);
     gtk_widget_show (toolbar);
