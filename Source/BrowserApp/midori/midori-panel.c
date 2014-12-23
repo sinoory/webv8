@@ -1089,8 +1089,10 @@ void midori_panel_open_in_window(MidoriPanel* panel,
                                 gboolean     open_in_window,
                                 gint page_n)
 {    
-    midori_panel_set_current_page (MIDORI_PANEL(panel), page_n);
-    g_signal_emit (MIDORI_PANEL(panel), signals[SWITCH_PAGE], 0);
+    gtk_notebook_set_current_page (GTK_NOTEBOOK (panel->notebook), page_n);
+
+//    midori_panel_set_current_page (MIDORI_PANEL(panel), page_n);
+//    g_signal_emit (MIDORI_PANEL(panel), signals[SWITCH_PAGE], 0);
 
     _midori_panel_open_in_window(panel, open_in_window);
 }
