@@ -527,14 +527,14 @@ namespace Midori {
                     Gtk.IconSize.MENU, out icon_width, out icon_height);
             else
                 icon_width = icon_height = 0 /* maximum size */;
-#if HAVE_WEBKIT2
-            /* There is no sync API for WebKit2 */
-#else
-            Gdk.Pixbuf? pixbuf = WebKit.get_favicon_database ()
+
+            //add by zgh
+            Gdk.Pixbuf? pixbuf = WebKit.WebContext.get_default ().get_favicon_database ()
                 .try_get_favicon_pixbuf (uri, icon_width, icon_height);
             if (pixbuf != null)
                 return pixbuf;
-#endif
+            //end add by zgh
+
             if (widget != null)
                 return widget.render_icon (Gtk.STOCK_FILE, Gtk.IconSize.MENU, null);
             return null;

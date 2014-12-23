@@ -78,6 +78,7 @@ namespace WebKit {
 	public class FaviconDatabase : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected FaviconDatabase ();
+		public Gdk.Pixbuf? try_get_favicon_pixbuf (string page_uri, uint width, uint height);
 		public async Cairo.Surface? get_favicon (string page_uri, GLib.Cancellable? cancellable) throws GLib.Error;
 		public string? get_favicon_uri (string page_uri);
 		public void clear ();

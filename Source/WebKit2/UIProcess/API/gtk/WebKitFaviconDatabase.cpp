@@ -19,7 +19,10 @@
 
 #include "config.h"
 #include "WebKitFaviconDatabase.h"
-
+//add by zgh
+#include "gtk/GdkCairoUtilities.h"
+#include "IconDatabase.h"
+//end add by zgh
 #include "WebKitFaviconDatabasePrivate.h"
 #include "WebKitMarshal.h"
 #include "WebKitPrivate.h"
@@ -226,6 +229,48 @@ WebKitFaviconDatabase* webkitFaviconDatabaseCreate(WebIconDatabase* iconDatabase
     WKIconDatabaseSetIconDatabaseClient(toAPI(iconDatabase), &wkIconDatabaseClient.base);
     return faviconDatabase;
 }
+
+//add by zgh
+static GdkPixbuf* getIconPixbufSynchronously(WebKitFaviconDatabase* database, const String& pageURL, const IntSize& iconSize)
+{
+    ASSERT(isMainThread());
+
+    // The exact size we pass is irrelevant to the iconDatabase code.
+    // We must pass something greater than 0x0 to get a pixbuf.
+#if 0
+    GUniqueOutPtr<GError> error;
+    RefPtr<cairo_surface_t> icon = getIconSurfaceSynchronously(database, pageURL, &error.outPtr());
+#else
+    NativeImagePtr icon = iconDatabase().synchronousNativeIconForPageURL(pageURL, !iconSize.isZero() ? iconSize : IntSize(1, 1));
+#endif
+    if (!icon)
+        return 0;
+
+#if 1
+    GRefPtr<GdkPixbuf> pixbuf = adoptGRef(cairoSurfaceToGdkPixbuf(icon.get()));
+#else
+    GRefPtr<GdkPixbuf> pixbuf = adoptGRef(cairoImageSurfaceToGdkPixbuf(icon->surface()));
+#endif
+    if (!pixbuf)
+        return 0;
+
+    // A size of (0, 0) means the maximum available size.
+    int pixbufWidth = gdk_pixbuf_get_width(pixbuf.get());
+    int pixbufHeight = gdk_pixbuf_get_height(pixbuf.get());
+    if (!iconSize.isZero() && (pixbufWidth != iconSize.width() || pixbufHeight != iconSize.height()))
+        pixbuf = adoptGRef(gdk_pixbuf_scale_simple(pixbuf.get(), iconSize.width(), iconSize.height(), GDK_INTERP_BILINEAR));
+    return pixbuf.leakRef();
+}
+
+GdkPixbuf* webkit_favicon_database_try_get_favicon_pixbuf(WebKitFaviconDatabase* database, const gchar* pageURI, guint width, guint height)
+{
+    g_return_val_if_fail(WEBKIT_IS_FAVICON_DATABASE(database), 0);
+    g_return_val_if_fail(pageURI, 0);
+    g_return_val_if_fail((width && height) || (!width && !height), 0);
+
+    return getIconPixbufSynchronously(database, String::fromUTF8(pageURI), IntSize(width, height));
+}
+//end add by zgh
 
 static PendingIconRequestVector* getOrCreatePendingIconRequests(WebKitFaviconDatabase* database, const String& pageURL)
 {

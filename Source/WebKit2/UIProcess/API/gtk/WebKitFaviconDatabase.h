@@ -24,6 +24,7 @@
 #ifndef WebKitFaviconDatabase_h
 #define WebKitFaviconDatabase_h
 
+#include <gdk-pixbuf/gdk-pixbuf.h>  //zgh
 #include <cairo.h>
 #include <gio/gio.h>
 #include <glib-object.h>
@@ -84,6 +85,11 @@ webkit_favicon_database_get_favicon        (WebKitFaviconDatabase *database,
                                             GCancellable          *cancellable,
                                             GAsyncReadyCallback    callback,
                                             gpointer               user_data);
+WEBKIT_API GdkPixbuf*
+webkit_favicon_database_try_get_favicon_pixbuf    (WebKitFaviconDatabase* database,
+                                                   const gchar*           page_uri,
+                                                   guint                  width,
+                                                   guint                  height);
 WEBKIT_API cairo_surface_t *
 webkit_favicon_database_get_favicon_finish (WebKitFaviconDatabase *database,
                                             GAsyncResult          *result,
