@@ -346,6 +346,7 @@ namespace About {
             register (new Paths ());
             register (new Geolocation ());
             register (new Redirects ("about:new", "tabhome"));
+            register (new Redirects ("about:blank", "tabhome"));
             register (new Redirects ("about:home", "homepage"));
             register (new Redirects ("about:search", "location-entry-search"));
             register (new Dial ());

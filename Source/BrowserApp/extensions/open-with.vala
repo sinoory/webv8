@@ -9,12 +9,6 @@
    See the file COPYING for the full license text.
 */
 
-#if HAVE_WIN32
-namespace Sokoke {
-    extern static Gdk.Pixbuf get_gdk_pixbuf_from_win32_executable (string path);
-}
-#endif
-
 namespace ExternalApplications {
     /* Spawn the application specified by @app_info on the uri, trying to
        remember the association between the content-type and the application
@@ -41,63 +35,6 @@ namespace ExternalApplications {
     }
 
     class Associations : Object {
-#if HAVE_WIN32
-        string config_dir;
-        string filename;
-        KeyFile keyfile;
-
-        public Associations () {
-            config_dir = Midori.Paths.get_extension_config_dir ("open-with");
-            filename = Path.build_filename (config_dir, "config");
-            keyfile = new KeyFile ();
-
-            try {
-                keyfile.load_from_file (filename, KeyFileFlags.NONE);
-            } catch (FileError.NOENT exist_error) {
-                /* It's no error if no config file exists */
-            } catch (Error error) {
-                warning ("Failed to load associations: %s", error.message);
-            }
-        }
-
-        /* Determine a handler command-line for @content_type and spawn it on @uri.
-           Returns whether a handler was found and spawned successfully. */
-        public bool open (string content_type, string uri) {
-            Midori.URI.recursive_fork_protection (uri, true);
-            try {
-                string commandline = keyfile.get_string ("mimes", content_type);
-                if ("%u" in commandline)
-                    commandline = commandline.replace ("%u", Shell.quote (uri));
-                else if ("%F" in commandline)
-                    commandline = commandline.replace ("%F", Shell.quote (Filename.from_uri (uri)));
-                return Process.spawn_command_line_async (commandline);
-            } catch (KeyFileError error) {
-                /* Not remembered before */
-                return false;
-            } catch (Error error) {
-                warning ("Failed to open \"%s\": %s", uri, error.message);
-                return false;
-            }
-        }
-
-        /* Save @app_info in the persistent store as the handler for @content_type */
-        public void remember (string content_type, AppInfo app_info) throws Error {
-            keyfile.set_string ("mimes", content_type, get_commandline (app_info));
-            FileUtils.set_contents (filename, keyfile.to_data ());
-        }
-
-        /* Save @commandline in the persistent store as the handler for @content_type */
-        public void remember_custom_commandline (string content_type, string commandline, string name, string uri) {
-            keyfile.set_string ("mimes", content_type, commandline);
-            try {
-                FileUtils.set_contents (filename, keyfile.to_data ());
-            } catch (Error error) {
-                warning ("Failed to remember custom command line for \"%s\": %s", uri, error.message);
-            }
-            open (content_type, uri);
-        }
-    }
-#else
         public Associations () {
         }
 
@@ -127,7 +64,6 @@ namespace ExternalApplications {
             }
         }
     }
-#endif
 
     static string get_commandline (AppInfo app_info) {
         return app_info.get_commandline () ?? app_info.get_executable ();

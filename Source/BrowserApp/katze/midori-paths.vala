@@ -386,6 +386,31 @@ namespace Midori {
 #endif
         }
 
+        // ZRL 获取扩展动态库路径
+        public static string get_extension_lib_path (string package) {
+            assert (command_line != null);
+            string path = Path.build_filename (exec_path, "lib", package, "web-extension");
+            stdout.printf ("ZRL get_extension_lib_path1 = %s \n", path);
+            if (Posix.access (path, Posix.F_OK) == 0)
+                return path;
+
+            if (package == PACKAGE_NAME) {
+                path = Path.build_filename ((File.new_for_path (exec_path).get_path ()), "web-extension");
+                stdout.printf ("ZRL get_extension_lib_path2 = %s \n", path);
+                if (Posix.access (path, Posix.F_OK) == 0)
+                    return path;
+            }
+
+            path = Path.build_filename (LIBDIR, PACKAGE_NAME, "web-extension");
+            stdout.printf ("ZRL get_extension_lib_path3 = %s \n", path);
+            if (Posix.access (path, Posix.F_OK) == 0)
+                return path;
+
+            path = Path.build_filename (LIBDIR, "web-extension");
+            stdout.printf ("ZRL get_extension_lib_path4 = %s \n", path);
+            return path;
+        }
+
         public static string get_res_filename (string filename) {
             assert (command_line != null);
             assert (filename != "");

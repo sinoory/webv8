@@ -7,6 +7,7 @@
  2014.12.10 修复网页中打开新窗口或新Tab时，不加载网页问题。修改webkit_web_view_create_web_view_cb()，并回退12.05针对webkit_web_view_web_view_ready_cb()的修改
  2014.12.11 修复12306.cn左键新窗口或新Tab打开购票页面时crash的问题。为midori-view增加load_commited，并在midori_view_web_view_navigation_decision_cb()使用
  2014.12.17 屏蔽search action，见ENABLE_SEARCH_ACTION
+ 2014.12.22 解决下载crash问题，参见midori_view_web_view_navigation_decision_cb()
 */
 
 #include "midori-view.h"
@@ -90,6 +91,10 @@ midori_view_display_error (MidoriView*     view,
 #else
                            void*           web_frame);
 #endif
+
+static gboolean
+midori_view_web_view_close_cb (WebKitWebView* web_view,
+                               GtkWidget*     view);
 
 struct _MidoriView
 {
@@ -394,6 +399,9 @@ static void
 midori_view_set_title (MidoriView* view, const gchar* title)
 {
     const gchar* uri = midori_tab_get_uri (MIDORI_TAB (view));
+    //ZRL 修复当uri为空时crash问题。
+    if (uri == NULL)
+        return;
     katze_assign (view->title, g_strdup (midori_tab_get_display_title (title, uri)));
     view->ellipsize = midori_tab_get_display_ellipsize (view->title, uri);
     if (view->menu_item)
@@ -541,6 +549,8 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
         katze_item_set_meta_string (view->item, "mime-type", mime_type);
         if (!webkit_web_view_can_show_mime_type (web_view, mime_type))
         {
+            //ZRL 增加close事件，针对下载情况，若webview启动下载后，关闭下载的webview窗口。可解决crash问题。
+            g_signal_connect (web_view, "close", G_CALLBACK (midori_view_web_view_close_cb), view);
             webkit_policy_decision_download (decision);
             return TRUE;
         }
@@ -1513,6 +1523,9 @@ midori_web_view_notify_icon_uri_cb (WebKitWebView* web_view,
 {
 #ifdef HAVE_WEBKIT2
     const gchar* uri = webkit_web_view_get_uri (web_view);
+    //ZRL 修复当uri为空时crash问题。
+    if (uri == NULL)
+        return;
     WebKitWebContext* context = webkit_web_context_get_default ();
     WebKitFaviconDatabase* favicon_database = webkit_web_context_get_favicon_database (context);
     gchar* icon_uri = webkit_favicon_database_get_favicon_uri (favicon_database, uri);

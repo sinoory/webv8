@@ -1,12 +1,6 @@
 /*
- Copyright (C) 2008-2011 Christian Dywan <christian@twotoasts.de>
-
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
-
- See the file COPYING for the full license text.
+  Modified by ZRL
+  2014.12.20 修改状态栏所显示工具——只支持zoom level设置，其他功能待实现。
 */
 
 #include <midori/midori.h>
@@ -107,14 +101,17 @@ statusbar_features_zoom_level_changed_cb (GtkWidget*     combobox,
     midori_view_set_zoom_level (view, zoom_level / 100.0);
 }
 
+// ZRL 目前只识别缩放比例设置，将来扩展状态栏工具时再充实该函数
 GtkWidget*
 statusbar_features_property_proxy (MidoriWebSettings* settings,
                                    const gchar*       property,
                                    GtkWidget*         toolbar)
 {
     const gchar* kind = NULL;
-    GtkWidget* button;
+    GtkWidget* button = NULL;
     GtkWidget* image;
+// ZRL 暂时屏蔽其他功能 2014.12.20
+#if 0
     if (!strcmp (property, "auto-load-images")
      || !strcmp (property, "enable-javascript")
      || !strcmp (property, "enable-plugins"))
@@ -124,6 +121,9 @@ statusbar_features_property_proxy (MidoriWebSettings* settings,
     else if (strstr (property, "font") != NULL)
         kind = "font";
     else if (!strcmp (property, "zoom-level"))
+#else
+    if (!strcmp (property, "zoom-level"))
+#endif
     {
         MidoriBrowser* browser = midori_browser_get_for_widget (toolbar);
         guint i;
@@ -139,6 +139,8 @@ statusbar_features_property_proxy (MidoriWebSettings* settings,
         return button;
     }
 
+// ZRL 暂时屏蔽其他功能 2014.12.20
+#if 0
     button = katze_property_proxy (settings, property, kind);
     if (GTK_IS_BIN (button))
     {
@@ -179,6 +181,7 @@ statusbar_features_property_proxy (MidoriWebSettings* settings,
         g_signal_connect (toolbar, "notify::toolbar-style",
             G_CALLBACK (statusbar_features_toolbar_notify_toolbar_style_cb), button);
     }
+#endif
     return button;
 }
 
@@ -216,6 +219,8 @@ statusbar_features_app_add_browser_cb (MidoriApp*       app,
     }
     else
     {
+// ZRL 暂时屏蔽其他功能
+#if 0
         button = statusbar_features_property_proxy (settings, "auto-load-images", toolbar);
         gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 2);
         button = statusbar_features_property_proxy (settings, "enable-javascript", toolbar);
@@ -224,6 +229,7 @@ statusbar_features_app_add_browser_cb (MidoriApp*       app,
         gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 2);
         button = statusbar_features_property_proxy (settings, "identify-as", toolbar);
         gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 2);
+#endif
         button = statusbar_features_property_proxy (settings, "zoom-level", toolbar);
         gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 2);
     }
