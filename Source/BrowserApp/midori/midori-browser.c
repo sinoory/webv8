@@ -148,6 +148,8 @@ enum
     PANEL_BOOKMARK,
     PANEL_HISTORY,
     PANEL_TRANSFER,
+    
+    PANEL_MAX,
 };
 static guint signals[LAST_SIGNAL];
 //20141217 zlf
@@ -157,6 +159,8 @@ static void midori_browser_actiave_history_in_window(GtkAction*     action,
                               MidoriBrowser* browser);
 static void midori_browser_actiave_transfer_in_window(GtkAction*     action,
                               MidoriBrowser* browser);
+static void
+midori_browser_show_panel_window(MidoriBrowser* browser);
 static void
 midori_panel_window_hide (GtkWidget* window, MidoriBrowser*  browser);
 
@@ -5360,39 +5364,23 @@ midori_panel_notify_open_in_window_cb(MidoriPanel*   panel,
 {
     gboolean open_in_window = katze_object_get_boolean (panel, "open-panels-in-windows");
 
-    GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
-    GtkWidget* hpaned = gtk_widget_get_parent (vpaned); //vbox
-    
-    g_object_ref (browser->panel);
-    g_object_ref (vpaned);
+    if (open_in_window){//seperate in window
+        midori_browser_show_panel_window(browser);
 
-    if (open_in_window)//show in independent window
-    {
-        if(!browser->sari_panel_windows){
-            browser->sari_panel_windows = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-            g_signal_connect(G_OBJECT(browser->sari_panel_windows), "delete-event", midori_panel_window_hide , browser);
-            gtk_window_set_title(GTK_WINDOW(browser->sari_panel_windows), "管理器");
-            gtk_window_set_position(GTK_WINDOW(browser->sari_panel_windows),GTK_WIN_POS_CENTER); 
-            gtk_window_set_default_size(GTK_WINDOW(browser->sari_panel_windows), 460, 360);
-        }else{
-            gtk_window_present(browser->sari_panel_windows);
-        }
-
-        gtk_container_remove (GTK_CONTAINER (hpaned), browser->panel);
-        gtk_container_add(GTK_CONTAINER(browser->sari_panel_windows), browser->panel);
-        gtk_widget_show_all(browser->sari_panel_windows);
     }
-    else //show in browser window
-    {
+    else {//show in browser window
         if(browser->sari_panel_windows){
-            gtk_container_remove (browser->sari_panel_windows, browser->panel);    
+
+            GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
+            GtkWidget* hpaned = gtk_widget_get_parent (vpaned); //vbox
+
+            gtk_container_remove (browser->sari_panel_windows, browser->panel);
             gtk_paned_pack1 (GTK_PANED (hpaned), browser->panel, FALSE, FALSE);
+
             gtk_widget_hide(browser->sari_panel_windows);
+            
         }
     }
-
-    g_object_unref (browser->panel);
-    g_object_unref (vpaned);
     return;
 }
 static void
@@ -5436,7 +5424,6 @@ midori_panel_close_cb (MidoriPanel*   panel,
                        MidoriBrowser* browser)
 {
     _action_set_active (browser, "Panel", FALSE);
-    browser->sari_panel_windows = NULL;//zlf add
     return FALSE;
 }
 
@@ -6702,7 +6689,7 @@ midori_browser_init (MidoriBrowser* browser)
         "signal::close",
         midori_panel_close_cb, browser,
         NULL);
-    gtk_paned_pack1 (GTK_PANED (hpaned), browser->panel, FALSE, FALSE);
+//    gtk_paned_pack1 (GTK_PANED (hpaned), browser->panel, FALSE, FALSE); 20141224
 
     /* Notebook, containing all views */
     vpaned = gtk_vpaned_new ();
@@ -8218,44 +8205,62 @@ midori_browser_quit (MidoriBrowser* browser)
 static void
 midori_panel_window_hide (GtkWidget* window, MidoriBrowser*  browser)
 {
-
-
     gtk_widget_hide(window);
 
-
-    browser->sari_panel_windows = NULL;
-    
     return TRUE;
+}
+static void
+midori_browser_show_panel_window(MidoriBrowser* browser)
+{
+    GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
+    GtkWidget* hpaned = gtk_widget_get_parent (vpaned); //vbox
+    static GtkWidget *panel_window = NULL;
+    
+    g_object_ref (browser->panel);
+    g_object_ref (vpaned);
+
+
+    if(!panel_window){
+        panel_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        g_signal_connect(G_OBJECT(panel_window), "delete-event", midori_panel_window_hide , browser);
+        gtk_window_set_title(GTK_WINDOW(panel_window), "管理器");
+        gtk_window_set_position(GTK_WINDOW(panel_window),GTK_WIN_POS_CENTER); 
+        gtk_window_set_default_size(GTK_WINDOW(panel_window), 460, 360);
+    }else{
+        gtk_window_present(panel_window);
+    }
+
+        gtk_container_remove (GTK_CONTAINER (hpaned), browser->panel);
+        gtk_container_add(GTK_CONTAINER(panel_window), browser->panel);
+        gtk_widget_show_all(panel_window);
+
+
+
+
+    browser->sari_panel_windows = panel_window;
+
+    g_object_unref (browser->panel);
+    g_object_unref (vpaned);
+    return;
+
 }
 static void midori_browser_actiave_bookmark_in_window(GtkAction*     action,
                               MidoriBrowser* browser)
 {
-#ifdef NEVER
-    midori_panel_set_current_page (MIDORI_PANEL(browser->panel), PANEL_BOOKMARK);
-    g_signal_emit (MIDORI_PANEL(browser->panel), signals[SWITCH_DOWNLOAD], 0, PANEL_BOOKMARK);
-#endif /* NEVER */
-
     midori_panel_open_in_window(browser->panel, TRUE, PANEL_BOOKMARK);
+    midori_browser_show_panel_window(browser);
 }
 
 static void midori_browser_actiave_history_in_window(GtkAction*     action,
                               MidoriBrowser* browser)
 {
-#ifdef NEVER
-    midori_panel_set_current_page (MIDORI_PANEL(browser->panel), PANEL_HISTORY);
-    g_signal_emit (MIDORI_PANEL(browser->panel), signals[SWITCH_DOWNLOAD], 0, PANEL_HISTORY);
-#endif /* NEVER */
-
     midori_panel_open_in_window(browser->panel, TRUE, PANEL_HISTORY);
+    midori_browser_show_panel_window(browser);
 }
 static void midori_browser_actiave_transfer_in_window(GtkAction*     action,
                               MidoriBrowser* browser)
 {
-#ifdef NEVER
-    midori_panel_set_current_page (MIDORI_PANEL(browser->panel), PANEL_TRANSFER);
-    g_signal_emit (MIDORI_PANEL(browser->panel), signals[SWITCH_DOWNLOAD], 0, PANEL_TRANSFER);
-#endif /* NEVER */
-
     midori_panel_open_in_window(browser->panel, TRUE, PANEL_TRANSFER);
+    midori_browser_show_panel_window(browser);
 }
 

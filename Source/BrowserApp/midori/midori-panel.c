@@ -343,11 +343,13 @@ midori_panel_init (MidoriPanel* panel)
     gtk_tool_item_set_tooltip_text (GTK_TOOL_ITEM (toolitem), _("Open in Window"));
     g_signal_connect (toolitem, "clicked",
         G_CALLBACK (midori_panel_button_open_in_window_cb), panel);
+#if 0// delete fullscrreen button
     #if HAVE_OSX
     gtk_toolbar_insert (GTK_TOOLBAR (labelbar), toolitem, 0);
     #else
     gtk_toolbar_insert (GTK_TOOLBAR (labelbar), toolitem, -1);
     #endif
+#endif    
     panel->button_openinwindow = toolitem;
     toolitem = gtk_tool_button_new_from_stock (GTK_STOCK_GO_FORWARD);
     gtk_tool_button_set_label (GTK_TOOL_BUTTON (toolitem),
@@ -1054,7 +1056,7 @@ midori_panel_button_open_in_window_cb(GtkWidget*   toolitem,
     }else{
         _midori_panel_open_in_window(panel, TRUE) ;//zlf
     }
-
+    g_object_notify (G_OBJECT (panel), "open-panels-in-windows");
 
 }
 
@@ -1081,18 +1083,14 @@ void _midori_panel_open_in_window(MidoriPanel* panel,
         gtk_widget_show_all(panel->labelbar);
     }
     
-    g_object_notify (G_OBJECT (panel), "open-panels-in-windows");
-
 }
 
 void midori_panel_open_in_window(MidoriPanel* panel,
                                 gboolean     open_in_window,
                                 gint page_n)
 {    
-    gtk_notebook_set_current_page (GTK_NOTEBOOK (panel->notebook), page_n);
-
-//    midori_panel_set_current_page (MIDORI_PANEL(panel), page_n);
-//    g_signal_emit (MIDORI_PANEL(panel), signals[SWITCH_PAGE], 0);
-
+    if(page_n >= 0 && page_n <= 2){
+        gtk_notebook_set_current_page (GTK_NOTEBOOK (panel->notebook), page_n);
+    }
     _midori_panel_open_in_window(panel, open_in_window);
 }
