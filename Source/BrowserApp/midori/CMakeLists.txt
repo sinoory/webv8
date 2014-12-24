@@ -8,7 +8,7 @@ set(MIDORI_SOURCE_DIR "${CMAKE_SOURCE_DIR}/Source/BrowserApp")
 file(GLOB MIDORI_VALA_SOURCE ../katze/*.vala *.vala ../panels/*.vala)
 file(GLOB LIBMIDORI_SOURCE ../katze/*.c ../panels/*.c ../toolbars/*.c  midori-*.vala midori-*.c sokoke.c Certificate.c ../settings/*.c)
 include(GLibHelpers)
-add_glib_marshal(LIBMIDORI_SOURCE marshal ${MIDORI_PROJECT_NAME}_cclosure_marshal "cdosbrowser.h")
+add_glib_marshal(LIBMIDORI_SOURCE marshal midori_cclosure_marshal "midori.h")
 set(MIDORI_SOURCE
     main.c
     )

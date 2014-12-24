@@ -315,7 +315,7 @@ msgstr "显示在书签栏(_B)"
 
 #: ../midori/midori-browser.c:1185
 msgid "Add to _Speed Dial"
-msgstr "添加至快速拨号(_S)"
+msgstr "添加至新标签页快捷方式(_S)"
 
 #: ../midori/midori-browser.c:1301 ../midori/midori-browser.c:4518
 msgid "Save file as"
@@ -2868,11 +2868,11 @@ msgstr "启用 Netscape 插件"
 
 #: ../extensions/statusbar-features.c:259
 msgid "Statusbar Features"
-msgstr "状态栏功能"
+msgstr "状态栏工具"
 
 #: ../extensions/statusbar-features.c:260
 msgid "Easily toggle features on web pages on and off"
-msgstr "方便地打开或关闭网页中的功能"
+msgstr "快捷地设置网页中的功能"
 
 #: ../extensions/tab-panel.c:588 ../extensions/tab-panel.c:677
 msgid "Tab Panel"
@@ -3498,6 +3498,9 @@ msgstr "无法打开该网页"
 
 msgid "The page located at “%s” cannot be found. ""Check the web address for misspelled words and try again."
 msgstr "网页“%s”无法打开。请检查网址是否输入错误。"
+
+msgid "Download Dialog"
+msgstr "查看下载管理器"
 
 msgid "the bookmark is already exsit"
 msgstr "要添加的书签已存在"
