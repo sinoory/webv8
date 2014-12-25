@@ -43,6 +43,11 @@ midori_bookmarks_db_new (char** errmsg);
 void
 midori_bookmarks_db_on_quit (MidoriBookmarksDb* array);
 
+//zgh
+gboolean
+midori_bookmarks_db_exist_by_uri(MidoriBookmarksDb*  bookmarks,
+                          const gchar*        uri);
+
 void
 midori_bookmarks_db_add_item (MidoriBookmarksDb* bookmarks, KatzeItem* item);
 

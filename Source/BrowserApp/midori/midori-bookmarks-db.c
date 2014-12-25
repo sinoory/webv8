@@ -90,10 +90,6 @@ static gboolean
 midori_bookmarks_db_remove_item_db (sqlite3*   db,
                                     KatzeItem* item);
                                     
-//zgh
-static gboolean
-midori_bookmarks_db_exist_by_uri(MidoriBookmarksDb*  bookmarks,
-                          const gchar*        uri);
 
 static guint
 item_hash (gconstpointer item)
@@ -996,7 +992,7 @@ midori_bookmarks_db_count_from_sqlite (sqlite3*     db,
 }
 
 //zgh
-static gboolean
+gboolean
 midori_bookmarks_db_exist_by_uri(MidoriBookmarksDb*  bookmarks,
                           const gchar*        uri)
 {

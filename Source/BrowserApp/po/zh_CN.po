@@ -859,6 +859,9 @@ msgstr "打开特定位置"
 msgid "Add to Bookmarks bar"
 msgstr "添加到书签栏"
 
+msgid "Bookmark already exsit"
+msgstr "书签已存在"
+
 #: ../midori/midori-browser.c:6127
 msgid "Search or enter an address"
 msgstr "输入网址或搜索关键字"

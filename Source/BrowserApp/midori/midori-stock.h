@@ -36,5 +36,7 @@
 #define STOCK_STOP               "stop"
 #define STOCK_URL                "text-html"
 #define STOCK_DOWNLOAD           "gtk-go-down"
+#define STOCK_BOOKMARKED         "bookmarked"
+#define STOCK_UNBOOKMARK         "unbookmark"
 
 #endif /* !__MIDORI_STOCK_H__ */
