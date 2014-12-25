@@ -1819,8 +1819,8 @@ msgid "Search with %s"
 msgstr "用 %s 搜索"
 
 #: ../midori/sokoke.c:219
-msgid "Open with"
-msgstr "打开方式"
+msgid "Open _with…"
+msgstr "打开方式(_W)…"
 
 #: ../midori/sokoke.c:227
 #, c-format

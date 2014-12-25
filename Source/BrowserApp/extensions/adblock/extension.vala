@@ -143,7 +143,7 @@ namespace Adblock {
             view.web_view.resource_request_starting.connect (resource_requested);
 #endif
             view.notify["load-status"].connect (load_status_changed);
-            view.context_menu.connect (context_menu);
+//            view.context_menu.connect (context_menu); //zgh 20141225
         }
 
         void tab_removed (Midori.View view) {
@@ -152,7 +152,7 @@ namespace Adblock {
 #endif
             view.navigation_adblock.disconnect (navigation_adblock);
             view.notify["load-status"].disconnect (load_status_changed);
-            view.context_menu.disconnect (context_menu);
+//            view.context_menu.disconnect (context_menu);  //zgh 20141225
         }
 
         void load_status_changed (Object object, ParamSpec pspec) {
