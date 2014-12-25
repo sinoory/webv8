@@ -8305,7 +8305,7 @@ void midori_browser_change_history_seting(MidoriBrowser* browser, gint *settings
     gint result;
   
 
-    switch(settings)
+    switch(*settings)
     {
         case 0:
             ////0.this setting will clean the history, OK?
