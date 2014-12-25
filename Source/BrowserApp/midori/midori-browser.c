@@ -8311,6 +8311,7 @@ void midori_browser_change_history_seting(MidoriBrowser* browser, gint *settings
             ////0.this setting will clean the history, OK?
             break;
         case 1:
+            break;
             dialog = gtk_message_dialog_new (GTK_WINDOW (browser),
                                                 GTK_DIALOG_DESTROY_WITH_PARENT,
                                                 GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
