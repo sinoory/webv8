@@ -8292,3 +8292,48 @@ static void midori_browser_actiave_transfer_in_window(GtkAction*     action,
     midori_browser_show_panel_window(browser);
 }
 
+void midori_browser_clear_history(MidoriBrowser* browser)
+{
+        g_print("Clear History start\n");
+        katze_array_clear (browser->history);
+        g_print("Clear History end\n");
+}
+
+void midori_browser_change_history_seting(MidoriBrowser* browser, gint *settings)
+{
+    GtkWidget* dialog;
+    gint result;
+  
+
+    switch(settings)
+    {
+        case 0:
+            ////0.this setting will clean the history, OK?
+            break;
+        case 1:
+            dialog = gtk_message_dialog_new (GTK_WINDOW (browser),
+                                                GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
+                                                _("This operation will remove all history first, Are you sure?"));
+            result = gtk_dialog_run (GTK_DIALOG (dialog));
+            gtk_widget_destroy (dialog);
+            if (result != GTK_RESPONSE_YES)
+            //        break;
+                g_print("No\n");
+            else
+                g_print("Yes\n");
+
+          midori_browser_clear_history (browser);
+
+            ////1.this setting will clean the history, OK?
+            break;
+        case 2:
+            ////2.this setting will clean the history, OK?
+            break;        
+        default:
+            break;
+            ////##.this setting will clean the history, OK?
+    }
+
+
+}

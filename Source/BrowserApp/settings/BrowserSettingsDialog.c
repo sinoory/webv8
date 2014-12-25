@@ -273,10 +273,15 @@ static void pageContentCacheCallback(GtkToggleButton *togglebutton, MidoriWebSet
 
 static void historySettingCallback(GtkComboBox *widget, MidoriWebSettings *settings)
 {
-    int CurrentSelect = gtk_combo_box_get_active(widget); 
+    gint CurrentSelect = gtk_combo_box_get_active(widget); 
     g_object_set(settings,
              "history-setting", CurrentSelect,
              NULL);
+    g_print("CurrentSelect is [%d]\n", CurrentSelect);
+
+    MidoriApp *app = midori_app_get_default();
+    MidoriBrowser *browser = midori_app_get_browser(app);
+    midori_browser_change_history_seting(browser, &CurrentSelect);
 }
 
 
@@ -341,10 +346,14 @@ static void trackLocationCallback(GtkComboBox *widget, MidoriWebSettings *settin
 //clear data callback 
 static void clearDataCallback(GtkButton *button, MidoriWebSettings *settings) 
 {
-return;
+    MidoriApp *app = midori_app_get_default();
+    MidoriBrowser *browser = midori_app_get_browser(app);
+
     //clear browse record.
     if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->checkbutton4_privacy))) {
+	 midori_browser_clear_history(browser);
     }
+return;
 
     //clear download record.
     if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->checkbutton5_privacy))) {

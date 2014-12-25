@@ -194,6 +194,9 @@ void
 midori_browser_set_inactivity_reset   (MidoriBrowser*     browser,
                                        gint               inactivity_reset);
 
+void midori_browser_clear_history(MidoriBrowser*     browser);
+
+void midori_browser_change_history_seting(MidoriBrowser* browser, gint *settings);
 G_END_DECLS
 
 #endif /* __MIDORI_BROWSER_H__ */
