@@ -22,7 +22,8 @@ namespace Midori {
     public enum Security {
         NONE, /* The connection is neither encrypted nor verified. */
         UNKNOWN, /* The security is unknown, due to lack of validation. */
-        TRUSTED /* The security is validated and trusted. */
+        TRUSTED, /* The security is validated and trusted. */
+        AUTHENTICATION
     }
     /* Since: 0.2.5 */
 
