@@ -528,6 +528,11 @@ static void resetNetworkSettingCallback(GtkButton *button, MidoriWebSettings *se
 	}
 }
 
+char *_(char *c)
+{
+    return(g_locale_to_utf8(c,-1,0,0,0));
+}
+
 static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSettings *settings)
 {
 	GtkWidget *dialog;  
@@ -537,7 +542,7 @@ static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSetting
 	dialog = gtk_file_chooser_dialog_new ("保存目录",
 							NULL,/*gtk_widget_get_toplevel(GTK_WINDOW(button)),*/
 							GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,//GTK_FILE_CHOOSER_ACTION_SAVE, 
-							/*GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,*/
+							GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,/**/
 							GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 							NULL);
 
@@ -554,11 +559,15 @@ static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSetting
 	if(gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 	{
         ///取得用户所选文件的路径
-		char *filename;
+		gchar *filename;
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 
+//g_object_set(settings, "download-folder", filename, NULL);		
+
+//		g_print("filename = %s\n", _(filename));
         ///把文件路径显示到输入条上
-		gtk_entry_set_text(GTK_ENTRY(entry),filename);
+		gtk_entry_set_text(GTK_ENTRY(entry),_(filename) );
+		g_free(filename);
 	}
 
 	gtk_widget_destroy(dialog);
@@ -566,10 +575,11 @@ static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSetting
 
 static void downloadPathCallback(GtkEntry *entry, MidoriWebSettings *settings) 
 {
+//return;
     gchar *entry_content =  gtk_entry_get_text(GTK_ENTRY(entry));
-
+//	g_print("entry_content = %s\n", entry_content);
     g_object_set(settings, "download-folder", entry_content, NULL);
-	 g_free (entry_content);
+//	 g_free (entry_content);
 }
 
 static void askEverytimeBeforeDownloadCallback(GtkToggleButton *button, MidoriWebSettings *settings)
