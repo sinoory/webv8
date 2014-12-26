@@ -528,11 +528,6 @@ static void resetNetworkSettingCallback(GtkButton *button, MidoriWebSettings *se
 	}
 }
 
-char *_(char *c)
-{
-    return(g_locale_to_utf8(c,-1,0,0,0));
-}
-
 static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSettings *settings)
 {
 	GtkWidget *dialog;  
@@ -542,7 +537,7 @@ static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSetting
 	dialog = gtk_file_chooser_dialog_new ("保存目录",
 							NULL,/*gtk_widget_get_toplevel(GTK_WINDOW(button)),*/
 							GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,//GTK_FILE_CHOOSER_ACTION_SAVE, 
-							GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,/**/
+							/*GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,*/
 							GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 							NULL);
 
@@ -551,7 +546,12 @@ static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSetting
     ///文件选择类型过滤
 
     //设置当前文件夹
-	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER (dialog),"/etc");
+	gchar local_path[20] = {0};
+	gchar *path = getenv("HOME");
+	strcat(local_path, path);
+	strcat(local_path, "/下载");
+//	g_print("local_path = %s\n", local_path);
+	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER (dialog), local_path);
 
 	gtk_window_set_position(GTK_WINDOW(dialog),GTK_WIN_POS_CENTER_ON_PARENT);
 
@@ -562,12 +562,11 @@ static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSetting
 		gchar *filename;
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 
-//g_object_set(settings, "download-folder", filename, NULL);		
-
-//		g_print("filename = %s\n", _(filename));
+//		g_print("1 filename = %s\n", filename);
+		g_object_set(settings, "download-folder", filename, NULL);	
         ///把文件路径显示到输入条上
-		gtk_entry_set_text(GTK_ENTRY(entry),_(filename) );
-		g_free(filename);
+		gtk_entry_set_text(GTK_ENTRY(entry),filename);
+//		g_print("2 filename = %s\n", filename);
 	}
 
 	gtk_widget_destroy(dialog);
@@ -575,11 +574,11 @@ static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSetting
 
 static void downloadPathCallback(GtkEntry *entry, MidoriWebSettings *settings) 
 {
-//return;
-    gchar *entry_content =  gtk_entry_get_text(GTK_ENTRY(entry));
-//	g_print("entry_content = %s\n", entry_content);
-    g_object_set(settings, "download-folder", entry_content, NULL);
-//	 g_free (entry_content);
+return;
+	gchar *entry_content =  gtk_entry_get_text(GTK_ENTRY(entry));
+	g_print("1  entry_content = %s\n", entry_content);
+	g_object_set(settings, "download-folder", entry_content, NULL);
+	g_print("2  entry_content = %s\n", entry_content);
 }
 
 static void askEverytimeBeforeDownloadCallback(GtkToggleButton *button, MidoriWebSettings *settings)
@@ -2214,6 +2213,8 @@ printf("function alterDownloadSaveCatalogCallback has been called\n");
     gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), FALSE);
 */
     //设置当前文件夹
+//	gchar* native_path = getenv("HOME");
+//	g_print("%s\n", native_path);
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER (dialog),"/etc");
 
 	gtk_window_set_position(GTK_WINDOW(dialog),GTK_WIN_POS_CENTER_ON_PARENT);
