@@ -596,7 +596,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	GtkWidget *button;
 //	GtkWidget *table;
 	GtkWidget *notebook;
-//	GtkWidget *frame;
 	GtkWidget *label;
 	GtkWidget *widget;
 	GtkGrid *grid;
@@ -609,8 +608,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_window_set_title (GTK_WINDOW (window), "设置");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 0);
 
-//	table = gtk_table_new (3, 6, FALSE);
-//	gtk_container_add (GTK_CONTAINER (window), table);
 /* 创建一个新的笔记本,将标签页放在顶部 */
 	notebook = gtk_notebook_new ();
 	gtk_container_set_border_width (GTK_CONTAINER (notebook), 0);
@@ -621,26 +618,14 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	b = gtk_notebook_get_show_border(GTK_NOTEBOOK(notebook));
 	g_print("widget  b = %d\n", b);
 
-//	gtk_notebook_set_show_tabs (GTK_NOTEBOOK(notebook), FALSE);
-//	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
-//	gtk_table_attach_defaults (GTK_TABLE (table), notebook, 0, 6, 0, 1);
-//	gtk_table_attach_defaults (GTK_TABLE (table), notebook, 0, 6, 0, 1);
 	gtk_container_add (GTK_CONTAINER (window), notebook);
 
 //	gtk_widget_show (notebook);
 
 /* 在笔记本后面追加几个页面 */
 //general
-//	frame = gtk_viewport_new(NULL, NULL);
-//	GtkShadowType type = gtk_viewport_get_shadow_type(GTK_VIEWPORT(frame));
-//g_print("widget  b = %d\n", type);
-//	gtk_viewport_set_shadow_type(GTK_VIEWPORT(frame), GTK_SHADOW_NONE);
-//	type = gtk_viewport_get_shadow_type(GTK_VIEWPORT(frame));
-//g_print("widget  b = %d\n", type);
-//	frame = gtk_frame_new (NULL);
 	grid = (GtkGrid*)gtk_grid_new();//创建网格
-//guint space = gtk_grid_get_row_spacing (grid);
-//g_print("widget  space = %d\n", space);
+
 	gtk_grid_set_row_spacing (grid, 8);
 	gtk_grid_set_column_spacing (grid, 5);
 
@@ -749,8 +734,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_grid_attach_next_to(grid, button, widget, GTK_POS_BOTTOM, 1, 1);
 //	gtk_grid_attach(grid,button,1,8,1,1);
 
-//	gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(grid));	
-
 	//label = gtk_label_new ("常规");
 	gchar *general_pic = midori_paths_get_res_filename("settings-icons/general.png");
 	g_print("general_pic = %s\n", general_pic);
@@ -760,7 +743,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), GTK_WIDGET(label));
 
 //content
-//	frame = gtk_frame_new (NULL);
 	grid = (GtkGrid*)gtk_grid_new();//创建网格
 
 	gtk_grid_set_row_spacing (grid, 8);
@@ -864,8 +846,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 
 	label = gtk_label_new("    ");
 	gtk_grid_attach( grid, label, 0, 13, 1, 1);
-//	gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(grid));
-/**/
+
 //	label = gtk_label_new ("内容");
 	gchar *content_pic = midori_paths_get_res_filename("settings-icons/content.png");
    label = xpm_label_box( content_pic, "内 容" );
@@ -873,7 +854,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
 
 //privacy
-//	frame = gtk_frame_new (NULL);
 	grid = (GtkGrid*)gtk_grid_new();//创建网格
 
 	gtk_grid_set_row_spacing (grid, 8);
@@ -1028,8 +1008,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	}
 	gtk_grid_attach(grid, widget, 2, 11, 2, 1);
 
-//	gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(grid));
-
 	gchar *privacy_pic = midori_paths_get_res_filename("settings-icons/privacy.png");
    label = xpm_label_box( privacy_pic, "隐 私" );
 	g_free(privacy_pic);
@@ -1037,7 +1015,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
 
 //security
-//	frame = gtk_frame_new (NULL);
 	grid = (GtkGrid*)gtk_grid_new();//创建网格
 
 	gtk_grid_set_row_spacing (grid, 8);
@@ -1060,7 +1037,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 
 	button = gtk_button_new_with_label("　已保存密码　");
 	gtk_grid_attach(grid, button, 3, 3, 1, 1);
-/**/
 
 	widget = gtk_label_new("HTTPS/SSL:");
 	gtk_grid_attach(grid, widget, 1, 4, 1, 1);
@@ -1073,48 +1049,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(certificateRevocationCallback), settings);
 	gtk_grid_attach(grid, button, 2, 6, 2, 1);
 
-/*
-	widget = gtk_label_new("媒体：");
-	gtk_grid_attach(grid, widget, 0, 3, 1, 1);
-
-	widget = gtk_label_new("麦克风：");
-	gtk_grid_attach(grid, widget,1, 4, 1, 1);
-
-	widget = gtk_combo_box_text_new();
-	gtk_grid_attach(grid, widget, 2, 4, 1, 1);
-
-	widget = gtk_label_new("相机：");
-	gtk_grid_attach(grid, widget, 1, 5, 1, 1);
-
-	widget = gtk_combo_box_text_new();
-	gtk_grid_attach(grid, widget, 2, 5, 1, 1);
-
-	button = gtk_radio_button_new_with_label (NULL, "当网站要求使用您的摄像头和麦克风时询问您（推荐）");
-   settings->radiobutton1_security = GTK_WIDGET(button);
-	g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(mediaAccessCallback), settings);
-	gtk_grid_attach(grid, button, 1, 6, 5, 1);
-	group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
-	button = gtk_radio_button_new_with_label (group, "不允许网络使用您的摄像头和麦克风");
-	settings->radiobutton2_security = GTK_WIDGET(button);
-   g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(mediaAccessCallback), settings);
-	g_object_get(settings, "media-access", &ivalue, NULL);   
-   switch(ivalue) 
-	{
-   case 0:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton1_security), TRUE);
-		break;
-	case 1:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton2_security), TRUE);
-		break;
-	default:
-		printf("error PROP_MEDIA_ACCESS ivalue = %i\n", ivalue);
-		break;
-    } 
-	gtk_grid_attach(grid, button, 1, 7, 5, 1);
-*/
-
-//	gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(grid));
-
 	gchar *security_pic = midori_paths_get_res_filename("settings-icons/security.png");
    label = xpm_label_box( security_pic, "安 全" );
 	g_free(security_pic);
@@ -1122,7 +1056,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
 
 //advanced
-//	frame = gtk_frame_new (NULL);
 	grid = (GtkGrid*)gtk_grid_new();//创建网格
 
 	gtk_grid_set_row_spacing (grid, 8);
@@ -1183,11 +1116,24 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(askEverytimeBeforeDownloadCallback), settings);
 	gtk_grid_attach(grid, button, 2, 10, 3, 1);
 
-//	gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(grid));
-
 	gchar *advanced_pic = midori_paths_get_res_filename("settings-icons/advanced.png");
    label = xpm_label_box( advanced_pic, "高 级" );
 	g_free(advanced_pic);
+//	label = gtk_label_new ("高级");
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
+
+//expand
+	grid = (GtkGrid*)gtk_grid_new();//创建网格
+
+	gtk_grid_set_row_spacing (grid, 8);
+	gtk_grid_set_column_spacing (grid, 5);
+
+	label = gtk_label_new("    ");
+	gtk_grid_attach( grid, label, 0, 0, 1, 1);
+
+	gchar *expand_pic = midori_paths_get_res_filename("settings-icons/expand.png");
+   label = xpm_label_box( expand_pic, "扩 展" );
+	g_free(expand_pic);
 //	label = gtk_label_new ("高级");
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
 
