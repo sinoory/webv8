@@ -181,71 +181,35 @@ typedef enum
     MIDORI_SITE_DATA_PRESERVE,
 } MidoriSiteDataPolicy;
 
-#if 1
 struct  _MidoriWebSettings
 {
 	WebKitSettingsPrivate *priv;
-#if 1
+
+//lxx add+,20141210
    gchar* current_uri; //lxx add for homepage
-         	//lxx add+,20141210
 		guint32 fontNum;
 		guint32 fontSizeNum;
 		guint32 pageZoomNum;	
 	//lxx add-,20141210 
-	
-    GtkWidget *entry1_general;
-    GtkWidget *button1_general;
-    GtkWidget *radiobutton1_general;
-    GtkWidget *radiobutton2_general;
-    GtkWidget *radiobutton3_general;
-    GtkWidget *radiobutton4_general;
-    GtkWidget *radiobutton5_general;
-    GtkWidget *radiobutton6_general;
-    GtkWidget * checkbutton1_general;
-    GtkWidget *checkbutton2_general;
-    GtkWidget *checkbutton3_general;
-    GtkWidget *checkbutton4_general;
-    GtkWidget *checkbutton5_general;
 
-    GtkWidget *comboboxtext1_content;
-    GtkWidget *comboboxtext2_content;
-    GtkWidget *comboboxtext3_content;
-    GtkWidget *checkbutton1_content;
+    GtkWidget *entry1_general;
     GtkWidget *radiobutton1_content;
     GtkWidget *radiobutton2_content;
     GtkWidget *radiobutton3_content;
     GtkWidget *radiobutton4_content;
 
-    GtkWidget *checkbutton3_privacy;
-    GtkWidget *comboboxtext1_privacy;
     GtkWidget *checkbutton4_privacy;
     GtkWidget *checkbutton5_privacy;
     GtkWidget *checkbutton6_privacy;
     GtkWidget *checkbutton7_privacy;
     GtkWidget *checkbutton8_privacy;
-    GtkWidget *radiobutton1_privacy;
-    GtkWidget *radiobutton2_privacy;
-    GtkWidget *radiobutton3_privacy;
-    GtkWidget *checkbutton9_privacy;
-    GtkWidget *radiobutton4_privacy;
-    GtkWidget *radiobutton5_privacy;
-    GtkWidget *radiobutton6_privacy;
-    GtkWidget *button3_privacy;
 
-    GtkWidget *checkbutton1_security;
-    GtkWidget *radiobutton1_security;
-    GtkWidget *radiobutton2_security;
-//lianxx add 14.11.13
-    GtkWidget *button1_advanced;
-    GtkWidget *button2_advanced;    
-	 GtkWidget *button3_advanced;	 
-    GtkWidget *button4_advanced;
-    GtkWidget *checkbutton1_advanced;
-	 GtkWidget *entry1_advanced;
-//luyue add
-   GtkWidget *button1_security;
+	GtkWidget *radiobutton1_security;
+	GtkWidget *radiobutton2_security;
 
-#endif
+	GtkWidget *entry1_advanced;
+	 GtkWidget *label1_advanced;
+//lxx add-,20141210
 	
     MidoriSettings parent_instance;
 
@@ -274,7 +238,6 @@ struct  _MidoriWebSettings
 
 };
 
-#endif
 
 MidoriSiteDataPolicy
 midori_web_settings_get_site_data_policy   (MidoriWebSettings* settings,
