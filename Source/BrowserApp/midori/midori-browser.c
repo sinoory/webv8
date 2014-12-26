@@ -319,6 +319,18 @@ midori_browser_update_secondary_icon (MidoriBrowser* browser,
 }
 
 static void
+midori_view_website_unknown_cb(GtkWidget*      view,
+                                 MidoriBrowser*  browser)
+{
+    g_print("sunh--midori_view_website_unknown_cb\n");
+    
+    GtkAction* action = _action_by_name (browser, "Location");
+    midori_location_action_set_security_hint (MIDORI_LOCATION_ACTION (action), GTK_WIDGET(view));
+    //midori_location_action_set_security_hint (
+            //MIDORI_LOCATION_ACTION (action), midori_tab_get_security (MIDORI_TAB (view))); 
+}
+
+static void
 _midori_browser_update_interface (MidoriBrowser* browser,
                                   MidoriView*    view)
 {
@@ -379,8 +391,9 @@ _midori_browser_update_interface (MidoriBrowser* browser,
         g_object_unref (icon);
     }
     else
-        midori_location_action_set_security_hint (
-            MIDORI_LOCATION_ACTION (action), midori_tab_get_security (MIDORI_TAB (view)));
+        midori_location_action_set_security_hint (MIDORI_LOCATION_ACTION (action), GTK_WIDGET (view));
+        //midori_location_action_set_security_hint (
+            //MIDORI_LOCATION_ACTION (action), midori_tab_get_security (MIDORI_TAB (view)));
     midori_browser_update_secondary_icon (browser, view, action);   //zgh 1203 +放开 1224
 }
 
@@ -1850,6 +1863,54 @@ midori_browser_close_tab_idle (gpointer view)
 #endif
 }
 
+static void
+midori_view_website_query_idle(gpointer data)
+{
+    //GtkWidget* web_tab = midori_browser_get_current_tab (MIDORI_BROWSER(data));//g_idle_add
+    //const gchar *web_tab_base_domain = midori_uri_get_base_domain(midori_tab_get_uri(web_tab));
+    gchar *base_domain = midori_uri_get_base_domain(midori_tab_get_uri(MIDORI_VIEW(data)));//midori_uri_is_http
+    if(midori_uri_is_http(base_domain)) 
+        if(!memcmp(base_domain, "http://", 7))
+            base_domain += 7;
+
+    gchar *web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", base_domain);
+    g_print("\t\tsunh--web_tab_uri[%s]\n", web_tab_uri);
+    GtkWidget* current_web_view = midori_view_get_web_view (MIDORI_VIEW (data));
+    printf("ZRL midori_view_website_query_idle() midori-view = %p, webview = %p \n", data, current_web_view);
+
+    gchar* jquerySrc = NULL;
+    GError * _inner_error_ = NULL;
+    gchar *backgroundSrc = NULL;
+
+    g_file_get_contents (midori_paths_get_res_filename("websitequery/jquery.js"), 
+                            &jquerySrc, 
+                            NULL, 
+                            &_inner_error_);
+
+    g_file_get_contents (midori_paths_get_res_filename("websitequery/background.js"), 
+                            &backgroundSrc, 
+                            NULL, 
+                            &_inner_error_);
+    gchar *queryStr = g_strdup_printf(backgroundSrc, web_tab_uri);
+    //g_print("\t\tsunh--queryStr[%s]\n", queryStr);
+    webkit_web_view_run_javascript(WEBKIT_WEB_VIEW (current_web_view), jquerySrc, NULL, NULL, NULL);
+    webkit_web_view_run_javascript(WEBKIT_WEB_VIEW (current_web_view), queryStr, NULL, NULL, NULL);
+    g_free(jquerySrc);
+    g_free(queryStr);
+    g_free(backgroundSrc);
+    g_print("sunh--midori_view_website_query_idel\n");
+}
+
+static void
+midori_view_website_query_cb(GtkWidget*      view,
+                                 WebKitWebView* web_view,
+                                 MidoriBrowser*  browser)
+
+{
+    g_idle_add (midori_view_website_query_idle, view);
+}
+
+
 static gboolean
 midori_view_download_requested_cb (GtkWidget*      view,
                                    WebKitDownload* download,
@@ -2080,6 +2141,11 @@ _midori_browser_add_tab (MidoriBrowser* browser,
     guint n;
 
     midori_browser_connect_tab (browser, view);
+
+    g_signal_connect(view, "website-query",
+                      midori_view_website_query_cb, browser);
+    g_signal_connect(view, "website-unknown",
+                  midori_view_website_unknown_cb, browser);
 
     if (!katze_item_get_meta_boolean (item, "append") &&
         katze_object_get_boolean (browser->settings, "open-tabs-next-to-current"))

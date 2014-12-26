@@ -10,5 +10,7 @@ foreach(SIZE 16x16 22x22 32x32 128x128 256x256)
     install_icon(extension categories ${SIZE})
     install_icon(bookmarked categories ${SIZE})
     install_icon(unbookmark categories ${SIZE})
+    install_icon(authensite categories ${SIZE})
+    install_icon(certifiedwebsite categories ${SIZE})
 endforeach()
 

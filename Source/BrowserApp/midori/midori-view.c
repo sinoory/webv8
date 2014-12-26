@@ -164,6 +164,9 @@ enum {
     DOWNLOAD_REQUESTED,
     ADD_BOOKMARK,
     ABOUT_CONTENT,
+    WEBSITE_QUERY,
+    WEBSITE_UNKNOWN,
+    WEBSITE_DATA,
 
     LAST_SIGNAL
 };
@@ -286,6 +289,39 @@ midori_view_class_init (MidoriViewClass* class)
         midori_cclosure_marshal_BOOLEAN__OBJECT,
         G_TYPE_BOOLEAN, 1,
         G_TYPE_OBJECT);
+
+    //by sunh add signal of website_query
+    signals[WEBSITE_QUERY] = g_signal_new (
+        "website-query",
+        G_TYPE_FROM_CLASS (class),
+        (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+        0,
+        0,
+        NULL,
+        g_cclosure_marshal_VOID__OBJECT,
+        G_TYPE_NONE, 1,
+        G_TYPE_OBJECT);
+
+    signals[WEBSITE_UNKNOWN] = g_signal_new (
+        "website-unknown",
+        G_TYPE_FROM_CLASS (class),
+        (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+        0,
+        0,
+        NULL,
+        g_cclosure_marshal_VOID__VOID,
+        G_TYPE_NONE, 0);
+
+    signals[WEBSITE_DATA] = g_signal_new (
+        "website-data",
+        G_TYPE_FROM_CLASS (class),
+        (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+        0,
+        0,
+        NULL,
+        g_cclosure_marshal_VOID__STRING,
+        G_TYPE_NONE, 1,
+        G_TYPE_POINTER);
 
     /**
      * MidoriView::add-bookmark:
@@ -554,6 +590,15 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
             webkit_policy_decision_download (decision);
             return TRUE;
         }
+
+        const gchar* w_uri = webkit_web_view_get_uri(web_view);
+        const gchar* d_uri = webkit_uri_response_get_uri(response);
+
+        if(!memcmp(w_uri, d_uri, strlen(w_uri) + 1))
+        {
+            g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_QUERY], 0, web_view);
+        }
+        
         webkit_policy_decision_use (decision);
         return TRUE;
     }
@@ -3061,6 +3106,22 @@ webkit_web_view_console_message_cb (GtkWidget*   web_view,
             g_critical ("Failed speed dial message: %s\n", error->message);
             g_error_free (error);
         }
+    }
+    else if(!strncmp (message, "website_query_info", 18)) 
+    {
+        /*TODO*/
+        gchar** wqi_array = NULL;
+        wqi_array = g_strsplit (message, "#", -1);
+        if(!memcmp(wqi_array[1], "unknown", 7))
+        {
+            g_strfreev (wqi_array);
+            return TRUE;
+        }
+
+        midori_tab_set_security (MIDORI_TAB (view), MIDORI_SECURITY_AUTHENTICATION);
+        g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_UNKNOWN], 0);
+        g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_DATA], 0, wqi_array);
+        g_strfreev (wqi_array);
     }
     else {
         g_signal_emit_by_name (view, "console-message", message, line, source_id);

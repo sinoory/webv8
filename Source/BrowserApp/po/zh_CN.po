@@ -3508,3 +3508,5 @@ msgstr "查看下载管理器"
 msgid "the bookmark is already exsit"
 msgstr "要添加的书签已存在"
 
+msgid "OpenFile"
+msgstr "执行"

@@ -77,7 +77,7 @@ midori_location_action_set_primary_icon     (MidoriLocationAction* location_acti
 
 void
 midori_location_action_set_security_hint    (MidoriLocationAction* location_action,
-                                             MidoriSecurity        hint);
+                                             GtkWidget* view);//MidoriSecurity        hint);
 
 gchar*
 midori_location_action_render_uri           (gchar**      keys,

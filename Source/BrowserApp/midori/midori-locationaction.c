@@ -1858,6 +1858,41 @@ midori_location_action_set_primary_icon (MidoriLocationAction* location_action,
     }
 }
 
+static void
+midori_view_website_data_cb(GtkWidget* view, gchar **web_data, gpointer data)
+{
+    g_print("sunh--midori_view_website_data_cb\n");
+    if(!web_data)
+        return;
+    gchar *auth_str = g_strdup_printf("主办单位:\n\t%s\n"
+                                              "主办单位性质:\n\t%s\n"
+                                              "网站备案/许可证号:\n\t%s\n"
+                                              "网站名称:\n\t%s\n"
+                                              "网站首页网址:\n\t%s\n"
+                                              "审核时间:\n\t%s\n",
+                                              web_data[1],
+                                              web_data[2],
+                                              web_data[3],
+                                              web_data[4],
+                                              web_data[5],
+                                              web_data[6]);
+    g_print("sunh--auth_str[%s]\n", auth_str);
+
+    GSList* proxies;
+    g_return_if_fail (MIDORI_IS_LOCATION_ACTION (MIDORI_LOCATION_ACTION(data)));
+    katze_assign (MIDORI_LOCATION_ACTION(data)->tooltip, g_strdup (auth_str));
+    proxies = gtk_action_get_proxies (GTK_ACTION (data));
+
+    for (; proxies != NULL; proxies = g_slist_next (proxies))
+    if (GTK_IS_TOOL_ITEM (proxies->data))
+    {
+        GtkWidget* entry = midori_location_action_entry_for_proxy (proxies->data);
+        gtk_entry_set_icon_tooltip_text (GTK_ENTRY (entry), GTK_ENTRY_ICON_PRIMARY, auth_str);
+    }
+}
+
+
+
 /**
  * midori_location_action_set_security_hint:
  * @location_action: a #MidoriLocationAction
@@ -1870,29 +1905,45 @@ midori_location_action_set_primary_icon (MidoriLocationAction* location_action,
  **/
 void
 midori_location_action_set_security_hint (MidoriLocationAction* location_action,
-                                          MidoriSecurity        hint)
+                                          GtkWidget*      view)
 {
     GIcon* icon;
     gchar* tooltip;
+    MidoriSecurity        hint;
 
+    g_print("sunh--midori_location_action_set_security_hint\n");
     g_return_if_fail (MIDORI_IS_LOCATION_ACTION (location_action));
 
+    hint = midori_tab_get_security (MIDORI_TAB (view));
     if (hint == MIDORI_SECURITY_UNKNOWN)
     {
+        g_print("\tsunh--MIDORI_SECURITY_UNKNOWN\n");
         gchar* icon_names[] = { "channel-insecure-symbolic", "lock-insecure", "dialog-information", NULL };
         icon = g_themed_icon_new_from_names (icon_names, -1);
         tooltip = _("Not verified");
     }
     else if (hint == MIDORI_SECURITY_TRUSTED)
     {
-        gchar* icon_names[] = { "channel-secure-symbolic", "lock-secure", "locked", NULL };
-        icon = g_themed_icon_new_from_names (icon_names, -1);
+        g_print("\tsunh--MIDORI_SECURITY_TRUSTED\n");
+        icon = g_themed_icon_new_with_default_fallbacks ("certifiedwebsite");
+        //gchar* icon_names[] = { "channel-secure-symbolic", "lock-secure", "locked", NULL };
+        //icon = g_themed_icon_new_from_names (icon_names, -1);
         tooltip = _("Verified and encrypted connection");
     }
     else if (hint == MIDORI_SECURITY_NONE)
     {
+        g_print("\tsunh--MIDORI_SECURITY_NONE\n");
         icon = g_themed_icon_new_with_default_fallbacks ("text-html-symbolic");
         tooltip = _("Open, unencrypted connection");
+    }
+    else if (hint == MIDORI_SECURITY_AUTHENTICATION)
+    {
+        //by sunh modify entry primary icon
+        icon = g_themed_icon_new_with_default_fallbacks ("authensite");
+        g_signal_connect(view, "website-data",
+                  midori_view_website_data_cb, location_action);
+
+        //tooltip = auth_str;
     }
     else
         g_assert_not_reached ();

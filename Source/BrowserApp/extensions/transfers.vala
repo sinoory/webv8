@@ -116,7 +116,8 @@ namespace Transfers {
                 separator.set_expand (true);
                 toolbar.insert (separator, -1);
                 clear = new Gtk.ToolButton.from_stock (Gtk.STOCK_CLEAR);
-                clear.label = _("Clear All");
+                //clear.label = _("Clear All");
+		clear.label = "清空";
                 clear.is_important = true;
                 clear.set_tooltip_text("全部清除");
                 clear.clicked.connect (clear_clicked);
@@ -125,7 +126,7 @@ namespace Transfers {
                 toolbar.insert (separator, 0);      
 
                 open_dir = new Gtk.ToolButton.from_stock (Gtk.STOCK_DIRECTORY);
-                open_dir.label = "打开目录";
+                open_dir.label = "目录";
                 open_dir.is_important = true;
                 open_dir.clicked.connect (open_dir_clicked);
                 open_dir.set_tooltip_text("打开目录");
@@ -133,7 +134,7 @@ namespace Transfers {
                 //toolbar.insert (separator, 0);      
                 
                 open_file = new Gtk.ToolButton.from_stock (Gtk.STOCK_NEW);//GTK_STOCK_FILE
-                open_file.label = "打开文件";
+                open_file.label = _("OpenFile");
                 open_file.is_important = true;
                 open_file.clicked.connect (open_file_clicked);
 		 open_file.set_tooltip_text("打开文件");
@@ -141,7 +142,7 @@ namespace Transfers {
                 //toolbar.insert (separator, 0);      
                 
                 cancel_dl = new Gtk.ToolButton.from_stock (Gtk.STOCK_CANCEL);
-                cancel_dl.label = "暂停\\删除";
+                cancel_dl.label = "取消";
                 cancel_dl.is_important = true;
                 cancel_dl.clicked.connect (cancel_dl_clicked);
 		 cancel_dl.set_tooltip_text("暂停\\删除");
@@ -149,7 +150,7 @@ namespace Transfers {
                 //toolbar.insert (separator, 0);      
                 
                 start_dl = new Gtk.ToolButton.from_stock (Gtk.STOCK_MEDIA_PLAY);
-                start_dl.label = "重新下载";
+                start_dl.label = "重试";
                 start_dl.is_important = true;
                 start_dl.clicked.connect (start_dl_clicked);
 		 start_dl.set_tooltip_text("重新下载");
@@ -157,7 +158,7 @@ namespace Transfers {
                 //toolbar.insert (separator, 0);      
                 
                 new_dl = new Gtk.ToolButton.from_stock (Gtk.STOCK_ADD);
-                new_dl.label = "新建下载";
+                new_dl.label = "新建";
                 new_dl.is_important = true;
                 new_dl.clicked.connect (new_dl_clicked);
 		 new_dl.set_tooltip_text("新建下载");
@@ -182,6 +183,32 @@ namespace Transfers {
                 var transfer = item as Transfer;
                 var folder = GLib.File.new_for_uri (transfer.destination);
                 (Midori.Browser.get_for_widget (this).tab as Midori.Tab).open_uri (folder.get_parent ().get_uri ());
+                /*
+                //r argv = {"xdg-open", folder,null};
+                string[] argv = {"xdg-open", folder.get_parent ().get_uri (),null};
+                
+                //argv[0] = "xdg-open";
+                //argv[1] = folder;
+                //GLib.hostname_to_ascii(string hostname)
+                //GLib. g_spawn_async(null,argv,null, g_spawn_async_utf8
+
+                GLib.Spawn.async_utf8(null,argv,null,
+                                        GLib.GSpawnFlags.SEARCH_PATH
+                                        |GLib.GSpawnFlags.STDOUT_TO_DEV_NULL
+                                        |GLib.GSpawnFlags.STDERR_TO_DEV_NULL
+                                        |GLib.GSpawnFlags.STDERR_TO_DEV_NULL,
+                                        null,null,null,null);
+                //(Midori.Browser.get_for_widget (this).tab as Midori.Tab).open_uri (folder.get_parent ().get_uri ());
+                
+                char *argv[] = {"xdg-open", download_path, NULL} ;
+
+                g_spawn_async( NULL, (gchar **)argv, NULL, (GSpawnFlags)(G_SPAWN_SEARCH_PATH |
+                G_SPAWN_STDOUT_TO_DEV_NULL |
+                G_SPAWN_STDERR_TO_DEV_NULL |
+                G_SPAWN_STDERR_TO_DEV_NULL),
+                NULL, NULL, NULL, NULL );    
+                */
+                
             }
         }
 
@@ -667,8 +694,8 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
             int reqwidth = req.width;
             int winwidth;
             (get_toplevel () as Gtk.Window).get_size (out winwidth, null);
-            if (reqwidth > winwidth)
-                clear_clicked ();
+            //if (reqwidth > winwidth)
+                //clear_clicked ();
         }
 
         void transfer_removed (GLib.Object item) {
@@ -729,11 +756,14 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
                 if (!Midori.Download.has_wrong_checksum (transfer.download))
                     Gtk.RecentManager.get_default ().add_item (uri);
 
+                /*
                 notifications.append (filename);
                 if (notification_timeout == 0) {
+
                     notification_timeout_triggered ();
                     notification_timeout = Midori.Timeout.add_seconds (60, notification_timeout_triggered);
                 }
+                */
             }
         }
 
