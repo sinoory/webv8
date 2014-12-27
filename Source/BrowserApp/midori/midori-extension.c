@@ -540,7 +540,7 @@ midori_extension_load_from_folder (MidoriApp* app,
     if (!g_module_supported ())
         return;
 
-    gchar* extension_path = midori_paths_get_lib_path (PACKAGE_NAME);
+    gchar* extension_path = midori_paths_get_extension_lib_path (PACKAGE_NAME);
     
     if (!extension_path)
         return;

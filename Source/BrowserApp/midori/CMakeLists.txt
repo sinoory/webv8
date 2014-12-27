@@ -116,17 +116,14 @@ set_target_properties(${LIBMIDORI} PROPERTIES
                       SOVERSION 1
                       VERSION 0.0.0
                       )
-if (WIN32)
-    install(TARGETS ${LIBMIDORI}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-            )
-else ()
-    install(TARGETS ${LIBMIDORI}
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            )
-endif ()
 
+# 默认情况下CMAKE_INSTALL_PREFIX为/usr/local
+#install(TARGETS ${LIBMIDORI} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS ${LIBMIDORI} LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${MIDORI_PROJECT_NAME}")
+
+# 若修改了injectedbundle, WebProcess等库位置，则也应修改此处定义
+add_definitions(-DWEBKIT_EXEC_PATH="${LIBEXEC_INSTALL_DIR}")
+add_definitions(-DWEBKIT_INJECTED_BUNDLE_PATH="${BROWSER_LIB_INSTALL_DIR}")
 if (WIN32)
     add_executable(${MIDORI_PROJECT_NAME} WIN32 main.c "${CMAKE_SOURCE_DIR}/data/midori.rc")
 else()
@@ -160,6 +157,7 @@ target_link_libraries(${MIDORI_PROJECT_NAME}
 set_target_properties(${MIDORI_PROJECT_NAME} PROPERTIES
                       COMPILE_FLAGS ${CFLAGS}
                       )
+set_target_properties(${MIDORI_PROJECT_NAME} PROPERTIES INSTALL_RPATH "${BROWSER_LIB_INSTALL_DIR}")
 install(TARGETS ${MIDORI_PROJECT_NAME}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         )

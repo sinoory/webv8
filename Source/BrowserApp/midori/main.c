@@ -120,6 +120,10 @@ main (int    argc,
      { NULL }
     };
 
+    // 设置InjectedBundle相关的全局变量
+    g_setenv("WEBKIT_INJECTED_BUNDLE_PATH", WEBKIT_INJECTED_BUNDLE_PATH, FALSE);
+    g_setenv("WEBKIT_EXEC_PATH", WEBKIT_INJECTED_BUNDLE_PATH, FALSE);
+
     /* Parse cli options */
     webapp = NULL;
     config = NULL;

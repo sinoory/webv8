@@ -18,7 +18,8 @@ file(REMOVE_RECURSE ${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/)
 
 file(GLOB_RECURSE DATA_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *)
 list(REMOVE_ITEM DATA_FILES "CMakeLists.txt")
-list(REMOVE_ITEM DATA_FILES "cmake_install.cmake" "CTestTestfile.cmake" "Makefile" "cdosbrowser.appdata.xml.in" "cdosbrowser-private.desktop" "cdosbrowser.desktop")
+list(REMOVE_ITEM DATA_FILES "cmake_install.cmake" "CTestTestfile.cmake" "Makefile" "cdosbrowser.appdata.xml.in" "cdosbrowser-private.desktop" "cdosbrowser.desktop"
+                            "faq.html" "faq.css")
 
 foreach(FILE ${DATA_FILES})
     if (${FILE} MATCHES "faq.")

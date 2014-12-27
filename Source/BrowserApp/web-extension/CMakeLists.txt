@@ -1,5 +1,5 @@
 # Created by jiayu for building web-extension 
-set(EXTENSIONDIR "/usr/local/lib/${MIDORI_PROJECT_NAME}/web-extension")
+set(EXTENSIONDIR "${BROWSER_EXTENSION_INSTALL_DIR}")
 set(MIDORI_DIR "${CMAKE_SOURCE_DIR}/Source/BrowserApp")
 set(EXTRALIB_DIR_secret "/usr/include/libsecret-1")
 set(EXTRALIB_DIR_xml "/usr/include/libxml2/")
@@ -56,8 +56,11 @@ set(BrowserApp_INCLUDE_DIRECTORIES
     ${MIDORI_DIR}/web-extension-base
 )
 
-add_definitions(-DWEBKIT_EXEC_PATH="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-add_definitions(-DWEBKIT_INJECTED_BUNDLE_PATH="${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+#add_definitions(-DWEBKIT_EXEC_PATH="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+#add_definitions(-DWEBKIT_INJECTED_BUNDLE_PATH="${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+#add_definitions(-DBROWSER_WEB_EXTENSION_PATH="${EXTENSIONDIR}")
+add_definitions(-DWEBKIT_EXEC_PATH="${LIBEXEC_INSTALL_DIR}")
+add_definitions(-DWEBKIT_INJECTED_BUNDLE_PATH="${BROWSER_LIB_INSTALL_DIR}")
 add_definitions(-DBROWSER_WEB_EXTENSION_PATH="${EXTENSIONDIR}")
 
 #contruct a shared library

@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-DEBIAN_NAME		:= CuprumBrowser
+DEBIAN_NAME		:= cdosbrowser
 DEBIAN_VERSION		:= 0.2
 
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
@@ -16,21 +16,25 @@ DEB_TAR_SRCDIR := .
 SRC_DIR = $(CURDIR)
 LIB_DIR        := usr/lib/$(DEBIAN_NAME)
 BINARY_PACKAGE_COMPRESSION ?= xz
-INSTALL_DIR = $(CURDIR)/debian/tmp/usr/local/cuprumbrowser
-tmp_INSTALL_DIR=/usr/local/cuprumtest
-
+INSTALL_DIR = $(CURDIR)/debian/tmp/usr/local
+tmp_INSTALL_DIR=/usr/local
+ThirdParty_DIR=$(SRC_DIR)/Source/ThirdParty/
 
 #mainIn
 build: build-stamp
 
+build_thirdparty:
+	cd $(ThirdParty_DIR) && tar -zxvf openssl-1.0.0d.tar.gz && cd $(ThirdParty_DIR)/openssl-1.0.0d && ./config && make && cd $(SRC_DIR) && cp -rf $(ThirdParty_DIR)/openssl-1.0.0d/lib*.a $(SRC_DIR)/lib
+
 # cmake config for webkit project
 cmakeconfig:
-	cmake -DCMAKE_PREFIX_PATH:PATH=$(tmp_INSTALL_DIR) -DCMAKE_INSTALL_PREFIX:PATH=$(tmp_INSTALL_DIR) -DCMAKE_INSTALL_LIBDIR:PATH=lib -DCMAKE_EXE_LINKER_FLAGS:STRING='-L/usr/local/cuprumtest/lib' -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCMAKE_INSTALL_RPATH=$(tmp_INSTALL_DIR)/lib -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE
+	echo "build release version start..." && sleep 3
+	cmake -DUSE_32BITS=1 -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=OFF
 
 # Build webkit project.
-build-stamp: cmakeconfig
+build-stamp: build_thirdparty cmakeconfig
 	dh_testdir
-	cd $(SRC_DIR) && $(MAKE) -j16
+	cd $(SRC_DIR) && $(MAKE) -j4 && echo ******Build release SUCCESS********
 	touch $@
 
 clean:
@@ -46,7 +50,8 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
-	cp -rf $(CURDIR)/bin/resources $(CURDIR)/debian/tmp/usr/local/cuprumtest/bin/
+
+#	cp -rf $(CURDIR)/bin/resources $(CURDIR)/debian/tmp/usr/local/cuprumtest/bin/
 
 binary-indep: build install
 

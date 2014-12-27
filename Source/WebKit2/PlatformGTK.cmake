@@ -10,7 +10,8 @@ configure_file(webkit2gtk-web-extension.pc.in ${WebKit2WebExtension_PKGCONFIG_FI
 add_definitions(-DWEBKIT2_COMPILATION)
 add_definitions(-DLIBEXECDIR="${LIBEXEC_INSTALL_DIR}")
 add_definitions(-DPACKAGE_LOCALE_DIR="${CMAKE_INSTALL_FULL_LOCALEDIR}")
-add_definitions(-DLIBDIR="${LIB_INSTALL_DIR}")
+#add_definitions(-DLIBDIR="${LIB_INSTALL_DIR}")
+add_definitions(-DLIBDIR="${BROWSER_LIB_INSTALL_DIR}")
 
 set(WebKit2_USE_PREFIX_HEADER ON)
 
@@ -691,6 +692,7 @@ if (ENABLE_PLUGIN_PROCESS_GTK2)
     )
     ADD_WHOLE_ARCHIVE_TO_LIBRARIES(WebKitPluginProcess2_LIBRARIES)
     target_link_libraries(WebKitPluginProcess2 ${WebKitPluginProcess2_LIBRARIES})
+    set_target_properties(WebKitPluginProcess2 PROPERTIES INSTALL_RPATH "${BROWSER_LIB_INSTALL_DIR}")
 
     add_dependencies(WebKitPluginProcess2 WebKit2)
 
@@ -818,25 +820,28 @@ add_custom_command(
 ADD_TYPELIB(${CMAKE_BINARY_DIR}/WebKit2-${WEBKITGTK_API_VERSION}.typelib)
 ADD_TYPELIB(${CMAKE_BINARY_DIR}/WebKit2WebExtension-${WEBKITGTK_API_VERSION}.typelib)
 
-install(TARGETS webkit2gtkinjectedbundle
-        DESTINATION "${LIB_INSTALL_DIR}/webkit2gtk-${WEBKITGTK_API_VERSION}/injected-bundle"
-)
-install(FILES "${CMAKE_BINARY_DIR}/Source/WebKit2/webkit2gtk-${WEBKITGTK_API_VERSION}.pc"
-              "${CMAKE_BINARY_DIR}/Source/WebKit2/webkit2gtk-web-extension-${WEBKITGTK_API_VERSION}.pc"
-        DESTINATION "${LIB_INSTALL_DIR}/pkgconfig"
-)
-install(FILES ${WebKit2GTK_INSTALLED_HEADERS}
-              ${WebKit2WebExtension_INSTALLED_HEADERS}
-        DESTINATION "${WEBKITGTK_HEADER_INSTALL_DIR}/webkit2"
-)
-install(FILES ${CMAKE_BINARY_DIR}/WebKit2-${WEBKITGTK_API_VERSION}.gir
-              ${CMAKE_BINARY_DIR}/WebKit2WebExtension-${WEBKITGTK_API_VERSION}.gir
-        DESTINATION ${INTROSPECTION_INSTALL_GIRDIR}
-)
-install(FILES ${CMAKE_BINARY_DIR}/WebKit2-${WEBKITGTK_API_VERSION}.typelib
-              ${CMAKE_BINARY_DIR}/WebKit2WebExtension-${WEBKITGTK_API_VERSION}.typelib
-        DESTINATION ${INTROSPECTION_INSTALL_TYPELIBDIR}
-)
+# ZRL 修改webkit2gtkinjectedbundle的安装路径，与其他动态库位于一个路径下 若修改了webkit2gtkinjectedbundle安装路径，则相应修改BrowserApp中的WEBKIT_INJECTED_BUNDLE_PATH
+#install(TARGETS webkit2gtkinjectedbundle
+#        DESTINATION "${LIB_INSTALL_DIR}/webkit2gtk-${WEBKITGTK_API_VERSION}/injected-bundle"
+#)
+install(TARGETS webkit2gtkinjectedbundle DESTINATION "${BROWSER_LIB_INSTALL_DIR}")
+# ZRL 内部使用，不需要安装pkgconfig
+#install(FILES "${CMAKE_BINARY_DIR}/Source/WebKit2/webkit2gtk-${WEBKITGTK_API_VERSION}.pc"
+#              "${CMAKE_BINARY_DIR}/Source/WebKit2/webkit2gtk-web-extension-${WEBKITGTK_API_VERSION}.pc"
+#        DESTINATION "${LIB_INSTALL_DIR}/pkgconfig"
+#)
+#install(FILES ${WebKit2GTK_INSTALLED_HEADERS}
+#              ${WebKit2WebExtension_INSTALLED_HEADERS}
+#        DESTINATION "${WEBKITGTK_HEADER_INSTALL_DIR}/webkit2"
+#)
+#install(FILES ${CMAKE_BINARY_DIR}/WebKit2-${WEBKITGTK_API_VERSION}.gir
+#              ${CMAKE_BINARY_DIR}/WebKit2WebExtension-${WEBKITGTK_API_VERSION}.gir
+#        DESTINATION ${INTROSPECTION_INSTALL_GIRDIR}
+#)
+#install(FILES ${CMAKE_BINARY_DIR}/WebKit2-${WEBKITGTK_API_VERSION}.typelib
+#              ${CMAKE_BINARY_DIR}/WebKit2WebExtension-${WEBKITGTK_API_VERSION}.typelib
+#        DESTINATION ${INTROSPECTION_INSTALL_TYPELIBDIR}
+#)
 
 file(WRITE ${CMAKE_BINARY_DIR}/gtkdoc-webkit2gtk.cfg
     "[webkit2gtk]\n"

@@ -791,15 +791,15 @@ file(WRITE ${CMAKE_BINARY_DIR}/gtkdoc-webkitdom.cfg
     "headers=${GObjectDOMBindingsStable_INSTALLED_HEADERS}\n"
 )
 
-install(FILES ${GObjectDOMBindingsStable_INSTALLED_HEADERS}
-        DESTINATION "${WEBKITGTK_HEADER_INSTALL_DIR}/webkitdom"
-)
+#install(FILES ${GObjectDOMBindingsStable_INSTALLED_HEADERS}
+#        DESTINATION "${WEBKITGTK_HEADER_INSTALL_DIR}/webkitdom"
+#)
 
 # Make unstable header optional if they don't exist
-install(FILES ${GObjectDOMBindingsUnstable_INSTALLED_HEADERS}
-        DESTINATION "${WEBKITGTK_HEADER_INSTALL_DIR}/webkitdom"
-        OPTIONAL
-)
+#install(FILES ${GObjectDOMBindingsUnstable_INSTALLED_HEADERS}
+#        DESTINATION "${WEBKITGTK_HEADER_INSTALL_DIR}/webkitdom"
+#        OPTIONAL
+#)
 
 # Some installed headers are not on the list of headers used for gir generation.
 set(GObjectDOMBindings_GIR_HEADERS ${GObjectDOMBindingsStable_INSTALLED_HEADERS})

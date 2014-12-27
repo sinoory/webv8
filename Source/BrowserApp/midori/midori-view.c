@@ -3289,9 +3289,15 @@ midori_web_view_create_form_auth_save_confirmation_info_bar (MidoriView *web_vie
 
   //LOG ("Going to show infobar about %s", webkit_web_view_get_uri (WEBKIT_WEB_VIEW (web_view)));
 
-  info_bar = gtk_info_bar_new_with_buttons (_("Save"), GTK_RESPONSE_YES,
+// ZRL 区分gtk版本
+#if GTK_CHECK_VERSION (3, 10, 0)
+  info_bar = gtk_info_bar_new_with_buttons (_("Save"), GTK_RESPONSE_YES, 
                                             NULL);
   gtk_info_bar_set_show_close_button (GTK_INFO_BAR (info_bar), TRUE);
+#else
+  info_bar = gtk_info_bar_new_with_buttons (_("Save"), GTK_RESPONSE_YES, _("Close"), GTK_RESPONSE_CLOSE,
+                                            NULL);
+#endif
 
   action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (info_bar));
   gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area),

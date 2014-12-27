@@ -1,8 +1,5 @@
 # FindIntltool.cmake
-#
-# Jim Nelson <jim@yorba.org>
-# Copyright 2012-2013 Yorba Foundation
-# Copyright (C) 2013 Christian Dywan
+# ZRL 将desktop文件安装在/usr/share/applications/路径下
 
 find_program (INTLTOOL_MERGE_EXECUTABLE intltool-merge)
 find_program (INTLTOOL_UPDATE_EXECUTABLE intltool-update)
@@ -14,8 +11,10 @@ if (INTLTOOL_MERGE_EXECUTABLE)
             ${INTLTOOL_MERGE_EXECUTABLE} --desktop-style ${CMAKE_SOURCE_DIR}/${po_dir}
                 ${CMAKE_CURRENT_SOURCE_DIR}/${desktop_id}.desktop.in ${desktop_id}.desktop
         )
+#        install (FILES "${CMAKE_CURRENT_BINARY_DIR}/${desktop_id}.desktop"
+#                 DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications")
         install (FILES "${CMAKE_CURRENT_BINARY_DIR}/${desktop_id}.desktop"
-                 DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications")
+                 DESTINATION "/usr/share/applications")
     endmacro (INTLTOOL_MERGE_DESKTOP desktop_id po_dir)
     macro (INTLTOOL_MERGE_APPDATA desktop_id po_dir)
         add_custom_target ("${desktop_id}.appdata.xml" ALL

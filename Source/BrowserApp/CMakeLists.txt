@@ -9,7 +9,8 @@ if ("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" VERSI
     cmake_policy(SET CMP0002 OLD)
 endif ()
 project(cdosbrowser C)
-set(MIDORI_PROJECT_NAME "cdosbrowser") # ZRL define this
+
+set(MIDORI_PROJECT_NAME "${BROWSER_PROJECT_NAME}") # ZRL ${BROWSER_PROJECT_NAME}定义在主工程的CMakeLists.txt
 add_definitions("-DPACKAGE_NAME=\"${MIDORI_PROJECT_NAME}\"")
 add_definitions("-DPACKAGE_BUGREPORT=\"https://bugs.launchpad.net/cdosbrowser\"")
 
@@ -58,7 +59,7 @@ set(DATADIR ${CMAKE_INSTALL_FULL_DATADIR})
 add_definitions("-DMDATADIR=\"${DATADIR}\"")
 add_definitions("-DSYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"")
 #add_definitions("-DLIBDIR=\"${CMAKE_INSTALL_FULL_LIBDIR}\"")
-add_definitions("-DLIBDIR=\"/usr/local/lib\"")
+add_definitions("-DLIBDIR=\"${CMAKE_INSTALL_PREFIX}/lib\"")
 add_definitions("-DDOCDIR=\"${CMAKE_INSTALL_FULL_DOCDIR}\"")
 
 add_definitions("-DENABLE_NLS=1")
@@ -286,7 +287,8 @@ add_custom_target (uninstall
 
 #install(FILES AUTHORS ChangeLog DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
-add_definitions("-DBROWSER_WEB_EXTENSION_PATH=\"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}\"")
+#add_definitions("-DBROWSER_WEB_EXTENSION_PATH=\"${CMAKE_LIBRARY_OUTPUT_DIRECTORY}\"")
+add_definitions("-DBROWSER_WEB_EXTENSION_PATH=\"${BROWSER_EXTENSION_INSTALL_DIR}\"")
 
 add_subdirectory (midori)
 add_subdirectory (extensions)

@@ -1,7 +1,7 @@
 # Copyright (C) 2013 Christian Dywan <christian@twotoasts.de>
 
 #set(EXTENSIONDIR "${CMAKE_INSTALL_FULL_LIBDIR}/${MIDORI_PROJECT_NAME}")
-set(EXTENSIONDIR "/usr/local/lib/${MIDORI_PROJECT_NAME}")
+set(EXTENSIONDIR "${BROWSER_EXTENSION_INSTALL_DIR}")
 set(MIDORI_SOURCE_DIR "${CMAKE_SOURCE_DIR}/Source/BrowserApp")
 set(DERIVED_SOURCE_MIDORI_EXTENSIONS ${DERIVED_SOURCES_MIDORI_DIR}/extensions)
 
@@ -86,6 +86,13 @@ if (WIN32)
     list(REMOVE_ITEM EXTENSIONS "webmedia-now-playing.vala")
 endif()
 
+# ZRL 暂时去除以下扩展，待有用时再酌情添加
+list(REMOVE_ITEM EXTENSIONS "colorful-tabs.c" "copy-tabs.c" "devpet.vala" "devpet.c" "devpet.h" "devpet_valac.stamp"
+                            "domain-keys.vala" "domain-keys.c" "domain-keys.h" "domain-keys_valac.stamp" "cookie-manager"
+                            "status-clock.c" "history-list.vala" "history-list.c" "history-list.h" "history-list_valac.stamp"
+                            "mouse-gestures.c" "notes.vala" "notes.c" "notes.h" "notes_valac.stamp" "shortcuts.c"
+                            "statusbar-features.c" "tab-panel.c" "tab-panel.h" "tabs-minimized.c" "toolbar-editor.c"
+                            "webmedia-now-playing.vala" "webmedia-now-playing.c" "webmedia-now-playing.h" "webmedia-now-playing_valac.stamp")
 foreach(UNIT_SRC ${EXTENSIONS})
     string(FIND ${UNIT_SRC} ".c" UNIT_EXTENSION)
     if (UNIT_EXTENSION GREATER -1)

@@ -1,4 +1,4 @@
-cuprumbrowser (0.2) May23; urgency=low
+cdosbrowser (0.0.1) Dec20; urgency=low
 
   * Initial release (LP: #231731)
 
@@ -14,4 +14,4 @@ cuprumbrowser (0.2) May23; urgency=low
   - Fix WebKitSettings:enable-smooth-scrolling to actually enable
     smooth scrolling.
   - Fix the build with drag and drop support disabled.
- -- ZhangRuili <zhangrl_os@sari.ac.cn>  Sat, 1 Nov 2014 16:50:08 +0800
+ -- ZhangRuili <zhangrl_os@sari.ac.cn>  Sat, 20 Dec 2014 16:50:08 +0800

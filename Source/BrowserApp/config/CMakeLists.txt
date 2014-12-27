@@ -17,8 +17,8 @@ foreach (FILE ${CONFIG_FILES})
         string (REPLACE "config" "" dirname ${FILE})
         install (FILES ${FILE}
             DESTINATION "${CMAKE_INSTALL_SYSCONFDIR}/${XDG_CONFIG_DIR}/${dirname}")
-    else ()
-        install (FILES ${FILE}
-            DESTINATION "${CMAKE_INSTALL_SYSCONFDIR}/${XDG_CONFIG_DIR}")
+#    else ()
+#        install (FILES ${FILE}
+#            DESTINATION "${CMAKE_INSTALL_SYSCONFDIR}/${XDG_CONFIG_DIR}")
     endif ()
 endforeach ()
