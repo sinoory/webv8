@@ -1858,6 +1858,7 @@ midori_location_action_set_primary_icon (MidoriLocationAction* location_action,
     }
 }
 
+#if ENABLE_WEBSITE_AUTH
 static void
 midori_view_website_data_cb(GtkWidget* view, gchar **web_data, gpointer data)
 {
@@ -1890,8 +1891,7 @@ midori_view_website_data_cb(GtkWidget* view, gchar **web_data, gpointer data)
         gtk_entry_set_icon_tooltip_text (GTK_ENTRY (entry), GTK_ENTRY_ICON_PRIMARY, auth_str);
     }
 }
-
-
+#endif
 
 /**
  * midori_location_action_set_security_hint:
@@ -1903,6 +1903,40 @@ midori_view_website_data_cb(GtkWidget* view, gchar **web_data, gpointer data)
  *
  * Since: 0.2.5
  **/
+#if !ENABLE_WEBSITE_AUTH
+void
+midori_location_action_set_security_hint (MidoriLocationAction* location_action,
+                                          MidoriSecurity        hint)
+{
+    GIcon* icon;
+    gchar* tooltip;
+
+    g_return_if_fail (MIDORI_IS_LOCATION_ACTION (location_action));
+
+    if (hint == MIDORI_SECURITY_UNKNOWN)
+    {
+        gchar* icon_names[] = { "channel-insecure-symbolic", "lock-insecure", "dialog-information", NULL };
+        icon = g_themed_icon_new_from_names (icon_names, -1);
+        tooltip = _("Not verified");
+    }
+    else if (hint == MIDORI_SECURITY_TRUSTED)
+    {
+        gchar* icon_names[] = { "channel-secure-symbolic", "lock-secure", "locked", NULL };
+        icon = g_themed_icon_new_from_names (icon_names, -1);
+        tooltip = _("Verified and encrypted connection");
+    }
+    else if (hint == MIDORI_SECURITY_NONE)
+    {
+        icon = g_themed_icon_new_with_default_fallbacks ("text-html-symbolic");
+        tooltip = _("Open, unencrypted connection");
+    }
+    else
+        g_assert_not_reached ();
+
+    midori_location_action_set_primary_icon (location_action, icon, tooltip);
+    g_object_unref (icon);
+}
+#else
 void
 midori_location_action_set_security_hint (MidoriLocationAction* location_action,
                                           GtkWidget*      view)
@@ -1951,3 +1985,4 @@ midori_location_action_set_security_hint (MidoriLocationAction* location_action,
     midori_location_action_set_primary_icon (location_action, icon, tooltip);
     g_object_unref (icon);
 }
+#endif

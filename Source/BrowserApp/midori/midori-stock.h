@@ -38,7 +38,7 @@
 #define STOCK_DOWNLOAD           "gtk-go-down"
 #define STOCK_BOOKMARKED         "bookmarked"
 #define STOCK_UNBOOKMARK         "unbookmark"
-#define STOCK_ENTRY           "authensite" 
+#define STOCK_ENTRY              "authensite" 
 #define STOCK_SECURITY           "certifiedwebsite"
 
 #endif /* !__MIDORI_STOCK_H__ */

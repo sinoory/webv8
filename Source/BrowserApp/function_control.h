@@ -11,4 +11,7 @@
 //控制撤销关闭标签功能
 #define ENABLE_TRASH 0
 
+//控制网站鉴定功能
+#define ENABLE_WEBSITE_AUTH 0
+
 #endif

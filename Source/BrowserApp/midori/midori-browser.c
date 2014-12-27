@@ -318,6 +318,7 @@ midori_browser_update_secondary_icon (MidoriBrowser* browser,
 #endif
 }
 
+#if ENABLE_WEBSITE_AUTH
 static void
 midori_view_website_unknown_cb(GtkWidget*      view,
                                  MidoriBrowser*  browser)
@@ -329,6 +330,7 @@ midori_view_website_unknown_cb(GtkWidget*      view,
     //midori_location_action_set_security_hint (
             //MIDORI_LOCATION_ACTION (action), midori_tab_get_security (MIDORI_TAB (view))); 
 }
+#endif
 
 static void
 _midori_browser_update_interface (MidoriBrowser* browser,
@@ -1863,6 +1865,7 @@ midori_browser_close_tab_idle (gpointer view)
 #endif
 }
 
+#if ENABLE_WEBSITE_AUTH
 static void
 midori_view_website_query_idle(gpointer data)
 {
@@ -1909,7 +1912,7 @@ midori_view_website_query_cb(GtkWidget*      view,
 {
     g_idle_add (midori_view_website_query_idle, view);
 }
-
+#endif
 
 static gboolean
 midori_view_download_requested_cb (GtkWidget*      view,
@@ -2142,10 +2145,12 @@ _midori_browser_add_tab (MidoriBrowser* browser,
 
     midori_browser_connect_tab (browser, view);
 
+#if ENABLE_WEBSITE_AUTH
     g_signal_connect(view, "website-query",
                       midori_view_website_query_cb, browser);
     g_signal_connect(view, "website-unknown",
                   midori_view_website_unknown_cb, browser);
+#endif
 
     if (!katze_item_get_meta_boolean (item, "append") &&
         katze_object_get_boolean (browser->settings, "open-tabs-next-to-current"))
@@ -4846,7 +4851,7 @@ _action_bookmark_add_activate (GtkAction*     action,
         midori_browser_edit_bookmark_dialog_new (browser, NULL, TRUE, FALSE, proxy);
         midori_location_action_set_secondary_icon (
                 MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARKED);  //add by zgh 1224
-    _update_tooltip_if_changed(action, _("Bookmark already exsit"));    //zgh 1225
+        _update_tooltip_if_changed(action, _("Bookmark already exsit"));    //zgh 1225
     }
 }
 

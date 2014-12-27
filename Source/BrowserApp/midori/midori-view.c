@@ -164,10 +164,11 @@ enum {
     DOWNLOAD_REQUESTED,
     ADD_BOOKMARK,
     ABOUT_CONTENT,
+#if ENABLE_WEBSITE_AUTH
     WEBSITE_QUERY,
     WEBSITE_UNKNOWN,
     WEBSITE_DATA,
-
+#endif
     LAST_SIGNAL
 };
 
@@ -290,6 +291,7 @@ midori_view_class_init (MidoriViewClass* class)
         G_TYPE_BOOLEAN, 1,
         G_TYPE_OBJECT);
 
+#if ENABLE_WEBSITE_AUTH
     //by sunh add signal of website_query
     signals[WEBSITE_QUERY] = g_signal_new (
         "website-query",
@@ -322,6 +324,7 @@ midori_view_class_init (MidoriViewClass* class)
         g_cclosure_marshal_VOID__STRING,
         G_TYPE_NONE, 1,
         G_TYPE_POINTER);
+#endif
 
     /**
      * MidoriView::add-bookmark:
@@ -591,6 +594,7 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
             return TRUE;
         }
 
+#if ENABLE_WEBSITE_AUTH
         const gchar* w_uri = webkit_web_view_get_uri(web_view);
         const gchar* d_uri = webkit_uri_response_get_uri(response);
 
@@ -598,7 +602,8 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
         {
             g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_QUERY], 0, web_view);
         }
-        
+#endif
+
         webkit_policy_decision_use (decision);
         return TRUE;
     }
@@ -3107,6 +3112,7 @@ webkit_web_view_console_message_cb (GtkWidget*   web_view,
             g_error_free (error);
         }
     }
+#if ENABLE_WEBSITE_AUTH
     else if(!strncmp (message, "website_query_info", 18)) 
     {
         /*TODO*/
@@ -3123,6 +3129,7 @@ webkit_web_view_console_message_cb (GtkWidget*   web_view,
         g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_DATA], 0, wqi_array);
         g_strfreev (wqi_array);
     }
+#endif
     else {
         g_signal_emit_by_name (view, "console-message", message, line, source_id);
     }
