@@ -65,7 +65,7 @@ add_definitions("-DDOCDIR=\"${CMAKE_INSTALL_FULL_DOCDIR}\"")
 add_definitions("-DENABLE_NLS=1")
 add_definitions("-DLOCALEDIR=\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
 
-file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/config.h" "/* # generated file (stub) */")
+#file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/config.h" "/* # generated file (stub) */")
 add_definitions("-DHAVE_CONFIG_H=1")
 
 find_file (UNISTD unistd.h)

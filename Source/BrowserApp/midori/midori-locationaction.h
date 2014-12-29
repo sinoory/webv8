@@ -14,6 +14,7 @@
 
 #include <katze/katze.h>
 #include "midori-view.h"
+#include "config.h"
 
 G_BEGIN_DECLS
 
