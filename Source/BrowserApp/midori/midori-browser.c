@@ -821,10 +821,14 @@ static void
 midori_browser_step_history (MidoriBrowser* browser,
                              MidoriView*    view)
 {
+    gint value;
     if (midori_view_get_load_status (view) != MIDORI_LOAD_COMMITTED)
         return;
     if (!browser->history_database || !browser->maximum_history_age)
         return;
+    g_object_get(browser->settings,"history-setting", &value, NULL);//get current settings
+    if(value != 0)
+        return;// do not memory history
 
     KatzeItem* proxy = midori_view_get_proxy_item (view);
     const gchar* proxy_uri = katze_item_get_uri (proxy);
@@ -8386,22 +8390,14 @@ void midori_browser_change_history_seting(MidoriBrowser* browser, gint *settings
             ////0.this setting will clean the history, OK?
             break;
         case 1:
-            break;
             dialog = gtk_message_dialog_new (GTK_WINDOW (browser),
                                                 GTK_DIALOG_DESTROY_WITH_PARENT,
                                                 GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
                                                 _("This operation will remove all history first, Are you sure?"));
             result = gtk_dialog_run (GTK_DIALOG (dialog));
             gtk_widget_destroy (dialog);
-            if (result != GTK_RESPONSE_YES)
-            //        break;
-                g_print("No\n");
-            else
-                g_print("Yes\n");
-
-          midori_browser_clear_history (browser);
-
-            ////1.this setting will clean the history, OK?
+            if (result == GTK_RESPONSE_YES)
+                midori_browser_clear_history (browser);
             break;
         case 2:
             ////2.this setting will clean the history, OK?

@@ -297,15 +297,21 @@ static void pageContentCacheCallback(GtkToggleButton *togglebutton, MidoriWebSet
 
 static void historySettingCallback(GtkComboBox *widget, MidoriWebSettings *settings)
 {
-    gint CurrentSelect = gtk_combo_box_get_active(widget); 
-    g_object_set(settings,
-             "history-setting", CurrentSelect,
-             NULL);
-    g_print("CurrentSelect is [%d]\n", CurrentSelect);
+    gint CurrentSelect = 0;//the value will be set 
+    gint old_value = 0; //last time value
+    
+    g_object_get(settings,"history-setting", &old_value, NULL);//get last time value????
+    CurrentSelect = gtk_combo_box_get_active(widget); //get value that will be set
+
+    g_print("CurrentSelect:old_value is [%d]:[%d]\n", CurrentSelect, old_value);
+
+    if(old_value == CurrentSelect)return;
+
+    g_object_set(settings, "history-setting", CurrentSelect, NULL);
 
     MidoriApp *app = midori_app_get_default();
     MidoriBrowser *browser = midori_app_get_browser(app);
-//    midori_browser_change_history_seting(browser, &CurrentSelect);
+    midori_browser_change_history_seting(browser, &CurrentSelect);
 }
 
 
@@ -955,9 +961,9 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_grid_attach(grid, widget, 1, 8, 1, 1);
 
 	widget = gtk_combo_box_text_new();
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "记录历史");
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "不记录历史");
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "使用自定义历史记录设置");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "记录浏览历史");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "不记录浏览历史");
+//	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "使用自定义历史记录设置");
 	g_signal_connect(G_OBJECT(widget), "changed", G_CALLBACK(historySettingCallback), settings);
 	ivalue = katze_object_get_int(settings, "history-setting");
 	switch(ivalue) {
