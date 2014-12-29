@@ -1,12 +1,6 @@
 /*
-   Copyright (C) 2013 Christian Dywan <christian@twotoasts.de>
-
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   See the file COPYING for the full license text.
+  Modified by ZRL.
+  2014.12.29 将该扩展集中到builtin-extensions-init中.
 */
 
 namespace Apps {
@@ -132,9 +126,6 @@ namespace Apps {
                 var stream = yield file.replace_async (null, false, GLib.FileCreateFlags.NONE);
                 yield stream.write_async (desktop_file.data);
                 // Create a launcher/ menu
-#if HAVE_WIN32
-                Midori.Sokoke.create_win32_desktop_lnk (prefix, filename, uri);
-#else
                 var data_dir = File.new_for_path (Midori.Paths.get_user_data_dir ());
                 var desktop_dir = data_dir.get_child ("applications");
                 try {
@@ -145,7 +136,6 @@ namespace Apps {
 
                 yield file.copy_async (desktop_dir.get_child (filename + ".desktop"),
                     GLib.FileCopyFlags.NONE);
-#endif
                 if (proxy != null) {
                     var browser = proxy.get_toplevel () as Midori.Browser;
                     browser.send_notification (_("Launcher created"),
@@ -266,16 +256,8 @@ namespace Apps {
                                 store.remove (iter);
 
                                 string filename = Midori.Download.clean_filename (launcher.name);
-#if HAVE_WIN32
-                                string lnk_filename = Midori.Sokoke.get_win32_desktop_lnk_path_for_filename (filename);
-                                if (Posix.access (lnk_filename, Posix.F_OK) == 0) {
-                                    var lnk_file = File.new_for_path (lnk_filename);
-                                    lnk_file.trash ();
-                                }
-#else
                                 var data_dir = File.new_for_path (Midori.Paths.get_user_data_dir ());
                                 data_dir.get_child ("applications").get_child (filename + ".desktop").trash ();
-#endif
                             }
                             catch (Error error) {
                                 GLib.critical ("Failed to remove launcher (%s): %s", launcher.file.get_path (), error.message);
@@ -388,7 +370,11 @@ namespace Apps {
         }
     }
 
+#if 0
     private class Manager : Midori.Extension {
+#else
+    public class Manager {
+#endif
         internal Katze.Array array;
         internal GLib.File app_folder;
         internal GLib.File profile_folder;
@@ -473,7 +459,7 @@ namespace Apps {
             widgets.append (viewable);
         }
 
-        void activated (Midori.App app) {
+        public void activated (Midori.App app) {
             array = new Katze.Array (typeof (Launcher));
             monitors = new GLib.List<GLib.FileMonitor> ();
             app_folder = Launcher.get_app_folder ();
@@ -489,8 +475,12 @@ namespace Apps {
             app.add_browser.connect (browser_added);
         }
 
+#if 0
         void deactivated () {
             var app = get_app ();
+#else
+        public void deactivated (Midori.App app) {
+#endif
             foreach (var monitor in monitors)
                 monitor.changed.disconnect (app_changed);
             monitors = null;
@@ -506,6 +496,7 @@ namespace Apps {
 
         }
 
+#if 0
         internal Manager () {
             GLib.Object (name: _("Web App Manager"),
                          description: _("Manage websites installed as applications"),
@@ -515,9 +506,11 @@ namespace Apps {
             this.activate.connect (activated);
             this.deactivate.connect (deactivated);
         }
+#endif
     }
 }
 
+#if 0
 public Midori.Extension extension_init () {
     return new Apps.Manager ();
 }
@@ -536,4 +529,5 @@ class ExtensionsAppsDesktop : Midori.Test.Job {
 public void extension_test () {
     Test.add_func ("/extensions/apps/desktop", ExtensionsAppsDesktop.test);
 }
+#endif
 

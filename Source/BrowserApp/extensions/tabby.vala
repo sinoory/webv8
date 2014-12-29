@@ -1,12 +1,5 @@
 /*
-   Copyright (C) 2013 André Stösel <andre@stoesel.de>
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   See the file COPYING for the full license text.
 */
 
 namespace Tabby {
@@ -678,7 +671,11 @@ namespace Tabby {
         }
     }
 
+#if 0
     private class Manager : Midori.Extension {
+#else
+    public class Manager {
+#endif
         private Base.Storage storage;
         private bool load_session () {
             /* Using get here to avoid MidoriMidoriStartup in generated C with Vala 0.20.1 */
@@ -698,7 +695,7 @@ namespace Tabby {
         }
 
         private bool execute_commands () {
-            Midori.App app = this.get_app ();
+            Midori.App app = APP;
             unowned string?[] commands = app.get_data ("execute-commands");
 
             if (commands != null) {
@@ -709,7 +706,7 @@ namespace Tabby {
         }
 
         private void set_open_uris (Midori.Browser browser) {
-            Midori.App app = this.get_app ();
+            Midori.App app = APP;
             unowned string?[] uris = app.get_data ("open-uris");
 
             if (uris != null) {
@@ -759,7 +756,7 @@ namespace Tabby {
             }
         }
 
-        private void activated (Midori.App app) {
+        public void activated (Midori.App app) {
             APP = app;
             unowned string? restore_count = GLib.Environment.get_variable ("TABBY_RESTORE_COUNT");
             if (restore_count != null) {
@@ -770,7 +767,7 @@ namespace Tabby {
             }
 
             /* FixMe: provide an option to replace Local.Storage with IStorage based Objects */
-            this.storage = new Local.Storage (this.get_app ()) as Base.Storage;
+            this.storage = new Local.Storage (APP) as Base.Storage;
 
             app.add_browser.connect (this.set_open_uris);
             app.add_browser.connect (this.browser_added);
@@ -779,7 +776,11 @@ namespace Tabby {
             GLib.Idle.add (this.load_session);
         }
 
+#if 0
         private void deactivated () {
+#else
+        public void deactivated (Midori.App app) {
+#endif
             /* set_open_uris will disconnect itself if called,
                but it may have been called before we are deactivated */
             APP.add_browser.disconnect (this.set_open_uris);
@@ -790,6 +791,7 @@ namespace Tabby {
             this.storage = null;
         }
 
+#if 0
         internal Manager () {
             GLib.Object (name: _("Tabby"),
                          description: _("Tab and session management."),
@@ -799,9 +801,12 @@ namespace Tabby {
             this.activate.connect (this.activated);
             this.deactivate.connect (this.deactivated);
         }
+#endif
     }
 }
 
+#if 0
 public Midori.Extension extension_init () {
     return new Tabby.Manager ();
 }
+#endif

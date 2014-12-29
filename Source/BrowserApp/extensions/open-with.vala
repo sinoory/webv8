@@ -1,12 +1,5 @@
 /*
-   Copyright (C) 2014 Christian Dywan <christian@twotoasts.de>
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   See the file COPYING for the full license text.
 */
 
 namespace ExternalApplications {
@@ -540,8 +533,12 @@ namespace ExternalApplications {
         public signal void selected (string content_type, Gtk.TreeIter iter);
     }
 
-
+#if 0
     private class Manager : Midori.Extension {
+#else
+    public class Manager {
+        private Midori.App thisApp;
+#endif
         enum NextStep {
             TRY_OPEN,
             OPEN_WITH
@@ -656,7 +653,7 @@ namespace ExternalApplications {
         }
 
         void show_preferences (Katze.Preferences preferences) {
-            var settings = get_app ().settings;
+            var settings = thisApp.settings;
             var category = preferences.add_category (_("File Types"), Gtk.STOCK_FILE);
             preferences.add_group (null);
 
@@ -719,7 +716,8 @@ namespace ExternalApplications {
             browser.show_preferences.connect (show_preferences);
         }
 
-        void activated (Midori.App app) {
+        public void activated (Midori.App app) {
+            this.thisApp = app;
             foreach (var browser in app.get_browsers ())
                 browser_added (browser);
             app.add_browser.connect (browser_added);
@@ -733,14 +731,19 @@ namespace ExternalApplications {
             browser.show_preferences.disconnect (show_preferences);
         }
 
+#if 0
         void deactivated () {
             var app = get_app ();
+#else
+        public void deactivated (Midori.App app) {
+#endif
             foreach (var browser in app.get_browsers ())
                 browser_removed (browser);
             app.add_browser.disconnect (browser_added);
 
         }
 
+#if 0
         internal Manager () {
             GLib.Object (name: "External Applications",
                          description: "Choose what to open unknown file types with",
@@ -750,10 +753,13 @@ namespace ExternalApplications {
             this.activate.connect (activated);
             this.deactivate.connect (deactivated);
         }
+#endif
     }
 }
 
+#if 0
 public Midori.Extension extension_init () {
     return new ExternalApplications.Manager ();
 }
+#endif
 

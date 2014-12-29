@@ -3,6 +3,7 @@
    2014.12.03 修改AboutVersion，加载定制的HTML页面
    2014.12.04 修改Version::get_contents() 暂时屏蔽ns插件信息的显示，未来需要添加
               修改Manager ()中扩展信息
+   2014.12.20 将该扩展合并到builtin-extension-init中，即去除了extension_init和Manager的部分。
 */
 
 namespace About {
@@ -296,7 +297,12 @@ namespace About {
         }
     }
 
+// ZRL disable 2014.12.20
+#if 0
     private class Manager : Midori.Extension {
+#else
+    public class Manager {
+#endif
         private GLib.HashTable<string, Page>? about_pages;
 
         private void register (Page page) {
@@ -357,8 +363,13 @@ namespace About {
             app.add_browser.connect (this.browser_added);
         }
 
+// ZRL disable 2014.12.20
+#if 0
         public void deactivated () {
             Midori.App app = this.get_app ();
+#else
+        public void deactivated (Midori.App app) {
+#endif
             foreach (Midori.Browser browser in app.get_browsers ()) {
                 this.browser_removed (browser);
             }
@@ -367,6 +378,8 @@ namespace About {
             this.about_pages = null;
         }
 
+// ZRL disable 2014.12.20
+#if 0
         internal Manager () {
             GLib.Object (name: "About pages",
                          description: "Internal about: Page",
@@ -376,10 +389,14 @@ namespace About {
             this.activate.connect (this.activated);
             this.deactivate.connect (this.deactivated);
         }
+#endif
     }
 }
 
+// ZRL disable 2014.12.20
+#if 0
 public Midori.Extension extension_init () {
     return new About.Manager ();
 }
+#endif
 

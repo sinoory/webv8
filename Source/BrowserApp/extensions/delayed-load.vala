@@ -1,16 +1,13 @@
 /*
-   Copyright (C) 2012-2013 André Stösel <andre@stoesel.de>
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   See the file COPYING for the full license text.
 */
 
 namespace DelayedLoad {
+#if 0
     private class Manager : Midori.Extension {
+#else
+    public class Manager {
+#endif
         private void tab_changed (Midori.View? old_view, Midori.View? new_view) {
             if (new_view != null) {
                 unowned Katze.Item item = new_view.get_proxy_item ();
@@ -37,14 +34,19 @@ namespace DelayedLoad {
             app.add_browser.connect (browser_added);
         }
 
+#if 0
         public void deactivated () {
             Midori.App app = get_app ();
+#else
+        public void deactivated (Midori.App app) {
+#endif
             foreach (Midori.Browser browser in app.get_browsers ()) {
                 browser_removed (browser);
             }
             app.add_browser.disconnect (browser_added);
         }
 
+#if 0
         internal Manager () {
             GLib.Object (name: _("Delayed load"),
                          description: _("Delay page load until you actually use the tab."),
@@ -54,10 +56,13 @@ namespace DelayedLoad {
             activate.connect (this.activated);
             deactivate.connect (this.deactivated);
         }
+#endif
     }
 }
 
+#if 0
 public Midori.Extension extension_init () {
     return new DelayedLoad.Manager ();
 }
+#endif
 

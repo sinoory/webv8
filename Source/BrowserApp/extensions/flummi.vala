@@ -1,19 +1,17 @@
 /*
-   Copyright (C) 2013 André Stösel <andre@stoesel.de>
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   See the file COPYING for the full license text.
 */
 
 namespace Flummi {
+#if 0
     private class Manager : Midori.Extension {
+#else
+    public class Manager {
+        private Midori.App thisApp;
+#endif
         private bool bounce () {
             try {
-                Midori.App app = this.get_app ();
+                Midori.App app = thisApp;//this.get_app ();
                 Midori.Browser? browser = app.browser;
 
                 if (browser == null || browser.tab == null) {
@@ -74,10 +72,12 @@ namespace Flummi {
             return false;
         }
 
-        private void activated (Midori.App app) {
+        public void activated (Midori.App app) {
+            this.thisApp = app;
             GLib.Idle.add (this.bounce);
         }
 
+#if 0
         internal Manager () {
             GLib.Object (name: _("Flummi"),
                          description: _("This extension provides a task queue for update jobs or recurring events."),
@@ -86,9 +86,12 @@ namespace Flummi {
 
             this.activate.connect (this.activated);
         }
+#endif
     }
 }
 
+#if 0
 public Midori.Extension extension_init () {
     return new Flummi.Manager ();
 }
+#endif

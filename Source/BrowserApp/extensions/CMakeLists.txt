@@ -86,6 +86,14 @@ if (WIN32)
     list(REMOVE_ITEM EXTENSIONS "webmedia-now-playing.vala")
 endif()
 
+list(REMOVE_ITEM EXTENSIONS "about.vala" "builtin-extensions-init.vala" 
+                 "builtin-extensions-init.h" "builtin-extensions-init.c" "builtin-extensions-init_valac.stamp"
+                 "apps.h" "apps.c" "apps.vala" "apps_valac.stamp"
+                 "flummi.vala" "flummi.c" "flummi.h" "flummi_valac.stamp"
+                 "open-with.vala" "open-with.c" "open-with.h" "open-with_valac.stamp"
+                 "tabby.vala" "tabby.c" "tabby.h" "tabby_valac.stamp"
+                 "delayed-load.vala" "delayed-load.c" "delayed-load.h" "delayed-load_valac.stamp")
+
 # ZRL 暂时去除以下扩展，待有用时再酌情添加
 list(REMOVE_ITEM EXTENSIONS "colorful-tabs.c" "copy-tabs.c" "devpet.vala" "devpet.c" "devpet.h" "devpet_valac.stamp"
                             "domain-keys.vala" "domain-keys.c" "domain-keys.h" "domain-keys_valac.stamp" "cookie-manager"
@@ -190,3 +198,26 @@ foreach(UNIT_SRC ${EXTENSIONS})
                 )
     endif ()
 endforeach ()
+
+include(ValaPrecompile)
+set(BUILTIN_EXTENSION_VALA_FILES builtin-extensions-init.vala about.vala delayed-load.vala apps.vala flummi.vala open-with.vala tabby.vala)
+set(BUILTIN_EXTENSION_LIBRARY "builtinextension")
+
+include(ValaPrecompile)
+vala_precompile(BUILTIN_EXTENSION_SOURCE_C "generatesoucecode"
+    ${BUILTIN_EXTENSION_VALA_FILES}
+PACKAGES
+    ${PKGS}
+OPTIONS
+    ${VALAFLAGS}
+CUSTOM_VAPIS
+    ${EXTRA_VAPIS}
+    "${MIDORI_SOURCE_DIR}/midori/${MIDORI_PROJECT_NAME}.vapi"
+    "${MIDORI_SOURCE_DIR}/katze/katze.vapi"
+    "${MIDORI_SOURCE_DIR}/midori/${LIBMIDORI}.vapi"
+)
+add_library(${BUILTIN_EXTENSION_LIBRARY} MODULE ${BUILTIN_EXTENSION_SOURCE_C})
+add_dependencies(${BUILTIN_EXTENSION_LIBRARY} ${LIBMIDORI})
+target_link_libraries(${BUILTIN_EXTENSION_LIBRARY} ${LIBMIDORI})
+set_target_properties(${BUILTIN_EXTENSION_LIBRARY} PROPERTIES COMPILE_FLAGS "${VALA_CFLAGS}")
+install(TARGETS ${BUILTIN_EXTENSION_LIBRARY} LIBRARY DESTINATION ${EXTENSIONDIR})

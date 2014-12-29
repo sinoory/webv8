@@ -126,7 +126,7 @@ namespace Transfers {
                 toolbar.insert (separator, 0);      
 
                 open_dir = new Gtk.ToolButton.from_stock (Gtk.STOCK_DIRECTORY);
-                open_dir.label = "目录";
+                open_dir.label = "打开目录";
                 open_dir.is_important = true;
                 open_dir.clicked.connect (open_dir_clicked);
                 open_dir.set_tooltip_text("打开目录");
@@ -134,7 +134,7 @@ namespace Transfers {
                 //toolbar.insert (separator, 0);      
                 
                 open_file = new Gtk.ToolButton.from_stock (Gtk.STOCK_NEW);//GTK_STOCK_FILE
-                open_file.label = _("OpenFile");
+                open_file.label = "打开文件";//_("OpenFile");
                 open_file.is_important = true;
                 open_file.clicked.connect (open_file_clicked);
 		 open_file.set_tooltip_text("打开文件");
@@ -142,7 +142,7 @@ namespace Transfers {
                 //toolbar.insert (separator, 0);      
                 
                 cancel_dl = new Gtk.ToolButton.from_stock (Gtk.STOCK_CANCEL);
-                cancel_dl.label = "取消";
+                cancel_dl.label = "取消\\删除";
                 cancel_dl.is_important = true;
                 cancel_dl.clicked.connect (cancel_dl_clicked);
 		 cancel_dl.set_tooltip_text("暂停\\删除");
@@ -150,7 +150,7 @@ namespace Transfers {
                 //toolbar.insert (separator, 0);      
                 
                 start_dl = new Gtk.ToolButton.from_stock (Gtk.STOCK_MEDIA_PLAY);
-                start_dl.label = "重试";
+                start_dl.label = "重新下载";
                 start_dl.is_important = true;
                 start_dl.clicked.connect (start_dl_clicked);
 		 start_dl.set_tooltip_text("重新下载");
@@ -158,7 +158,7 @@ namespace Transfers {
                 //toolbar.insert (separator, 0);      
                 
                 new_dl = new Gtk.ToolButton.from_stock (Gtk.STOCK_ADD);
-                new_dl.label = "新建";
+                new_dl.label = "新建下载";
                 new_dl.is_important = true;
                 new_dl.clicked.connect (new_dl_clicked);
 		 new_dl.set_tooltip_text("新建下载");
