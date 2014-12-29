@@ -75,9 +75,15 @@ midori_location_action_set_primary_icon     (MidoriLocationAction* location_acti
                                              GIcon*                icon,
                                              const gchar*          tooltip);
 
+#if ENABLE_WEBSITE_AUTH
 void
 midori_location_action_set_security_hint    (MidoriLocationAction* location_action,
-                                             GtkWidget* view);//MidoriSecurity        hint);
+                                             GtkWidget* view);
+#else
+void
+midori_location_action_set_security_hint    (MidoriLocationAction* location_action,
+                                             MidoriSecurity        hint);
+#endif
 
 gchar*
 midori_location_action_render_uri           (gchar**      keys,

@@ -392,10 +392,14 @@ _midori_browser_update_interface (MidoriBrowser* browser,
             MIDORI_LOCATION_ACTION (action), icon, _("Web Search…"));
         g_object_unref (icon);
     }
+#if ENABLE_WEBSITE_AUTH
     else
         midori_location_action_set_security_hint (MIDORI_LOCATION_ACTION (action), GTK_WIDGET (view));
-        //midori_location_action_set_security_hint (
-            //MIDORI_LOCATION_ACTION (action), midori_tab_get_security (MIDORI_TAB (view)));
+#else
+    else
+        midori_location_action_set_security_hint (
+            MIDORI_LOCATION_ACTION (action), midori_tab_get_security (MIDORI_TAB (view)));
+#endif
     midori_browser_update_secondary_icon (browser, view, action);   //zgh 1203 +放开 1224
 }
 
