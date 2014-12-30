@@ -304,7 +304,7 @@ static void historySettingCallback(GtkComboBox *widget, MidoriWebSettings *setti
     g_object_get(settings,"history-setting", &old_value, NULL);//get last time value????
     CurrentSelect = gtk_combo_box_get_active(widget); //get value that will be set
 
-    g_print("CurrentSelect:old_value is [%d]:[%d]\n", CurrentSelect, old_value);
+//    g_print("CurrentSelect:old_value is [%d]:[%d]\n", CurrentSelect, old_value);
 
     if(old_value == CurrentSelect)return;
 
@@ -495,7 +495,7 @@ static bool isCdosbrowserDefault()
 
 	FILE *fp = fopen("/tmp/.default-browser","r");
 	fgets(result, 20, fp);
-	g_print("result is [%s]\n", result);
+//	g_print("result is [%s]\n", result);
 	fclose(fp);
 	
 	if(0 == strncmp(result, "cdosbrowser.desktop", 19))
@@ -762,7 +762,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 
 	//label = gtk_label_new ("常规");
 	gchar *general_pic = midori_paths_get_res_filename("settings-icons/general.png");
-	g_print("general_pic = %s\n", general_pic);
    label = xpm_label_box( general_pic, "常 规" );
 	g_free(general_pic);
 

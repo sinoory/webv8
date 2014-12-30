@@ -2169,7 +2169,7 @@ static gint _midori_browser_get_num_of_tabs()
 		g_list_free(tabs);
 	}
 	g_list_free(browsers);
-	g_print("111 The number of tabNum = %d i = %d\n", tabNum, i);
+//	g_print("111 The number of tabNum = %d i = %d\n", tabNum, i);
 	
 	return tabNum;
 }
@@ -2185,7 +2185,7 @@ static gboolean _midori_show_much_tab_warning(MidoriBrowser* browser)
 		if(itabNum > 100)
 			bshow = 1;
 	}
-	g_print("much-tab-warning is %d\n", bvalue);
+//	g_print("much-tab-warning is %d\n", bvalue);
 
 	return bshow;
 }
