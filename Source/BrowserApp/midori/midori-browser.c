@@ -1254,11 +1254,17 @@ midori_browser_edit_bookmark_dialog_new (MidoriBrowser* browser,
             bookmark = (KatzeItem*)katze_array_new (KATZE_TYPE_ARRAY);
             katze_item_set_name (bookmark,
                 midori_view_get_display_title (MIDORI_VIEW (view)));
+        }else{
+            if(bookmark &&
+              (katze_item_get_kind((KatzeItem*)bookmark) >= 0 || katze_item_get_kind((KatzeItem*)bookmark) <= 1)){//form history or bookmark db
+                ;//donothing
+              }
+              else{
+                bookmark = g_object_new (KATZE_TYPE_ITEM,
+                    "uri", midori_view_get_display_uri (MIDORI_VIEW (view)),
+                    "name", midori_view_get_display_title (MIDORI_VIEW (view)), NULL);
+              }
         }
-        else
-            bookmark = g_object_new (KATZE_TYPE_ITEM,
-                "uri", midori_view_get_display_uri (MIDORI_VIEW (view)),
-                "name", midori_view_get_display_title (MIDORI_VIEW (view)), NULL);
         katze_item_set_meta_integer (
             bookmark, "parentid",
             (!bookmark_or_parent
@@ -8410,6 +8416,7 @@ midori_browser_show_panel_window(MidoriBrowser* browser)
 
     if(!panel_window){
         panel_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_transient_for(panel_window,GTK_WINDOW(browser));
         g_signal_connect(G_OBJECT(panel_window), "delete-event", midori_panel_window_hide , browser);
         gtk_window_set_title(GTK_WINDOW(panel_window), "管理器");
         gtk_window_set_position(GTK_WINDOW(panel_window),GTK_WIN_POS_CENTER); 

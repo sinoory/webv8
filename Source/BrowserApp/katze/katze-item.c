@@ -853,3 +853,20 @@ katze_item_copy (KatzeItem* item)
     class = KATZE_ITEM_GET_CLASS (item);
     return class->copy ? class->copy (copy) : copy;
 }
+const gint32
+katze_item_get_kind (KatzeItem* item)
+{
+    g_return_val_if_fail (KATZE_IS_ITEM (item), 0);
+
+    return item->kind;
+}
+
+
+void
+katze_item_set_kind (KatzeItem* item,
+                      gint32     kind)
+{
+    g_return_if_fail (KATZE_IS_ITEM (item));
+
+    item->kind = kind;
+}

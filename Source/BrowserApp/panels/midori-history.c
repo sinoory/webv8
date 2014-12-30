@@ -327,6 +327,7 @@ midori_history_bookmark_add_cb (GtkWidget*     menuitem,
 
     if (KATZE_IS_ITEM (item) && katze_item_get_uri (item))
     {
+        katze_item_set_kind(item, 0);//1: history item
         midori_browser_edit_bookmark_dialog_new (browser, item, TRUE, FALSE, proxy);
         g_object_unref (item);
     }

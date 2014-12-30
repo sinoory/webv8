@@ -148,6 +148,13 @@ katze_item_set_parent             (KatzeItem*      item,
 KatzeItem*
 katze_item_copy                   (KatzeItem*      item);
 
+//add by zlf
+const gint32
+katze_item_get_kind                (KatzeItem*      item);
+
+void
+katze_item_set_kind                (KatzeItem*      item,
+                                   gint32    kind);
 G_END_DECLS
 
 #endif /* __MIDORI_WEB_ITEM_H__ */
