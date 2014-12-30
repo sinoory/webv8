@@ -26,6 +26,7 @@
 #include "BrowserSettingsDialog.h"
 //#include "BrowserCellRendererVariant.h"
 #include "../midori/Certificate.h"
+#include "panels/midori-extensions.h"
 
 
 //lxx add +, 20141210
@@ -1161,19 +1162,28 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
 
 //expand
-	grid = (GtkGrid*)gtk_grid_new();//创建网格
+	/*grid = (GtkGrid*)gtk_grid_new();//创建网格
 
 	gtk_grid_set_row_spacing (grid, 8);
 	gtk_grid_set_column_spacing (grid, 5);
 
 	label = gtk_label_new("    ");
-	gtk_grid_attach( grid, label, 0, 0, 1, 1);
+	gtk_grid_attach( grid, label, 0, 0, 1, 1);*/
 
 	gchar *expand_pic = midori_paths_get_res_filename("settings-icons/expand.png");
    label = xpm_label_box( expand_pic, "扩 展" );
 	g_free(expand_pic);
 //	label = gtk_label_new ("高级");
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
+//	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
+       
+   GtkWidget* scrolled = gtk_scrolled_window_new (NULL, NULL);
+   g_object_set (scrolled, "visible", TRUE, NULL);
+   MidoriApp *app = midori_app_get_default();
+   GtkWidget* addon = g_object_new (MIDORI_TYPE_EXTENSIONS, "app", app, NULL);
+   GList* children = gtk_container_get_children (GTK_CONTAINER (addon));
+   gtk_widget_reparent (g_list_nth_data (children, 0), scrolled);
+   g_list_free (children);
+   gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrolled, label);
 
 	gtk_widget_show_all(window);
 

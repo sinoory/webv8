@@ -2144,6 +2144,82 @@ midori_browser_disconnect_tab (MidoriBrowser* browser,
                          NULL);
 }
 
+//lxx add +, 20141229
+static gint _midori_browser_get_num_of_tabs()
+{
+	MidoriApp *app;
+	GList							*browsers, *browser;
+	GList							*tabs, *tab;
+
+	gint tabNum = 0;
+
+	int i = 0;	
+
+	 app = midori_app_get_default();	
+
+	browsers=midori_app_get_browsers(app);
+	for(; browsers; browsers=g_list_next(browsers))
+	{
+		i++;
+		tabs=midori_browser_get_tabs(MIDORI_BROWSER(browsers->data));
+		for(tab=tabs; tab; tab=g_list_next(tab))
+		{
+			tabNum++;
+		}
+		g_list_free(tabs);
+	}
+	g_list_free(browsers);
+	g_print("111 The number of tabNum = %d i = %d\n", tabNum, i);
+	
+	return tabNum;
+}
+
+static gboolean _midori_show_much_tab_warning(MidoriBrowser* browser)
+{
+	gboolean bvalue = 0, bshow = 0;
+	
+	g_object_get(browser->settings, "much-tab-warning", &bvalue, NULL);
+	if(bvalue)
+	{
+		gint itabNum = _midori_browser_get_num_of_tabs();
+		if(itabNum > 1)
+			bshow = 1;
+	}
+	g_print("much-tab-warning is %d\n", bvalue);
+
+	return bshow;
+}
+static void _midori_much_tab_warning_bar(GtkWidget*     view)
+{
+	GtkWidget *info_bar;
+	GtkWidget* content_area;
+	GtkWidget* message_label;
+
+#if 0
+#if GTK_CHECK_VERSION (3, 10, 0)
+  info_bar = gtk_info_bar_new_with_buttons (_("Save"), GTK_RESPONSE_YES, NULL);
+  gtk_info_bar_set_show_close_button (GTK_INFO_BAR (info_bar), TRUE);
+#else
+  info_bar = gtk_info_bar_new_with_buttons (_("Save"), GTK_RESPONSE_YES, _("Close"), GTK_RESPONSE_CLOSE, NULL);
+#endif
+	GtkWidget* content_area;
+	GtkWidget* message_label = gtk_label_new("您开启了多个标签页，已经导致浏览器速度变慢了！");
+	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (info_bar));
+#else
+	info_bar = gtk_info_bar_new();
+//	gtk_widget_set_no_show_all(info_bar, TRUE);
+	message_label = gtk_label_new ("您开启了多个标签页，已经导致浏览器速度变慢了，请您注意！");
+	gtk_widget_show(message_label);
+	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (info_bar));
+	gtk_container_add (GTK_CONTAINER (content_area), message_label);
+	gtk_info_bar_add_button (GTK_INFO_BAR (info_bar), _("_OK"), GTK_RESPONSE_OK);
+	g_signal_connect (info_bar, "response", G_CALLBACK (gtk_widget_hide), NULL);
+#endif
+	gtk_widget_show(info_bar);
+	gtk_box_pack_end (GTK_BOX (view), GTK_WIDGET (info_bar), FALSE, FALSE, 0);
+}
+//lxx add -, 20141229
+
 static void
 _midori_browser_add_tab (MidoriBrowser* browser,
                          GtkWidget*     view)
@@ -2173,6 +2249,13 @@ _midori_browser_add_tab (MidoriBrowser* browser,
     midori_notebook_insert (MIDORI_NOTEBOOK (browser->notebook), MIDORI_TAB (view), n);
 
     _midori_browser_update_actions (browser);
+//lxx add for much tab warning+
+	if(_midori_show_much_tab_warning(browser))
+	{
+		_midori_much_tab_warning_bar(view);
+	    g_object_set(browser->settings, "much-tab-warning", 0, NULL);
+	}
+//lxx add for much tab warning-
 }
 
 static void
