@@ -45,6 +45,7 @@ struct _KatzeItem
     gchar* token;
     gint64 added;
     GHashTable* metadata;
+    gint32 kind;//0:from history , 1:from bookmark, X:others
 
     KatzeItem* parent;
 };
