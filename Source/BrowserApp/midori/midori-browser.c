@@ -5,6 +5,7 @@
  2014.12.16 屏蔽撤销关闭书签功能
  2014.12.16 实现网页的保存功能。参见midori_browser_save_uri()
  2014.12.17 屏蔽search action，见ENABLE_SEARCH_ACTION
+ 2014.12.30 屏蔽书签编辑窗口中创建启动器功能,见midori_browser_edit_bookmark_dialog_new()
 */
 
 #include "midori-browser.h"
@@ -1306,6 +1307,8 @@ midori_browser_edit_bookmark_dialog_new (MidoriBrowser* browser,
             G_CALLBACK (midori_browser_edit_bookmark_add_speed_dial_cb), bookmark);
         gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
+// ZRL 屏蔽手动编辑书签中的创建启动器
+#if 0
         /* FIXME: There's no API for extending the bookmark dialog */
         GtkAction* action = _action_by_name (browser, "CreateLauncher");
         if (action != NULL)
@@ -1316,6 +1319,7 @@ midori_browser_edit_bookmark_dialog_new (MidoriBrowser* browser,
                 G_CALLBACK (midori_browser_edit_bookmark_create_launcher_cb), bookmark);
             gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
         }
+#endif
     }
 
     gtk_widget_show_all (content_area);
