@@ -2182,7 +2182,7 @@ static gboolean _midori_show_much_tab_warning(MidoriBrowser* browser)
 	if(bvalue)
 	{
 		gint itabNum = _midori_browser_get_num_of_tabs();
-		if(itabNum > 1)
+		if(itabNum > 100)
 			bshow = 1;
 	}
 	g_print("much-tab-warning is %d\n", bvalue);
