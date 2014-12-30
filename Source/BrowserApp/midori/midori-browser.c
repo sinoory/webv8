@@ -2152,8 +2152,7 @@ midori_browser_disconnect_tab (MidoriBrowser* browser,
 static gint _midori_browser_get_num_of_tabs()
 {
 	MidoriApp *app;
-	GList							*browsers, *browser;
-	GList							*tabs, *tab;
+	GList							*browsers;
 
 	gint tabNum = 0;
 
@@ -2165,16 +2164,11 @@ static gint _midori_browser_get_num_of_tabs()
 	for(; browsers; browsers=g_list_next(browsers))
 	{
 		i++;
-		tabs=midori_browser_get_tabs(MIDORI_BROWSER(browsers->data));
-		for(tab=tabs; tab; tab=g_list_next(tab))
-		{
-			tabNum++;
-		}
-		g_list_free(tabs);
+		tabNum += midori_browser_get_n_pages(MIDORI_BROWSER(browsers->data));
 	}
 	g_list_free(browsers);
 //	g_print("111 The number of tabNum = %d i = %d\n", tabNum, i);
-	
+
 	return tabNum;
 }
 
