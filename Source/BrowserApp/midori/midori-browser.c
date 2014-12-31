@@ -264,6 +264,7 @@ _toggle_tabbar_smartly (MidoriBrowser* browser,
     return has_tabs;
 }
 
+#if ENABLE_TRASH // ZRL 屏蔽撤销关闭标签功能
 static void
 midori_browser_trash_clear_cb (KatzeArray*    trash,
                                MidoriBrowser* browser)
@@ -274,6 +275,7 @@ midori_browser_trash_clear_cb (KatzeArray*    trash,
     _action_set_sensitive (browser, "Trash", !trash_empty);
 #endif
 }
+#endif
 
 static void
 _midori_browser_update_actions (MidoriBrowser* browser)
@@ -282,8 +284,10 @@ _midori_browser_update_actions (MidoriBrowser* browser)
     _action_set_sensitive (browser, "TabPrevious", has_tabs);
     _action_set_sensitive (browser, "TabNext", has_tabs);
 
+#if ENABLE_TRASH // ZRL 屏蔽撤销关闭标签功能
     if (browser->trash)
         midori_browser_trash_clear_cb (browser->trash, browser);
+#endif
 }
 
 static void
@@ -508,7 +512,10 @@ _midori_browser_update_progress (MidoriBrowser* browser,
                       "tooltip", _("Stop loading the current page"), NULL);
     }
 
+// ZRL 屏蔽菜单栏进度spin
+#if 0
     g_object_set (browser->throbber, "active", loading, "visible", loading, NULL);
+#endif
 }
 
 /**
@@ -5925,10 +5932,10 @@ static const GtkActionEntry entries[] =
     { "Homepage", GTK_STOCK_HOME,
         N_("_Homepage"), "<Alt>Home",
         N_("Go to your homepage"), G_CALLBACK (_action_navigation_activate) },
+#if ENABLE_TRASH // ZRL 屏蔽撤销关闭标签功能
     { "TrashEmpty", GTK_STOCK_CLEAR,
         N_("Empty Trash"), "",
         NULL, G_CALLBACK (_action_trash_empty_activate) },
-#if ENABLE_TRASH // ZRL 屏蔽撤销关闭标签功能
     { "UndoTabClose", GTK_STOCK_UNDELETE,
         N_("Undo _Close Tab"), "<Ctrl><Shift>t",
         NULL, G_CALLBACK (_action_undo_tab_close_activate) },
@@ -6366,8 +6373,8 @@ static const gchar* ui_markup =
             "<menuitem action='LastSession'/>"
 #if ENABLE_TRASH
             "<menuitem action='UndoTabClose'/>"
-#endif
             "<menuitem action='TrashEmpty'/>"
+#endif
             "<menuitem action='Preferences'/>"
             "<menuitem action='InspectPage'/>"
             "<menuitem action='ReloadUncached'/>"
@@ -6794,8 +6801,10 @@ midori_browser_init (MidoriBrowser* browser)
 #endif
     gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (
         gtk_ui_manager_get_widget (ui_manager, "/menubar/File/WindowNew")), NULL);
+#if 0 // ZRL 由于Go菜单已经屏蔽，屏蔽此处
     gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (
         gtk_ui_manager_get_widget (ui_manager, "/menubar/Go/Location")), NULL);
+#endif
 #if 0 //zgh
     homepage = gtk_ui_manager_get_widget (ui_manager, "/menubar/Go/Homepage");
     g_signal_connect (homepage, "button-press-event",
