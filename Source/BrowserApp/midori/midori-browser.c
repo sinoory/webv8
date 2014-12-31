@@ -5263,11 +5263,27 @@ void
 _action_pageinfo_activate ( GtkAction*     action,
                             MidoriBrowser* browser)
 {
+    GtkWidget *dialog, *content_area, *lab_title, *lab_text, *image, *hbox, *button;
     const gchar *title = midori_view_get_display_title(midori_browser_get_current_tab (browser));
     const gchar *uri = midori_browser_get_current_uri(browser);
+    
+    if ( !strcmp (uri, "") )
+        {
+        dialog = gtk_message_dialog_new(NULL,
+                                        GTK_DIALOG_DESTROY_WITH_PARENT,
+                                        GTK_MESSAGE_ERROR,
+                                        GTK_BUTTONS_CLOSE,
+                                        _("Web Page not exist"));
+        g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
+        gtk_widget_show (dialog);
+        return ;
+        }
+    gchar *date;
     gchar protocol[10] = {0}, connect[1024+1] = {0};
     sscanf(uri, "%[^:]", protocol);
     sscanf(uri, "%*[^/]//%[^/]", connect);
+    if (!strstr (protocol, "http"))
+        strcpy (connect, uri);
     GtkWidget* view = midori_browser_get_current_tab (browser);
     WebKitWebView * web_view = WEBKIT_WEB_VIEW (midori_view_get_web_view (MIDORI_VIEW (view)));
     WebKitWebResource  *resource = webkit_web_view_get_main_resource (web_view);
@@ -5278,11 +5294,13 @@ _action_pageinfo_activate ( GtkAction*     action,
     gboolean isEncrypt = false;
     gchar *encrypt = g_strdup_printf (_("Connect Http %s"), connect);
     SoupMessageHeaders* headers = webkit_uri_response_get_http_headers (response);
-    gchar *date = soup_message_headers_get (headers, "Date");
-    if (!date)
-        date = "";
+    if (!headers)
+        date = "asdf, 31 Dec 2014";
+    else
+        date = soup_message_headers_get (headers, "Date");
     gchar year[16] = {0}, Month[4] = {0}, day[4] = {0};
     sscanf(date, "%*s%s%s%s", day, Month, year);
+    midori_get_pageinfo_time(year, Month, day);
     
     
     
@@ -5292,16 +5310,15 @@ _action_pageinfo_activate ( GtkAction*     action,
     void* request = NULL;
 
     midori_view_get_tls_info (MIDORI_VIEW (view), request, &tls_cert, &tls_flags, &hostname);
+    
     if (tls_cert != NULL)
         {
        isEncrypt = true;
        encrypt = g_strdup_printf (_("Connect Https %s"), connect);
         }
-    
-    GtkWidget *dialog, *content_area, *lab_title, *lab_text, *image, *hbox, *button;
 
     /* Create a new dialog with one OK button. */
-    dialog = gtk_dialog_new_with_buttons ("PageInfo", browser,
+    dialog = gtk_dialog_new_with_buttons (_("PageInfo"), browser,
                                           GTK_DIALOG_DESTROY_WITH_PARENT,
 //                                          GTK_STOCK_OK, GTK_RESPONSE_OK,
                                           NULL);

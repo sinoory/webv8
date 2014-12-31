@@ -1534,6 +1534,7 @@ midori_location_action_icon_released_cb (GtkWidget*           widget,
         if (tls_cert == NULL)
         {
            g_free (hostname);
+           _action_pageinfo_activate (NULL, browser);   //add by zgh 20141231
            return;
         }
         gchar* certificateData;

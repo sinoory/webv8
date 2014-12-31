@@ -3550,3 +3550,9 @@ msgstr "%d 字节"
 msgid "OpenFile"
 msgstr "执行"
 
+msgid "PageInfo"
+msgstr "页面属性"
+
+msgid "Web Page not exist"
+msgstr "要查看的网页不存在"
+
