@@ -193,6 +193,11 @@ midori_browser_save_uri               (MidoriBrowser*     browser,
 void
 midori_browser_set_inactivity_reset   (MidoriBrowser*     browser,
                                        gint               inactivity_reset);
+             
+//add by zgh 20141231                     
+void 
+_action_pageinfo_activate ( GtkAction*     action,
+                            MidoriBrowser* browser);
 
 void midori_browser_clear_history(MidoriBrowser*     browser);
 

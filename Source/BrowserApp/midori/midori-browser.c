@@ -3585,6 +3585,7 @@ _action_tools_populate_popup (GtkAction*     action,
 //    midori_context_action_add_by_name (menu, "ManageSearchEngines");  //zgh
     midori_context_action_add_by_name (menu, "ClearPrivateData");
     midori_context_action_add_by_name (menu, "InspectPage");
+    midori_context_action_add_by_name (menu, "PageInfo");   //zgh 20141225
     g_signal_emit (browser, signals[POPULATE_TOOL_MENU], 0, default_menu);
 //    midori_context_action_add (menu, NULL);   //zgh
 #if 0 //zgh
@@ -4953,7 +4954,7 @@ _action_bookmark_add_activate (GtkAction*     action,
         midori_browser_edit_bookmark_dialog_new (browser, NULL, TRUE, FALSE, proxy);
         midori_location_action_set_secondary_icon (
                 MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARKED);  //add by zgh 1224
-        _update_tooltip_if_changed(action, _("Bookmark already exsit"));    //zgh 1225
+    _update_tooltip_if_changed(action, _("Bookmark already exist"));    //zgh 1225
     }
 }
 
@@ -5228,6 +5229,230 @@ _action_inspect_page_activate (GtkAction*     action,
     WebKitWebView* web_view = WEBKIT_WEB_VIEW (midori_view_get_web_view (MIDORI_VIEW (view)));
     WebKitWebInspector* inspector = webkit_web_view_get_inspector (web_view);
     webkit_web_inspector_show (inspector);
+}
+
+static gchar* midori_get_pageinfo_time (gchar* year, gchar* month, gchar* day)
+{
+
+    if (!strcmp(month, "Jan")) month = "1";
+    else if (!strcmp(month, "Feb")) month = "2";
+    else if (!strcmp(month, "Mar")) month = "3";
+    else if (!strcmp(month, "Apr")) month = "4";
+    else if (!strcmp(month, "May")) month = "5";
+    else if (!strcmp(month, "Jun")) month = "6";
+    else if (!strcmp(month, "Jul")) month = "7";
+    else if (!strcmp(month, "Aug")) month = "8";
+    else if (!strcmp(month, "Seq")) month = "9";
+    else if (!strcmp(month, "Oct")) month = "10";
+    else if (!strcmp(month, "Nov")) month = "11";
+    else  if (!strcmp(month, "Dec")) month = "12";
+    else month = "-1";
+
+    strcat (year, "/");
+    strcat (year, month);
+    strcat (year, "/");
+    strcat (year, day);
+    return year;
+
+}
+
+void 
+_action_pageinfo_activate ( GtkAction*     action,
+                            MidoriBrowser* browser)
+{
+    const gchar *title = midori_view_get_display_title(midori_browser_get_current_tab (browser));
+    const gchar *uri = midori_browser_get_current_uri(browser);
+    gchar protocol[10] = {0}, connect[1024+1] = {0};
+    sscanf(uri, "%[^:]", protocol);
+    sscanf(uri, "%*[^/]//%[^/]", connect);
+    GtkWidget* view = midori_browser_get_current_tab (browser);
+    WebKitWebView * web_view = WEBKIT_WEB_VIEW (midori_view_get_web_view (MIDORI_VIEW (view)));
+    WebKitWebResource  *resource = webkit_web_view_get_main_resource (web_view);
+    WebKitURIResponse* response = webkit_web_resource_get_response(resource);
+    const gchar* type = webkit_uri_response_get_mime_type (response);
+    const gint content_bytes = webkit_uri_response_get_content_length (response);
+    const gchar* bytes = g_strdup_printf (_("%d bytes"), content_bytes);
+    gboolean isEncrypt = false;
+    gchar *encrypt = g_strdup_printf (_("Connect Http %s"), connect);
+    SoupMessageHeaders* headers = webkit_uri_response_get_http_headers (response);
+    gchar *date = soup_message_headers_get (headers, "Date");
+    if (!date)
+        date = "";
+    gchar year[16] = {0}, Month[4] = {0}, day[4] = {0};
+    sscanf(date, "%*s%s%s%s", day, Month, year);
+    
+    
+    
+    GTlsCertificate* tls_cert;
+    GTlsCertificateFlags tls_flags;
+    gchar* hostname;
+    void* request = NULL;
+
+    midori_view_get_tls_info (MIDORI_VIEW (view), request, &tls_cert, &tls_flags, &hostname);
+    if (tls_cert != NULL)
+        {
+       isEncrypt = true;
+       encrypt = g_strdup_printf (_("Connect Https %s"), connect);
+        }
+    
+    GtkWidget *dialog, *content_area, *lab_title, *lab_text, *image, *hbox, *button;
+
+    /* Create a new dialog with one OK button. */
+    dialog = gtk_dialog_new_with_buttons ("PageInfo", browser,
+                                          GTK_DIALOG_DESTROY_WITH_PARENT,
+//                                          GTK_STOCK_OK, GTK_RESPONSE_OK,
+                                          NULL);
+    gtk_dialog_add_button (GTK_DIALOG (dialog), _("certificate"), GTK_RESPONSE_NONE);
+    gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_NONE, isEncrypt);
+    gtk_window_set_modal (GTK_WINDOW (dialog), FALSE);
+    content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+//    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+    lab_text = gtk_label_new (title);
+    gtk_label_set_line_wrap (GTK_LABEL (lab_text), TRUE);
+    image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_INFO,
+                                      GTK_ICON_SIZE_DIALOG);
+    hbox = gtk_hbox_new (FALSE, 5);
+    gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
+    gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
+    /* Pack the dialog content into the dialog's GtkVBox. */
+    gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
+    
+    //协议
+    hbox = gtk_hbox_new (FALSE, 5);
+    gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
+    lab_title = gtk_label_new(_("Protocol"));
+    gtk_label_set_markup(GTK_LABEL(lab_title),
+        "<span weight='bold' font_desc='10'>协议：</span>");
+//    gtk_label_set_text (lab_title, _("Protocol"));
+    gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+    gtk_label_set_width_chars (GTK_LABEL (lab_title), 10);
+    gtk_label_set_ellipsize (GTK_LABEL (lab_title), PANGO_ELLIPSIZE_END);
+    gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+    lab_text = gtk_label_new(protocol);
+    gtk_box_pack_start (GTK_BOX(hbox), lab_text, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
+    
+    hbox = gtk_hbox_new (FALSE, 5);
+    gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
+    lab_title = gtk_label_new(_("Type"));
+    gtk_label_set_markup(GTK_LABEL(lab_title),
+        "<span weight='bold' font_desc='10'>类型：</span>");
+    gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+    gtk_label_set_width_chars (GTK_LABEL (lab_title), 10);
+    gtk_label_set_ellipsize (GTK_LABEL (lab_title), PANGO_ELLIPSIZE_END);
+    gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+    lab_text = gtk_label_new(type);
+    gtk_box_pack_start (GTK_BOX(hbox), lab_text, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
+    
+    hbox = gtk_hbox_new (FALSE, 5);
+    gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
+    lab_title = gtk_label_new(_("Connect"));
+    gtk_label_set_markup(GTK_LABEL(lab_title),
+        "<span weight='bold' font_desc='10'>连接：</span>");
+    gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+    gtk_label_set_width_chars (GTK_LABEL (lab_title), 10);
+    gtk_label_set_ellipsize (GTK_LABEL (lab_title), PANGO_ELLIPSIZE_END);
+//    button = gtk_button_new_with_label(_("certificate"));
+//    g_signal_connect (button, "clicked", G_CALLBACK (midori_view_certificate), browser);
+//    gtk_widget_set_sensitive (GTK_WIDGET (button), isEncrypt);
+    gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+    lab_text = gtk_label_new(encrypt);
+    gtk_box_pack_start (GTK_BOX(hbox), lab_text, FALSE, FALSE, 0);
+//    gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
+    
+    hbox = gtk_hbox_new (FALSE, 5);
+    gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
+    lab_title = gtk_label_new(_("Domain address"));
+    gtk_label_set_markup(GTK_LABEL(lab_title),
+        "<span weight='bold' font_desc='10'>区域：</span>");
+    gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+    gtk_label_set_width_chars (GTK_LABEL (lab_title), 10);
+    gtk_label_set_ellipsize (GTK_LABEL (lab_title), PANGO_ELLIPSIZE_END);
+    gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+    if (!strcmp(protocol, "file"))
+        lab_text = gtk_label_new("Local");
+    else
+        lab_text = gtk_label_new ("Ineternet");
+    gtk_box_pack_start (GTK_BOX(hbox), lab_text, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
+    
+    hbox = gtk_hbox_new (FALSE, 5);
+    gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
+    lab_title = gtk_label_new(_("Address"));
+    gtk_label_set_markup(GTK_LABEL(lab_title),
+        "<span weight='bold' font_desc='10'>地址：</span>");
+    gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+    gtk_label_set_width_chars (GTK_LABEL (lab_title), 10);
+    gtk_label_set_ellipsize (GTK_LABEL (lab_title), PANGO_ELLIPSIZE_END);
+    gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+    lab_text = gtk_label_new(uri);
+    gtk_label_set_line_wrap (GTK_LABEL (lab_text), TRUE);
+    gtk_box_pack_start (GTK_BOX(hbox), lab_text, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
+    
+    hbox = gtk_hbox_new (FALSE, 5);
+    gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
+    lab_title = gtk_label_new(_("Bytes"));
+    gtk_label_set_markup(GTK_LABEL(lab_title),
+        "<span weight='bold' font_desc='10'>大小：</span>");
+    gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+    gtk_label_set_width_chars (GTK_LABEL (lab_title), 10);
+    gtk_label_set_ellipsize (GTK_LABEL (lab_title), PANGO_ELLIPSIZE_END);
+    gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+    lab_text = gtk_label_new(bytes);
+    gtk_box_pack_start (GTK_BOX(hbox), lab_text, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
+    
+    hbox = gtk_hbox_new (FALSE, 5);
+    gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
+    lab_title = gtk_label_new(_("Create time"));
+    gtk_label_set_markup(GTK_LABEL(lab_title),
+        "<span weight='bold' font_desc='10'>创建时间：</span>");
+    gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+    gtk_label_set_width_chars (GTK_LABEL (lab_title), 10);
+    gtk_label_set_ellipsize (GTK_LABEL (lab_title), PANGO_ELLIPSIZE_END);
+    gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+    lab_text = gtk_label_new(year);
+    gtk_box_pack_start (GTK_BOX(hbox), lab_text, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
+    
+    hbox = gtk_hbox_new (FALSE, 5);
+    gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
+    lab_title = gtk_label_new(_("Modify time"));
+    gtk_label_set_markup(GTK_LABEL(lab_title),
+        "<span weight='bold' font_desc='10'>修改时间：</span>");
+    gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+    gtk_label_set_width_chars (GTK_LABEL (lab_title), 10);
+    gtk_label_set_ellipsize (GTK_LABEL (lab_title), PANGO_ELLIPSIZE_END);
+    gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+    lab_text = gtk_label_new(year);
+    gtk_misc_set_alignment (GTK_MISC (lab_text), 0.0, 0.5);
+    gtk_label_set_width_chars (GTK_LABEL (lab_text), 60);
+    gtk_box_pack_start (GTK_BOX(hbox), lab_text, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
+    
+    gtk_widget_show_all (dialog);
+    /* Create the dialog as modal and destroy it when a button is clicked. */
+
+    gint res = gtk_dialog_run (GTK_DIALOG (dialog));
+    switch (res)
+    {
+    case GTK_RESPONSE_NONE:
+        {
+        gchar* certificateData;
+        g_object_get(tls_cert, "certificate-pem", &certificateData,NULL);
+        get_single_certificate_data(certificateData);
+        display_single_certificate();
+        }
+        break;
+    default:
+        gtk_widget_destroy (dialog);
+    }
+
+//    gtk_widget_destroy (dialog);
 }
 
 static void
@@ -5979,6 +6204,9 @@ static const GtkActionEntry entries[] =
     { "InspectPage", NULL,
         N_("_Inspect Page"), "<Ctrl><Shift>i",
         NULL, G_CALLBACK (_action_inspect_page_activate) },
+    { "PageInfo", NULL, //add by zgh 20141225
+        N_("Page _Info"), "<Ctrl>I",
+        NULL, G_CALLBACK (_action_pageinfo_activate) },
 
     { "TabPrevious", GTK_STOCK_GO_BACK,
         N_("_Previous Tab"), "<Ctrl>Page_Up",
@@ -6377,6 +6605,7 @@ static const gchar* ui_markup =
 #endif
             "<menuitem action='Preferences'/>"
             "<menuitem action='InspectPage'/>"
+            "<menuitem action='PageInfo'/>"  //zgh 20141225
             "<menuitem action='ReloadUncached'/>"
             "<menuitem action='CaretBrowsing'/>"
             "</menu>"

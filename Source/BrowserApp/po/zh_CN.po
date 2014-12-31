@@ -859,7 +859,7 @@ msgstr "打开特定位置"
 msgid "Add to Bookmarks bar"
 msgstr "添加到书签栏"
 
-msgid "Bookmark already exsit"
+msgid "Bookmark already exist"
 msgstr "书签已存在"
 
 #: ../midori/midori-browser.c:6127
@@ -907,6 +907,9 @@ msgstr "未能载入扩展 ‘%s’ 的配置：%s\n"
 #, c-format
 msgid "The configuration of the extension '%s' couldn't be saved: %s\n"
 msgstr "未能保存扩展 ‘%s’ 的配置：%s\n"
+
+msgid "certificate"
+msgstr "查看证书"
 
 #: ../midori/midori-locationaction.c:1325
 msgid "Export certificate"
@@ -1622,6 +1625,9 @@ msgstr "工具栏样式："
 #: ../midori/midori-preferences.c:474
 msgid "Open new pages in:"
 msgstr "在此打开新页面："
+
+msgid "Page _Info"
+msgstr "页面属性(_P)"
 
 #: ../midori/midori-preferences.c:478
 msgid "New tab behavior:"
@@ -3508,5 +3514,39 @@ msgstr "查看下载管理器"
 msgid "the bookmark is already exsit"
 msgstr "要添加的书签已存在"
 
+msgid "Protocol"
+msgstr "协议："
+
+msgid "Type"
+msgstr "类型："
+
+msgid "Connect"
+msgstr "连接："
+
+msgid "Domain address"
+msgstr "区域："
+
+msgid "Address"
+msgstr "地址："
+
+msgid "Bytes"
+msgstr "大小："
+
+msgid "Create time"
+msgstr "创建时间："
+
+msgid "Modify time"
+msgstr "修改时间："
+
+msgid "Connect Http %s"
+msgstr "您与 %s 的连接未加密"
+
+msgid "Connect Https %s"
+msgstr "您与 %s 的连接已加密"
+
+msgid "%d bytes"
+msgstr "%d 字节"
+
 msgid "OpenFile"
 msgstr "执行"
+
