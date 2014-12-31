@@ -1069,7 +1069,7 @@ void _midori_panel_open_in_window(MidoriPanel* panel,
     if(open_in_window){
         gtk_tool_button_set_stock_id (GTK_TOOL_BUTTON (panel->button_openinwindow),GTK_STOCK_LEAVE_FULLSCREEN);
         panel->open_panels_in_windows = TRUE;
-        gtk_container_remove(panel->labelbar,panel->button_close);
+//        gtk_container_remove(panel->labelbar,panel->button_close);
 
     }
     else{

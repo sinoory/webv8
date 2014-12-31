@@ -5806,7 +5806,7 @@ midori_panel_notify_open_in_window_cb(MidoriPanel*   panel,
             GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
             GtkWidget* hpaned = gtk_widget_get_parent (vpaned); //vbox
 
-            gtk_container_remove (browser->sari_panel_windows, browser->panel);
+//            gtk_container_remove (browser->sari_panel_windows, browser->panel);
             gtk_paned_pack1 (GTK_PANED (hpaned), browser->panel, FALSE, FALSE);
 
             gtk_widget_hide(browser->sari_panel_windows);
@@ -8676,7 +8676,7 @@ midori_browser_show_panel_window(MidoriBrowser* browser)
         gtk_window_present(panel_window);
     }
 
-        gtk_container_remove (GTK_CONTAINER (hpaned), browser->panel);
+//        gtk_container_remove (GTK_CONTAINER (hpaned), browser->panel);
         gtk_container_add(GTK_CONTAINER(panel_window), browser->panel);
         gtk_widget_show_all(panel_window);
 
