@@ -12,5 +12,6 @@ foreach(SIZE 16x16 22x22 32x32 128x128 256x256)
     install_icon(unbookmark categories ${SIZE})
     install_icon(authensite categories ${SIZE})
     install_icon(certifiedwebsite categories ${SIZE})
+    install_icon(user-bookmarks-custom categories ${SIZE})
 endforeach()
 

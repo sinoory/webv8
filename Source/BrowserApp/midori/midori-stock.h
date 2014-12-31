@@ -14,7 +14,7 @@
 
 /* Stock items */
 
-#define STOCK_BOOKMARKS          "user-bookmarks"
+#define STOCK_BOOKMARKS          "user-bookmarks-custom"
 #define STOCK_EXTENSION          "extension"
 #define STOCK_HISTORY            "document-open-recent"
 #define MIDORI_STOCK_WEB_BROWSER "web-browser"
