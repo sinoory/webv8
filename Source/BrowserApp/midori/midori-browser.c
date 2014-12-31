@@ -790,7 +790,10 @@ midori_view_notify_uri_cb (GtkWidget*     widget,
         _action_set_sensitive (browser, "Forward", midori_tab_can_go_forward (MIDORI_TAB (view)));
         g_object_notify (G_OBJECT (browser), "uri");
 
-		browser->settings->current_uri = uri; //lxx add for uri
+        // ZRL 增加uri保护，待确认????
+        if (uri != NULL && strlen(uri) > 0) {
+	        browser->settings->current_uri = uri; //lxx add for uri
+        }
     }
 }
 
