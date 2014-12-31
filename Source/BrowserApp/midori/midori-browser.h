@@ -70,6 +70,9 @@ struct _MidoriBrowserClass
     (*quit)                    (MidoriBrowser*       browser);
 };
 
+//add by luyue 2014/12/30
+GtkWidget *popup_window;
+
 GType
 midori_browser_get_type               (void) G_GNUC_CONST;
 
@@ -202,6 +205,12 @@ _action_pageinfo_activate ( GtkAction*     action,
 void midori_browser_clear_history(MidoriBrowser*     browser);
 
 void midori_browser_change_history_seting(MidoriBrowser* browser, gint *settings);
+//add by luyue 2014/12/30
+gboolean
+web_view_navigation_decision_cb       (WebKitWebView*             web_view,
+                                       WebKitPolicyDecision*      decision,
+                                       WebKitPolicyDecisionType   decision_type,
+                                       MidoriBrowser*             browser);
 G_END_DECLS
 
 #endif /* __MIDORI_BROWSER_H__ */

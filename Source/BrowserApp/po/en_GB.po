@@ -3539,3 +3539,40 @@ msgstr "_Rule:"
 #: ../midori/midori-view.c
 msgid "You are not connected to a network"
 msgstr "Unable connect to Internet"
+
+#:../extensions/youdao_translation.c:39
+msgid "english translation"
+msgstr "English translation"
+
+#: ../extensions/youdao_translation.c:79
+msgid "Youdao translation"
+msgstr "Youdao translation"
+
+#: ../extensions/youdao_translation.c:80
+msgid "Translate English web pages into Chinese"
+msgstr "Translate English web pages into Chinese"
+
+#: ../extensions/weather_inquiry.c:79
+msgid "Weather inquiry"
+msgstr "Weather inquiry"
+
+#: ../extensions/weather_inquiry.c:80
+msgid "Quick view real-time weather"
+msgstr "Quick view real-time weather"
+
+#: ../extensions/car_illegal_query.c:79
+msgid "Car illegal query"
+msgstr "Car illegal query"
+
+#: ../extensions/car_illegal_query.c:80
+msgid "Quick inquiry car illegal"
+msgstr "Quick inquiry car illegal"
+
+#: ../extensions/express_query.c:79
+msgid "Express query"
+msgstr "Express query"
+
+#: ../extensions/express_query.c:80
+msgid "Quick inquiry Express"
+msgstr "Quick inquiry Express"
+

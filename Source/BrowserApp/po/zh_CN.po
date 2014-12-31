@@ -3556,3 +3556,38 @@ msgstr "页面属性"
 msgid "Web Page not exist"
 msgstr "要查看的网页不存在"
 
+#:../extensions/youdao_translation.c:39
+msgid "english translation"
+msgstr "英文翻译"
+
+#: ../extensions/express_query.c:79
+msgid "Express query"
+msgstr "快递查询"
+
+#: ../extensions/express_query.c:80
+msgid "Quick inquiry Express"
+msgstr "快速查询快递"
+
+#: ../extensions/car_illegal_query.c:79
+msgid "Car illegal query"
+msgstr "汽车违章查询"
+
+#: ../extensions/car_illegal_query.c:80
+msgid "Quick inquiry car illegal"
+msgstr "快速查询汽车违章"
+
+#: ../extensions/weather_inquiry.c:79
+msgid "Weather inquiry"
+msgstr "天气查询"
+
+#: ../extensions/weather_inquiry.c:80
+msgid "Quick view real-time weather"
+msgstr "快速查看实时天气"
+
+#: ../extensions/youdao_translation.c:79
+msgid "Youdao translatin"
+msgstr "有道翻译"
+
+#: ../extensions/youdao_translation.c:80
+msgid "Translate English web pages into Chinese"
+msgstr "将英文网页翻译成中文"

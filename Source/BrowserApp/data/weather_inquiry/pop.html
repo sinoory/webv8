@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="all.css" />
+<script src="jquery.js"></script>
+<script src="cif.js"></script>
+<script src="main.js"></script>
+</head>
+<body>
+	<div id="main">
+		<div id="anniu">
+			<span class="button shezhi"></span>
+			<span class="button zoushi"></span>
+<!--			<span class="button guanbi"></span>-->
+		</div>
+		<div id="wendu">
+			<span></span>
+		</div>
+		<div id="chengshi" class="city">
+			<span class="icon"></span>
+			<span class="city-name"></span>
+		</div>
+		<div class="wuran">
+			<span class="icon"></span>
+			<span class="quality from-data"></span>
+		</div>
+		<div id="xiangxi">
+			<span class="weather vertical-span"></span>
+			<div class="pm25">
+				<span>PM2.5指数：</span>
+				<span class="from-data"></span>
+			</div>
+			<span class="date vertical-span"></span>
+			<span class="week vertical-span"></span>
+		</div>
+		<div>
+		</div>
+	</div>
+	<div id="set-wrap">
+		<div class="button back"></div>
+		<div id="set">
+			<div class="header">365天气</div>
+			<div class="selectCity">
+				<span>选择城市：</span>
+				<span class="button">定制</span>
+				<span class="tip">设置成功</span>
+			</div>
+			<div class="tianqitishi">
+				<span class="vertical-span">天气提示：</span>
+				<div>
+					<input type="checkbox" checked="true"/>
+					<span>第一次天气提示：</span>
+					<select class="hour-select" value="11时">
+					</select>
+					<select class="minute-select" value="45分">
+					</select>
+				</div>
+				<div>
+					<input type="checkbox" checked="true"/>
+					<span>第二次天气提示：</span>
+					<select class="hour-select" value="17时">
+					</select>
+					<select class="minute-select" value="45分">
+					</select>
+				</div>
+			</div>
+		</div>
+		<div id="company">
+			<span class="vertical-span">主程序版本：<span class="version"></span></span>
+			<span class="vertical-span">
+				<a href="http://www.365tianqi.cn" target="_blank">http://www.365tianqi.cn</a>
+			</span>
+		</div>
+		<div class="cover-top"></div>
+		<div class="cover-bottom"></div>
+	</div>
+	<div id="trend">
+		<div class="city">
+			<span class="icon horizontal-span"></span>
+			<span class="city-name horizontal-span"></span>
+			<span class=" horizontal-span">气温趋势图</span>
+		</div>
+		<div class="button back"></div>
+		<div class="detail">
+			<div class="week">
+				<span class="horizontal-span"></span>
+				<span class="horizontal-span"></span>
+				<span class="horizontal-span"></span>
+				<span class="horizontal-span"></span>
+				<span class="horizontal-span"></span>
+				<span class="horizontal-span last"></span>
+			</div>
+			<div>
+				<canvas id="trend-canvas" width="314" height="124"></canvas>
+			</div>
+		</div>
+		<div class="zhishu">
+			<span class="horizontal-span cy"><span class="icon"></span>穿衣指数：<span class="text"></span></span>
+			<span class="horizontal-span cx lr-border"><span class="icon"></span>出行指数：<span class="text"></span></span>
+			<span class="horizontal-span fs"><span class="icon"></span>辐射指数：<span class="text"></span></span>
+		</div>
+		<div class="cover-top"></div>
+		<div class="cover-bottom"></div>
+	</div>
+	<div class="loading">
+	</div>
+	<div class="percent">66%</div>
+</body>
+</html>

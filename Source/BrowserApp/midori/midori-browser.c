@@ -6770,6 +6770,38 @@ midori_browser_idle (gpointer data)
     return FALSE;
 }
 
+//add by luyue 2014/12/31
+static gboolean
+_browser_open_uri_from_web_extension(MidoriBrowser *browser)
+{
+   const gchar* uri = g_object_get_data (browser, "extention-data");
+   midori_browser_add_uri (browser, uri);
+  gtk_widget_destroy(popup_window);
+   g_free(uri);
+   return FALSE;
+}
+
+//add by luyue 2014/12/31
+gboolean
+web_view_navigation_decision_cb (WebKitWebView*             web_view,
+                                 WebKitPolicyDecision*      decision,
+                                 WebKitPolicyDecisionType   decision_type,
+                                 MidoriBrowser*             browser)
+{
+  if (decision_type == WEBKIT_POLICY_DECISION_TYPE_NEW_WINDOW_ACTION)
+    {
+    void* request = NULL;
+    const gchar* uri = webkit_uri_request_get_uri (
+        webkit_navigation_policy_decision_get_request (WEBKIT_NAVIGATION_POLICY_DECISION (decision)));
+    const gchar* base_uri = strdup(uri);
+    webkit_policy_decision_ignore (decision);
+    g_object_set_data (browser, "extention-data", base_uri);
+    g_idle_add(_browser_open_uri_from_web_extension,browser);
+    return TRUE;
+    }
+    return FALSE;
+}
+
 static void
 midori_browser_init (MidoriBrowser* browser)
 {

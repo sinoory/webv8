@@ -1172,12 +1172,18 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gchar *expand_pic = midori_paths_get_res_filename("settings-icons/expand.png");
    label = xpm_label_box( expand_pic, "扩 展" );
 	g_free(expand_pic);
-//	label = gtk_label_new ("高级");
-//	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
-       
+//add by luyue 2014/12/29
+        MidoriApp *app = midori_app_get_default();
+        KatzeArray* array = katze_object_get_object (app, "extensions");
+        midori_extension_load_from_folder (app, NULL, FALSE);
+        g_object_set_data (G_OBJECT (app), "extensions", NULL);
+        if (!katze_array_get_nth_item (array, 0))
+        {
+           g_object_unref (array);
+           return;
+        }
+        g_object_unref (array); 
    GtkWidget* scrolled = gtk_scrolled_window_new (NULL, NULL);
-   g_object_set (scrolled, "visible", TRUE, NULL);
-   MidoriApp *app = midori_app_get_default();
    GtkWidget* addon = g_object_new (MIDORI_TYPE_EXTENSIONS, "app", app, NULL);
    GList* children = gtk_container_get_children (GTK_CONTAINER (addon));
    gtk_widget_reparent (g_list_nth_data (children, 0), scrolled);
