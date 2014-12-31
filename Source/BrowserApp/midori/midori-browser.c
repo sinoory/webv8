@@ -7633,8 +7633,12 @@ _midori_browser_update_settings (MidoriBrowser* browser)
     g_object_set (browser->panel, "show-titles", !compact_sidepanel,
         "right-aligned", right_align_sidepanel,
         "open-panels-in-windows", open_panels_in_windows, NULL);
+//last panel position was deleted
+//comment un-used code here
+#if 0
     gtk_paned_set_position (GTK_PANED (gtk_widget_get_parent (browser->panel)),
                             last_panel_position);
+#endif
     /* The browser may not yet be visible, which means that we can't set the
        page. So we set it in midori_browser_size_allocate_cb */
     if (gtk_widget_get_visible (GTK_WIDGET (browser)))
