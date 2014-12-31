@@ -5726,10 +5726,13 @@ _action_panel_activate (GtkToggleAction* action,
 static gboolean
 midori_browser_panel_timeout (GtkWidget* hpaned)
 {
+//un-used code comment 20141231
+#if 0 //comment by zlf
     gint position = gtk_paned_get_position (GTK_PANED (hpaned));
     MidoriBrowser* browser = midori_browser_get_for_widget (hpaned);
     g_object_set (browser->settings, "last-panel-position", position, NULL);
     browser->panel_timeout = 0;
+#endif
     return FALSE;
 }
 
@@ -5817,6 +5820,8 @@ midori_panel_notify_right_aligned_cb (MidoriPanel*   panel,
                                       GParamSpec*    pspec,
                                       MidoriBrowser* browser)
 {
+//un-used code comment 20141231
+#if 0 //comment by zlf
     gboolean right_aligned = katze_object_get_boolean (panel, "right-aligned");
     GtkWidget* hpaned = gtk_widget_get_parent (browser->panel);
     GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
@@ -5846,6 +5851,7 @@ midori_panel_notify_right_aligned_cb (MidoriPanel*   panel,
     gtk_paned_set_position (GTK_PANED (hpaned), paned_size - paned_position);
     g_object_unref (browser->panel);
     g_object_unref (vpaned);
+#endif
 }
 
 static gboolean
