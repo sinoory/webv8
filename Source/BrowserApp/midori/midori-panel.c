@@ -379,7 +379,7 @@ midori_panel_init (MidoriPanel* panel)
     #endif
 #endif    
     panel->button_close= toolitem;
-    gtk_box_pack_start (GTK_BOX (vbox), labelbar, FALSE, FALSE, 0);
+//    gtk_box_pack_start (GTK_BOX (vbox), labelbar, FALSE, FALSE, 0); //delete by zlf(20141231)
 //    gtk_widget_show_all (vbox);
 
     /* Create the toolbook */
