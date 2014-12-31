@@ -517,6 +517,8 @@ void
 midori_panel_set_right_aligned (MidoriPanel* panel,
                                 gboolean     right_aligned)
 {
+//un-used code comment 20141231
+#if 0 //comment by zlf
     GtkWidget* box;
 
     g_return_if_fail (MIDORI_IS_PANEL (panel));
@@ -534,6 +536,7 @@ midori_panel_set_right_aligned (MidoriPanel* panel,
         !panel->right_aligned ? _("Align sidepanel to the right")
             : _("Align sidepanel to the left"));
     g_object_notify (G_OBJECT (panel), "right-aligned");
+#endif
 }
 
 static void
