@@ -1095,16 +1095,16 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	//check cdosbrowser default
 	if( isCdosbrowserDefault() )
 	{
-		label = gtk_label_new("目前的默认浏览器是cdosbrowser.");
+		label = gtk_label_new("目前的默认浏览器是本浏览器.");
 		gtk_grid_attach(grid, label, 2, 2, 2, 1);
 	}
 	else
 	{
-		button = gtk_button_new_with_label("将cdosbrowser设置为默认浏览器");
+		button = gtk_button_new_with_label("将本浏览器设置为默认浏览器");
 	   g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(setCdosDefaultBrowserCallback), settings);
 		gtk_grid_attach(grid, button, 2, 2, 2, 1);
 
-		label = gtk_label_new("cdosbrowser目前不是默认浏览器.");
+		label = gtk_label_new("本浏览器目前不是默认浏览器.");
 		settings->label1_advanced = label;
 		gtk_grid_attach(grid, label, 2, 3, 2, 1);
 	}

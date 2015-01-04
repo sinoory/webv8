@@ -1,5 +1,6 @@
 /*
   2014.12.29 修改默认内置扩展
+  2015.01.04 增加是否有效扩展判断
 */
 
 #include "midori-extension.h"
@@ -532,6 +533,23 @@ midori_extension_get_property (GObject*    object,
     }
 }
 
+//判断是否某扩展是有效扩展
+static const gchar *exception_extensions_libs[] = {"libbrowserwebextension"};
+static const int exception_extensions_libs_len = 1;
+
+static bool _midori_extension_is_valid_extension (gchar *filename) {
+    int index = 0;
+    bool beValid = true;
+    for (; index < exception_extensions_libs_len; index++) {
+        if (strncmp(filename, exception_extensions_libs[index], strlen(exception_extensions_libs[index])) == 0) {
+            beValid = false;
+            break;
+        }
+    }
+
+    return beValid;
+}
+ 
 void
 midori_extension_load_from_folder (MidoriApp* app,
                                    gchar**    keys,
@@ -561,16 +579,20 @@ midori_extension_load_from_folder (MidoriApp* app,
 
         gint i = 0;
         const gchar* filename;
-        while (keys && (filename = keys[i++]))
-            midori_extension_activate_gracefully (app, extension_path, filename, activate);
+        while (keys && (filename = keys[i++])) {
+            if (_midori_extension_is_valid_extension(filename) == true)
+                midori_extension_activate_gracefully (app, extension_path, filename, activate);
+        }
     }
     else
     {
         GDir* extension_dir = g_dir_open (extension_path, 0, NULL);
         g_return_if_fail (extension_dir != NULL);
         const gchar* filename;
-        while ((filename = g_dir_read_name (extension_dir)))
-            midori_extension_activate_gracefully (app, extension_path, filename, activate);
+        while ((filename = g_dir_read_name (extension_dir))) {
+            if (_midori_extension_is_valid_extension(filename) == true)
+                midori_extension_activate_gracefully (app, extension_path, filename, activate);
+        }
         g_dir_close (extension_dir);
     }
 
