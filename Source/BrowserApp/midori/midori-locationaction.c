@@ -657,8 +657,11 @@ midori_location_action_popup_timeout_cb (gpointer data)
         g_signal_connect (action->autocompleter, "populated",
             G_CALLBACK (midori_location_action_populated_suggestions_cb), action);
         g_object_unref (app);
+// ZRL 修改只从历史记录和书签中加载
+#if 0
         midori_autocompleter_add (action->autocompleter,
             MIDORI_COMPLETION (midori_view_completion_new ()));
+#endif
         /* FIXME: Currently HistoryCompletion doesn't work in memory */
         if (action->history != NULL)
             midori_autocompleter_add (action->autocompleter,

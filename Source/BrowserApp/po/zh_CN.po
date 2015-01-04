@@ -1801,7 +1801,7 @@ msgstr "未能保存搜索引擎。%s"
 
 #: ../midori/midori-historycompletion.vala:17
 msgid "Bookmarks and History"
-msgstr "书签和历史记录"
+msgstr "书签/历史记录列表"
 
 #: ../midori/midori-historydatabase.vala:28
 #, c-format

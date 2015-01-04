@@ -21,6 +21,9 @@ list(REMOVE_ITEM DATA_FILES "CMakeLists.txt")
 list(REMOVE_ITEM DATA_FILES "cmake_install.cmake" "CTestTestfile.cmake" "Makefile" "cdosbrowser.appdata.xml.in" "cdosbrowser-private.desktop" "cdosbrowser.desktop"
                             "faq.html" "faq.css")
 
+# 去掉隐私模式外部启动标志
+list(REMOVE_ITEM DATA_FILES "cdosbrowser-private.desktop.in")
+
 foreach(FILE ${DATA_FILES})
     if (${FILE} MATCHES "faq.")
         install(FILES ${FILE} DESTINATION ${CMAKE_INSTALL_DOCDIR})
