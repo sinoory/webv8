@@ -299,7 +299,7 @@ midori_browser_update_secondary_icon (MidoriBrowser* browser,
     {
         midori_location_action_set_secondary_icon (
                 MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARKED);   //STOCK_BOOKMARK_ADD
-        _update_tooltip_if_changed (action, _("Bookmark already exsit"));   //zgh 1225
+        _update_tooltip_if_changed (action, _("Bookmark already exist"));   //zgh 1225
     }
     else
     {
@@ -4545,7 +4545,7 @@ _action_location_secondary_icon_released (GtkAction*     action,
     midori_bookmarks_db_add_item (browser->bookmarks, bookmark);
     midori_location_action_set_secondary_icon (
                 MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARKED);  //add by zgh 1224
-    _update_tooltip_if_changed(action, _("Bookmark already exsit"));    //zgh 1225
+    _update_tooltip_if_changed(action, _("Bookmark already exist"));    //zgh 1225
                 
 //            midori_bookmarks_db_update_item (browser->bookmarks, bookmark);
 
