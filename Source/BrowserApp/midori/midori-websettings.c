@@ -1401,6 +1401,10 @@ midori_settings_new_full (gchar*** extensions)
     gfloat number;
     gboolean boolean;
 
+   //add by luyue 2015/1/5
+   //当第一次启动浏览器时（无cconfig），默认启动扩展（天气查询等）
+    gboolean bFileExit=true;    
+
     if (!g_key_file_load_from_file (key_file, config_file,
                                     G_KEY_FILE_KEEP_COMMENTS, &error))
     {
@@ -1421,6 +1425,8 @@ midori_settings_new_full (gchar*** extensions)
             printf (_("The configuration couldn't be loaded: %s\n"),
                     error->message);
         g_error_free (error);
+    
+        bFileExit=false;
     }
 
     class = G_OBJECT_GET_CLASS (settings);
@@ -1476,6 +1482,13 @@ midori_settings_new_full (gchar*** extensions)
     }
     g_free (pspecs);
 
+    if (!bFileExit)
+    {
+       g_key_file_set_boolean (key_file, "extensions", "libweather_inquiry.so", TRUE);
+       g_key_file_set_boolean (key_file, "extensions", "libcar_illegal_query.so", TRUE);
+       g_key_file_set_boolean (key_file, "extensions", "libexpress_query.so", TRUE);
+       g_key_file_set_boolean (key_file, "extensions", "libyoudao_translation.so", TRUE);
+    }
     if (extensions != NULL)
         *extensions = g_key_file_get_keys (key_file, "extensions", NULL, NULL);
     g_key_file_free (key_file);

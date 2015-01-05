@@ -3585,7 +3585,7 @@ msgid "Quick view real-time weather"
 msgstr "快速查看实时天气"
 
 #: ../extensions/youdao_translation.c:79
-msgid "Youdao translatin"
+msgid "Youdao translation"
 msgstr "有道翻译"
 
 #: ../extensions/youdao_translation.c:80
