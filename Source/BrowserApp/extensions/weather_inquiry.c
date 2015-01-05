@@ -25,7 +25,12 @@ weather_inquiry_function_realization (GtkWidget* botton,MidoriBrowser* browser)
    gtk_window_set_title(popup_window, _("Weather inquiry"));
    gtk_window_set_default_size(popup_window, 500, 230);
    gtk_window_set_type_hint(popup_window,GDK_WINDOW_TYPE_HINT_DIALOG);
-   GtkWidget* webview = webkit_web_view_new();
+
+   //定制settings，关闭web security policy
+   WebKitSettings *localSettings = webkit_settings_new();
+   webkit_settings_set_enable_javascript(localSettings, true);
+   webkit_settings_set_enable_web_security(localSettings, false);
+   GtkWidget* webview = webkit_web_view_new_with_settings(localSettings);
    gtk_container_add(GTK_CONTAINER(popup_window), webview);
    gtk_widget_show(webview);
    gtk_widget_show(popup_window);
