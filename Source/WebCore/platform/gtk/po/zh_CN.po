@@ -2531,3 +2531,12 @@ msgstr ""
 
 #~ msgid "_Searchable Index"
 #~ msgstr "可搜索索引(_S)"
+
+#: ../../../WebKit2/UIProcess/API/gtk/WebKitSettings.cpp
+msgid "Enable Web Security"
+msgstr "启用Web安全策略"
+
+#: ../../../WebKit2/UIProcess/API/gtk/WebKitSettings.cpp
+msgid "Whether Web Security Policy should be enabled."
+msgstr "是否启用Web安全策略"
+

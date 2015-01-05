@@ -144,8 +144,7 @@ const gchar* key[]   =    {"", "load-icons-ignoring-image-load-setting", "enable
                            "", "on-startup", "open-newpage",  "default-font-size", "history-setting",
                            "cookie-setting", "track-location", "media-access", "",
                            "", "home-page", "default-font-family", "store-path-of-downfile", "", //lxx alter, 14.11.17
-                           "", "page-zoom", ""
-
+                           "", "page-zoom", "", "enable-web-security", ""
                           };
 
 const gchar* font[]  =    {"sans-serif", "AR PL UKai CN", "AR PL UKai HK", "AR PL UKai TW",
@@ -425,7 +424,9 @@ static void webKitSettingsSetProperty(GObject* object, guint propId, const GValu
     case PROP_PAGE_ZOOM:
         webkit_settings_set_page_zoom(settings, g_value_get_double(value));   
         break;
-
+    case PROP_ENABLE_WEB_SECURITY:
+        webkit_settings_set_enable_web_security(settings, g_value_get_boolean(value));
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
         break;
@@ -647,7 +648,9 @@ static void webKitSettingsGetProperty(GObject* object, guint propId, GValue* val
     case PROP_PAGE_ZOOM:
         g_value_set_double(value, webkit_settings_get_page_zoom(settings));
         break;
-
+    case PROP_ENABLE_WEB_SECURITY:
+        g_value_set_boolean(value, webkit_settings_get_enable_web_security(settings));
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
         break;
@@ -1687,6 +1690,18 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             -G_MAXDOUBLE, G_MAXDOUBLE, 1.0,
             readWriteConstructParamFlags));
 
+    /**
+     * WebKitSettings:enable-web-security:
+     *
+     * Determines whether or not Web Security is enabled.
+     */
+    g_object_class_install_property(gObjectClass,
+                                    PROP_ENABLE_WEB_SECURITY,
+                                    g_param_spec_boolean("enable-web-security",
+                                                         _("Enable Web Security"),
+                                                         _("Whether Web Security Policy should be enabled."),
+                                                         TRUE,
+                                                         readWriteConstructParamFlags));
 }
 
 WebPreferences* webkitSettingsGetPreferences(WebKitSettings* settings)
@@ -4524,6 +4539,33 @@ void SaveInitValueToFile(WebKitSettings* settings)
 
    //now save to file. 
    pref_store->SerializeAndWriteFile(); 
+}
+
+/**
+ * webkit_settings_get_enable_web_security:
+ * @settings: a #WebKitSettings
+ *
+ * Get the #WebKitSettings:enable-web-security property.
+ *
+ * Returns: %TRUE If web security is enabled or %FALSE otherwise.
+ */
+gboolean webkit_settings_get_enable_web_security(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->preferences->webSecurityEnabled();
+}
+
+void webkit_settings_set_enable_web_security(WebKitSettings* settings, gboolean enabled)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+    WebKitSettingsPrivate* priv = settings->priv;
+    bool currentValue = priv->preferences->webSecurityEnabled();
+    if (currentValue == enabled)
+        return;
+   
+    priv->preferences->setWebSecurityEnabled(enabled);
+    g_object_notify(G_OBJECT(settings), "enable-web-security");
 }
 
 

@@ -209,6 +209,10 @@ enum {
     PROP_PAGE_ZOOM,
     PROP_DOUBLE_END,
     //property save start
+
+    //For Security Policy
+    PROP_ENABLE_WEB_SECURITY,
+
     PROP_SAVE_END
 };
 
@@ -769,6 +773,13 @@ WEBKIT_API void
 webkit_settings_set_path_of_download_file							  (WebKitSettings* settings, 
 																					const char* storePath);
 //lxx add, 14.11.17
+
+// 设置web安全策略，若置为false，则跨域访问资源时不再受限，应谨慎使用
+WEBKIT_API gboolean
+webkit_settings_get_enable_web_security                                (WebKitSettings *settings);
+
+WEBKIT_API void 
+webkit_settings_set_enable_web_security                    (WebKitSettings* settings, gboolean enabled);
 
 G_END_DECLS
 
