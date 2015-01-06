@@ -656,7 +656,12 @@ midori_browser_assert_action (MidoriBrowser* browser,
         }
         else
         {
+//扩展库路径相应修改
+#if 0
             gchar* extension_path = midori_paths_get_lib_path (PACKAGE_NAME);
+#else
+            gchar* extension_path = midori_paths_get_extension_lib_path (PACKAGE_NAME);
+#endif
             GObject* extension = midori_extension_load_from_file (extension_path, parts[0], FALSE, FALSE);
             g_free (extension_path);
             if (!extension || (strcmp (parts[1], "true") && strcmp (parts[1], "false")))
@@ -715,7 +720,12 @@ _midori_browser_activate_action (MidoriBrowser* browser,
         }
         else
         {
+//扩展库路径相应修改
+#if 0
             gchar* extension_path = midori_paths_get_lib_path (PACKAGE_NAME);
+#else
+            gchar* extension_path = midori_paths_get_extension_lib_path (PACKAGE_NAME);
+#endif
             GObject* extension = midori_extension_load_from_file (extension_path, parts[0], TRUE, FALSE);
             MidoriApp* app = midori_app_new_proxy (NULL);
             g_object_set (app,

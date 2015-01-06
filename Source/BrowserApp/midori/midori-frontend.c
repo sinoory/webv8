@@ -253,9 +253,16 @@ midori_private_app_new (const gchar* config,
     }
 
     /* FIXME need proper stock extension mechanism */
+//由于整合了若干预置扩展，此处相应修改
+#if 0
     midori_browser_activate_action (browser, "libtransfers." G_MODULE_SUFFIX "=true");
     midori_browser_activate_action (browser, "libabout." G_MODULE_SUFFIX "=true");
     midori_browser_activate_action (browser, "libopen-with." G_MODULE_SUFFIX "=true");
+#else
+    midori_browser_activate_action (browser, "libtransfers." G_MODULE_SUFFIX "=true");
+    midori_browser_activate_action (browser, "libbuiltinextension." G_MODULE_SUFFIX "=true");
+#endif
+    
     g_assert (g_module_error () == NULL);
 
     return browser;
