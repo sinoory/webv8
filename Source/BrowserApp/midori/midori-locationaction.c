@@ -1519,6 +1519,8 @@ midori_location_action_icon_released_cb (GtkWidget*           widget,
 #endif
             return;
         }
+        
+#if DISABLE_PAGEINFO_DIALOG
        //modify by luyue start 2014/12/4
         GTlsCertificate* tls_cert;
         GTlsCertificateFlags tls_flags;
@@ -1589,6 +1591,9 @@ midori_location_action_icon_released_cb (GtkWidget*           widget,
         g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
         gtk_widget_show_all (dialog);*/
         //modify by luyue end 2014/12/4
+#else
+        _action_pageinfo_activate (NULL, browser);   //add by zgh 20141231
+#endif
     }
     if (icon_pos == GTK_ENTRY_ICON_SECONDARY)
     {
@@ -1824,6 +1829,28 @@ midori_location_action_set_secondary_icon (MidoriLocationAction* location_action
     {
         GtkWidget* entry = midori_location_action_entry_for_proxy (proxies->data);
         midori_location_action_entry_set_secondary_icon (GTK_ENTRY (entry), stock_id);
+    }
+}
+//zgh 20150106
+void
+midori_location_action_set_secondary_icon_tooltip (MidoriLocationAction* location_action,
+                                           const gchar*          stock_id,
+                                           const gchar*          tooltip)
+{
+    GSList* proxies;
+
+    g_return_if_fail (MIDORI_IS_LOCATION_ACTION (location_action));
+
+    katze_assign (location_action->secondary_icon, g_strdup (stock_id));
+
+    proxies = gtk_action_get_proxies (GTK_ACTION (location_action));
+
+    for (; proxies != NULL; proxies = g_slist_next (proxies))
+    if (GTK_IS_TOOL_ITEM (proxies->data))
+    {
+        GtkWidget* entry = midori_location_action_entry_for_proxy (proxies->data);
+        midori_location_action_entry_set_secondary_icon (GTK_ENTRY (entry), stock_id);
+        gtk_entry_set_icon_tooltip_text (GTK_ENTRY (entry), GTK_ENTRY_ICON_SECONDARY, tooltip);
     }
 }
 

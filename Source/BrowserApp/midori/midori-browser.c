@@ -304,15 +304,13 @@ midori_browser_update_secondary_icon (MidoriBrowser* browser,
 
     if (midori_bookmarks_db_exist_by_uri(browser->bookmarks, midori_tab_get_uri(view)))
     {
-        midori_location_action_set_secondary_icon (
-                MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARKED);   //STOCK_BOOKMARK_ADD
-        _update_tooltip_if_changed (action, _("Bookmark already exist"));   //zgh 1225
+        midori_location_action_set_secondary_icon_tooltip (
+                MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARKED, _("Bookmark already exist"));   //STOCK_BOOKMARK_ADD
     }
     else
     {
-        midori_location_action_set_secondary_icon(
-                MIDORI_LOCATION_ACTION(action), STOCK_UNBOOKMARK);
-        _update_tooltip_if_changed (action, _("Add to Bookmarks bar")); //zgh 1225
+        midori_location_action_set_secondary_icon_tooltip(
+                MIDORI_LOCATION_ACTION(action), STOCK_UNBOOKMARK, _("Add to Bookmarks bar"));
     }
 #if 0   //zgh
     if (g_object_get_data (G_OBJECT (view), "news-feeds"))
@@ -4434,7 +4432,6 @@ _action_location_focus_in (GtkAction*     action,
             MIDORI_LOCATION_ACTION (action), GTK_STOCK_JUMP_TO);
 }
 
-
 static void
 _action_location_focus_out (GtkAction*     action,
                             MidoriBrowser* browser)
@@ -4603,9 +4600,8 @@ _action_location_secondary_icon_released (GtkAction*     action,
     katze_item_set_meta_integer (bookmark, "parentid", 0);
 
     midori_bookmarks_db_add_item (browser->bookmarks, bookmark);
-    midori_location_action_set_secondary_icon (
-                MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARKED);  //add by zgh 1224
-    _update_tooltip_if_changed(action, _("Bookmark already exist"));    //zgh 1225
+    midori_location_action_set_secondary_icon_tooltip (
+                MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARKED, _("Bookmark already exist"));  //add by zgh 1224
                 
 //            midori_bookmarks_db_update_item (browser->bookmarks, bookmark);
 
@@ -4856,9 +4852,8 @@ midori_browser_bookmark_delete_activate_cb (GtkWidget*     menuitem,
 
     item = (KatzeItem*)g_object_get_data (G_OBJECT (menuitem), "KatzeItem");
     midori_bookmarks_db_remove_item (browser->bookmarks, item);
-    midori_location_action_set_secondary_icon (
-                MIDORI_LOCATION_ACTION (action), STOCK_UNBOOKMARK);  //add by zgh 1224
-    _update_tooltip_if_changed(action, _("Add to Bookmarks bar"));    //zgh 1225
+    midori_location_action_set_secondary_icon_tooltip (
+                MIDORI_LOCATION_ACTION (action), STOCK_UNBOOKMARK, _("Add to Bookmarks bar"));  //add by zgh 1224
 }
 
 static void
@@ -5015,9 +5010,8 @@ _action_bookmark_add_activate (GtkAction*     action,
     else
     {
         midori_browser_edit_bookmark_dialog_new (browser, NULL, TRUE, FALSE, proxy);
-        midori_location_action_set_secondary_icon (
-                MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARKED);  //add by zgh 1224
-    _update_tooltip_if_changed(action, _("Bookmark already exist"));    //zgh 1225
+        midori_location_action_set_secondary_icon_tooltip (
+                MIDORI_LOCATION_ACTION (action), STOCK_BOOKMARKED, _("Bookmark already exist"));  //add by zgh 1224
     }
 }
 
@@ -6955,7 +6949,7 @@ midori_browser_init (MidoriBrowser* browser)
         "name", "Location",
         "label", _("_Location…"),
         "stock-id", GTK_STOCK_JUMP_TO,
-        "tooltip", _("Add to Bookmarks bar"),
+//        "tooltip", _("Add to Bookmarks bar"),
         "placeholder-text", _("Search or enter an address"),
         NULL);
 

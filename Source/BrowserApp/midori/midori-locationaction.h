@@ -63,6 +63,12 @@ midori_location_action_set_progress         (MidoriLocationAction* location_acti
 void
 midori_location_action_set_secondary_icon   (MidoriLocationAction* location_action,
                                              const gchar*          stock_id);
+                  
+//zgh 20150106                 
+void
+midori_location_action_set_secondary_icon_tooltip   (MidoriLocationAction* location_action,
+                                             const gchar*          stock_id,
+                                             const gchar*          tooltip);
 
 void
 midori_location_action_delete_item_from_uri (MidoriLocationAction* location_action,
