@@ -503,6 +503,20 @@ midori_browser_get_content_length (GObject*      resource,
     midori_view_set_content_length (midori_view, content_length);
 }
 
+//zgh 20150106
+unsigned long get_file_size(const char *path)  
+{  
+    unsigned long filesize = -1;  
+    FILE *fp;  
+    fp = fopen(path, "r");  
+    if(fp == NULL)  
+        return filesize;  
+    fseek(fp, 0L, SEEK_END);  
+    filesize = ftell(fp);  
+    fclose(fp);  
+    return filesize;  
+}  
+
 static void
 _midori_browser_update_progress (MidoriBrowser* browser,
                                  MidoriView*    view)
@@ -525,9 +539,21 @@ _midori_browser_update_progress (MidoriBrowser* browser,
                       "tooltip", _("Reload the current page"), NULL);
                       
         //zgh 20150106
-        GtkWidget* web_view = midori_view_get_web_view (MIDORI_VIEW (view));
-        WebKitWebResource* resource = webkit_web_view_get_main_resource (WEBKIT_WEB_VIEW (web_view));
-        webkit_web_resource_get_data (resource, NULL, midori_browser_get_content_length, view);
+        gchar *uri = midori_tab_get_uri(view);
+        gchar sub[5] = {0};
+        sscanf(uri, "%[^:]", sub);
+        if (strstr(sub, "http"))
+        {
+            GtkWidget* web_view = midori_view_get_web_view (MIDORI_VIEW (view));
+            WebKitWebResource* resource = webkit_web_view_get_main_resource (WEBKIT_WEB_VIEW (web_view));
+            webkit_web_resource_get_data (resource, NULL, midori_browser_get_content_length, view);
+        }
+        else if (strstr (sub, "file"))
+        {
+            gchar path[2048+1] = {0};
+            sscanf(uri, "%*[^/]//%s", path);
+            midori_view_set_content_length (view, get_file_size(path));
+        }
     }
     else
     {
