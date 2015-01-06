@@ -3576,3 +3576,15 @@ msgstr "Express query"
 msgid "Quick inquiry Express"
 msgstr "Quick inquiry Express"
 
+#: ../extensions/online_bank.c:25
+msgid "CDOS secure online bank"
+msgstr "CDOS secure online bank"
+
+#: ../extensions/online_bank.c:45
+msgid "Online bank"
+msgstr "Online bank"
+
+#: ../extensions/online_bank.c:74
+msgid "Provide safe online banking links,prevent access to fishing website"
+msgstr "Provide safe online banking links,prevent access to fishing website"
+

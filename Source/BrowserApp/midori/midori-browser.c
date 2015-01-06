@@ -6776,7 +6776,8 @@ _browser_open_uri_from_web_extension(MidoriBrowser *browser)
 {
    const gchar* uri = g_object_get_data (browser, "extention-data");
    midori_browser_add_uri (browser, uri);
-  gtk_widget_destroy(popup_window);
+   gtk_widget_destroy(popup_window);
+   popup_window = NULL;
    g_free(uri);
    return FALSE;
 }

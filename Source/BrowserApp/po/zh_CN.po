@@ -3591,3 +3591,17 @@ msgstr "有道翻译"
 #: ../extensions/youdao_translation.c:80
 msgid "Translate English web pages into Chinese"
 msgstr "将英文网页翻译成中文"
+
+#: ../extensions/online_bank.c:25
+msgid "CDOS secure online bank"
+msgstr "CDOS 安全网银"
+
+#: ../extensions/online_bank.c:45
+msgid "Online bank"
+msgstr "网银"
+
+#: ../extensions/online_bank.c:74
+msgid "Provide safe online banking links,prevent access to fishing website"
+msgstr "提供安全的网银链接,防止进入钓鱼网站"
+
+

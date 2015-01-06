@@ -1484,6 +1484,7 @@ midori_settings_new_full (gchar*** extensions)
 
     if (!bFileExit)
     {
+       g_key_file_set_boolean (key_file, "extensions", "libonline_bank.so", TRUE);
        g_key_file_set_boolean (key_file, "extensions", "libweather_inquiry.so", TRUE);
        g_key_file_set_boolean (key_file, "extensions", "libcar_illegal_query.so", TRUE);
        g_key_file_set_boolean (key_file, "extensions", "libexpress_query.so", TRUE);

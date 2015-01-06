@@ -5,6 +5,13 @@
 
 GtkWidget *weather_inquiry_button;
 
+static int 
+close_popup_window()
+{
+   popup_window=NULL;
+   return false;
+}
+
 static void
 weather_inquiry_deactivated_cb (MidoriExtension* extension,
                                 MidoriBrowser*   browser)
@@ -36,6 +43,7 @@ weather_inquiry_function_realization (GtkWidget* botton,MidoriBrowser* browser)
    gtk_widget_show(popup_window);
    webkit_web_view_load_uri(webview, uri);
    g_object_connect (webview, "signal::decide-policy",web_view_navigation_decision_cb, browser);
+   g_signal_connect(G_OBJECT(popup_window),"delete_event", G_CALLBACK(close_popup_window),NULL);
 }
 
 static void weather_inquiry_extension_browser_added_cb (MidoriApp*       app,

@@ -1,0 +1,1 @@
+var imgDotting=null;function dotting(a){imgDotting=imgDotting||document.createElement("img");imgDotting.src=a};
