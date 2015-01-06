@@ -295,6 +295,13 @@ midori_browser_update_secondary_icon (MidoriBrowser* browser,
                                       MidoriView*    view,
                                       GtkAction*     action)
 {
+    //ZRL 当隐私模式时，没有bookmark功能，因此图标隐藏。
+    if (!browser->bookmarks) {
+        midori_location_action_set_secondary_icon (
+            MIDORI_LOCATION_ACTION (action), NULL);
+        return;
+    }
+
     if (midori_bookmarks_db_exist_by_uri(browser->bookmarks, midori_tab_get_uri(view)))
     {
         midori_location_action_set_secondary_icon (
