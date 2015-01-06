@@ -484,6 +484,18 @@ midori_browser_set_current_tab_smartly (MidoriBrowser* browser,
         midori_browser_set_current_tab (browser, view);
 }
 
+//zgh 20150106 获取content length
+midori_browser_get_content_length (GObject*      resource,
+                               GAsyncResult* result,
+                               gpointer*      view)
+{
+    guint64 content_length = 0;
+    MidoriView *midori_view = (MidoriView *)view;
+    webkit_web_resource_get_data_finish (WEBKIT_WEB_RESOURCE (resource),
+        result, &content_length, NULL);
+    midori_view_set_content_length (midori_view, content_length);
+}
+
 static void
 _midori_browser_update_progress (MidoriBrowser* browser,
                                  MidoriView*    view)
@@ -504,6 +516,11 @@ _midori_browser_update_progress (MidoriBrowser* browser,
         g_object_set (action,
                       "stock-id", GTK_STOCK_REFRESH,
                       "tooltip", _("Reload the current page"), NULL);
+                      
+        //zgh 20150106
+        GtkWidget* web_view = midori_view_get_web_view (MIDORI_VIEW (view));
+        WebKitWebResource* resource = webkit_web_view_get_main_resource (WEBKIT_WEB_VIEW (web_view));
+        webkit_web_resource_get_data (resource, NULL, midori_browser_get_content_length, view);
     }
     else
     {
@@ -5289,8 +5306,8 @@ _action_pageinfo_activate ( GtkAction*     action,
     WebKitWebResource  *resource = webkit_web_view_get_main_resource (web_view);
     WebKitURIResponse* response = webkit_web_resource_get_response(resource);
     const gchar* type = webkit_uri_response_get_mime_type (response);
-    const gint content_bytes = webkit_uri_response_get_content_length (response);
-    const gchar* bytes = g_strdup_printf (_("%d bytes"), content_bytes);
+//    gint content_bytes = webkit_uri_response_get_content_length (response);
+    gchar* bytes = g_strdup_printf (_("%d bytes"), midori_view_get_content_length(view));
     gboolean isEncrypt = false;
     gchar *encrypt = g_strdup_printf (_("Connect Http %s"), connect);
     SoupMessageHeaders* headers = webkit_uri_response_get_http_headers (response);

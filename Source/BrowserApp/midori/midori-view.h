@@ -251,6 +251,11 @@ midori_view_get_tls_info               (MidoriView*        view,
                                         GTlsCertificate**     tls_cert,
                                         GTlsCertificateFlags* tls_flags,
                                         gchar**               hostname);
+//zgh 20150106
+void midori_view_set_content_length    (MidoriView*        view,
+                                        guint content_length);
+                                        
+guint64 midori_view_get_content_length (MidoriView*        view);                           
 
 G_END_DECLS
 

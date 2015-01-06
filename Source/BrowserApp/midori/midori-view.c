@@ -136,6 +136,9 @@ struct _MidoriView
 
     // ZRL 标记该view是否已是LOAD_COMMITED状态，用它辅助判断是否可以获取证书信息
     gboolean load_commited;
+    
+    //zgh 记录content-length
+    guint64 content_length;
 };
 
 struct _MidoriViewClass
@@ -3397,6 +3400,19 @@ page_created_cb (MidoriApp* app,
                            web_view, 0);
 }
 
+//zgh 20150106
+void midori_view_set_content_length    (MidoriView*        view,
+                                        guint content_length)
+{
+    view->content_length = content_length;
+}
+
+guint64 midori_view_get_content_length (MidoriView*        view)
+{
+    return view->content_length;
+}
+//eng zgh
+
 static void
 midori_view_init (MidoriView* view)
 {
@@ -3414,6 +3430,8 @@ midori_view_init (MidoriView* view)
     view->item = katze_item_new ();
 
     view->scrollh = view->scrollv = -2;
+    
+    view->content_length = 0; //zgh 20150106
     #ifndef HAVE_WEBKIT2
     /* Adjustments are not created initially, but overwritten later */
     view->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
