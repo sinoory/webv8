@@ -8852,3 +8852,13 @@ void midori_browser_change_history_seting(MidoriBrowser* browser, gint *settings
 
 
 }
+
+void
+midori_browser_open_new_tab_from_extension   (MidoriBrowser* browser, const gchar* uri, gboolean background)
+{
+    GtkWidget* new_view = midori_browser_add_uri (browser, uri);
+    if (!background)
+        midori_browser_set_current_tab (browser, new_view);
+    else
+        midori_browser_notify_new_tab (browser);
+}

@@ -211,6 +211,11 @@ web_view_navigation_decision_cb       (WebKitWebView*             web_view,
                                        WebKitPolicyDecision*      decision,
                                        WebKitPolicyDecisionType   decision_type,
                                        MidoriBrowser*             browser);
+
+// 当前用于Web扩展内通过新建窗口形式打开某个网页
+void
+midori_browser_open_new_tab_from_extension   (MidoriBrowser* browser, const gchar* uri, gboolean background);
+
 G_END_DECLS
 
 #endif /* __MIDORI_BROWSER_H__ */
