@@ -544,7 +544,8 @@ _midori_browser_update_progress (MidoriBrowser* browser,
         {
             GtkWidget* web_view = midori_view_get_web_view (MIDORI_VIEW (view));
             WebKitWebResource* resource = webkit_web_view_get_main_resource (WEBKIT_WEB_VIEW (web_view));
-            webkit_web_resource_get_data (resource, NULL, midori_browser_get_content_length, view);
+            if (resource)
+                webkit_web_resource_get_data (resource, NULL, midori_browser_get_content_length, view);
         }
         else if (strstr (sub, "file"))
         {
