@@ -123,7 +123,8 @@ night_mode_extension_add_browser_cb (MidoriApp*       app,
    night_mode_image = gtk_image_new_from_file(midori_paths_get_res_filename("night_mode/19.png"));
    night_mode_button = gtk_button_new();
    gtk_container_add(GTK_CONTAINER(night_mode_button), night_mode_image);
-   gtk_widget_set_tooltip_text(night_mode_button,_("Night mode"));
+   gtk_widget_set_tooltip_text(night_mode_button,
+              "夜间模式\n使用方法:\n点击按钮选择夜间模式或非夜间模式\n在夜间模式下:\n使用alt键+↑键减小亮度\n使用alt键+↓键增加亮度\n使用alt键+←键恢复默认亮度");
    gtk_widget_show(night_mode_image);
    gtk_widget_show(night_mode_button);
    g_object_get (browser, "statusbar", &tmp, NULL);
@@ -153,7 +154,7 @@ MidoriExtension*
 extension_init (void) 
 {
    MidoriExtension* extension = g_object_new (MIDORI_TYPE_EXTENSION,
-      "name", _("Night mode"),
+      "name",_("Night mode"),
       "description", _("Protect the eyesight and preventing the myopia,adjust the brightness and night mode"),
       "version", "1.0" MIDORI_VERSION_SUFFIX,
       "authors", "luy_os@sari.ac.cn",
