@@ -3588,3 +3588,11 @@ msgstr "Online bank"
 msgid "Provide safe online banking links,prevent access to fishing website"
 msgstr "Provide safe online banking links,prevent access to fishing website"
 
+#: ../extensions/night_mode.c:52
+msgid "Night mode"
+msgstr "Night mode"
+
+#: ../extensions/night_mode.c:81
+msgid "Protect the eyesight and preventing the myopia,adjust the brightness and night mode"
+msgstr "Protect the eyesight and preventing the myopia,adjust the brightness and night mode"
+

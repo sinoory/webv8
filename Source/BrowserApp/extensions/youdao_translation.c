@@ -29,7 +29,7 @@ youdao_translation_function_realization (GtkWidget* botton,MidoriBrowser* browse
      fseek(fp,0,SEEK_END);
      file_size=ftell(fp);
      fseek(fp,0,SEEK_SET);
-     script=(char *)malloc(file_size * sizeof(char));
+     script=(char *)malloc(file_size * sizeof(char)+1);
      fread(script,file_size,sizeof(char),fp);
      script[file_size*sizeof(char)]='\0';
      fclose(fp);

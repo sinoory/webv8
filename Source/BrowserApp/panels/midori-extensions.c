@@ -137,10 +137,10 @@ midori_extensions_add_item_cb (KatzeArray*       array,
     model = gtk_tree_view_get_model (GTK_TREE_VIEW (extensions->treeview));
     gtk_list_store_append (GTK_LIST_STORE (model), &iter);
     gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, extension, -1);
-    g_signal_connect (extension, "activate",
-        G_CALLBACK (midori_extensions_extension_activate_cb), extensions);
-    g_signal_connect (extension, "deactivate",
-        G_CALLBACK (midori_extensions_extension_deactivate_cb), extensions);
+//    g_signal_connect (extension, "activate",
+//        G_CALLBACK (midori_extensions_extension_activate_cb), extensions);
+//    g_signal_connect (extension, "deactivate",
+//        G_CALLBACK (midori_extensions_extension_deactivate_cb), extensions);
 }
 
 static void

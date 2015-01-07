@@ -3604,4 +3604,12 @@ msgstr "网银"
 msgid "Provide safe online banking links,prevent access to fishing website"
 msgstr "提供安全的网银链接,防止进入钓鱼网站"
 
+#: ../extensions/night_mode.c:52
+msgid "Night mode"
+msgstr "夜间模式"
+
+#: ../extensions/night_mode.c:81
+msgid "Protect the eyesight and preventing the myopia,adjust the brightness and night mode"
+msgstr "保护视力,预防近视.调整亮度,夜间模式"
+
 

@@ -1489,6 +1489,7 @@ midori_settings_new_full (gchar*** extensions)
        g_key_file_set_boolean (key_file, "extensions", "libcar_illegal_query.so", TRUE);
        g_key_file_set_boolean (key_file, "extensions", "libexpress_query.so", TRUE);
        g_key_file_set_boolean (key_file, "extensions", "libyoudao_translation.so", TRUE);
+       g_key_file_set_boolean (key_file, "extensions", "libnight_mode.so", TRUE);     
     }
     if (extensions != NULL)
         *extensions = g_key_file_get_keys (key_file, "extensions", NULL, NULL);
