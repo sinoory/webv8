@@ -592,6 +592,7 @@ static void
 midori_panel_action_activate_cb (GtkRadioAction* action,
                                  MidoriPanel*    panel)
 {
+    #if 0
     MidoriBrowser* browser = midori_browser_get_for_widget (GTK_WIDGET (panel));
     GtkActionGroup* actions = midori_browser_get_action_group (browser);
     GtkAction* panel_action = gtk_action_group_get_action (actions, "Panel");
@@ -605,6 +606,7 @@ midori_panel_action_activate_cb (GtkRadioAction* action,
     gtk_tool_button_set_stock_id (GTK_TOOL_BUTTON (panel->button_openinwindow),
         panel->open_panels_in_windows?  GTK_STOCK_LEAVE_FULLSCREEN : GTK_STOCK_FULLSCREEN);
     gtk_widget_show (GTK_WIDGET (panel));
+    #endif
 }
 
 /**
