@@ -123,7 +123,7 @@ namespace Transfers {
                 clear.clicked.connect (clear_clicked);
                 clear.sensitive = !array.is_empty ();
                 toolbar.insert (clear, 0);
-                toolbar.insert (separator, 0);      
+                //toolbar.insert (separator, 0);//comment by zlf
 
                 open_dir = new Gtk.ToolButton.from_stock (Gtk.STOCK_DIRECTORY);
                 open_dir.label = "打开目录";
