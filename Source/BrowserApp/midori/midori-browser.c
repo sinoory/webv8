@@ -8777,12 +8777,12 @@ midori_browser_show_panel_window(MidoriBrowser* browser)
         gtk_window_set_title(GTK_WINDOW(panel_window), "管理器");
         gtk_window_set_position(GTK_WINDOW(panel_window),GTK_WIN_POS_CENTER); 
         gtk_window_set_default_size(GTK_WINDOW(panel_window), 460, 360);
+        gtk_container_add(GTK_CONTAINER(panel_window), browser->panel);        
     }else{
         gtk_window_present(panel_window);
     }
 
 //        gtk_container_remove (GTK_CONTAINER (hpaned), browser->panel);
-        gtk_container_add(GTK_CONTAINER(panel_window), browser->panel);
         gtk_widget_show_all(panel_window);
 
 
