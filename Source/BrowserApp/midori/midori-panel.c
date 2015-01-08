@@ -765,9 +765,9 @@ _midori_panel_child_for_scrolled (MidoriPanel* panel,
        whether the scrolled is the actual child. */
     if (MIDORI_IS_VIEW (scrolled))
         return scrolled;
-    child = gtk_bin_get_child (GTK_BIN (scrolled));
+//    child = gtk_bin_get_child (GTK_BIN (scrolled));
     if (GTK_IS_VIEWPORT (child))
-        child = gtk_bin_get_child (GTK_BIN (child));
+//        child = gtk_bin_get_child (GTK_BIN (child));
     return child;
 }
 
