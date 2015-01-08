@@ -719,7 +719,7 @@ midori_bookmarks_statusbar_update (MidoriBookmarks *bookmarks)
     {
         MidoriBrowser* browser = midori_browser_get_for_widget (bookmarks->treeview);
         
-        g_object_set (browser, "statusbar-text", text, NULL);
+//        g_object_set (G_OBJECT(browser), "statusbar-text", text, NULL);
         
         g_free(text);
     }
