@@ -3596,3 +3596,11 @@ msgstr "Night mode"
 msgid "Protect the eyesight and preventing the myopia,adjust the brightness and night mode"
 msgstr "Protect the eyesight and preventing the myopia,adjust the brightness and night mode"
 
+#: ../extensions/read_mode.c:79
+msgid "Read mode"
+msgstr "Read mode"
+
+#: ../extensions/read_mode.c:80
+msgid "Let article is more conducive to reading"
+msgstr "Let article is more conducive to reading"
+

@@ -3612,4 +3612,10 @@ msgstr "夜间模式"
 msgid "Protect the eyesight and preventing the myopia,adjust the brightness and night mode"
 msgstr "保护视力,预防近视.调整亮度,夜间模式"
 
+#: ../extensions/read_mode.c:79
+msgid "Read mode"
+msgstr "阅读模式"
 
+#: ../extensions/read_mode.c:80
+msgid "Let article is more conducive to reading"
+msgstr "让文章更有利于阅读"
