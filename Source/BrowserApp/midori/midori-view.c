@@ -3168,7 +3168,7 @@ webkit_web_view_console_message_cb (GtkWidget*   web_view,
 //        wqi_array = g_strsplit (message, "#", -1);
         view->website_record_array = NULL;
         view->website_record_array = g_strsplit (message, "#", -1);
-        g_print ("zgh aaaaaaaaaaaab%s\n\n", view->website_record_array[1]);
+
 //        if(!memcmp(view->website_record_array[1], "unknown", 7))
 //        {
 //            g_strfreev (wqi_array);
