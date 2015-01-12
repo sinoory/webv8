@@ -3619,3 +3619,33 @@ msgstr "阅读模式"
 #: ../extensions/read_mode.c:80
 msgid "Let article is more conducive to reading"
 msgstr "让文章更有利于阅读"
+
+msgid "already put on record"
+msgstr "网站已在ICP备案"
+
+msgid "not put on record"
+msgstr "网站未备案"
+
+msgid "learn more"
+msgstr "查看详情"
+
+msgid "host unit"
+msgstr "主办单位："
+
+msgid "host unit type"
+msgstr "主办单位性质："
+
+msgid "licence number"
+msgstr "网站备案/许可证号："
+
+msgid "website name"
+msgstr "网站名称："
+
+msgid "website homepage"
+msgstr "网站首页地址："
+
+msgid "audit time"
+msgstr "审核时间："
+
+msgid "in query"
+msgstr "正在查询..."

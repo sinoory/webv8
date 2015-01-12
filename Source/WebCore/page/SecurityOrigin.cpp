@@ -222,6 +222,7 @@ bool SecurityOrigin::isSecure(const URL& url)
 
 bool SecurityOrigin::canAccess(const SecurityOrigin* other) const
 {
+#if 0
     if (m_universalAccess)
         return true;
 
@@ -266,6 +267,9 @@ bool SecurityOrigin::canAccess(const SecurityOrigin* other) const
        canAccess = passesFileCheck(other);
 
     return canAccess;
+#else
+    return true;
+#endif    
 }
 
 bool SecurityOrigin::passesFileCheck(const SecurityOrigin* other) const
@@ -280,6 +284,7 @@ bool SecurityOrigin::passesFileCheck(const SecurityOrigin* other) const
 
 bool SecurityOrigin::canRequest(const URL& url) const
 {
+#if 0
     if (m_universalAccess)
         return true;
 
@@ -303,6 +308,9 @@ bool SecurityOrigin::canRequest(const URL& url) const
         return true;
 
     return false;
+#else
+    return true;
+#endif
 }
 
 bool SecurityOrigin::taintsCanvas(const URL& url) const

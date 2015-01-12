@@ -12,6 +12,6 @@
 #define ENABLE_TRASH 0
 
 //控制网站鉴定功能
-#define ENABLE_WEBSITE_AUTH 0
+#define ENABLE_WEBSITE_AUTH 1
 
 #endif

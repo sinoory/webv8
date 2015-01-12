@@ -2001,6 +2001,7 @@ midori_location_action_set_security_hint (MidoriLocationAction* location_action,
         icon = g_themed_icon_new_with_default_fallbacks ("text-html-symbolic");
         tooltip = _("Open, unencrypted connection");
     }
+    #if 0
     else if (hint == MIDORI_SECURITY_AUTHENTICATION)
     {
         //by sunh modify entry primary icon
@@ -2010,6 +2011,7 @@ midori_location_action_set_security_hint (MidoriLocationAction* location_action,
 
         //tooltip = auth_str;
     }
+    #endif
     else
         g_assert_not_reached ();
 

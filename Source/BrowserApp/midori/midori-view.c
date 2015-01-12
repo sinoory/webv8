@@ -137,8 +137,9 @@ struct _MidoriView
     // ZRL 标记该view是否已是LOAD_COMMITED状态，用它辅助判断是否可以获取证书信息
     gboolean load_commited;
     
-    //zgh 记录content-length
+    //zgh 记录content-length,
     guint64 content_length;
+    gchar** website_record_array;  //网站鉴定信息
 };
 
 struct _MidoriViewClass
@@ -567,6 +568,48 @@ midori_view_get_tls_info (MidoriView*           view,
     #endif
 }
 #endif
+//zgh 20150107
+static void
+midori_view_website_query_idle(gpointer data)
+{
+    //GtkWidget* web_tab = midori_browser_get_current_tab (MIDORI_BROWSER(data));//g_idle_add
+    //const gchar *web_tab_base_domain = midori_uri_get_base_domain(midori_tab_get_uri(web_tab));
+    
+    GtkWidget* current_web_view = midori_view_get_web_view (MIDORI_VIEW (data));
+    printf("ZRL midori_view_website_query_idle() midori-view = %p, webview = %p \n", data, current_web_view);
+    
+    gchar *base_domain = webkit_web_view_get_uri (current_web_view);
+//    if (!base_domain)
+//        base_domain = midori_uri_get_base_domain(midori_tab_get_uri(MIDORI_VIEW(data)));//midori_uri_is_http
+    if(midori_uri_is_http(base_domain)) 
+        if(!memcmp(base_domain, "http://", 7))
+            base_domain += 7;
+
+    gchar *web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", base_domain);
+    g_print("\t\tsunh--web_tab_uri[%s]\n", web_tab_uri);
+
+    gchar* jquerySrc = NULL;
+    GError * _inner_error_ = NULL;
+    gchar *backgroundSrc = NULL;
+
+    g_file_get_contents (midori_paths_get_res_filename("websitequery/jquery.js"), 
+                            &jquerySrc, 
+                            NULL, 
+                            &_inner_error_);
+
+    g_file_get_contents (midori_paths_get_res_filename("websitequery/background.js"), 
+                            &backgroundSrc, 
+                            NULL, 
+                            &_inner_error_);
+    gchar *queryStr = g_strdup_printf(backgroundSrc, web_tab_uri);
+    //g_print("\t\tsunh--queryStr[%s]\n", queryStr);
+    webkit_web_view_run_javascript(WEBKIT_WEB_VIEW (current_web_view), jquerySrc, NULL, NULL, NULL);
+    webkit_web_view_run_javascript(WEBKIT_WEB_VIEW (current_web_view), queryStr, NULL, NULL, NULL);
+    g_free(jquerySrc);
+    g_free(queryStr);
+    g_free(backgroundSrc);
+    g_print("sunh--midori_view_website_query_idel\n");
+}
 
 static gboolean
 midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view,
@@ -600,10 +643,11 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
 #if ENABLE_WEBSITE_AUTH
         const gchar* w_uri = webkit_web_view_get_uri(web_view);
         const gchar* d_uri = webkit_uri_response_get_uri(response);
-
+        g_print("zgh w_uri=%s d_uri=%s  link_uri=%s\n\n\n", w_uri, d_uri, view->link_uri);
         if(!memcmp(w_uri, d_uri, strlen(w_uri) + 1))
         {
-            g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_QUERY], 0, web_view);
+//zgh 20150107            g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_QUERY], 0, web_view);
+            g_idle_add (midori_view_website_query_idle, view);
         }
 #endif
 
@@ -3103,6 +3147,7 @@ webkit_web_view_console_message_cb (GtkWidget*   web_view,
                                     const gchar* source_id,
                                     MidoriView*  view)
 {
+
     if (!strncmp (message, "speed_dial-save", 13))
     {
         MidoriBrowser* browser = midori_browser_get_for_widget (GTK_WIDGET (view));
@@ -3119,18 +3164,24 @@ webkit_web_view_console_message_cb (GtkWidget*   web_view,
     else if(!strncmp (message, "website_query_info", 18)) 
     {
         /*TODO*/
-        gchar** wqi_array = NULL;
-        wqi_array = g_strsplit (message, "#", -1);
-        if(!memcmp(wqi_array[1], "unknown", 7))
-        {
-            g_strfreev (wqi_array);
-            return TRUE;
-        }
+//        gchar** wqi_array = NULL;
+//        wqi_array = g_strsplit (message, "#", -1);
+        view->website_record_array = NULL;
+        view->website_record_array = g_strsplit (message, "#", -1);
+        g_print ("zgh aaaaaaaaaaaab%s\n\n", view->website_record_array[1]);
+//        if(!memcmp(view->website_record_array[1], "unknown", 7))
+//        {
+//            g_strfreev (wqi_array);
+//            return TRUE;
+//        }
+//        g_print ("zgh bbbbbb\n\n");
+//        view->website_record_array = wqi_array;
+//        g_print ("zgh %s \n\n", view->website_record_array[1]);
 
-        midori_tab_set_security (MIDORI_TAB (view), MIDORI_SECURITY_AUTHENTICATION);
-        g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_UNKNOWN], 0);
-        g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_DATA], 0, wqi_array);
-        g_strfreev (wqi_array);
+//        midori_tab_set_security (MIDORI_TAB (view), MIDORI_SECURITY_AUTHENTICATION);
+//        g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_UNKNOWN], 0);
+        g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_DATA], 0, view->website_record_array);
+//        g_strfreev (wqi_array);
     }
 #endif
     else {
@@ -3401,7 +3452,7 @@ page_created_cb (MidoriApp* app,
 }
 
 //zgh 20150106
-void midori_view_set_content_length    (MidoriView*        view,
+void midori_view_set_content_length (MidoriView*        view,
                                         guint content_length)
 {
     view->content_length = content_length;
@@ -3410,6 +3461,14 @@ void midori_view_set_content_length    (MidoriView*        view,
 guint64 midori_view_get_content_length (MidoriView*        view)
 {
     return view->content_length;
+}
+//eng zgh
+
+//zgh 20150108
+
+gchar** midori_view_get_website_record (MidoriView*        view)
+{
+    return view->website_record_array;
 }
 //eng zgh
 
@@ -3432,6 +3491,7 @@ midori_view_init (MidoriView* view)
     view->scrollh = view->scrollv = -2;
     
     view->content_length = 0; //zgh 20150106
+    view->website_record_array = NULL;  //zgh 20150108
     #ifndef HAVE_WEBKIT2
     /* Adjustments are not created initially, but overwritten later */
     view->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
