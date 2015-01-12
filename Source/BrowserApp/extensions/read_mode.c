@@ -2,8 +2,6 @@
 
 #include "midori/midori.h"
 
-
-
 GtkWidget *read_mode_button;
 
 static void
@@ -18,14 +16,14 @@ static void
 read_mode_function_realization (GtkWidget* botton,MidoriBrowser* browser)
 {
    gchar* exception = NULL;
-   gchar *script=NULL;
+   char *script=NULL;
    FILE *fp;
-   int file_size;
+   unsigned int file_size;
    gboolean result;
 
   MidoriView* view = MIDORI_VIEW (midori_browser_get_current_tab (browser));
   if((fp=fopen(midori_paths_get_res_filename("read_mode/readability.js"),"r"))!=NULL)
-  {
+     {
      fseek(fp,0,SEEK_END);
      file_size=ftell(fp);
      fseek(fp,0,SEEK_SET);
@@ -33,10 +31,12 @@ read_mode_function_realization (GtkWidget* botton,MidoriBrowser* browser)
      fread(script,file_size,sizeof(char),fp);
      script[file_size*sizeof(char)]='\0';
      fclose(fp);
-     result = midori_view_execute_script (view, script, &exception);
-     g_free(script);
-     script=NULL;
-  }
+      }
+  char *insert_js = "(function(){readConvertLinksToFootnotes=false;readStyle='style-newspaper';readSize='size-medium';readMargin='margin-wide';})();";
+  result = midori_view_execute_script (view, insert_js, &exception);
+  result = midori_view_execute_script (view, script, &exception);
+  free(script);
+  script=NULL;
 }
 
 static void read_mode_extension_browser_added_cb (MidoriApp*       app,
