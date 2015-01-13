@@ -569,7 +569,7 @@ midori_view_get_tls_info (MidoriView*           view,
 }
 #endif
 //zgh 20150107
-static void
+static gboolean
 midori_view_website_query_idle(gpointer data)
 {
     //GtkWidget* web_tab = midori_browser_get_current_tab (MIDORI_BROWSER(data));//g_idle_add
@@ -586,7 +586,7 @@ midori_view_website_query_idle(gpointer data)
             base_domain += 7;
 
     gchar *web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", base_domain);
-    g_print("\t\tsunh--web_tab_uri[%s]\n", web_tab_uri);
+//    g_print("\t\tsunh--web_tab_uri[%s]\n", web_tab_uri);
 
     gchar* jquerySrc = NULL;
     GError * _inner_error_ = NULL;
@@ -605,10 +605,12 @@ midori_view_website_query_idle(gpointer data)
     //g_print("\t\tsunh--queryStr[%s]\n", queryStr);
     webkit_web_view_run_javascript(WEBKIT_WEB_VIEW (current_web_view), jquerySrc, NULL, NULL, NULL);
     webkit_web_view_run_javascript(WEBKIT_WEB_VIEW (current_web_view), queryStr, NULL, NULL, NULL);
+    g_free(web_tab_uri);
     g_free(jquerySrc);
     g_free(queryStr);
     g_free(backgroundSrc);
-    g_print("sunh--midori_view_website_query_idel\n");
+//    g_print("sunh--midori_view_website_query_idel\n");
+    return false;
 }
 
 static gboolean
