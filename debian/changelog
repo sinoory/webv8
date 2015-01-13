@@ -1,3 +1,16 @@
+cdosbrowser (0.0.2) Jan13; urgency=low
+
+  * New upstream release
+  - 增加网站鉴定功能.
+  - 增加阅读模式.
+  - 增加网银扩展
+  - 增加夜间模式
+  - 增加网页属性功能
+  - 扩展了字体族的设置
+  - 修复Crash问题.
+  - 修复运行时的警告和报错
+ -- ZhangRuili <zhangrl_os@sari.ac.cn>  Tus, 13 Jan 2015 16:53:08 +0800
+
 cdosbrowser (0.0.1) Dec20; urgency=low
 
   * Initial release (LP: #231731)

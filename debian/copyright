@@ -1,5 +1,5 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: zrltest
+Upstream-Name: CDOSBrowser
 Source: <url://example.com>
 
 Files: *
@@ -8,7 +8,7 @@ Copyright: <years> <put author's name and email here>
 License: GPL-3.0+
 
 Files: debian/*
-Copyright: 2014 zhangruili <zhangruili@unknown>
+Copyright: 2014 cdosrepobuild <cdosrepobuild@iscas.ac.cn>
 License: GPL-3.0+
 
 License: GPL-3.0+

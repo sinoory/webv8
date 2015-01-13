@@ -1,4 +1,14 @@
-0.2
+0.0.2
+  - 增加网站鉴定功能.
+  - 增加阅读模式.
+  - 增加网银扩展
+  - 增加夜间模式
+  - 增加网页属性功能
+  - 扩展了字体族的设置
+  - 修复Crash问题.
+  - 修复运行时的警告和报错
+
+0.0.1
 What's new in WebKitGTK+ 2.6.2?
 
   - SSLv3 is now disabled to protect us against POODLE vulnerability.
@@ -12,6 +22,4 @@ What's new in WebKitGTK+ 2.6.2?
     smooth scrolling.
   - Fix the build with drag and drop support disabled.
 
-0.1
-WebKit-r173441
 
