@@ -5342,7 +5342,8 @@ midori_browser_pageinfo_labtext_cb(GtkWidget* view, gchar** data, GtkWidget* wid
 static void 
 midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* widget)
 {
-    g_print ("zgh %s\n\n", __FUNCTION__);
+    if (!widget)
+        return;
     GtkWidget *hbox, *title, *text;
     if (data && strcmp(data[1], "unknown"))
     {
