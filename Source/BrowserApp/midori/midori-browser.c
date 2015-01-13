@@ -8067,12 +8067,39 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
 
 		g_free(strval);
 	}
+   else if(name == g_intern_string("serif-font-family"))
+	{
+		gchar *strval = NULL;
+		g_object_get(browser->settings, "serif-font-family", &strval, NULL);
+		webkit_settings_set_serif_font_family(browser->settings, strval);	
+
+		g_free(strval);
+	}
+   else if(name == g_intern_string("sans-serif-font-family"))
+	{
+		gchar *strval = NULL;
+		g_object_get(browser->settings, "sans-serif-font-family", &strval, NULL);
+		webkit_settings_set_sans_serif_font_family(browser->settings, strval);
+
+		g_free(strval);
+	}
+   else if(name == g_intern_string("monospace-font-family"))
+	{
+		gchar *strval = NULL;
+		g_object_get(browser->settings, "monospace-font-family", &strval, NULL);
+		webkit_settings_set_monospace_font_family(browser->settings, strval);
+
+		g_free(strval);
+	}
+   else if(name == g_intern_string("default-monospace-font-size"))
+	{
+		gint fontSize = katze_object_get_int (browser->settings, "default-monospace-font-size");
+		webkit_settings_set_default_monospace_font_size(browser->settings, fontSize);
+	}
    else if(name == g_intern_string("default-font-size"))
 	{
-		guint32 size = webkit_settings_get_default_font_size(browser->settings);
 		gint fontSize = katze_object_get_int (browser->settings, "default-font-size");
 		webkit_settings_set_default_font_size(browser->settings, fontSize);
-		guint32 size2 = webkit_settings_get_default_font_size(browser->settings);
 	}
    else if(name == g_intern_string("zoom-level"))
 	{

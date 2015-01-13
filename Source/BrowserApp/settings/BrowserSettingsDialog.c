@@ -93,7 +93,7 @@ GtkWidget *xpm_label_box( gchar *xpm_filename, gchar* label_text )
 	image = gtk_image_new_from_file (xpm_filename);
 /* 为按钮创建一个标签 */
 	label = gtk_label_new (label_text);
-//	gtk_label_set_width_chars(GTK_LABEL(label), 5);
+	gtk_label_set_width_chars(GTK_LABEL(label), 8);
 /* 把图像和标签组装到盒子里 */
 	gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
@@ -171,11 +171,38 @@ static void defaultFontCallback(GtkComboBox *widget, MidoriWebSettings *settings
              NULL);
 }
 
-gint getFontFamilyComboboxIndex(MidoriWebSettings *settings)
+static void serifFontCallback(GtkComboBox *widget, MidoriWebSettings *settings)
+{
+    int CurrentSelect = gtk_combo_box_get_active(widget); 
+    g_object_set(settings,
+             "serif-font-family", font[CurrentSelect],
+             NULL);
+}
+
+static void sansSerifFontCallback(GtkComboBox *widget, MidoriWebSettings *settings)
+{
+    int CurrentSelect = gtk_combo_box_get_active(widget); 
+    g_object_set(settings,
+             "sans-serif-font-family", font[CurrentSelect],
+             NULL);
+
+		gchar *strval = NULL;
+		g_object_get(settings, "sans-serif-font-family", &strval, NULL);
+}
+
+static void monospaceFontCallback(GtkComboBox *widget, MidoriWebSettings *settings)
+{
+    int CurrentSelect = gtk_combo_box_get_active(widget); 
+    g_object_set(settings,
+             "monospace-font-family", font[CurrentSelect],
+             NULL);
+}
+
+static gint getFontFamilyComboboxIndex(MidoriWebSettings *settings, const char *fontFamily)
 {
 	int index = 0;
 	gchar *strval;
-	g_object_get(settings, "default-font-family", &strval, NULL);
+	g_object_get(settings, fontFamily, &strval, NULL);
 	for(index = 0; index < FontNum; index++) 
 	{
 		if(!g_strcmp0(font[index], strval)) 
@@ -197,11 +224,19 @@ static void defaultFontsizeCallback(GtkComboBox *widget, MidoriWebSettings *sett
              NULL);
 }
 
-gint getFontSizeComboboxIndex(MidoriWebSettings *settings)
+static void defaultMonospaceFontsizeCallback(GtkComboBox *widget, MidoriWebSettings *settings)
+{ 
+    int CurrentSelect = gtk_combo_box_get_active(widget); 
+    g_object_set(settings,
+             "default-monospace-font-size", font_size[CurrentSelect],
+             NULL);
+}
+
+gint getFontSizeComboboxIndex(MidoriWebSettings *settings, const char *fontSize)
 {
 	int index = 0;
 	int size;
-	g_object_get(settings, "default-font-size", &size, NULL);
+	g_object_get(settings, fontSize, &size, NULL);
 	for(index = 0; index < FontSizeNum; index++) 
 	{
       if(font_size[index] == size) 
@@ -292,8 +327,10 @@ static void pageContentCacheCallback(GtkToggleButton *togglebutton, MidoriWebSet
 {
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
-             "page-content-cache", bvalue,
+             "enable-page-cache", bvalue,
              NULL);
+
+	webkit_settings_set_enable_page_cache(settings, bvalue);
 } 
 
 static void historySettingCallback(GtkComboBox *widget, MidoriWebSettings *settings)
@@ -362,27 +399,6 @@ static void cookieSettingCallback(GtkComboBox *widget, MidoriWebSettings *settin
 {
 /*
     WebKitCookieAcceptPolicy cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS;
-    if(gtk_toggle_button_get_active(togglebutton)) {
-      if((void *)settings->radiobutton1_privacy == (void *)togglebutton) {
-        ivalue = 0;
-        cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_ALWAYS;
-      }
-      else if((void *)settings->radiobutton2_privacy == (void *)togglebutton) {
-        ivalue = 1;
-        cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_NO_THIRD_PARTY;
-      }
-      else if((void *)settings->radiobutton3_privacy == (void *)togglebutton) {
-        ivalue = 2;
-        cookiePolicy = WEBKIT_COOKIE_POLICY_ACCEPT_NEVER;
-      }
-      else {
-        printf("error cookieSettingCallback\n"); 
-        return;
-      }
-      g_object_set(settings,
-               "cookie-setting", ivalue,
-               NULL);
-    }
     WebKitCookieManager* cookiemanager = webkit_web_context_get_cookie_manager(webkit_web_context_get_default());
     webkit_cookie_manager_set_accept_policy(cookiemanager,cookiePolicy);
 */
@@ -415,6 +431,15 @@ static void trackLocationCallback(GtkComboBox *widget, MidoriWebSettings *settin
     g_object_set(settings,
              "track-location", CurrentSelect,
              NULL);
+
+	if(CurrentSelect == 2)
+	{
+		g_print("lxx currentSelect is 2\n");
+	}
+//	else
+//		webkit_settings_set_network_data_usage_tracking(settings, CurrentSelect);
+
+//	(WebKitSettings*)(settings)->fontNum = 5;
 }
 
 //clear data callback 
@@ -523,10 +548,12 @@ static void do_reset_browser()
 	if(DeletePreferencesFile())
 	{
 		printf("PreferencesFile has been deleted\n");
-		return;
+//		return;
 	};
 //删除历史记录的
-//TODO
+	MidoriApp *app = midori_app_get_default();
+	MidoriBrowser *browser = midori_app_get_browser(app);
+	midori_browser_clear_history(browser);
 //删除书签的
 //TODO
 
@@ -587,18 +614,15 @@ static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSetting
 
 	gtk_window_set_position(GTK_WINDOW(dialog),GTK_WIN_POS_CENTER_ON_PARENT);
 
-    ///等待用户的动作
+    //等待用户的动作
 	if(gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 	{
-        ///取得用户所选文件的路径
+        //取得用户所选文件的路径
 		gchar *filename;
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 
-//		g_print("1 filename = %s\n", filename);
-//		g_object_set(settings, "download-folder", filename, NULL);	
-        ///把文件路径显示到输入条上
+        //把文件路径显示到输入条上
 		gtk_entry_set_text(GTK_ENTRY(entry),filename);
-//		g_print("2 filename = %s\n", filename);
 	}
 
 	gtk_widget_destroy(dialog);
@@ -623,7 +647,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 
 	GtkWidget *window;
 	GtkWidget *button;
-//	GtkWidget *table;
 	GtkWidget *notebook;
 	GtkWidget *label;
 	GtkWidget *widget;
@@ -786,14 +809,14 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	{
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(button), font[i]);
 	}
-	gint index = getFontFamilyComboboxIndex(settings);
+	gint index = getFontFamilyComboboxIndex(settings, "default-font-family");
 	gtk_combo_box_set_active(GTK_COMBO_BOX(button), index);
    g_signal_connect(G_OBJECT(button), "changed", G_CALLBACK(defaultFontCallback), settings);
 	gtk_grid_attach_next_to(grid, button, widget, GTK_POS_RIGHT, 1, 1);
-//	gtk_grid_attach(grid,widget,2,2,1,1);
-
+//size of default font
 	widget = gtk_label_new("字号：");
-	gtk_grid_attach(grid,widget,2,3,1,1);
+	gtk_grid_attach_next_to(grid, widget, button, GTK_POS_RIGHT, 1, 1);
+//	gtk_grid_attach(grid,widget,2,3,1,1);
 
 	button = gtk_combo_box_text_new();
 	for(i = 0; i < FontSizeNum; i++)
@@ -802,11 +825,87 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 		sprintf(ic, "%d", font_size[i]);
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(button), ic);
 	}
-	index = getFontSizeComboboxIndex(settings);
+	index = getFontSizeComboboxIndex(settings, "default-font-size");
 	gtk_combo_box_set_active(GTK_COMBO_BOX(button), index);
    g_signal_connect(G_OBJECT(button), "changed", G_CALLBACK(defaultFontsizeCallback), settings);
-//	gtk_grid_attach_next_to(grid, button, widget, GTK_POS_RIGHT, 1, 1);
-	gtk_grid_attach(grid,button,3,3,1,1);
+	gtk_grid_attach_next_to(grid, button, widget, GTK_POS_RIGHT, 1, 1);
+//	gtk_grid_attach(grid,button,3,3,1,1);
+
+//Serif font
+	widget = gtk_label_new("Serif：");  
+	gtk_grid_attach(grid, widget, 2, 3, 1, 1);
+#if 1
+	button = gtk_combo_box_text_new();
+	for(i = 0; i < FontNum; i++)
+	{
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(button), font[i]);
+	}
+	index = getFontFamilyComboboxIndex(settings, "serif-font-family");
+	gtk_combo_box_set_active(GTK_COMBO_BOX(button), index);
+   g_signal_connect(G_OBJECT(button), "changed", G_CALLBACK(serifFontCallback), settings);
+	gtk_grid_attach_next_to(grid, button, widget, GTK_POS_RIGHT, 1, 1);
+
+//Sans-serif font
+	widget = gtk_label_new("Sans-serif：");
+	gtk_grid_attach(grid, widget, 2, 4, 1, 1);
+
+	button = gtk_combo_box_text_new();
+	for(i = 0; i < FontNum; i++)
+	{
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(button), font[i]);
+	}
+	index = getFontFamilyComboboxIndex(settings, "sans-serif-font-family");
+	gtk_combo_box_set_active(GTK_COMBO_BOX(button), index);
+   g_signal_connect(G_OBJECT(button), "changed", G_CALLBACK(sansSerifFontCallback), settings);
+	gtk_grid_attach_next_to(grid, button, widget, GTK_POS_RIGHT, 1, 1);
+
+//Monospace font
+	widget = gtk_label_new("Monospace：");
+	gtk_grid_attach(grid, widget, 2, 5, 1, 1);
+
+	button = gtk_combo_box_text_new();
+	for(i = 0; i < FontNum; i++)
+	{
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(button), font[i]);
+	}
+	index = getFontFamilyComboboxIndex(settings, "monospace-font-family");
+	gtk_combo_box_set_active(GTK_COMBO_BOX(button), index);
+   g_signal_connect(G_OBJECT(button), "changed", G_CALLBACK(monospaceFontCallback), settings);
+	gtk_grid_attach_next_to(grid, button, widget, GTK_POS_RIGHT, 1, 1);
+
+//size of monospace font
+	widget = gtk_label_new("字号：");
+	gtk_grid_attach_next_to(grid, widget, button, GTK_POS_RIGHT, 1, 1);
+//	gtk_grid_attach(grid,widget,2,3,1,1);
+
+	button = gtk_combo_box_text_new();
+	for(i = 0; i < FontSizeNum; i++)
+	{
+		char ic[10] = {0};
+		sprintf(ic, "%d", font_size[i]);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(button), ic);
+	}
+	index = getFontSizeComboboxIndex(settings, "default-monospace-font-size");
+	gtk_combo_box_set_active(GTK_COMBO_BOX(button), index);
+   g_signal_connect(G_OBJECT(button), "changed", G_CALLBACK(defaultMonospaceFontsizeCallback), settings);
+	gtk_grid_attach_next_to(grid, button, widget, GTK_POS_RIGHT, 1, 1);
+//	gtk_grid_attach(grid,button,3,3,1,1);
+#endif
+//	gtk_grid_attach(grid,widget,2,2,1,1);
+
+	gchar *content_pic = midori_paths_get_res_filename("settings-icons/fonts.png");
+   label = xpm_label_box( content_pic, "字体" );
+	g_free(content_pic);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
+
+//content
+	grid = (GtkGrid*)gtk_grid_new();//创建网格
+
+	gtk_grid_set_row_spacing (grid, 8);
+	gtk_grid_set_column_spacing (grid, 5);
+
+	label = gtk_label_new("    ");
+	gtk_grid_attach( grid, label, 0, 0, 1, 1);
 
 	widget = gtk_label_new("网页缩放：");
 	gtk_grid_attach(grid, widget, 1, 4, 1, 1);
@@ -873,9 +972,9 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_grid_attach( grid, label, 0, 13, 1, 1);
 
 //	label = gtk_label_new ("内容");
-	gchar *content_pic = midori_paths_get_res_filename("settings-icons/content.png");
-   label = xpm_label_box( content_pic, "内 容" );
-	g_free(content_pic);
+	gchar *font_pic = midori_paths_get_res_filename("settings-icons/content.png");
+   label = xpm_label_box( font_pic, "内 容" );
+	g_free(font_pic);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
 
 //privacy
@@ -890,8 +989,8 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	widget = gtk_label_new("缓存：");
 	gtk_grid_attach(grid, widget, 1, 1, 1, 1);
 
-	button = gtk_check_button_new_with_label("开启网络内容缓存");
-	g_object_get(settings, "page-content-cache", &bvalue, NULL);
+	button = gtk_check_button_new_with_label("开启网页内容缓存");
+	g_object_get(settings, "enable-page-cache", &bvalue, NULL);
 	if(TRUE == bvalue)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE); 
 	else
@@ -1012,9 +1111,9 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_grid_attach(grid, widget, 1, 11, 1, 1);
 
 	widget = gtk_combo_box_text_new();
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "不允许任何网站跟踪您所在的位置");
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "允许所有网站跟踪您所在的位置");
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "当网站要跟踪您所在的位置时询问您（推荐）");
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "不允许任何网站跟踪您所在的位置");
 	g_signal_connect(G_OBJECT(widget), "changed", G_CALLBACK(trackLocationCallback), settings);
 	ivalue = katze_object_get_int(settings, "track-location");
 	switch(ivalue) {
@@ -1161,14 +1260,6 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), GTK_WIDGET(grid), label);
 
 //expand
-	/*grid = (GtkGrid*)gtk_grid_new();//创建网格
-
-	gtk_grid_set_row_spacing (grid, 8);
-	gtk_grid_set_column_spacing (grid, 5);
-
-	label = gtk_label_new("    ");
-	gtk_grid_attach( grid, label, 0, 0, 1, 1);*/
-
 	gchar *expand_pic = midori_paths_get_res_filename("settings-icons/expand.png");
    label = xpm_label_box( expand_pic, "扩 展" );
 	g_free(expand_pic);
@@ -1180,7 +1271,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
         if (!katze_array_get_nth_item (array, 0))
         {
            g_object_unref (array);
-           return;
+           return NULL;
         }
         g_object_unref (array); 
    GtkWidget* scrolled = gtk_scrolled_window_new (NULL, NULL);
