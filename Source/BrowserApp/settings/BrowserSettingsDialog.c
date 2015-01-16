@@ -275,6 +275,15 @@ static void zoomTextOnlyCallback(GtkToggleButton *togglebutton, MidoriWebSetting
              NULL);
 }
 
+static void smartZoomCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
+{
+    bool bvalue = gtk_toggle_button_get_active(togglebutton); 
+
+    g_object_set(settings,
+             "smart-zoom", !bvalue,
+             NULL);
+}
+
 static void pageZoomCallback(GtkComboBox *widget, MidoriWebSettings *settings)
 {
     int CurrentSelect = gtk_combo_box_get_active(widget);
@@ -933,13 +942,20 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(zoomTextOnlyCallback), settings);
 	gtk_grid_attach(grid,button,2,6,1,1);
 
+	button = gtk_check_button_new_with_label("智能缩放");
+   g_object_get(settings, "smart-zoom", &bvalue, NULL);
+	if(bvalue)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+   g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(smartZoomCallback), settings);
+	gtk_grid_attach(grid,button,2,7,1,1);
+
 	widget = gtk_label_new("图片：");
-	gtk_grid_attach(grid, widget, 1, 7, 1, 1);
+	gtk_grid_attach(grid, widget, 1, 8, 1, 1);
 
 	button = gtk_radio_button_new_with_label (NULL, "显示所有图片（推荐）");
 	settings->radiobutton1_content = GTK_WIDGET(button);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(showImageCallback), settings);
-	gtk_grid_attach(grid, button, 2, 8, 2, 1);
+	gtk_grid_attach(grid, button, 2, 9, 2, 1);
 	group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
 	button = gtk_radio_button_new_with_label (group, "不显示任何图片");
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(showImageCallback), settings);
@@ -949,14 +965,14 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton1_content), TRUE);     
 	else
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton2_content), TRUE); 
-	gtk_grid_attach(grid, button, 2, 9, 2, 1);
+	gtk_grid_attach(grid, button, 2, 10, 2, 1);
 
 	widget = gtk_label_new("JavaScript：");
-	gtk_grid_attach(grid, widget, 1, 10, 1, 1);
+	gtk_grid_attach(grid, widget, 1, 11, 1, 1);
 	button = gtk_radio_button_new_with_label (NULL, "允许所有网站运行JavaScript（推荐）");
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(runJavascriptCallback), settings);
 	settings->radiobutton3_content = GTK_WIDGET(button);
-	gtk_grid_attach(grid, button, 2, 11, 2, 1);
+	gtk_grid_attach(grid, button, 2, 12, 2, 1);
 	group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
 	button = gtk_radio_button_new_with_label (group, "不允许任何网站运行JavaScript");
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(runJavascriptCallback), settings);
@@ -966,10 +982,10 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton3_content), TRUE);     
 	else
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton4_content), TRUE); 
-	gtk_grid_attach(grid, button, 2, 12, 2, 1);
+	gtk_grid_attach(grid, button, 2, 13, 2, 1);
 
 	label = gtk_label_new("    ");
-	gtk_grid_attach( grid, label, 0, 13, 1, 1);
+	gtk_grid_attach( grid, label, 0, 14, 1, 1);
 
 //	label = gtk_label_new ("内容");
 	gchar *font_pic = midori_paths_get_res_filename("settings-icons/content.png");

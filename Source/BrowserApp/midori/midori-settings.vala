@@ -203,7 +203,7 @@ namespace Midori {
 		  public int cookie_setting {get; set; default = 0;} //lianxx add, 20141212
 		  public int track_location {get; set; default = 1;} //lianxx add, 20141212
 		  public bool certificate_revocation {get; set; default = false;} //lianxx add, 20141212
-		  public bool media_access {get; set; default = false;} //lianxx add, 20141212
+		  public bool smart_zoom {get; set; default = false;} //lianxx add, 20150116
 
         // [IntegerType (min = 0, int.max)]
         public int maximum_cookie_age { get; set; default = 30; }
