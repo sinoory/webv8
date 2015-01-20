@@ -6955,6 +6955,9 @@ midori_browser_set_history (MidoriBrowser* browser,
     if (!history)
         return;
 
+    //根据参数history，设置菜单栏中历史记录菜单的显示
+    _action_set_visible (browser, "Historys", history != NULL);
+
     GError* error = NULL;
     browser->history_database = midori_history_database_new (NULL, &error);
     if (error != NULL)
@@ -7403,6 +7406,9 @@ midori_browser_init (MidoriBrowser* browser)
     _action_set_visible (browser, "BookmarksImport", browser->bookmarks != NULL);
     _action_set_visible (browser, "BookmarksExport", browser->bookmarks != NULL);
     _action_set_visible (browser, "Bookmarkbar", browser->bookmarks != NULL);
+
+    //隐私模式下，history为空，应该隐藏菜单栏中的历史记录菜单
+    _action_set_visible (browser, "Historys", browser->history != NULL);
 #if ENABLE_TRASH
     _action_set_visible (browser, "Trash", browser->trash != NULL);
 #endif
