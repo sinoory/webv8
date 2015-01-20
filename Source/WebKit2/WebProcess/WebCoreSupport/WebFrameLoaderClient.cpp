@@ -179,6 +179,9 @@ void WebFrameLoaderClient::dispatchWillSendRequest(DocumentLoader*, unsigned lon
         return;
 
     webPage->injectedBundleResourceLoadClient().willSendRequestForFrame(webPage, m_frame, identifier, request, redirectResponse);
+
+//lxx add,20150119    // Notify the UIProcess. 
+    webPage->send(Messages::WebPageProxy::DidAddDNTToHttpHeader(request));
 }
 
 bool WebFrameLoaderClient::shouldUseCredentialStorage(DocumentLoader*, unsigned long identifier)

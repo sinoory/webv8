@@ -2861,6 +2861,13 @@ void WebPageProxy::frameDidBecomeFrameSet(uint64_t frameID, bool value)
         m_frameSetLargestFrame = value ? m_mainFrame : 0;
 }
 
+//lxx add, 20150119+
+void WebPageProxy::didAddDNTToHttpHeader(WebCore::ResourceRequest& request)
+{
+	m_uiClient->addDNTToHttpHeader(this, request);
+}
+//lxx add, 20150119-
+
 void WebPageProxy::decidePolicyForNavigationAction(uint64_t frameID, uint64_t navigationID, const NavigationActionData& navigationActionData, uint64_t originatingFrameID, const WebCore::ResourceRequest& originalRequest, const ResourceRequest& request, uint64_t listenerID, IPC::MessageDecoder& decoder, bool& receivedPolicyAction, uint64_t& newNavigationID, uint64_t& policyAction, uint64_t& downloadID)
 {
     RefPtr<API::Object> userData;

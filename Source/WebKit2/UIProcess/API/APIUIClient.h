@@ -78,6 +78,8 @@ public:
 
     // ZRL create new API
     virtual void addMessageToConsole(WebKit::WebPageProxy*, const WTF::String& message, unsigned lineNumber, const WTF::String& sourceID, std::function<void ()> completionHandler) { completionHandler(); }
+	  //lxx creat new API
+	 virtual void addDNTToHttpHeader(WebKit::WebPageProxy*, const WebCore::ResourceRequest&) {  }
 
     virtual void runJavaScriptAlert(WebKit::WebPageProxy*, const WTF::String&, WebKit::WebFrameProxy*, std::function<void ()> completionHandler) { completionHandler(); }
     virtual void runJavaScriptConfirm(WebKit::WebPageProxy*, const WTF::String&, WebKit::WebFrameProxy*, std::function<void (bool)> completionHandler) { completionHandler(false); }
