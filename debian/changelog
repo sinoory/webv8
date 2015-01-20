@@ -9,7 +9,7 @@ cdosbrowser (0.0.2) Jan13; urgency=low
   - 扩展了字体族的设置
   - 修复Crash问题.
   - 修复运行时的警告和报错
- -- ZhangRuili <zhangrl_os@sari.ac.cn>  Tus, 13 Jan 2015 16:53:08 +0800
+ -- ZhangRuili <zhangrl_os@sari.ac.cn>  Tue, 13 Dec 2015 16:53:08 +0800
 
 cdosbrowser (0.0.1) Dec20; urgency=low
 

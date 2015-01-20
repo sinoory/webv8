@@ -43,8 +43,8 @@ set_target_properties("${LIBMIDORI}-vala" PROPERTIES
 add_library(${LIBMIDORI} SHARED ${LIBMIDORI_SOURCE})
 add_dependencies(${LIBMIDORI} WebKit2)
 if(USE_64BITS)
-    target_link_libraries(${LIBMIDORI} "-Wl,--whole-archive ../../../lib/libcrypto.so -Wl,--no-whole-archive")
-    target_link_libraries(${LIBMIDORI} "-Wl,--whole-archive ../../../lib/libssl.so -Wl,--no-whole-archive")
+    target_link_libraries(${LIBMIDORI} "-Wl,--whole-archive ../../../lib/libcrypto.so.1.0.0 -Wl,--no-whole-archive")
+    target_link_libraries(${LIBMIDORI} "-Wl,--whole-archive ../../../lib/libssl.so.1.0.0 -Wl,--no-whole-archive")
 endif()
 include_directories(
                     ${MIDORI_SOURCE_DIR}
