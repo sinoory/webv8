@@ -127,6 +127,13 @@ const gchar* webkit_uri_request_get_uri(WebKitURIRequest* request)
     return request->priv->uri.data();
 }
 
+const gchar* webkit_uri_request_get_uri_host(WebKitURIRequest* request)
+{
+    g_return_val_if_fail(WEBKIT_IS_URI_REQUEST(request), 0);
+    
+    return g_strdup_printf("%s", request->priv->resourceRequest.url().host().utf8().data());
+}
+
 /**
  * webkit_uri_request_set_uri:
  * @request: a #WebKitURIRequest
