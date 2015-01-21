@@ -206,6 +206,7 @@
     macro(ServiceControlsEnabled, serviceControlsEnabled, Bool, bool, false) \
     macro(GamepadsEnabled, gamepadsEnabled, Bool, bool, false) \
     macro(LongMousePressEnabled, longMousePressEnabled, Bool, bool, false) \
+    macro(DoNotTrack, doNotTrack, Bool, bool, true) \
 
 #define FOR_EACH_WEBKIT_DOUBLE_PREFERENCE(macro) \
     macro(IncrementalRenderingSuppressionTimeout, incrementalRenderingSuppressionTimeout, Double, double, 5) \
