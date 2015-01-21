@@ -1316,6 +1316,24 @@ void WebPage::setTextZoomFactor(double zoomFactor)
     frame->setTextZoomFactor(static_cast<float>(zoomFactor));
 }
 
+//add by luyue 2015/1/16
+void WebPage::setTextZoomState(bool zoomState)
+{
+    Frame* frame = m_mainFrame->coreFrame();
+    if (!frame)
+        return;
+    frame->setTextZoomState(zoomState);
+}
+
+//add by luyue 2015/1/16
+void WebPage::setDoubleZoomState(bool zoomState)
+{
+    Frame* frame = m_mainFrame->coreFrame();
+    if (!frame)
+        return;
+    frame->setDoubleZoomState(zoomState);
+}
+
 double WebPage::pageZoomFactor() const
 {
     PluginView* pluginView = pluginViewForFrame(&m_page->mainFrame());

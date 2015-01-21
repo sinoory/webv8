@@ -140,6 +140,7 @@ struct _MidoriView
     //zgh 记录content-length,
     guint64 content_length;
     gchar** website_record_array;  //网站鉴定信息
+    GtkWidget* website_webview;
 };
 
 struct _MidoriViewClass
@@ -206,6 +207,13 @@ static GObject*
 midori_view_constructor (GType                  type,
                          guint                  n_construct_properties,
                          GObjectConstructParam* construct_properties);
+
+static gboolean
+webkit_web_view_console_message_cb (GtkWidget*   web_view,
+                                    const gchar* message,
+                                    guint        line,
+                                    const gchar* source_id,
+                                    MidoriView*  view);
 
 static void
 midori_view_class_init (MidoriViewClass* class)
@@ -572,41 +580,50 @@ midori_view_get_tls_info (MidoriView*           view,
 static gboolean
 midori_view_website_query_idle(gpointer data)
 {
-    //GtkWidget* web_tab = midori_browser_get_current_tab (MIDORI_BROWSER(data));//g_idle_add
-    //const gchar *web_tab_base_domain = midori_uri_get_base_domain(midori_tab_get_uri(web_tab));
+    MidoriView *view = MIDORI_VIEW (data);
+    WebKitSettings *localSettings = webkit_settings_new();
+    g_object_set (localSettings, "enable-web-security", FALSE, NULL);
+    webkit_settings_set_enable_javascript(localSettings, true);
+    //webkit_settings_set_enable_web_security(localSettings, false);
+    GtkWidget* webview = webkit_web_view_new();//webkit_web_view_new_with_settings(localSettings);
+    webkit_web_view_set_settings(WEBKIT_WEB_VIEW(webview), localSettings);
     
-    GtkWidget* current_web_view = midori_view_get_web_view (MIDORI_VIEW (data));
-    printf("ZRL midori_view_website_query_idle() midori-view = %p, webview = %p \n", data, current_web_view);
+    view->website_webview = webview;
+    g_object_connect(view->website_webview, "signal::console-message",
+                      webkit_web_view_console_message_cb, view,
+                        NULL);
+    GtkWidget* current_web_view = midori_view_get_web_view (view);
+    printf("ZRL midori_view_website_query_idle() midori-view = %p, webview = %p newWebView = %p\n", data, current_web_view, webview);
     
-    gchar *base_domain = webkit_web_view_get_uri (current_web_view);
-//    if (!base_domain)
-//        base_domain = midori_uri_get_base_domain(midori_tab_get_uri(MIDORI_VIEW(data)));//midori_uri_is_http
-    if(midori_uri_is_http(base_domain)) 
-        if(!memcmp(base_domain, "http://", 7))
-            base_domain += 7;
+    gchar *uri = webkit_web_view_get_uri (current_web_view);
+    WebKitURIRequest *request = webkit_uri_request_new(uri);
 
-    gchar *web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", base_domain);
+    gchar *base_domain = webkit_uri_request_get_uri_host (request);
+
+    gchar *web_tab_uri = NULL;//g_strdup_printf("http://www.beianbeian.com/search/%s", "baidu.com"); //base_domain
+    if (base_domain == NULL || !strcmp(base_domain,"")) {
+        web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", "null");
+           }
+    else {
+        web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", base_domain);
+           }
 //    g_print("\t\tsunh--web_tab_uri[%s]\n", web_tab_uri);
 
     gchar* jquerySrc = NULL;
     GError * _inner_error_ = NULL;
     gchar *backgroundSrc = NULL;
 
-    g_file_get_contents (midori_paths_get_res_filename("websitequery/jquery.js"), 
-                            &jquerySrc, 
-                            NULL, 
-                            &_inner_error_);
 
-    g_file_get_contents (midori_paths_get_res_filename("websitequery/background.js"), 
+
+    g_file_get_contents (midori_paths_get_res_filename("websitequery/website_query_bg.html"), 
                             &backgroundSrc, 
                             NULL, 
-                            &_inner_error_);
+                            &_inner_error_);                            
     gchar *queryStr = g_strdup_printf(backgroundSrc, web_tab_uri);
+    webkit_web_view_load_html(WEBKIT_WEB_VIEW (webview), queryStr, NULL);
     //g_print("\t\tsunh--queryStr[%s]\n", queryStr);
-    webkit_web_view_run_javascript(WEBKIT_WEB_VIEW (current_web_view), jquerySrc, NULL, NULL, NULL);
-    webkit_web_view_run_javascript(WEBKIT_WEB_VIEW (current_web_view), queryStr, NULL, NULL, NULL);
-    g_free(web_tab_uri);
-    g_free(jquerySrc);
+    g_free(base_domain);
+    //g_free(jquerySrc);
     g_free(queryStr);
     g_free(backgroundSrc);
 //    g_print("sunh--midori_view_website_query_idel\n");
@@ -645,7 +662,7 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
 #if ENABLE_WEBSITE_AUTH
         const gchar* w_uri = webkit_web_view_get_uri(web_view);
         const gchar* d_uri = webkit_uri_response_get_uri(response);
-        g_print("zgh w_uri=%s d_uri=%s  link_uri=%s\n\n\n", w_uri, d_uri, view->link_uri);
+
         if(!memcmp(w_uri, d_uri, strlen(w_uri) + 1))
         {
 //zgh 20150107            g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_QUERY], 0, web_view);
@@ -804,6 +821,10 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
 static void
 midori_view_load_started (MidoriView* view)
 {
+    //add by zgh 20150120
+    katze_assign (view->website_record_array, NULL);
+    katze_object_assign (view->website_webview, NULL);
+    
     midori_view_update_load_status (view, MIDORI_LOAD_PROVISIONAL);
     midori_tab_set_progress (MIDORI_TAB (view), 0.0);
     midori_tab_set_load_error (MIDORI_TAB (view), MIDORI_LOAD_ERROR_NONE);
@@ -3149,7 +3170,6 @@ webkit_web_view_console_message_cb (GtkWidget*   web_view,
                                     const gchar* source_id,
                                     MidoriView*  view)
 {
-
     if (!strncmp (message, "speed_dial-save", 13))
     {
         MidoriBrowser* browser = midori_browser_get_for_widget (GTK_WIDGET (view));
@@ -3165,25 +3185,11 @@ webkit_web_view_console_message_cb (GtkWidget*   web_view,
 #if ENABLE_WEBSITE_AUTH
     else if(!strncmp (message, "website_query_info", 18)) 
     {
-        /*TODO*/
-//        gchar** wqi_array = NULL;
-//        wqi_array = g_strsplit (message, "#", -1);
         view->website_record_array = NULL;
         view->website_record_array = g_strsplit (message, "#", -1);
 
-//        if(!memcmp(view->website_record_array[1], "unknown", 7))
-//        {
-//            g_strfreev (wqi_array);
-//            return TRUE;
-//        }
-//        g_print ("zgh bbbbbb\n\n");
-//        view->website_record_array = wqi_array;
-//        g_print ("zgh %s \n\n", view->website_record_array[1]);
 
-//        midori_tab_set_security (MIDORI_TAB (view), MIDORI_SECURITY_AUTHENTICATION);
-//        g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_UNKNOWN], 0);
         g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_DATA], 0, view->website_record_array);
-//        g_strfreev (wqi_array);
     }
 #endif
     else {
@@ -3515,6 +3521,7 @@ midori_view_init (MidoriView* view)
     
     view->content_length = 0; //zgh 20150106
     view->website_record_array = NULL;  //zgh 20150108
+    view->website_webview = NULL;
     #ifndef HAVE_WEBKIT2
     /* Adjustments are not created initially, but overwritten later */
     view->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
@@ -3557,6 +3564,9 @@ midori_view_finalize (GObject* object)
 
     katze_object_assign (view->settings, NULL);
     katze_object_assign (view->item, NULL);
+    
+    katze_assign (view->website_record_array, NULL);
+    katze_object_assign (view->website_webview, NULL);
 
     G_OBJECT_CLASS (midori_view_parent_class)->finalize (object);
 }
@@ -3667,6 +3677,35 @@ _midori_view_set_settings (MidoriView*        view,
         zoom_text_and_images);
     #endif
     midori_view_set_zoom_level (view, zoom_level);
+
+   //add by luyue 2015/1/20
+   midori_view_set_doublezoom_state(view,settings);
+   midori_view_set_zoomtext_state(view,settings);
+}
+
+//add by luyue 2015/1/20
+midori_view_set_doublezoom_state (MidoriView*        view,
+                                  MidoriWebSettings* settings)
+{
+   printf("midori_view_set_doublezoom_state\n");
+   bool value = false;
+   g_object_get(settings, "smart-zoom", &value, NULL);
+   if(value)
+      webkit_web_view_set_doublezoom_state(WEBKIT_WEB_VIEW (view->web_view), value);
+   else
+      webkit_web_view_set_doublezoom_state(WEBKIT_WEB_VIEW (view->web_view), false);
+}
+
+//add by luyue 2015/1/20
+midori_view_set_zoomtext_state (MidoriView*        view,
+                                MidoriWebSettings* settings)
+{
+   bool value = false;
+   g_object_get(settings, "zoom-text-and-images", &value, NULL);
+   if(!value)
+      webkit_web_view_set_zoomtext_state(WEBKIT_WEB_VIEW (view->web_view), !value);
+   else
+      webkit_web_view_set_zoomtext_state(WEBKIT_WEB_VIEW (view->web_view), false);
 }
 
 /**

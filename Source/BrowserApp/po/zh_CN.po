@@ -3624,7 +3624,7 @@ msgid "already put on record"
 msgstr "网站已在ICP备案"
 
 msgid "not put on record"
-msgstr "网站未备案"
+msgstr "未查到网站备案信息"
 
 msgid "learn more"
 msgstr "查看详情"

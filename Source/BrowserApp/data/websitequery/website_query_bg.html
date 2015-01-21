@@ -1,5 +1,9 @@
+<html>
+<head>
+<script src="jquery.js"></script>
+<script>
 (function getBeian() {
-var uri = 'http://www.beianbeian.com/search/baidu.com';
+var uri = '%s';
 console.log("js#uri:" + uri);
 
 var ajax = new XMLHttpRequest();
@@ -40,7 +44,6 @@ var data = ajax.responseText;
 			    console.log("website_query_info" + "#"  + "unknown");
 			    return;
 		    }
-
         console.log("website_query_info" + "#"  + Organizer +  "#" + nature + "#"  + license  + "#"  + sitename + "#"  + homepage + "#"  + checktime );
 	} else {  
 		console.log("website_query_info" + "#"  + "unknown");
@@ -50,6 +53,6 @@ var data = ajax.responseText;
 
 ajax.onreadystatechange= HandleStateChange;
 ajax.send();
-
-})();
-
+})();</script>
+</head>
+</html>

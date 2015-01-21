@@ -99,6 +99,9 @@ struct _MidoriBrowser
     gboolean bookmarkbar_populate;
 	//20141217 zlf
     GtkWidget* sari_panel_windows;
+   //luyue add by 2015/1/20
+    GtkWidget* smart_zoom_button;
+    GtkWidget* smart_zoom_image;
 };
 
 G_DEFINE_TYPE (MidoriBrowser, midori_browser, GTK_TYPE_WINDOW)
@@ -327,20 +330,6 @@ midori_browser_update_secondary_icon (MidoriBrowser* browser,
     }
 #endif
 }
-
-#if ENABLE_WEBSITE_AUTH
-static void
-midori_view_website_unknown_cb(GtkWidget*      view,
-                                 MidoriBrowser*  browser)
-{
-    g_print("sunh--midori_view_website_unknown_cb\n");
-    
-    GtkAction* action = _action_by_name (browser, "Location");
-    midori_location_action_set_security_hint (MIDORI_LOCATION_ACTION (action), GTK_WIDGET(view));
-    //midori_location_action_set_security_hint (
-            //MIDORI_LOCATION_ACTION (action), midori_tab_get_security (MIDORI_TAB (view))); 
-}
-#endif
 
 static void
 _midori_browser_update_interface (MidoriBrowser* browser,
@@ -1952,55 +1941,6 @@ midori_browser_close_tab_idle (gpointer view)
 #endif
 }
 
-#if ENABLE_WEBSITE_AUTH
-static void
-midori_view_website_query_idle(gpointer data)
-{
-    //GtkWidget* web_tab = midori_browser_get_current_tab (MIDORI_BROWSER(data));//g_idle_add
-    //const gchar *web_tab_base_domain = midori_uri_get_base_domain(midori_tab_get_uri(web_tab));
-    gchar *base_domain = midori_uri_get_base_domain(midori_tab_get_uri(MIDORI_VIEW(data)));//midori_uri_is_http
-    if(midori_uri_is_http(base_domain)) 
-        if(!memcmp(base_domain, "http://", 7))
-            base_domain += 7;
-
-    gchar *web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", base_domain);
-    g_print("\t\tsunh--web_tab_uri[%s]\n", web_tab_uri);
-    GtkWidget* current_web_view = midori_view_get_web_view (MIDORI_VIEW (data));
-    printf("ZRL midori_view_website_query_idle() midori-view = %p, webview = %p \n", data, current_web_view);
-
-    gchar* jquerySrc = NULL;
-    GError * _inner_error_ = NULL;
-    gchar *backgroundSrc = NULL;
-
-    g_file_get_contents (midori_paths_get_res_filename("websitequery/jquery.js"), 
-                            &jquerySrc, 
-                            NULL, 
-                            &_inner_error_);
-
-    g_file_get_contents (midori_paths_get_res_filename("websitequery/background.js"), 
-                            &backgroundSrc, 
-                            NULL, 
-                            &_inner_error_);
-    gchar *queryStr = g_strdup_printf(backgroundSrc, web_tab_uri);
-    //g_print("\t\tsunh--queryStr[%s]\n", queryStr);
-    webkit_web_view_run_javascript(WEBKIT_WEB_VIEW (current_web_view), jquerySrc, NULL, NULL, NULL);
-    webkit_web_view_run_javascript(WEBKIT_WEB_VIEW (current_web_view), queryStr, NULL, NULL, NULL);
-    g_free(jquerySrc);
-    g_free(queryStr);
-    g_free(backgroundSrc);
-    g_print("sunh--midori_view_website_query_idel\n");
-}
-
-static void
-midori_view_website_query_cb(GtkWidget*      view,
-                                 WebKitWebView* web_view,
-                                 MidoriBrowser*  browser)
-
-{
-    g_idle_add (midori_view_website_query_idle, view);
-}
-#endif
-
 static gboolean
 midori_view_download_requested_cb (GtkWidget*      view,
                                    WebKitDownload* download,
@@ -2301,13 +2241,6 @@ _midori_browser_add_tab (MidoriBrowser* browser,
     guint n;
 
     midori_browser_connect_tab (browser, view);
-
-#if ENABLE_WEBSITE_AUTH
-    g_signal_connect(view, "website-query",
-                      midori_view_website_query_cb, browser);
-    g_signal_connect(view, "website-unknown",
-                  midori_view_website_unknown_cb, browser);
-#endif
 
     if (!katze_item_get_meta_boolean (item, "append") &&
         katze_object_get_boolean (browser->settings, "open-tabs-next-to-current"))
@@ -5361,7 +5294,10 @@ midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* 
         title = gtk_label_new (_("host unit type"));
         gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
         gtk_label_set_width_chars (GTK_LABEL (title), 16);
-        text = gtk_label_new (data[2]);
+        if (data[2])
+            text = gtk_label_new (data[2]);
+        else
+            text = gtk_label_new ("");
         gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX(widget), hbox, FALSE, FALSE, 0);
@@ -5371,7 +5307,10 @@ midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* 
         title = gtk_label_new (_("licence number"));
         gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
         gtk_label_set_width_chars (GTK_LABEL (title), 16);
-        text = gtk_label_new (data[3]);
+        if (data[3])
+            text = gtk_label_new (data[3]);
+        else
+            text = gtk_label_new ("");
         gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX(widget), hbox, FALSE, FALSE, 0);
@@ -5381,7 +5320,10 @@ midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* 
         title = gtk_label_new (_("website name"));
         gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
         gtk_label_set_width_chars (GTK_LABEL (title), 16);
-        text = gtk_label_new (data[4]);
+        if (data[4])
+            text = gtk_label_new (data[4]);
+        else
+            text = gtk_label_new ("");
         gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX(widget), hbox, FALSE, FALSE, 0);
@@ -5391,7 +5333,10 @@ midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* 
         title = gtk_label_new (_("website homepage"));
         gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
         gtk_label_set_width_chars (GTK_LABEL (title), 16);
-        text = gtk_label_new (data[5]);
+        if (data[5])
+            text = gtk_label_new (data[5]);
+        else
+            text = gtk_label_new ("");
         gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX(widget), hbox, FALSE, FALSE, 0);
@@ -5401,7 +5346,10 @@ midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* 
         title = gtk_label_new (_("audit time"));
         gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
         gtk_label_set_width_chars (GTK_LABEL (title), 16);
-        text = gtk_label_new (data[6]);
+        if (data[6])
+            text = gtk_label_new (data[6]);
+        else
+            text = gtk_label_new ("");
         gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX(widget), hbox, FALSE, FALSE, 0);
@@ -5413,7 +5361,8 @@ void
 _action_pageinfo_activate ( GtkAction*     action,
                             MidoriBrowser* browser)
 {
-    GtkWidget *dialog, *content_area, *lab_title, *lab_text, *image, *hbox, *button, *record_box, *frame;
+    GtkWidget *dialog, *content_area, *lab_title, *lab_text, *image, *hbox, *button, *record_box, *frame, *lab_signal_text;
+    gboolean isConnectSignal = false;
     const gchar *title = midori_view_get_display_title(midori_browser_get_current_tab (browser));
     const gchar *uri = midori_browser_get_current_uri(browser);
     
@@ -5480,7 +5429,8 @@ _action_pageinfo_activate ( GtkAction*     action,
     content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 //    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
     lab_text = gtk_label_new (title);
-    gtk_label_set_line_wrap (GTK_LABEL (lab_text), TRUE);
+    gtk_label_set_max_width_chars (GTK_LABEL(lab_text), 60);
+    gtk_label_set_ellipsize (GTK_LABEL (lab_text), PANGO_ELLIPSIZE_END);
     image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_INFO,
                                       GTK_ICON_SIZE_DIALOG);
     hbox = gtk_hbox_new (FALSE, 5);
@@ -5503,75 +5453,101 @@ _action_pageinfo_activate ( GtkAction*     action,
     gtk_widget_show (button);
 
     gchar** website_record_array = midori_view_get_website_record(MIDORI_VIEW(view));
-    if (website_record_array && strcmp(website_record_array[1], "unknown")) //如果不等于unknown
+    if (website_record_array) //如果不为NULL
     {
-        hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-        lab_title = gtk_label_new (_("host unit"));
-        gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
-        gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
-        lab_text = gtk_label_new (website_record_array[1]);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
-        gtk_widget_show_all (hbox);
-        
-        hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-        lab_title = gtk_label_new (_("host unit type"));
-        gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
-        gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
-        lab_text = gtk_label_new (website_record_array[2]);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
-        gtk_widget_show_all (hbox);
-        
-        hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-        lab_title = gtk_label_new (_("licence number"));
-        gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
-        gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
-        lab_text = gtk_label_new (website_record_array[3]);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
-        gtk_widget_show_all (hbox);
-        
-        hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-        lab_title = gtk_label_new (_("website name"));
-        gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
-        gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
-        lab_text = gtk_label_new (website_record_array[4]);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
-        gtk_widget_show_all (hbox);
-        
-        hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-        lab_title = gtk_label_new (_("website homepage"));
-        gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
-        gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
-        lab_text = gtk_label_new (website_record_array[5]);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
-        gtk_widget_show_all (hbox);
-        
-        hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-        lab_title = gtk_label_new (_("audit time"));
-        gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
-        gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
-        lab_text = gtk_label_new (website_record_array[6]);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
-        gtk_widget_show_all (hbox);
-        
-        lab_text = gtk_label_new(_("already put on record"));
+        if (strcmp(website_record_array[1], "unknown"))
+        {
+            hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
+            lab_title = gtk_label_new (_("host unit"));
+            gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+            gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
+            if (website_record_array[1])
+                lab_text = gtk_label_new (website_record_array[1]);
+            else
+                lab_text = gtk_label_new ("");
+            gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
+            gtk_widget_show_all (hbox);
+            
+            hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
+            lab_title = gtk_label_new (_("host unit type"));
+            gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+            gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
+            if (website_record_array[2])
+                lab_text = gtk_label_new (website_record_array[2]);
+            else
+                lab_text = gtk_label_new ("");
+            gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
+            gtk_widget_show_all (hbox);
+
+            hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
+            lab_title = gtk_label_new (_("licence number"));
+            gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+            gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
+            if (website_record_array[3])
+                lab_text = gtk_label_new (website_record_array[3]);
+            else
+                lab_text = gtk_label_new ("");
+            gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
+            gtk_widget_show_all (hbox);
+
+            hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
+            lab_title = gtk_label_new (_("website name"));
+            gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+            gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
+            if (website_record_array[4])
+                lab_text = gtk_label_new (website_record_array[4]);
+            else
+                lab_text = gtk_label_new ("");
+            gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
+            gtk_widget_show_all (hbox);
+
+            hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
+            lab_title = gtk_label_new (_("website homepage"));
+            gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+            gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
+            if (website_record_array[5])
+                lab_text = gtk_label_new (website_record_array[5]);
+            else
+                lab_text = gtk_label_new ("");
+            gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
+            gtk_widget_show_all (hbox);
+            
+            hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
+            lab_title = gtk_label_new (_("audit time"));
+            gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+            gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
+            if (website_record_array[6])
+                lab_text = gtk_label_new (website_record_array[6]);
+            else
+                lab_text = gtk_label_new ("");
+            gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
+            gtk_widget_show_all (hbox);
+            lab_signal_text = gtk_label_new(_("already put on record"));
+        }
+        else
+        {
+            lab_signal_text = gtk_label_new(_("not put on record"));
+            gtk_widget_set_sensitive (button, FALSE);
+        }
     }
     else
     {
+        isConnectSignal = true;
         gtk_widget_set_sensitive (button, FALSE);
-        lab_text = gtk_label_new(_("in query"));
-        g_signal_connect (view, "website_data", G_CALLBACK(midori_browser_pageinfo_labtext_cb), lab_text);
+        lab_signal_text = gtk_label_new(_("in query"));
+        g_signal_connect (view, "website_data", G_CALLBACK(midori_browser_pageinfo_labtext_cb), lab_signal_text);
         g_signal_connect (view, "website_data", G_CALLBACK(midori_browser_pageinfo_button_cb), button);
         g_signal_connect (view, "website_data", G_CALLBACK(midori_browser_pageinfo_recordbox_cb), record_box);
     }
@@ -5585,7 +5561,7 @@ _action_pageinfo_activate ( GtkAction*     action,
     gtk_label_set_width_chars (GTK_LABEL (lab_title), 10);
     gtk_label_set_ellipsize (GTK_LABEL (lab_title), PANGO_ELLIPSIZE_END);
     gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
-    gtk_box_pack_start (GTK_BOX(hbox), GTK_WIDGET(lab_text), FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX(hbox), GTK_WIDGET(lab_signal_text), FALSE, FALSE, 0);
     gtk_box_pack_end (GTK_BOX(hbox), GTK_WIDGET(button), FALSE, FALSE, 0);
     gtk_box_pack_start (GTK_BOX(content_area), hbox, FALSE, FALSE, 0);
     gtk_widget_show_all (hbox);
@@ -5751,6 +5727,16 @@ _action_pageinfo_activate ( GtkAction*     action,
         break;
     default:
     {
+        g_free(bytes);
+        if (isConnectSignal)
+            g_object_disconnect (view,
+                            "any_signal::website_data",
+                             midori_browser_pageinfo_recordbox_cb, record_box,
+                             "any_signal::website_data",
+                             midori_browser_pageinfo_button_cb, button,
+                             "any_signal::website_data",
+                             midori_browser_pageinfo_labtext_cb, lab_signal_text,
+                             NULL);
         gtk_widget_destroy (dialog);
     }
         break;
@@ -6955,6 +6941,9 @@ midori_browser_set_history (MidoriBrowser* browser,
     if (!history)
         return;
 
+    //根据参数history，设置菜单栏中历史记录菜单的显示
+    _action_set_visible (browser, "Historys", history != NULL);
+
     GError* error = NULL;
     browser->history_database = midori_history_database_new (NULL, &error);
     if (error != NULL)
@@ -7403,6 +7392,9 @@ midori_browser_init (MidoriBrowser* browser)
     _action_set_visible (browser, "BookmarksImport", browser->bookmarks != NULL);
     _action_set_visible (browser, "BookmarksExport", browser->bookmarks != NULL);
     _action_set_visible (browser, "Bookmarkbar", browser->bookmarks != NULL);
+
+    //隐私模式下，history为空，应该隐藏菜单栏中的历史记录菜单
+    _action_set_visible (browser, "Historys", browser->history != NULL);
 #if ENABLE_TRASH
     _action_set_visible (browser, "Trash", browser->trash != NULL);
 #endif
@@ -7869,6 +7861,46 @@ _midori_browser_set_toolbar_items (MidoriBrowser* browser,
     }
 }
 
+//add by luyue 2015/1/20
+static void
+_smart_zoom_function_realization (GtkWidget*     botton,
+                                  MidoriBrowser* browser)
+{
+   bool smart_zoom_status = false;
+
+   g_object_get(browser->settings, "smart-zoom", &smart_zoom_status, NULL);
+   g_object_set(browser->settings, "smart-zoom", !smart_zoom_status, NULL);
+      //自动进入midori_browser_settings_notify 函数的
+      //if(name == g_intern_string("smart-zoom"))分支中。       
+}
+
+//add by luyue 2015/1/20
+//状态栏中添加快捷启动按钮。
+static void
+_midori_browser_set_statusbar_button (MidoriBrowser* browser)
+{
+   bool smart_zoom_status = false;
+
+   //智能缩放
+   g_object_get(browser->settings, "smart-zoom", &smart_zoom_status, NULL);
+   if (smart_zoom_status)
+       {
+      browser->smart_zoom_image = gtk_image_new_from_file(midori_paths_get_res_filename("DblClickZoom-enabled.png"));
+       }
+   else
+      browser->smart_zoom_image = gtk_image_new_from_file(midori_paths_get_res_filename("DblClickZoom-disabled.png"));
+   browser->smart_zoom_button = gtk_button_new();
+   gtk_container_add(GTK_CONTAINER(browser->smart_zoom_button), browser->smart_zoom_image);
+   if(smart_zoom_status)
+      gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:开启\n单击按钮进行切换");
+   else
+      gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:关闭\n单击按钮进行切换");
+   gtk_widget_show(browser->smart_zoom_image);
+   gtk_widget_show(browser->smart_zoom_button);
+   gtk_box_pack_end ((GtkBox*) browser->statusbar, browser->smart_zoom_button, FALSE, FALSE, (guint) 3);
+   g_signal_connect(G_OBJECT(browser->smart_zoom_button),"clicked",G_CALLBACK(_smart_zoom_function_realization),browser);
+}
+
 static void
 _midori_browser_update_settings (MidoriBrowser* browser)
 {
@@ -7944,6 +7976,8 @@ _midori_browser_update_settings (MidoriBrowser* browser)
     _midori_browser_set_toolbar_style (browser, toolbar_style);
     _toggle_tabbar_smartly (browser, FALSE);
     _midori_browser_set_toolbar_items (browser, toolbar_items);
+    //add by luyue 2015/1/20
+    _midori_browser_set_statusbar_button (browser);
 
 // ZRL 屏蔽搜索框功能
 #if ENABLE_SEARCH_ACTION
@@ -8105,14 +8139,47 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
 	{
 		gdouble dvalue = 0.0;
 		g_object_get(browser->settings, "zoom-level", &dvalue, NULL);
-		GtkWidget* view = midori_browser_get_current_tab (browser);
-		midori_view_set_zoom_level (MIDORI_VIEW (view), dvalue);
+                //add by luyue 2015/1/21
+                GList* tabs = midori_browser_get_tabs (browser);
+                for (; tabs; tabs = g_list_next (tabs))
+		   midori_view_set_zoom_level (tabs->data, dvalue);
+                g_list_free (tabs);
 	}
    else if(name == g_intern_string("zoom-text-and-images"))
 	{
 		bool bvalue = katze_object_get_boolean(browser->settings, "zoom-text-and-images");
+                        
+      //add by luyue 2015/1/20               
+      GList* tabs = midori_browser_get_tabs (browser);
+      for (; tabs; tabs = g_list_next (tabs))
+         midori_view_set_zoomtext_state (tabs->data, browser->settings);
+      g_list_free (tabs);
+       
 		webkit_settings_set_zoom_text_only(browser->settings, !bvalue);
 	}
+ 
+   //add by luyue 2015/1/20
+      else if(name == g_intern_string("smart-zoom"))
+        {
+         bool smart_zoom_status = false;
+         gtk_widget_destroy (browser->smart_zoom_image);
+         g_object_get(browser->settings, "smart-zoom", &smart_zoom_status, NULL);
+         if (smart_zoom_status)
+            browser->smart_zoom_image = gtk_image_new_from_file(midori_paths_get_res_filename("DblClickZoom-enabled.png"));
+         else
+            browser->smart_zoom_image = gtk_image_new_from_file(midori_paths_get_res_filename("DblClickZoom-disabled.png"));
+         gtk_container_add(GTK_CONTAINER(browser->smart_zoom_button), browser->smart_zoom_image);
+         if(smart_zoom_status)
+            gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:开启\n单击按钮进行切换");
+         else
+            gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:关闭\n单击按钮进行切换");
+         gtk_widget_show(browser->smart_zoom_image);
+         GList* tabs = midori_browser_get_tabs (browser);
+         for (; tabs; tabs = g_list_next (tabs))
+            midori_view_set_doublezoom_state (tabs->data, browser->settings);
+         g_list_free (tabs);
+        }
+
    else if(name == g_intern_string("auto-load-images"))
 	{
 		bool bvalue = katze_object_get_boolean(browser->settings, "auto-load-images");

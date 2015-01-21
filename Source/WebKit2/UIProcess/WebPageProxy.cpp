@@ -1964,6 +1964,18 @@ void WebPageProxy::setPageZoomFactor(double zoomFactor)
     m_process->send(Messages::WebPage::SetPageZoomFactor(m_pageZoomFactor), m_pageID); 
 }
 
+//add by luyue 2015/1/16
+void WebPageProxy::setTextZoomState(bool zoomState)
+{
+    m_process->send(Messages::WebPage::SetTextZoomState(zoomState), m_pageID);
+}
+
+//add by luyue 2015/1/16
+void WebPageProxy::setDoubleZoomState(bool zoomState)
+{
+    m_process->send(Messages::WebPage::SetDoubleZoomState(zoomState), m_pageID);
+}
+
 void WebPageProxy::setPageAndTextZoomFactors(double pageZoomFactor, double textZoomFactor)
 {
     if (!isValid())

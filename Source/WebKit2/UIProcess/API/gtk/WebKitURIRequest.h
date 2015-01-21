@@ -66,6 +66,9 @@ webkit_uri_request_new              (const gchar      *uri);
 WEBKIT_API const gchar *
 webkit_uri_request_get_uri          (WebKitURIRequest *request);
 
+WEBKIT_API const gchar *
+webkit_uri_request_get_uri_host     (WebKitURIRequest *request);
+
 WEBKIT_API void
 webkit_uri_request_set_uri          (WebKitURIRequest *request,
                                      const gchar      *uri);
