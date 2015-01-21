@@ -2126,28 +2126,6 @@ private:
     std::tuple<uint64_t, bool> m_arguments;
 };
 
-class DidAddDNTToHttpHeader {
-public:
-    typedef std::tuple<WebCore::ResourceRequest> DecodeType;
-
-    static IPC::StringReference receiverName() { return messageReceiverName(); }
-    static IPC::StringReference name() { return IPC::StringReference("DidAddDNTToHttpHeader"); }
-    static const bool isSync = false;
-
-    DidAddDNTToHttpHeader(const WebCore::ResourceRequest& request)
-        : m_arguments(request)
-    {
-    }
-
-    const std::tuple<const WebCore::ResourceRequest&>& arguments() const
-    {
-        return m_arguments;
-    }
-
-private:
-    std::tuple<const WebCore::ResourceRequest&> m_arguments;
-};
-
 class DidFinishLoadingDataForCustomContentProvider {
 public:
     typedef std::tuple<String, IPC::DataReference> DecodeType;

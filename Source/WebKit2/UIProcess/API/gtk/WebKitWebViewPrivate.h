@@ -61,6 +61,5 @@ void webkitWebViewWebProcessCrashed(WebKitWebView*);
 
 // ZRL create a new function for console.log
 void webkitWebViewAddMessageToConsole(WebKitWebView*, const CString& message, unsigned lineNumber, const CString& sourceID);
-gboolean webkitWebViewAddDNTToHttpHeader(WebKitWebView* webView, WebKitURIRequest* requestRequest);
 
 #endif // WebKitWebViewPrivate_h

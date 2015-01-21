@@ -3199,27 +3199,6 @@ webkit_web_view_console_message_cb (GtkWidget*   web_view,
 }
 #endif
 
-//lxx add, 20150119+
-static gboolean
-webkit_web_view_DNT_header_cb (GtkWidget*   web_view,
-										 WebKitURIRequest* requestRequest)
-{
-	if(NULL == requestRequest)
-		return false;
-
-	SoupMessageHeaders *headers = webkit_uri_request_get_http_headers (requestRequest);
-
-	if (headers) 
-	{
-   /* Do Not Track header. '1' means 'opt-out'. See:
-   * http://tools.ietf.org/id/draft-mayer-do-not-track-00.txt */
-		soup_message_headers_append (headers, "DNT", "1");
-		g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-	}
-	return true;
-}
-//lxx add, 20150119-
-
 #ifndef HAVE_WEBKIT2
 static gboolean
 webkit_web_view_console_message_cb (GtkWidget*   web_view,
@@ -4073,9 +4052,6 @@ midori_view_constructor (GType                  type,
 // ZRL add new signal for console.log
                       "signal::console-message",
                       webkit_web_view_console_message_cb, view,
-//LXX add for add DNT header	
-                      "signal::dnt-http-header",
-							  webkit_web_view_DNT_header_cb, view,
                       #else
                       "signal::notify::load-status",
                       midori_view_web_view_notify_load_status_cb, view,
@@ -4113,9 +4089,6 @@ midori_view_constructor (GType                  type,
                       #endif
                       "signal::console-message",
                       webkit_web_view_console_message_cb, view,
-//LXX add for add DNT header	
-                      "signal::dnt-http-header",
-							 webkit_web_view_DNT_header_cb, view,
                       "signal::download-requested",
                       midori_view_download_requested_cb, view,
                       #endif

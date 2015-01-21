@@ -124,7 +124,6 @@ enum {
     AUTHENTICATE,
 
     CONSOLE_MESSAGE, /*ZRL create for console.log*/
-	 DNT_HTTP_HEADER, /*lxx create for add DNT to http header, 20150116*/
 
     LAST_SIGNAL
 };
@@ -291,12 +290,6 @@ static gboolean webkitWebViewConsoleMessage(WebKitWebView* webView, const gchar*
 {
     g_message("console message: %s @%d: %s\n", sourceID, lineNumber, message);
     return TRUE;
-}
-
-static gboolean webkitWebViewDNTToHttpHeader(WebKitWebView* webView, WebKitURIRequest* requestRequest)
-{
-	g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-	return true;
 }
 
 static gboolean webkitWebViewLoadFail(WebKitWebView* webView, WebKitLoadEvent, const char* failingURI, GError* error)
@@ -744,7 +737,6 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
     webViewClass->authenticate = webkitWebViewAuthenticate;
     // ZRL create console_message function
     webViewClass->console_message = webkitWebViewConsoleMessage;
-    webViewClass->dnt_http_header = webkitWebViewDNTToHttpHeader;//lxx add,20150116
 
     /**
      * WebKitWebView:web-context:
@@ -1145,7 +1137,7 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
             G_TYPE_BOOLEAN, 3,
             G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING);
 
-    // lxx create DNT_HTTP_HEADER signal
+/*    // lxx create DNT_HTTP_HEADER signal
     signals[DNT_HTTP_HEADER] = g_signal_new("dnt-http-header",
             G_TYPE_FROM_CLASS(webViewClass),
             G_SIGNAL_RUN_LAST,
@@ -1154,6 +1146,7 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
             webkit_marshal_BOOLEAN__OBJECT,
             G_TYPE_BOOLEAN, 1,
             G_TYPE_OBJECT);
+*/
 
     /**
      * WebKitWebView::script-dialog:
@@ -1789,28 +1782,6 @@ void webkitWebViewAddMessageToConsole(WebKitWebView* webView, const CString& mes
     gboolean returnValue;
     g_printerr("ZRL Enter WebKitWebView::webkitWebViewAddMessageToConsole() message = %s.  \n", message.data());
     g_signal_emit(webView, signals[CONSOLE_MESSAGE], 0, message.data(), lineNumber, sourceID.data(), &returnValue);
-}
-
-gboolean webkitWebViewAddDNTToHttpHeader(WebKitWebView* webView, WebKitURIRequest* requestRequest)
-{
-	if(NULL == requestRequest)
-		return false;
-
-	gboolean returnValue;
-	g_signal_emit(webView, signals[DNT_HTTP_HEADER], 0, requestRequest, &returnValue);
-
-#if 0	
-SoupMessageHeaders *headers = webkit_uri_request_get_http_headers (requestRequest);
-
-   	   if (headers) 
-			{
-   	   /* Do Not Track header. '1' means 'opt-out'. See:
-   	    * http://tools.ietf.org/id/draft-mayer-do-not-track-00.txt */
-		      soup_message_headers_append (headers, "DNT", "1");
-g_print("lxx add %s(%d) of %s\n", __FUNCTION__, __LINE__, __FILE__);//lxx add
-		}
-#endif
-	return true;
 }
 
 void webkitWebViewRunJavaScriptAlert(WebKitWebView* webView, const CString& message)

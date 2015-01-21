@@ -1964,18 +1964,6 @@ void WebPageProxy::setPageZoomFactor(double zoomFactor)
     m_process->send(Messages::WebPage::SetPageZoomFactor(m_pageZoomFactor), m_pageID); 
 }
 
-//add by luyue 2015/1/16
-void WebPageProxy::setTextZoomState(bool zoomState)
-{
-    m_process->send(Messages::WebPage::SetTextZoomState(zoomState), m_pageID);
-}
-
-//add by luyue 2015/1/16
-void WebPageProxy::setDoubleZoomState(bool zoomState)
-{
-    m_process->send(Messages::WebPage::SetDoubleZoomState(zoomState), m_pageID);
-}
-
 void WebPageProxy::setPageAndTextZoomFactors(double pageZoomFactor, double textZoomFactor)
 {
     if (!isValid())
@@ -2872,13 +2860,6 @@ void WebPageProxy::frameDidBecomeFrameSet(uint64_t frameID, bool value)
     if (frame->isMainFrame())
         m_frameSetLargestFrame = value ? m_mainFrame : 0;
 }
-
-//lxx add, 20150119+
-void WebPageProxy::didAddDNTToHttpHeader(WebCore::ResourceRequest& request)
-{
-	m_uiClient->addDNTToHttpHeader(this, request);
-}
-//lxx add, 20150119-
 
 void WebPageProxy::decidePolicyForNavigationAction(uint64_t frameID, uint64_t navigationID, const NavigationActionData& navigationActionData, uint64_t originatingFrameID, const WebCore::ResourceRequest& originalRequest, const ResourceRequest& request, uint64_t listenerID, IPC::MessageDecoder& decoder, bool& receivedPolicyAction, uint64_t& newNavigationID, uint64_t& policyAction, uint64_t& downloadID)
 {

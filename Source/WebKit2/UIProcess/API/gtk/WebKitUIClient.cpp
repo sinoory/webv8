@@ -66,14 +66,6 @@ private:
         webkitWebViewAddMessageToConsole(m_webView, message.utf8(), lineNumber, sourceID.utf8());
         completionHandler();
     }
-		 virtual void addDNTToHttpHeader(WebKit::WebPageProxy*, const WebCore::ResourceRequest& requestRequest) 
-	{
-		WebKitURIRequest* uriRequest = webkitURIRequestCreateForResourceRequest(requestRequest);//lxx add
-		if(NULL == uriRequest)
-			return;
-		//webkitWebViewDNTToHttpHeader(m_webView, uriRequest);
-		webkitWebViewAddDNTToHttpHeader(m_webView, uriRequest);
-	}	
 
     virtual void runJavaScriptAlert(WebPageProxy*, const String& message, WebFrameProxy*, std::function<void ()> completionHandler) override
     {

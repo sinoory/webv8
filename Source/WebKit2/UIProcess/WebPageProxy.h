@@ -978,7 +978,6 @@ private:
     void didRunInsecureContentForFrame(uint64_t frameID, IPC::MessageDecoder&);
     void didDetectXSSForFrame(uint64_t frameID, IPC::MessageDecoder&);
     void frameDidBecomeFrameSet(uint64_t frameID, bool);
-	 void didAddDNTToHttpHeader(WebCore::ResourceRequest& request);//lxx add, 20150119
     void didStartProgress();
     void didChangeProgress(double);
     void didFinishProgress();
