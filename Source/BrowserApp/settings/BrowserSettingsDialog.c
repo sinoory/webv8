@@ -78,6 +78,8 @@ const gdouble zoom_factor[] = {0.25, 0.33, 0.5, 0.67, 0.75, 0.9, 1.0, 1.1, 1.25,
                                2.5, 3.0, 4.0, 5.0  
                                  
                               };
+
+const gdouble smart_zoom_factor[] = {1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0};
 #endif   
 
 /* 创建一个新的纵向盒,它包含一个图像和一个标签,并返回这个盒。*/
@@ -266,6 +268,23 @@ gint getZoomLevelComboboxIndex(MidoriWebSettings *settings)
 	return -1;
 }
 
+gint getSmartZoomLevelComboboxIndex(MidoriWebSettings *settings)
+{
+	int index = 0;
+	gdouble dvalue;
+	g_object_get(settings, "smart_zoom-level", &dvalue, NULL);
+	for(index = 0; index < PageZoomNum; index++) 
+	{
+      if(smart_zoom_factor[index] == dvalue)
+		{
+			return index;   
+		}
+	}
+	
+	g_warning("undefined string: zoom-level %f\n", dvalue);
+	return -1;
+}
+
 static void zoomTextOnlyCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
@@ -279,8 +298,13 @@ static void smartZoomCallback(GtkToggleButton *togglebutton, MidoriWebSettings *
 {
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
 
+	 if(0 == bvalue)
+	  	gtk_widget_set_sensitive(GTK_WIDGET(settings->smart_zoom_combo_box_content),false);
+	 else if(1 == bvalue)
+		gtk_widget_set_sensitive(GTK_WIDGET(settings->smart_zoom_combo_box_content),true);
+
     g_object_set(settings,
-             "smart-zoom", !bvalue,
+             "smart-zoom", bvalue,
              NULL);
 }
 
@@ -289,6 +313,14 @@ static void pageZoomCallback(GtkComboBox *widget, MidoriWebSettings *settings)
     int CurrentSelect = gtk_combo_box_get_active(widget);
     g_object_set(settings,
              "zoom-level", zoom_factor[CurrentSelect],
+             NULL);
+}
+
+static void smartZoomLevelCallback(GtkComboBox *widget, MidoriWebSettings *settings)
+{
+    int CurrentSelect = gtk_combo_box_get_active(widget);
+    g_object_set(settings,
+             "smart-zoom-level", smart_zoom_factor[CurrentSelect],
              NULL);
 }
 
@@ -401,6 +433,14 @@ static void clearPasswordsCallback(GtkToggleButton *togglebutton, MidoriWebSetti
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
     g_object_set(settings,
              "clear-passwords", bvalue,
+             NULL);
+}
+
+static void doNotTrackCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
+{
+    bool bvalue = gtk_toggle_button_get_active(togglebutton); 
+    g_object_set(settings,
+             "do-not-track", bvalue,
              NULL);
 }
 
@@ -917,9 +957,11 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	gtk_grid_attach( grid, label, 0, 0, 1, 1);
 
 	widget = gtk_label_new("网页缩放：");
+	gtk_label_set_justify (GTK_LABEL(widget), GTK_JUSTIFY_RIGHT);	
 	gtk_grid_attach(grid, widget, 1, 4, 1, 1);
 
 	widget = gtk_label_new("缩放比例：");
+	gtk_label_set_justify (GTK_LABEL(widget), GTK_JUSTIFY_LEFT);
 	gtk_grid_attach(grid, widget, 2, 5, 1, 1);
 
 	widget = gtk_combo_box_text_new();
@@ -940,22 +982,43 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	if(!bvalue)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(zoomTextOnlyCallback), settings);
-	gtk_grid_attach(grid,button,2,6,1,1);
+	gtk_grid_attach(grid,button,2,6,2,1);
 
-	button = gtk_check_button_new_with_label("智能缩放");
+	button = gtk_check_button_new_with_label("开启双击缩放功能");
    g_object_get(settings, "smart-zoom", &bvalue, NULL);
 	if(bvalue)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(smartZoomCallback), settings);
-	gtk_grid_attach(grid,button,2,7,1,1);
+	gtk_grid_attach(grid,button,2,7,3,1);
+
+	widget = gtk_label_new("缩放比例：");
+	gtk_label_set_justify (GTK_LABEL(widget), GTK_JUSTIFY_LEFT);
+	gtk_grid_attach(grid, widget, 2, 8, 1, 1);
+
+	widget = gtk_combo_box_text_new();
+	settings->smart_zoom_combo_box_content = GTK_WIDGET(widget);
+	for(i = 0; i < 11; i++)
+	{
+		char ic[10] = {0};
+		sprintf(ic, "%2.0f%%", smart_zoom_factor[i] * 100);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), ic);
+	}
+	index = getSmartZoomLevelComboboxIndex(settings);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(widget), index);
+   g_signal_connect(G_OBJECT(widget), "changed", G_CALLBACK(smartZoomLevelCallback), settings);
+	gtk_grid_attach(grid, widget, 3, 8, 1, 1);
+	
+	g_object_get(settings, "smart-zoom", &bvalue, NULL);
+	if(0 == bvalue)
+		gtk_widget_set_sensitive(GTK_WIDGET(widget),FALSE);
 
 	widget = gtk_label_new("图片：");
-	gtk_grid_attach(grid, widget, 1, 8, 1, 1);
+	gtk_grid_attach(grid, widget, 1, 9, 1, 1);
 
 	button = gtk_radio_button_new_with_label (NULL, "显示所有图片（推荐）");
 	settings->radiobutton1_content = GTK_WIDGET(button);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(showImageCallback), settings);
-	gtk_grid_attach(grid, button, 2, 9, 2, 1);
+	gtk_grid_attach(grid, button, 2, 10, 2, 1);
 	group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
 	button = gtk_radio_button_new_with_label (group, "不显示任何图片");
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(showImageCallback), settings);
@@ -965,14 +1028,14 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton1_content), TRUE);     
 	else
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton2_content), TRUE); 
-	gtk_grid_attach(grid, button, 2, 10, 2, 1);
+	gtk_grid_attach(grid, button, 2, 11, 2, 1);
 
 	widget = gtk_label_new("JavaScript：");
-	gtk_grid_attach(grid, widget, 1, 11, 1, 1);
+	gtk_grid_attach(grid, widget, 1, 12, 1, 1);
 	button = gtk_radio_button_new_with_label (NULL, "允许所有网站运行JavaScript（推荐）");
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(runJavascriptCallback), settings);
 	settings->radiobutton3_content = GTK_WIDGET(button);
-	gtk_grid_attach(grid, button, 2, 12, 2, 1);
+	gtk_grid_attach(grid, button, 2, 13, 2, 1);
 	group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
 	button = gtk_radio_button_new_with_label (group, "不允许任何网站运行JavaScript");
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(runJavascriptCallback), settings);
@@ -982,10 +1045,10 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton3_content), TRUE);     
 	else
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton4_content), TRUE); 
-	gtk_grid_attach(grid, button, 2, 13, 2, 1);
+	gtk_grid_attach(grid, button, 2, 14, 2, 1);
 
 	label = gtk_label_new("    ");
-	gtk_grid_attach( grid, label, 0, 14, 1, 1);
+	gtk_grid_attach( grid, label, 0, 15, 1, 1);
 
 //	label = gtk_label_new ("内容");
 	gchar *font_pic = midori_paths_get_res_filename("settings-icons/content.png");
@@ -1055,7 +1118,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	else
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(clearPasswordsCallback), settings);
-	gtk_grid_attach(grid, button, 3, 5, 1, 1);
+	gtk_grid_attach(grid, button, 4, 4, 1, 1);
 
 	button = gtk_check_button_new_with_label("Cookie及其它网站和插件数据");
 	settings->checkbutton6_privacy = GTK_WIDGET(button);
@@ -1065,7 +1128,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	else
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(clearCookieAndOthersCallback), settings);
-	gtk_grid_attach(grid, button, 2, 6, 2, 1);
+	gtk_grid_attach(grid, button, 3, 5, 2, 1);
 
 	button = gtk_button_new_with_label("　　清除　　");
    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(clearDataCallback), settings);
@@ -1147,6 +1210,18 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 		break;
 	}
 	gtk_grid_attach(grid, widget, 2, 11, 2, 1);
+
+	widget = gtk_label_new("防追踪：");
+	gtk_grid_attach(grid, widget, 1, 12, 1, 1);
+
+	button = gtk_check_button_new_with_label("随浏览流量一起发送“请勿跟踪”请求");
+	g_object_get(settings, "do-not-track", &bvalue, NULL);
+	if(TRUE == bvalue)
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE); 
+	else
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
+   g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(doNotTrackCallback), settings);
+	gtk_grid_attach(grid, button, 2, 12, 2, 1);
 
 	gchar *privacy_pic = midori_paths_get_res_filename("settings-icons/privacy.png");
    label = xpm_label_box( privacy_pic, "隐 私" );

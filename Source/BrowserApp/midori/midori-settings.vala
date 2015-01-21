@@ -204,6 +204,8 @@ namespace Midori {
 		  public int track_location {get; set; default = 1;} //lianxx add, 20141212
 		  public bool certificate_revocation {get; set; default = false;} //lianxx add, 20141212
 		  public bool smart_zoom {get; set; default = false;} //lianxx add, 20150116
+		  public bool do_not_track {get; set; default = true;} //lianxx add, 20150120
+		  public double smart_zoom_level {get; set; default = 1.0;} //lianxx add, 20150120 
 
         // [IntegerType (min = 0, int.max)]
         public int maximum_cookie_age { get; set; default = 30; }

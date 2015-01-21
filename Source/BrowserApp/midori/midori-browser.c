@@ -8123,6 +8123,14 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
 		bool bvalue = katze_object_get_boolean(browser->settings, "enable-scripts");
 		webkit_settings_set_enable_javascript(browser->settings, bvalue);
 	}
+
+	else if(name == g_intern_string("do-not-track"))
+	{
+		bool bvalue = katze_object_get_boolean(browser->settings, "do-not-track");
+printf("lxx-----------do not track--------%d-----\n", bvalue);
+		webkit_settings_set_enable_do_not_track(browser->settings, bvalue);
+	}
+
 #endif
     g_value_unset (&value);
 }

@@ -197,6 +197,7 @@ struct  _MidoriWebSettings
     GtkWidget *radiobutton2_content;
     GtkWidget *radiobutton3_content;
     GtkWidget *radiobutton4_content;
+	 GtkWidget *smart_zoom_combo_box_content;
 
     GtkWidget *checkbutton4_privacy;
     GtkWidget *checkbutton5_privacy;
