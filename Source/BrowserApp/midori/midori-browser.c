@@ -99,6 +99,9 @@ struct _MidoriBrowser
     gboolean bookmarkbar_populate;
 	//20141217 zlf
     GtkWidget* sari_panel_windows;
+   //luyue add by 2015/1/20
+    GtkWidget* smart_zoom_button;
+    GtkWidget* smart_zoom_image;
 };
 
 G_DEFINE_TYPE (MidoriBrowser, midori_browser, GTK_TYPE_WINDOW)
@@ -7858,6 +7861,46 @@ _midori_browser_set_toolbar_items (MidoriBrowser* browser,
     }
 }
 
+//add by luyue 2015/1/20
+static void
+_smart_zoom_function_realization (GtkWidget*     botton,
+                                  MidoriBrowser* browser)
+{
+   bool smart_zoom_status = false;
+
+   g_object_get(browser->settings, "smart-zoom", &smart_zoom_status, NULL);
+   g_object_set(browser->settings, "smart-zoom", !smart_zoom_status, NULL);
+      //自动进入midori_browser_settings_notify 函数的
+      //if(name == g_intern_string("smart-zoom"))分支中。       
+}
+
+//add by luyue 2015/1/20
+//状态栏中添加快捷启动按钮。
+static void
+_midori_browser_set_statusbar_button (MidoriBrowser* browser)
+{
+   bool smart_zoom_status = false;
+
+   //智能缩放
+   g_object_get(browser->settings, "smart-zoom", &smart_zoom_status, NULL);
+   if (smart_zoom_status)
+       {
+      browser->smart_zoom_image = gtk_image_new_from_file(midori_paths_get_res_filename("DblClickZoom-enabled.png"));
+       }
+   else
+      browser->smart_zoom_image = gtk_image_new_from_file(midori_paths_get_res_filename("DblClickZoom-disabled.png"));
+   browser->smart_zoom_button = gtk_button_new();
+   gtk_container_add(GTK_CONTAINER(browser->smart_zoom_button), browser->smart_zoom_image);
+   if(smart_zoom_status)
+      gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:开启\n单击按钮进行切换");
+   else
+      gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:关闭\n单击按钮进行切换");
+   gtk_widget_show(browser->smart_zoom_image);
+   gtk_widget_show(browser->smart_zoom_button);
+   gtk_box_pack_end ((GtkBox*) browser->statusbar, browser->smart_zoom_button, FALSE, FALSE, (guint) 3);
+   g_signal_connect(G_OBJECT(browser->smart_zoom_button),"clicked",G_CALLBACK(_smart_zoom_function_realization),browser);
+}
+
 static void
 _midori_browser_update_settings (MidoriBrowser* browser)
 {
@@ -7933,6 +7976,8 @@ _midori_browser_update_settings (MidoriBrowser* browser)
     _midori_browser_set_toolbar_style (browser, toolbar_style);
     _toggle_tabbar_smartly (browser, FALSE);
     _midori_browser_set_toolbar_items (browser, toolbar_items);
+    //add by luyue 2015/1/20
+    _midori_browser_set_statusbar_button (browser);
 
 // ZRL 屏蔽搜索框功能
 #if ENABLE_SEARCH_ACTION
@@ -8094,14 +8139,47 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
 	{
 		gdouble dvalue = 0.0;
 		g_object_get(browser->settings, "zoom-level", &dvalue, NULL);
-		GtkWidget* view = midori_browser_get_current_tab (browser);
-		midori_view_set_zoom_level (MIDORI_VIEW (view), dvalue);
+                //add by luyue 2015/1/21
+                GList* tabs = midori_browser_get_tabs (browser);
+                for (; tabs; tabs = g_list_next (tabs))
+		   midori_view_set_zoom_level (tabs->data, dvalue);
+                g_list_free (tabs);
 	}
    else if(name == g_intern_string("zoom-text-and-images"))
 	{
 		bool bvalue = katze_object_get_boolean(browser->settings, "zoom-text-and-images");
+                        
+      //add by luyue 2015/1/20               
+      GList* tabs = midori_browser_get_tabs (browser);
+      for (; tabs; tabs = g_list_next (tabs))
+         midori_view_set_zoomtext_state (tabs->data, browser->settings);
+      g_list_free (tabs);
+       
 		webkit_settings_set_zoom_text_only(browser->settings, !bvalue);
 	}
+ 
+   //add by luyue 2015/1/20
+      else if(name == g_intern_string("smart-zoom"))
+        {
+         bool smart_zoom_status = false;
+         gtk_widget_destroy (browser->smart_zoom_image);
+         g_object_get(browser->settings, "smart-zoom", &smart_zoom_status, NULL);
+         if (smart_zoom_status)
+            browser->smart_zoom_image = gtk_image_new_from_file(midori_paths_get_res_filename("DblClickZoom-enabled.png"));
+         else
+            browser->smart_zoom_image = gtk_image_new_from_file(midori_paths_get_res_filename("DblClickZoom-disabled.png"));
+         gtk_container_add(GTK_CONTAINER(browser->smart_zoom_button), browser->smart_zoom_image);
+         if(smart_zoom_status)
+            gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:开启\n单击按钮进行切换");
+         else
+            gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:关闭\n单击按钮进行切换");
+         gtk_widget_show(browser->smart_zoom_image);
+         GList* tabs = midori_browser_get_tabs (browser);
+         for (; tabs; tabs = g_list_next (tabs))
+            midori_view_set_doublezoom_state (tabs->data, browser->settings);
+         g_list_free (tabs);
+        }
+
    else if(name == g_intern_string("auto-load-images"))
 	{
 		bool bvalue = katze_object_get_boolean(browser->settings, "auto-load-images");

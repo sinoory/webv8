@@ -180,6 +180,11 @@ messages -> WebPage LegacyReceiver {
     SetPageAndTextZoomFactors(double pageZoomFactor, double textZoomFactor)
     SetPageZoomFactor(double zoomFactor)
     SetTextZoomFactor(double zoomFactor)
+
+    # add by luyue 2015/1/16
+    SetTextZoomState(bool zoomState)
+    SetDoubleZoomState(bool zoomState)
+
     WindowScreenDidChange(uint64_t displayID)
 
     ScalePage(double scale, WebCore::IntPoint origin)

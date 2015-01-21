@@ -560,6 +560,9 @@ private:
 #if ENABLE(CURSOR_VISIBILITY)
     Timer<EventHandler> m_autoHideCursorTimer;
 #endif
+
+    // add by luyue 2015/1/16
+    bool   m_zoomstatus;
 };
 
 } // namespace WebCore

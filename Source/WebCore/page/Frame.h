@@ -184,6 +184,12 @@ namespace WebCore {
         float textZoomFactor() const { return m_textZoomFactor; }
         WEBCORE_EXPORT void setPageAndTextZoomFactors(float pageZoomFactor, float textZoomFactor);
 
+        //add by luyue 2015/1/16 
+        WEBCORE_EXPORT void setTextZoomState(bool);
+        WEBCORE_EXPORT void setDoubleZoomState(bool);
+        bool textZoomState() const { return m_textZoomState; }
+        bool doubleZoomState() const { return m_doubleZoomState; }
+
         // Scale factor of this frame with respect to the container.
         WEBCORE_EXPORT float frameScaleFactor() const;
 
@@ -316,6 +322,10 @@ namespace WebCore {
 
         float m_pageZoomFactor;
         float m_textZoomFactor;
+
+        //add by luyue 2015/1/16
+        bool m_textZoomState;
+        bool m_doubleZoomState;
 
         bool m_inViewSourceMode;
         int m_activeDOMObjectsAndAnimationsSuspendedCount;

@@ -3677,6 +3677,35 @@ _midori_view_set_settings (MidoriView*        view,
         zoom_text_and_images);
     #endif
     midori_view_set_zoom_level (view, zoom_level);
+
+   //add by luyue 2015/1/20
+   midori_view_set_doublezoom_state(view,settings);
+   midori_view_set_zoomtext_state(view,settings);
+}
+
+//add by luyue 2015/1/20
+midori_view_set_doublezoom_state (MidoriView*        view,
+                                  MidoriWebSettings* settings)
+{
+   printf("midori_view_set_doublezoom_state\n");
+   bool value = false;
+   g_object_get(settings, "smart-zoom", &value, NULL);
+   if(value)
+      webkit_web_view_set_doublezoom_state(WEBKIT_WEB_VIEW (view->web_view), value);
+   else
+      webkit_web_view_set_doublezoom_state(WEBKIT_WEB_VIEW (view->web_view), false);
+}
+
+//add by luyue 2015/1/20
+midori_view_set_zoomtext_state (MidoriView*        view,
+                                MidoriWebSettings* settings)
+{
+   bool value = false;
+   g_object_get(settings, "zoom-text-and-images", &value, NULL);
+   if(!value)
+      webkit_web_view_set_zoomtext_state(WEBKIT_WEB_VIEW (view->web_view), !value);
+   else
+      webkit_web_view_set_zoomtext_state(WEBKIT_WEB_VIEW (view->web_view), false);
 }
 
 /**

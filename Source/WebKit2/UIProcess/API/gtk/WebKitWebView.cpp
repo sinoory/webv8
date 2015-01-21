@@ -2761,6 +2761,22 @@ void webkit_web_view_set_zoom_level(WebKitWebView* webView, gdouble zoomLevel)
     g_object_notify(G_OBJECT(webView), "zoom-level");
 }
 
+// luyue add by 2015/1/16
+void webkit_web_view_set_zoomtext_state(WebKitWebView* webView,bool value)
+{
+   g_return_if_fail(WEBKIT_IS_WEB_VIEW(webView));
+   WebPageProxy* page = getPage(webView);
+   page->setTextZoomState(value);
+}
+
+// luyue add by 2015/1/16
+void webkit_web_view_set_doublezoom_state(WebKitWebView* webView,bool value)
+{
+   g_return_if_fail(WEBKIT_IS_WEB_VIEW(webView));
+   WebPageProxy* page = getPage(webView);
+   page->setDoubleZoomState(value);
+}
+
 /**
  * webkit_web_view_get_zoom_level:
  * @web_view: a #WebKitWebView

@@ -280,7 +280,7 @@ static void smartZoomCallback(GtkToggleButton *togglebutton, MidoriWebSettings *
     bool bvalue = gtk_toggle_button_get_active(togglebutton); 
 
     g_object_set(settings,
-             "smart-zoom", !bvalue,
+             "smart-zoom", bvalue,
              NULL);
 }
 
