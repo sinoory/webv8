@@ -213,6 +213,9 @@ enum {
     //For Security Policy
     PROP_ENABLE_WEB_SECURITY,
 
+    //For Do Not Track
+	 PROP_ENABLE_DO_NOT_TRACK,
+
     PROP_SAVE_END
 };
 
@@ -780,6 +783,13 @@ webkit_settings_get_enable_web_security                                (WebKitSe
 
 WEBKIT_API void 
 webkit_settings_set_enable_web_security                    (WebKitSettings* settings, gboolean enabled);
+
+//lxx add, website do not track
+WEBKIT_API gboolean 
+webkit_settings_get_enable_do_not_track						  (WebKitSettings* settings);
+
+WEBKIT_API void 
+webkit_settings_set_enable_do_not_track						  (WebKitSettings* settings, gboolean enabled);
 
 G_END_DECLS
 

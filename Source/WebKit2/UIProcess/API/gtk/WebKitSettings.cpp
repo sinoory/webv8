@@ -93,6 +93,7 @@ struct _WebKitSettingsPrivate {
     bool clearPasswords;
     bool certificateRevocation;
     bool askEverytimeBeforeDown;
+	 bool doNotTrack;
     uint32_t onStartup;
     uint32_t openNewpage;
     uint32_t historySetting;
@@ -144,7 +145,7 @@ const gchar* key[]   =    {"", "load-icons-ignoring-image-load-setting", "enable
                            "", "on-startup", "open-newpage",  "default-font-size", "history-setting",
                            "cookie-setting", "track-location", "media-access", "",
                            "", "home-page", "default-font-family", "store-path-of-downfile", "", //lxx alter, 14.11.17
-                           "", "page-zoom", "", "enable-web-security", ""
+                           "", "page-zoom", "", "enable-web-security", "do-not-track", ""
                           };
 
 const gchar* font[]  =    {"sans-serif", "AR PL UKai CN", "AR PL UKai HK", "AR PL UKai TW",
@@ -427,6 +428,12 @@ static void webKitSettingsSetProperty(GObject* object, guint propId, const GValu
     case PROP_ENABLE_WEB_SECURITY:
         webkit_settings_set_enable_web_security(settings, g_value_get_boolean(value));
         break;
+    case PROP_ENABLE_DO_NOT_TRACK:
+	{
+g_print("---------------webKitSettingsSetProperty---------value = %d---------------\n");
+        webkit_settings_set_enable_do_not_track(settings, g_value_get_boolean(value));
+	}
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
         break;
@@ -650,6 +657,9 @@ static void webKitSettingsGetProperty(GObject* object, guint propId, GValue* val
         break;
     case PROP_ENABLE_WEB_SECURITY:
         g_value_set_boolean(value, webkit_settings_get_enable_web_security(settings));
+        break;
+    case  PROP_ENABLE_DO_NOT_TRACK:
+        g_value_set_boolean(value, webkit_settings_get_enable_do_not_track(settings));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, paramSpec);
@@ -1702,6 +1712,18 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
                                                          _("Whether Web Security Policy should be enabled."),
                                                          TRUE,
                                                          readWriteConstructParamFlags));
+/**
+ * WebKitSettings:do-not-track:
+ *
+ * Determines whether or not website can be tracked.
+ */
+	g_object_class_install_property(gObjectClass,
+								PROP_ENABLE_DO_NOT_TRACK,
+								g_param_spec_boolean("do-not-track",
+													 _("Do Not Track"),
+													 _("Whether Website Can Be Tracked."),
+													 TRUE,
+													 readWriteConstructParamFlags));
 }
 
 WebPreferences* webkitSettingsGetPreferences(WebKitSettings* settings)
@@ -4567,5 +4589,36 @@ void webkit_settings_set_enable_web_security(WebKitSettings* settings, gboolean 
     priv->preferences->setWebSecurityEnabled(enabled);
     g_object_notify(G_OBJECT(settings), "enable-web-security");
 }
+
+//lxx add, 20150120+
+/**
+ * webkit_settings_get_enable_do-not-track:
+ * @settings: a #WebKitSettings
+ *
+ * Get the #WebKitSettings:enable-do-not-track property.
+ *
+ * Returns: %TRUE If web do-not-track is enabled or %FALSE otherwise.
+ */
+gboolean webkit_settings_get_enable_do_not_track(WebKitSettings* settings)
+{
+    g_return_val_if_fail(WEBKIT_IS_SETTINGS(settings), FALSE);
+
+    return settings->priv->preferences->doNotTrack();
+}
+
+void webkit_settings_set_enable_do_not_track(WebKitSettings* settings, gboolean enabled)
+{
+    g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
+    WebKitSettingsPrivate* priv = settings->priv;
+    bool currentValue = priv->preferences->doNotTrack();
+g_print("--------------webkit_settings_set_enable_do_not_track------%d %d----------\n", currentValue, enabled);
+    if (currentValue == enabled)
+        return;
+   
+    priv->preferences->setDoNotTrack(enabled);
+g_print("--------------webkit_settings_set_enable_do_not_track------enable = %d----------\n", priv->preferences->doNotTrack());
+    g_object_notify(G_OBJECT(settings), "do-not-track");
+}
+//lxx add, 20150120-
 
 
