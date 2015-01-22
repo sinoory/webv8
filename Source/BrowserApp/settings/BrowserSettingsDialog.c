@@ -79,7 +79,7 @@ const gdouble zoom_factor[] = {0.25, 0.33, 0.5, 0.67, 0.75, 0.9, 1.0, 1.1, 1.25,
                                  
                               };
 
-const gdouble smart_zoom_factor[] = {1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0};
+const gdouble smart_zoom_factor[] = {1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0};
 #endif   
 
 /* 创建一个新的纵向盒,它包含一个图像和一个标签,并返回这个盒。*/
@@ -271,7 +271,7 @@ gint getSmartZoomLevelComboboxIndex(MidoriWebSettings *settings)
 	int index = 0;
 	gdouble dvalue;
 	g_object_get(settings, "smart-zoom-level", &dvalue, NULL);
-	for(index = 0; index < 10; index++) 
+	for(index = 0; index < 11; index++) 
 	{
       if(smart_zoom_factor[index] == dvalue)
 		{
@@ -994,9 +994,14 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 
 	widget = gtk_combo_box_text_new();
 	settings->smart_zoom_combo_box_content = GTK_WIDGET(widget);
-	for(i = 0; i < 10; i++)
+	for(i = 0; i < 11; i++)
 	{
-		char ic[9] = {0};
+		char ic[10] = {0};
+		if(smart_zoom_factor[i] == 1.0)
+		{
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), "自动");
+			continue;
+		}
 		sprintf(ic, "%2.0f%%", smart_zoom_factor[i] * 100);
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(widget), ic);
 	}
