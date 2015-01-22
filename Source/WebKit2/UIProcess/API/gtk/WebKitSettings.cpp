@@ -430,7 +430,7 @@ static void webKitSettingsSetProperty(GObject* object, guint propId, const GValu
         break;
     case PROP_ENABLE_DO_NOT_TRACK:
 	{
-g_print("---------------webKitSettingsSetProperty---------value = %d---------------\n");
+//g_print("---------------webKitSettingsSetProperty---------value = %d---------------\n");
         webkit_settings_set_enable_do_not_track(settings, g_value_get_boolean(value));
 	}
         break;
@@ -4611,12 +4611,12 @@ void webkit_settings_set_enable_do_not_track(WebKitSettings* settings, gboolean 
     g_return_if_fail(WEBKIT_IS_SETTINGS(settings));
     WebKitSettingsPrivate* priv = settings->priv;
     bool currentValue = priv->preferences->doNotTrack();
-g_print("--------------webkit_settings_set_enable_do_not_track------%d %d----------\n", currentValue, enabled);
+//g_print("--------------webkit_settings_set_enable_do_not_track------%d %d----------\n", currentValue, enabled);
     if (currentValue == enabled)
         return;
    
     priv->preferences->setDoNotTrack(enabled);
-g_print("--------------webkit_settings_set_enable_do_not_track------enable = %d----------\n", priv->preferences->doNotTrack());
+//g_print("--------------webkit_settings_set_enable_do_not_track------enable = %d----------\n", priv->preferences->doNotTrack());
     g_object_notify(G_OBJECT(settings), "do-not-track");
 }
 //lxx add, 20150120-
