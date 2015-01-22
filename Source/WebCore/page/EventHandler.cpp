@@ -611,7 +611,6 @@ bool EventHandler::handleMousePressEventDoubleClick(const MouseEventWithHitTestR
 {
     if (event.event().button() != LeftButton)
         return false;
-
     //add by luyue 2015/1/16
     if(m_frame.doubleZoomState())
     {
@@ -620,7 +619,7 @@ bool EventHandler::handleMousePressEventDoubleClick(const MouseEventWithHitTestR
        if(!m_zoomstatus)
        {
           m_zoomstatus = true;
-          zoomFactor = 1.2;
+          zoomFactor = m_frame.doubleZoomLevel();
        }
        //第二次双击缩小
        else
@@ -629,15 +628,9 @@ bool EventHandler::handleMousePressEventDoubleClick(const MouseEventWithHitTestR
           zoomFactor = 1.0;
        }
        if(m_frame.textZoomState())
-       {
-          printf("m_frame.setTextZoomFactor\n");
           m_frame.setTextZoomFactor(static_cast<float>(zoomFactor));
-       }
        else
-       {
-          printf("m_frame.setPageZoomFactor\n");
           m_frame.setPageZoomFactor(static_cast<float>(zoomFactor));
-       }
     }
 
     if (m_frame.selection().isRange())

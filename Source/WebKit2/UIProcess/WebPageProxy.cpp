@@ -1976,6 +1976,12 @@ void WebPageProxy::setDoubleZoomState(bool zoomState)
     m_process->send(Messages::WebPage::SetDoubleZoomState(zoomState), m_pageID);
 }
 
+//add by luyue 2015/1/16
+void WebPageProxy::setDoubleZoomLevel(double level)
+{
+    m_process->send(Messages::WebPage::SetDoubleZoomLevel(level), m_pageID);
+}
+
 void WebPageProxy::setPageAndTextZoomFactors(double pageZoomFactor, double textZoomFactor)
 {
     if (!isValid())

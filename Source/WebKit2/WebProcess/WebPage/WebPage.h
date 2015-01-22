@@ -349,6 +349,7 @@ public:
     //add by luyue 2015/1/16
     void setTextZoomState(bool);
     void setDoubleZoomState(bool);
+    void setDoubleZoomLevel(double);
 
     void setPageAndTextZoomFactors(double pageZoomFactor, double textZoomFactor);
     void windowScreenDidChange(uint64_t);

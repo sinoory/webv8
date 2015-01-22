@@ -266,7 +266,9 @@ midori_view_set_doublezoom_state       (MidoriView*        view,
 void
 midori_view_set_zoomtext_state         (MidoriView*        view,
                                         MidoriWebSettings* settings);
-             
+void
+midori_view_set_doublezoom_level       (MidoriView*        view,
+                                        MidoriWebSettings* settings);             
 
 G_END_DECLS
 

@@ -167,12 +167,13 @@ Frame::Frame(Page& page, HTMLFrameOwnerElement* ownerElement, FrameLoaderClient&
 #endif
     , m_pageZoomFactor(parentPageZoomFactor(this))
     , m_textZoomFactor(parentTextZoomFactor(this))
-    , m_inViewSourceMode(false)
 
     //add by luyue 2015/1/16
     , m_textZoomState(false)
     , m_doubleZoomState(false)
+    , m_doubleZoomLevel(1.2)
 
+    , m_inViewSourceMode(false)
     , m_activeDOMObjectsAndAnimationsSuspendedCount(0)
 {
     AtomicString::init();
@@ -966,6 +967,12 @@ void Frame::setTextZoomState(bool textZoomState)
 void Frame::setDoubleZoomState(bool doubleZoomState)
 {
     m_doubleZoomState = doubleZoomState;
+}
+
+//add by luyue 2015/1/16
+void Frame::setDoubleZoomLevel(double doubleZoomLevel)
+{
+    m_doubleZoomLevel = doubleZoomLevel;
 }
 
 void Frame::setPageAndTextZoomFactors(float pageZoomFactor, float textZoomFactor)

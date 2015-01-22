@@ -2748,6 +2748,14 @@ void webkit_web_view_set_doublezoom_state(WebKitWebView* webView,bool value)
    page->setDoubleZoomState(value);
 }
 
+// luyue add by 2015/1/16
+void webkit_web_view_set_doublezoom_level(WebKitWebView* webView,double level)
+{
+   g_return_if_fail(WEBKIT_IS_WEB_VIEW(webView));
+   WebPageProxy* page = getPage(webView);
+   page->setDoubleZoomLevel(level);
+}
+
 /**
  * webkit_web_view_get_zoom_level:
  * @web_view: a #WebKitWebView

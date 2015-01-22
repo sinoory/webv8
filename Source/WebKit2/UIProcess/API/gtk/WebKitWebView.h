@@ -397,6 +397,11 @@ WEBKIT_API void
 webkit_web_view_set_doublezoom_state                 (WebKitWebView             *web_view,
                                                       bool                       value);
 
+//luyue add by 2015/1/20
+WEBKIT_API void
+webkit_web_view_set_doublezoom_level                 (WebKitWebView             *web_view,
+                                                      double                     level);
+
 WEBKIT_API void
 webkit_web_view_can_execute_editing_command          (WebKitWebView             *web_view,
                                                       const gchar               *command,

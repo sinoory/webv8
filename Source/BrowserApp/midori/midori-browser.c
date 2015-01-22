@@ -7892,9 +7892,9 @@ _midori_browser_set_statusbar_button (MidoriBrowser* browser)
    browser->smart_zoom_button = gtk_button_new();
    gtk_container_add(GTK_CONTAINER(browser->smart_zoom_button), browser->smart_zoom_image);
    if(smart_zoom_status)
-      gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:开启\n单击按钮进行切换");
+      gtk_widget_set_tooltip_text(browser->smart_zoom_button,"双击缩放开关状态:开启\n单击按钮进行切换");
    else
-      gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:关闭\n单击按钮进行切换");
+      gtk_widget_set_tooltip_text(browser->smart_zoom_button,"双击缩放开关状态:关闭\n单击按钮进行切换");
    gtk_widget_show(browser->smart_zoom_image);
    gtk_widget_show(browser->smart_zoom_button);
    gtk_box_pack_end ((GtkBox*) browser->statusbar, browser->smart_zoom_button, FALSE, FALSE, (guint) 3);
@@ -8170,9 +8170,9 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
             browser->smart_zoom_image = gtk_image_new_from_file(midori_paths_get_res_filename("DblClickZoom-disabled.png"));
          gtk_container_add(GTK_CONTAINER(browser->smart_zoom_button), browser->smart_zoom_image);
          if(smart_zoom_status)
-            gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:开启\n单击按钮进行切换");
+            gtk_widget_set_tooltip_text(browser->smart_zoom_button,"双击缩放开关状态:开启\n单击按钮进行切换");
          else
-            gtk_widget_set_tooltip_text(browser->smart_zoom_button,"智能缩放开关状态:关闭\n单击按钮进行切换");
+            gtk_widget_set_tooltip_text(browser->smart_zoom_button,"双击缩放开关状态:关闭\n单击按钮进行切换");
          gtk_widget_show(browser->smart_zoom_image);
          GList* tabs = midori_browser_get_tabs (browser);
          for (; tabs; tabs = g_list_next (tabs))
@@ -8194,9 +8194,16 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
 	else if(name == g_intern_string("do-not-track"))
 	{
 		bool bvalue = katze_object_get_boolean(browser->settings, "do-not-track");
-printf("lxx-----------do not track--------%d-----\n", bvalue);
 		webkit_settings_set_enable_do_not_track(browser->settings, bvalue);
 	}
+//luyue add by 2015/1/21
+                else if(name == g_intern_string("smart-zoom-level"))
+        {
+                GList* tabs = midori_browser_get_tabs (browser);
+                for (; tabs; tabs = g_list_next (tabs))
+                   midori_view_set_doublezoom_level (tabs->data, browser->settings);
+                g_list_free (tabs);
+        }
 
 #endif
     g_value_unset (&value);

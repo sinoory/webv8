@@ -3660,13 +3660,14 @@ _midori_view_set_settings (MidoriView*        view,
    //add by luyue 2015/1/20
    midori_view_set_doublezoom_state(view,settings);
    midori_view_set_zoomtext_state(view,settings);
+   midori_view_set_doublezoom_level(view,settings);
 }
 
 //add by luyue 2015/1/20
+void
 midori_view_set_doublezoom_state (MidoriView*        view,
                                   MidoriWebSettings* settings)
 {
-   printf("midori_view_set_doublezoom_state\n");
    bool value = false;
    g_object_get(settings, "smart-zoom", &value, NULL);
    if(value)
@@ -3676,6 +3677,7 @@ midori_view_set_doublezoom_state (MidoriView*        view,
 }
 
 //add by luyue 2015/1/20
+void
 midori_view_set_zoomtext_state (MidoriView*        view,
                                 MidoriWebSettings* settings)
 {
@@ -3685,6 +3687,17 @@ midori_view_set_zoomtext_state (MidoriView*        view,
       webkit_web_view_set_zoomtext_state(WEBKIT_WEB_VIEW (view->web_view), !value);
    else
       webkit_web_view_set_zoomtext_state(WEBKIT_WEB_VIEW (view->web_view), false);
+}
+
+//add by luyue 2015/1/21
+void
+midori_view_set_doublezoom_level (MidoriView*        view,
+                                  MidoriWebSettings* settings)
+{
+   double level = 0.0;
+   g_object_get(settings, "smart-zoom-level", &level, NULL);
+   if(level)
+      webkit_web_view_set_doublezoom_level(WEBKIT_WEB_VIEW (view->web_view), level);
 }
 
 /**

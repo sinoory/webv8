@@ -184,6 +184,7 @@ messages -> WebPage LegacyReceiver {
     # add by luyue 2015/1/16
     SetTextZoomState(bool zoomState)
     SetDoubleZoomState(bool zoomState)
+    SetDoubleZoomLevel(double level)
 
     WindowScreenDidChange(uint64_t displayID)
 

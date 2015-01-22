@@ -1334,6 +1334,15 @@ void WebPage::setDoubleZoomState(bool zoomState)
     frame->setDoubleZoomState(zoomState);
 }
 
+//add by luyue 2015/1/16
+void WebPage::setDoubleZoomLevel(double level)
+{
+    Frame* frame = m_mainFrame->coreFrame();
+    if (!frame)
+        return;
+    frame->setDoubleZoomLevel(level);
+}
+
 double WebPage::pageZoomFactor() const
 {
     PluginView* pluginView = pluginViewForFrame(&m_page->mainFrame());
