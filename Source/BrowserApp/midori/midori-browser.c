@@ -8176,7 +8176,10 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
          gtk_widget_show(browser->smart_zoom_image);
          GList* tabs = midori_browser_get_tabs (browser);
          for (; tabs; tabs = g_list_next (tabs))
+         {
             midori_view_set_doublezoom_state (tabs->data, browser->settings);
+            midori_view_set_doublezoom_level (tabs->data, browser->settings);
+         }
          g_list_free (tabs);
         }
 

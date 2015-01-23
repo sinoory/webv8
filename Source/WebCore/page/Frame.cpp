@@ -171,7 +171,7 @@ Frame::Frame(Page& page, HTMLFrameOwnerElement* ownerElement, FrameLoaderClient&
     //add by luyue 2015/1/16
     , m_textZoomState(false)
     , m_doubleZoomState(false)
-    , m_doubleZoomLevel(1.2)
+    , m_doubleZoomLevel(0.9)
 
     , m_inViewSourceMode(false)
     , m_activeDOMObjectsAndAnimationsSuspendedCount(0)

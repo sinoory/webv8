@@ -318,6 +318,10 @@ private:
     WEBCORE_EXPORT bool handleMousePressEvent(const MouseEventWithHitTestResults&);
     bool handleMousePressEventSingleClick(const MouseEventWithHitTestResults&);
     bool handleMousePressEventDoubleClick(const MouseEventWithHitTestResults&);
+ 
+    //add by luyue 2015/1/22
+    bool zoomScrollOnClickNode(Node*);
+
     bool handleMousePressEventTripleClick(const MouseEventWithHitTestResults&);
 #if ENABLE(DRAG_SUPPORT)
     bool handleMouseDraggedEvent(const MouseEventWithHitTestResults&);

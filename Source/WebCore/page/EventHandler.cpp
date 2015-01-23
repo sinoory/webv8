@@ -607,30 +607,76 @@ void EventHandler::selectClosestWordOrLinkFromMouseEvent(const MouseEventWithHit
     }
 }
 
+//add by luyue 2015/1/22
+bool EventHandler::zoomScrollOnClickNode(Node* hitNode)
+{
+   Node* n = hitNode;
+   int cnt = 0;
+
+   double scale = m_frame.doubleZoomLevel();   
+   while (cnt++ < 5) 
+   {
+      n = n->parentNode();
+      if (!n || n->isLink()) 
+         break;
+      if (n->renderer()) 
+      {
+         LayoutRect rc = ((RenderBox*)(n->renderer()))->contentBoxRect();
+         if (rc. pixelSnappedSize().width() <0 ) 
+         {
+            //sometimes error happend when get width from <span> or <strong> tag
+            continue;
+         }
+         if (scale == 1.0 )
+         {   
+            if (!m_zoomstatus)
+            {
+               m_zoomstatus = true;
+               scale = (double)m_frame.view()->width()/rc.pixelSnappedSize().width();
+               if( scale-1.00 < 0.1 ) 
+                  scale = 1.0;
+               scale = (scale > 1.9) ? 1.9 : scale;
+            }
+            else
+            {
+               m_zoomstatus = false;
+               scale = 1.0;
+            }
+         }
+         else 
+         {
+            if (!m_zoomstatus)
+               m_zoomstatus = true;
+            else
+            {
+               m_zoomstatus = false;
+               scale = 1.0;
+            }
+         }
+         if(m_frame.textZoomState())
+            m_frame.setTextZoomFactor(static_cast<float>(scale));
+         else
+            m_frame.setPageZoomFactor(static_cast<float>(scale));
+         Element* element=(Element*)n;
+         if(element){
+            element->scrollIntoViewIfNeeded(true);
+         }
+         return true;
+      }
+   }
+   return false;
+}
+
 bool EventHandler::handleMousePressEventDoubleClick(const MouseEventWithHitTestResults& event)
 {
     if (event.event().button() != LeftButton)
         return false;
     //add by luyue 2015/1/16
-    if(m_frame.doubleZoomState())
+    Node* hitNode = event.targetNode();
+    if(m_frame.doubleZoomState() && hitNode)
     {
-       double zoomFactor;
-       //第一次双击放大
-       if(!m_zoomstatus)
-       {
-          m_zoomstatus = true;
-          zoomFactor = m_frame.doubleZoomLevel();
-       }
-       //第二次双击缩小
-       else
-       {
-          m_zoomstatus = false;
-          zoomFactor = 1.0;
-       }
-       if(m_frame.textZoomState())
-          m_frame.setTextZoomFactor(static_cast<float>(zoomFactor));
-       else
-          m_frame.setPageZoomFactor(static_cast<float>(zoomFactor));
+       if(zoomScrollOnClickNode(hitNode))          
+          return true;
     }
 
     if (m_frame.selection().isRange())
