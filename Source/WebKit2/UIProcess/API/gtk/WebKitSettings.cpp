@@ -1683,12 +1683,17 @@ static void webkit_settings_class_init(WebKitSettingsClass* klass)
             readWriteConstructParamFlags));
 
 //lxx add, 14.11.17
+	gchar local_path[50] = {0};
+	gchar *path = getenv("HOME");
+	strcat(local_path, path);
+	strcat(local_path, "/下载");
+
     g_object_class_install_property(gObjectClass,
         PROP_STORE_PATH_OF_DOWNFILE,
         g_param_spec_string("store-path-of-downfile",
             _("Store path of download file"),
             _("The store path of download file."),
-            "/home/lianxx/下载",
+            local_path/*"/home/lianxx/下载"*/,
             readWriteConstructParamFlags));
 
     //install double property
@@ -1794,7 +1799,7 @@ void webkit_settings_set_enable_javascript(WebKitSettings* settings, gboolean en
     bool currentValue = priv->preferences->javaScriptEnabled();
     if (currentValue == enabled)
         return;
-/*lxx add        
+/*     
     if(!priv->IsStartState) { 
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_ENABLE_JAVASCRIPT], bvalue.release());  //Update new preference value.
@@ -1835,7 +1840,7 @@ void webkit_settings_set_auto_load_images(WebKitSettings* settings, gboolean ena
     bool currentValue = priv->preferences->loadsImagesAutomatically();
     if (currentValue == enabled)
         return;
-/*lxx add   
+/*   
      if(!priv->IsStartState) {
       scoped_ptr<base::FundamentalValue> bvalue(new base::FundamentalValue((bool)enabled));
       priv->user_pref_store_->SetValue(key[PROP_AUTO_LOAD_IMAGES], bvalue.release());  //Update new preference value.
@@ -4394,11 +4399,11 @@ DeletePreferencesFile(void)
     base::FilePath home = base::GetHomeDir();
     if (!home.empty()) 
 	   {
-      config_file = home.Append(".config/midori/config");
+      config_file = home.Append(".config/cdosbrowser/config");
             }
 	  else 
              {
-      std::string tmp_file = "/tmp/midori/config";
+      std::string tmp_file = "/tmp/cdosbrowser/config";
       base::FilePath tmp(tmp_file);
       config_file = tmp;
               }

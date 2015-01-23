@@ -213,8 +213,8 @@ static gint getFontFamilyComboboxIndex(MidoriWebSettings *settings, const char *
 			return index;
 	      }
 	}
-	g_free(strval);
 	g_warning("undefined string: default-font-family  %s\n", strval);
+	g_free(strval);
 	return -1;
 }
 
@@ -651,7 +651,7 @@ static void alterDownloadSaveCatalogCallback(GtkButton *button, MidoriWebSetting
     ///文件选择类型过滤
 
     //设置当前文件夹
-	gchar local_path[20] = {0};
+	gchar local_path[50] = {0};
 	gchar *path = getenv("HOME");
 	strcat(local_path, path);
 	strcat(local_path, "/下载");
@@ -1075,7 +1075,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	if(TRUE == bvalue)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE); 
 	else
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(pageContentCacheCallback), settings);
 	gtk_grid_attach(grid, button, 2, 2, 1, 1);
 
@@ -1088,7 +1088,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	if(TRUE == bvalue)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE); 
 	else
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(clearBrowseRecordCallback), settings);
 	gtk_grid_attach(grid, button, 2, 4, 1, 1);
 
@@ -1098,7 +1098,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	if(TRUE == bvalue)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE); 
 	else
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(clearDownloadRecordCallback), settings);
 	gtk_grid_attach(grid, button, 3, 4, 1, 1);
 
@@ -1108,7 +1108,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	if(TRUE == bvalue)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE); 
 	else
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(clearCachedImagesAndFilesCallback), settings);
 	gtk_grid_attach(grid, button, 2, 5, 1, 1);
 
@@ -1118,7 +1118,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	if(TRUE == bvalue)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE); 
 	else
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(clearPasswordsCallback), settings);
 	gtk_grid_attach(grid, button, 4, 4, 1, 1);
 
@@ -1128,7 +1128,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	if(TRUE == bvalue)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE); 
 	else
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(clearCookieAndOthersCallback), settings);
 	gtk_grid_attach(grid, button, 3, 5, 2, 1);
 

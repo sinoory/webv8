@@ -1503,6 +1503,60 @@ midori_settings_new_full (gchar*** extensions)
     gtk_accel_map_load (config_file);
     g_free (config_file);
 
+//lxx add, 20150123+
+//do not track
+	bool doNotTrack = 0;
+	g_object_get(settings, "do-not-track", &doNotTrack, NULL);
+	if(doNotTrack != webkit_settings_get_enable_do_not_track((WebKitSettings*)settings))
+		webkit_settings_set_enable_do_not_track((WebKitSettings*)settings, doNotTrack);
+//auto-load-images
+	bool autoLoadImage = 0;
+	g_object_get(settings, "auto_load_images", &autoLoadImage, NULL);
+	if(autoLoadImage != webkit_settings_get_auto_load_images((WebKitSettings*)settings))
+		webkit_settings_set_auto_load_images((WebKitSettings*)settings, autoLoadImage);
+//enable-scripts
+	bool enableJavascript = 0;
+	g_object_get(settings, "enable_scripts", &enableJavascript, NULL);
+	if(enableJavascript != webkit_settings_get_enable_javascript((WebKitSettings*)settings))
+		webkit_settings_set_enable_javascript((WebKitSettings*)settings, enableJavascript);
+#if 1
+//default font family
+	char *defaultFontFamily = NULL;
+	g_object_get(settings, "default-font-family", &defaultFontFamily, NULL);
+	if (g_strcmp0(webkit_settings_get_default_font_family((WebKitSettings*)settings), defaultFontFamily))
+		webkit_settings_set_default_font_family((WebKitSettings*)settings, defaultFontFamily);
+	g_free(defaultFontFamily);
+//serif font family
+	char *serifFontFamily = NULL;
+	g_object_get(settings, "serif-font-family", &serifFontFamily, NULL);
+	if (g_strcmp0(webkit_settings_get_serif_font_family((WebKitSettings*)settings), serifFontFamily))
+		webkit_settings_set_serif_font_family((WebKitSettings*)settings, serifFontFamily);
+	g_free(serifFontFamily);
+//sans-serif font family
+	char *sansSerifFontFamily = NULL;
+	g_object_get(settings, "sans-serif-font-family", &sansSerifFontFamily, NULL);
+	if (g_strcmp0(webkit_settings_get_sans_serif_font_family((WebKitSettings*)settings), sansSerifFontFamily))
+		webkit_settings_set_sans_serif_font_family((WebKitSettings*)settings, sansSerifFontFamily);
+	g_free(sansSerifFontFamily);
+//monospace font family
+	char *monospaceFontFamily = NULL;
+	g_object_get(settings, "monospace-font-family", &monospaceFontFamily, NULL);
+	if (g_strcmp0(webkit_settings_get_sans_serif_font_family((WebKitSettings*)settings), monospaceFontFamily))
+		webkit_settings_set_sans_serif_font_family((WebKitSettings*)settings, monospaceFontFamily);
+	g_free(monospaceFontFamily);
+//default font size
+	gint defaultFontSize = 0;
+	g_object_get(settings, "default-font-size", &defaultFontSize, NULL);
+	if(defaultFontSize != webkit_settings_get_default_font_size((WebKitSettings*)settings))
+		webkit_settings_set_default_font_size((WebKitSettings*)settings, defaultFontSize);
+//monospace font size
+	gint monospaceFontSize = 0;
+	g_object_get(settings, "default-monospace-font-size", &monospaceFontSize, NULL);
+	if(monospaceFontSize != webkit_settings_get_default_monospace_font_size((WebKitSettings*)settings))
+		webkit_settings_set_default_monospace_font_size((WebKitSettings*)settings, monospaceFontSize);
+#endif
+//lxx add, 20150123-
+
     return settings;
 }
 
