@@ -3021,7 +3021,7 @@ msgstr "未能保存回收站。%s"
 #: ../midori/midori-frontend.c:335
 #, c-format
 msgid ""
-"Midori crashed the last time it was opened. You can report the problem at %s."
+"CDOS crashed the last time it was opened. You can report the problem at %s."
 msgstr "Midori 上次在打开后崩溃了。你可以到 %s 报告问题。"
 
 #: ../midori/midori-frontend.c:344

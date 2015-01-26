@@ -3053,9 +3053,9 @@ msgstr "The Bin couldn't be saved. %s"
 #: ../midori/midori-frontend.c:335
 #, c-format
 msgid ""
-"Midori crashed the last time it was opened. You can report the problem at %s."
+"CDOS crashed the last time it was opened. You can report the problem at %s."
 msgstr ""
-"Midori crashed the last time it was opened. You can report the problem at %s."
+"CDOS crashed the last time it was opened. You can report the problem at %s."
 
 #: ../midori/midori-frontend.c:344
 msgid "Modify _preferences"
