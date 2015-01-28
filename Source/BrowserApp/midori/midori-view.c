@@ -576,6 +576,105 @@ midori_view_get_tls_info (MidoriView*           view,
     #endif
 }
 #endif
+//lxx,20150127
+static char* getHostUri(const char * uri)
+{
+	if(NULL == uri)
+		return NULL;
+
+	char* str = strchr(uri, '/');
+	if(str)
+	{
+		gint num = (int)(str-uri);
+		char* subStr = str+2;
+		char* str2 = strchr(subStr, '/');
+		if(str2)
+		{
+			gint num2 = (int)(str2-subStr+2);
+			num += num2;
+		}
+
+		char *returnStr = (char *)malloc(sizeof(char) * (num + 1) );
+		strncpy(returnStr, uri, num);
+		returnStr[num] = '\0';
+
+		return returnStr;
+	}
+	return NULL;
+}
+
+static void
+permission_response (GtkWidget*  infobar,
+                         gint        response_id,
+                         WebKitPermissionRequest *request)
+{
+	     switch (response_id) {
+	     case GTK_RESPONSE_ACCEPT:
+	         webkit_permission_request_allow (request);
+	         break;
+	     default:
+	         webkit_permission_request_deny (request);
+	         break;
+	}
+	gtk_widget_destroy (GTK_WIDGET (infobar));
+}
+
+//lxx, 20150128
+static gboolean
+permission_request(WebKitWebView *web_view,
+                   WebKitPermissionRequest *request,
+                   MidoriView *view)
+{
+	gchar *uri = webkit_web_view_get_uri(web_view);
+	char* hostStr = NULL;
+	if(NULL != uri)
+	{
+		hostStr = getHostUri(uri);
+	}
+
+	char* message = g_strdup_printf("%s想要使用您的计算机的所在位置信息",  hostStr);
+
+	midori_view_add_info_bar(view, GTK_MESSAGE_QUESTION, message,
+        G_CALLBACK (permission_response), request,
+        "允许", GTK_RESPONSE_ACCEPT,
+        "拒绝", GTK_RESPONSE_CANCEL, NULL);
+
+	if(NULL != hostStr)
+	{
+		free(hostStr);
+		hostStr = NULL;
+	}
+	free(message);
+
+	return true;
+}
+
+//lxx, 20150127
+static gboolean
+webkit_web_view_permission_request_cb (WebKitWebView *web_view,
+                                       WebKitPermissionRequest *request,
+                                       MidoriView *view)
+{
+	gint value = 0;
+	g_object_get(view->settings, "track-location", &value, NULL);
+
+
+	switch(value) {
+	case 0:
+		webkit_permission_request_deny (request);
+		break;
+	case 1:
+		webkit_permission_request_allow (request);
+      break;
+	case 2:
+		permission_request(web_view, request, view);
+		break;
+    default:
+		break;
+	}
+	     return TRUE;
+}
+
 //zgh 20150107
 static gboolean
 midori_view_website_query_idle(gpointer data)
@@ -4065,6 +4164,9 @@ midori_view_constructor (GType                  type,
 // ZRL add new signal for console.log
                       "signal::console-message",
                       webkit_web_view_console_message_cb, view,
+//lxx, 20150127	
+                      "signal::permission-request",
+							 webkit_web_view_permission_request_cb, view,
                       #else
                       "signal::notify::load-status",
                       midori_view_web_view_notify_load_status_cb, view,
@@ -4102,6 +4204,9 @@ midori_view_constructor (GType                  type,
                       #endif
                       "signal::console-message",
                       webkit_web_view_console_message_cb, view,
+//lxx, 20150127	
+                      "signal::permission-request",
+							 webkit_web_view_permission_request_cb, view,
                       "signal::download-requested",
                       midori_view_download_requested_cb, view,
                       #endif
