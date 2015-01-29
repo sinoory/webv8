@@ -695,8 +695,9 @@ midori_panel_append_page (MidoriPanel*    panel,
 
 gtk_notebook_set_tab_label_text(GTK_CONTAINER (panel->notebook), vbox,
                                                          midori_viewable_get_label (viewable));
-    g_signal_connect (viewable, "destroy",
-                      G_CALLBACK (midori_panel_widget_destroy_cb), toolbar);
+
+//    g_signal_connect (viewable, "destroy",
+  //                    G_CALLBACK (midori_panel_widget_destroy_cb), toolbar);  //modify by luyue 2015/1/29
 
     n = midori_panel_get_n_pages (panel) - 1;
     /* FIXME: Use something better than the stock ID */
