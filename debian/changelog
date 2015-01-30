@@ -1,3 +1,14 @@
+cdosbrowser (0.0.4) Jan30; urgency=low
+
+  * New upstream release
+  - 修复浏览器运行时断错误异常.
+  - 修复浏览器运行过程中的命令行报错
+  - 字符串资源规范
+  - 完善阻止网站跟踪功能
+  - 实现用户位置信息设置和提示功能
+  - 下载功能完善
+ -- ZhangRuili <zhangrl_os@sari.ac.cn>  Fri, 30 Jan 2015 09:45:20 +0800
+
 cdosbrowser (0.0.3) Jan23; urgency=low
 
   * New upstream release
@@ -7,7 +18,7 @@ cdosbrowser (0.0.3) Jan23; urgency=low
   - 隐私浏览模式下隐藏菜单栏的历史记录菜单
   - 快速拨号菜单图片尺寸调整，减小变形
   - 支持编译生成64位系统安装包
- -- ZhangRuili <zhangrl_os@sari.ac.cn>  Fri, 23 Dec 2015 17:33:08 +0800
+ -- ZhangRuili <zhangrl_os@sari.ac.cn>  Fri, 23 Jan 2015 17:33:08 +0800
 
 cdosbrowser (0.0.2) Jan13; urgency=low
 
