@@ -723,11 +723,14 @@ katze_array_action_create_tool_item_for (KatzeArrayAction* array_action,
     title = katze_item_get_name (item);
     uri = katze_item_get_uri (item);
 //    desc = katze_item_get_text (item);
-    strcpy(desc, katze_item_get_name (item));
+    strcpy(desc, title);
+    if (uri)
+    {
     strcat(desc,"\n");
-    strcat(desc, katze_item_get_uri(item));
+    strcat(desc, uri);
+    }
 
-    if (strlen(title)+strlen(uri) > 2048)
+    if ( desc[2048])
         desc[2048] = 0;
 
     if (KATZE_ITEM_IS_SEPARATOR (item))
@@ -747,7 +750,7 @@ katze_array_action_create_tool_item_for (KatzeArrayAction* array_action,
         gtk_widget_set_size_request(button, 140, -1);  
         gtk_container_add(GTK_CONTAINER(toolitem), button);
         gtk_widget_show(button);
-        
+
         itembox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, NULL);
         gtk_container_add(GTK_CONTAINER(button), itembox);
         gtk_widget_show(itembox);
@@ -758,11 +761,11 @@ katze_array_action_create_tool_item_for (KatzeArrayAction* array_action,
         G_CALLBACK (katze_array_action_proxy_create_menu_proxy_cb), item);
 
     image = katze_item_get_image (item, GTK_WIDGET (toolitem));
-#if zghtest
-    gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (toolitem), image);
-#else
-    gtk_box_pack_start (GTK_BOX(itembox), image, FALSE, FALSE ,0);
-#endif
+    if (KATZE_ITEM_IS_FOLDER (item))
+        gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (toolitem), image);
+    else
+        gtk_box_pack_start (GTK_BOX(itembox), image, FALSE, FALSE ,0);
+
     label = gtk_label_new (title);
     /* FIXME: Should text direction be respected here? */
     gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -770,11 +773,11 @@ katze_array_action_create_tool_item_for (KatzeArrayAction* array_action,
     gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
 //    gtk_label_set_text(GTK_LABEL(label), title);
     gtk_widget_show (label);
-#if zghtest
-    gtk_tool_button_set_label_widget (GTK_TOOL_BUTTON (toolitem), label);
-#else
-    gtk_box_pack_start (GTK_BOX(itembox), label, FALSE, FALSE, 0);
-#endif
+    if (KATZE_ITEM_IS_FOLDER (item))
+        gtk_tool_button_set_label_widget (GTK_TOOL_BUTTON (toolitem), label);
+    else
+        gtk_box_pack_start (GTK_BOX(itembox), label, FALSE, FALSE, 0);
+
     /* GtkToolItem won't update our custom label, so we
        apply a little bit of 'magic' to fix that.  */
     g_signal_connect (toolitem, "notify",
@@ -796,15 +799,19 @@ katze_array_action_create_tool_item_for (KatzeArrayAction* array_action,
     else
         gtk_tool_item_set_tooltip_text (toolitem, uri);
 
-#if zghtest
+    if (KATZE_ITEM_IS_FOLDER (item))
+    {
     g_object_set_data (G_OBJECT (toolitem), "KatzeItem", item);
     g_signal_connect (toolitem, "clicked",
         G_CALLBACK (katze_array_action_proxy_clicked_cb), array_action);
-#else
+    }
+    else
+    {
         g_object_set_data (G_OBJECT (button), "KatzeItem", item);
         g_signal_connect (button, "clicked",
         G_CALLBACK (katze_array_action_proxy_clicked_cb), array_action);
-#endif
+    }
+
     if (KATZE_IS_ITEM (item))
     {
         /* Tool items block the "button-press-event" but we can get it
