@@ -164,7 +164,7 @@ static void midori_browser_actiave_history_in_window(GtkAction*     action,
 static void midori_browser_actiave_transfer_in_window(GtkAction*     action,
                               MidoriBrowser* browser);
 static void
-midori_browser_show_panel_window(MidoriBrowser* browser);
+midori_browser_show_panel_window(MidoriBrowser* browser, gboolean show);
 static void
 midori_panel_window_hide (GtkWidget* window, MidoriBrowser*  browser);
 
@@ -1950,6 +1950,17 @@ midori_view_download_requested_cb (GtkWidget*      view,
     gboolean handled = TRUE;
 
     g_return_val_if_fail (MIDORI_IS_VIEW (view), FALSE);
+    if (type != MIDORI_DOWNLOAD_CANCEL)
+        {
+        //zgh 工具栏上图标变化
+        GtkActionGroup *action_group = midori_browser_get_action_group (browser);
+        GtkAction *download_action = gtk_action_group_get_action(action_group, "DownloadDialog");
+        g_object_set (download_action, 
+                "stock-id", NULL,
+                "icon_name", MIDORI_STOCK_DOWNLOADING,
+                NULL);
+    }
+
     if (type == MIDORI_DOWNLOAD_CANCEL)
     {
         handled = FALSE;
@@ -2020,6 +2031,9 @@ midori_view_download_requested_cb (GtkWidget*      view,
         #ifndef HAVE_WEBKIT2
         webkit_download_start (download);
         #endif
+        
+                //zgh 创建管理器对话框
+    midori_browser_show_panel_window(browser, false);
     }
 
     /* Close empty tabs due to download links with a target */
@@ -6085,7 +6099,7 @@ midori_panel_notify_open_in_window_cb(MidoriPanel*   panel,
     gboolean open_in_window = katze_object_get_boolean (panel, "open-panels-in-windows");
 
     if (open_in_window){//seperate in window
-        midori_browser_show_panel_window(browser);
+        midori_browser_show_panel_window(browser, true);
 
     }
     else {//show in browser window
@@ -9102,7 +9116,7 @@ midori_panel_window_hide (GtkWidget* window, MidoriBrowser*  browser)
     return TRUE;
 }
 static void
-midori_browser_show_panel_window(MidoriBrowser* browser)
+midori_browser_show_panel_window(MidoriBrowser* browser, gboolean show)
 {
     GtkWidget* vpaned = gtk_widget_get_parent (browser->notebook);
     GtkWidget* hpaned = gtk_widget_get_parent (vpaned); //vbox
@@ -9125,10 +9139,10 @@ midori_browser_show_panel_window(MidoriBrowser* browser)
     }
 
 //        gtk_container_remove (GTK_CONTAINER (hpaned), browser->panel);
-        gtk_widget_show_all(panel_window);
-
-
-
+        if(show)
+            gtk_widget_show_all(panel_window);
+        else
+            gtk_widget_hide (panel_window);
 
     browser->sari_panel_windows = panel_window;
 
@@ -9141,20 +9155,27 @@ static void midori_browser_actiave_bookmark_in_window(GtkAction*     action,
                               MidoriBrowser* browser)
 {
     midori_panel_open_in_window(browser->panel, TRUE, PANEL_BOOKMARK);
-    midori_browser_show_panel_window(browser);
+    midori_browser_show_panel_window(browser, true);
 }
 
 static void midori_browser_actiave_history_in_window(GtkAction*     action,
                               MidoriBrowser* browser)
 {
     midori_panel_open_in_window(browser->panel, TRUE, PANEL_HISTORY);
-    midori_browser_show_panel_window(browser);
+    midori_browser_show_panel_window(browser, true);
 }
 static void midori_browser_actiave_transfer_in_window(GtkAction*     action,
                               MidoriBrowser* browser)
 {
     midori_panel_open_in_window(browser->panel, TRUE, PANEL_TRANSFER);
-    midori_browser_show_panel_window(browser);
+    midori_browser_show_panel_window(browser, true);
+    
+    //zgh 工具栏上图标变化
+    GtkActionGroup *action_group = midori_browser_get_action_group (browser);
+    GtkAction *download_action = gtk_action_group_get_action(action_group, "DownloadDialog");
+    g_object_set (download_action, 
+            "stock-id", STOCK_DOWNLOAD,
+            NULL);
 }
 
 void midori_browser_clear_history(MidoriBrowser* browser)

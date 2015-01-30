@@ -468,7 +468,8 @@ namespace Midori {
                      true);
                 return true;
             } else {
-                var browser = widget.get_toplevel ();
+                //var browser = widget.get_toplevel ();//.get_transient_for();
+                var browser = (widget.get_toplevel () as Gtk.Window).get_transient_for ();
                 Tab? tab = null;
                 browser.get ("tab", &tab);
                 if (tab != null)

@@ -607,10 +607,14 @@ namespace ExternalApplications {
            Returns whether an application was found and launched successfully. */
         bool open_now (string uri, string content_type, Gtk.Widget widget, NextStep next_step) {
             if (next_step == NextStep.TRY_OPEN && (new Associations ()).open (content_type, uri))
+            {
                 return true;
+            }
             /* if opening directly failed or wasn't tried, ask for an association */
             if (open_with (uri, content_type, widget) != null)
+            {
                 return true;
+            }
             return false;
         }
 

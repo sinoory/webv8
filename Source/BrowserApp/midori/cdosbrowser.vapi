@@ -10,6 +10,7 @@ namespace Midori {
         public const string WEB_BROWSER;
         public const string TRANSFER;
         public const string PLUGINS;
+        public const string DOWNLOADING;
     }
 
     [CCode (cheader_filename = "midori/midori.h")]

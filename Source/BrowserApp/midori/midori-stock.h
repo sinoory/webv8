@@ -40,5 +40,6 @@
 #define STOCK_UNBOOKMARK         "unbookmark"
 #define STOCK_ENTRY              "authensite" 
 #define STOCK_SECURITY           "certifiedwebsite"
+#define MIDORI_STOCK_DOWNLOADING "downloading"
 
 #endif /* !__MIDORI_STOCK_H__ */
