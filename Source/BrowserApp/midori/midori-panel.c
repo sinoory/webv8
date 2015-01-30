@@ -697,7 +697,7 @@ gtk_notebook_set_tab_label_text(GTK_CONTAINER (panel->notebook), vbox,
                                                          midori_viewable_get_label (viewable));
 
 //    g_signal_connect (viewable, "destroy",
-  //                    G_CALLBACK (midori_panel_widget_destroy_cb), toolbar);  //modify by luyue 2015/1/29
+//                      G_CALLBACK (midori_panel_widget_destroy_cb), toolbar);  //modify by luyue 2015/1/29
 
     n = midori_panel_get_n_pages (panel) - 1;
     /* FIXME: Use something better than the stock ID */
@@ -719,10 +719,23 @@ gtk_notebook_set_tab_label_text(GTK_CONTAINER (panel->notebook), vbox,
                                                 action, NULL);
         gtk_action_connect_accelerator (action);
     }
+//    if (n > 0)
+//        g_object_set (action, "group", g_object_get_data (
+//            G_OBJECT (midori_panel_get_nth_page (panel, 0)),
+//            "midori-panel-action"), NULL);
     if (n > 0)
+    {
+       if(midori_panel_get_nth_page (panel, 0))
+       {
         g_object_set (action, "group", g_object_get_data (
             G_OBJECT (midori_panel_get_nth_page (panel, 0)),
             "midori-panel-action"), NULL);
+       }
+       else
+       {
+          g_object_set (action, "group", NULL, NULL);
+       }
+    }
     g_object_set_data (G_OBJECT (viewable), "midori-panel-action", action);
     g_free (action_name);
 
@@ -772,6 +785,7 @@ _midori_panel_child_for_scrolled (MidoriPanel* panel,
 //    if (GTK_IS_VIEWPORT (child))
 //        child = gtk_bin_get_child (GTK_BIN (child));
     return child;
+
 }
 
 /**
