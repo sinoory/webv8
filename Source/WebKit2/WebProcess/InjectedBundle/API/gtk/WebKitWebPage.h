@@ -26,6 +26,7 @@
 
 #include <glib-object.h>
 #include <webkit2/WebKitDefines.h>
+#include <WebKit/WKBundlePageFormClient.h>
 #include <webkit2/WebKitFrame.h>
 #include <webkitdom/webkitdom.h>
 
@@ -66,6 +67,9 @@ webkit_web_page_get_uri          (WebKitWebPage *web_page);
 
 WEBKIT_API WebKitFrame *
 webkit_web_page_get_main_frame   (WebKitWebPage *web_page);
+
+WEBKIT_API gboolean
+webkit_web_page_set_form_client   (WebKitWebPage *web_page, WKBundlePageFormClientV2 *formClient);
 
 G_END_DECLS
 

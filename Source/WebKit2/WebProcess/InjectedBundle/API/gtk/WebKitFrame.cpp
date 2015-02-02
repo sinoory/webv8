@@ -23,7 +23,11 @@
 #include "WebKitFramePrivate.h"
 #include "WebKitPrivate.h"
 #include "WebKitScriptWorldPrivate.h"
+#include "WebKitDOMDocumentPrivate.h"
+#include <WebCore/Document.h>
+#include <WebCore/Frame.h>
 #include <wtf/text/CString.h>
+#include "WKBundleAPICast.h"
 
 using namespace WebKit;
 using namespace WebCore;
@@ -120,4 +124,24 @@ JSGlobalContextRef webkit_frame_get_javascript_context_for_script_world(WebKitFr
     g_return_val_if_fail(WEBKIT_IS_SCRIPT_WORLD(world), 0);
 
     return frame->priv->webFrame->jsContextForWorld(webkitScriptWorldGetInjectedBundleScriptWorld(world));
+}
+
+/**
+ *
+ */
+WebKitDOMDocument* webkit_frame_get_current_document(WKBundleFrameRef frame)
+{
+    if(!toImpl(frame))
+      return NULL;
+    return kit(toImpl(frame)->coreFrame()->document());
+}
+
+/**
+ *
+ */
+WebKitDOMDocument* webkit_frame_get_frame_document(WebKitFrame* frame)
+{
+    g_return_val_if_fail(WEBKIT_IS_FRAME(frame), 0);
+
+    return kit(frame->priv->webFrame->coreFrame()->document());
 }

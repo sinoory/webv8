@@ -19,6 +19,7 @@
 
 #include "config.h"
 #include "WebKitWebPage.h"
+#include "WebKitFrame.h"
 
 #include "ImageOptions.h"
 #include "ImmutableDictionary.h"
@@ -133,10 +134,8 @@ static void didSameDocumentNavigationForFrame(WKBundlePageRef, WKBundleFrameRef 
 
 static void didFinishDocumentLoadForFrame(WKBundlePageRef, WKBundleFrameRef frame, WKTypeRef*, const void *clientInfo)
 {
-    if (!WKBundleFrameIsMainFrame(frame))
-        return;
-
-    g_signal_emit(WEBKIT_WEB_PAGE(clientInfo), signals[DOCUMENT_LOADED], 0);
+    WebFrame* web_frame = toImpl(frame);
+    g_signal_emit(WEBKIT_WEB_PAGE(clientInfo), signals[DOCUMENT_LOADED], 0, WEBKIT_FRAME(webkitFrameGetOrCreate(web_frame)));
 }
 
 static void willDestroyFrame(WKBundlePageRef, WKBundleFrameRef frame, const void* /* clientInfo */)
@@ -271,9 +270,9 @@ static void webkit_web_page_class_init(WebKitWebPageClass* klass)
         G_TYPE_FROM_CLASS(klass),
         G_SIGNAL_RUN_LAST,
         0, 0, 0,
-        g_cclosure_marshal_VOID__VOID,
-        G_TYPE_NONE, 0);
-
+        g_cclosure_marshal_VOID__OBJECT,
+        G_TYPE_NONE, 1,
+        WEBKIT_TYPE_FRAME);
     /**
      * WebKitWebPage::send-request:
      * @web_page: the #WebKitWebPage on which the signal is emitted
@@ -476,4 +475,14 @@ WebKitFrame* webkit_web_page_get_main_frame(WebKitWebPage* webPage)
     g_return_val_if_fail(WEBKIT_IS_WEB_PAGE(webPage), 0);
 
     return webkitFrameGetOrCreate(webPage->priv->webPage->mainWebFrame());
+}
+
+gboolean webkit_web_page_set_form_client(WebKitWebPage *webPage, WKBundlePageFormClientV2 *formClient)
+{
+    g_return_val_if_fail(WEBKIT_IS_WEB_PAGE(webPage), 0);
+
+    WebPage * page = webPage->priv->webPage;
+    formClient->base.clientInfo = webPage;
+    WKBundlePageSetFormClient(toAPI(page), &formClient->base);
+    return true;
 }

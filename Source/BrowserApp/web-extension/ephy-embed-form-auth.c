@@ -27,7 +27,8 @@ struct _EphyEmbedFormAuthPrivate
   SoupURI *uri;
   WebKitDOMNode *username_node;
   WebKitDOMNode *password_node;
-  char *username;
+  char * username;
+  char * password;
 };
 
 G_DEFINE_TYPE (EphyEmbedFormAuth, ephy_embed_form_auth, G_TYPE_OBJECT)

@@ -28,15 +28,16 @@
 
 #include <WebKit/WKBase.h>
 #include <WebKit/WKBundlePageEditorClient.h>
+#include <webkitdom/webkitdom.h>
 
-typedef void (*WKBundlePageTextFieldDidBeginEditingCallback)(WKBundlePageRef page, WKBundleNodeHandleRef htmlInputElementHandle, WKBundleFrameRef frame, const void* clientInfo);
-typedef void (*WKBundlePageTextFieldDidEndEditingCallback)(WKBundlePageRef page, WKBundleNodeHandleRef htmlInputElementHandle, WKBundleFrameRef frame, const void* clientInfo);
-typedef void (*WKBundlePageTextDidChangeInTextFieldCallback)(WKBundlePageRef page, WKBundleNodeHandleRef htmlInputElementHandle, WKBundleFrameRef frame, const void* clientInfo);
+typedef void (*WKBundlePageTextFieldDidBeginEditingCallback)(WKBundlePageRef page, WebKitDOMHTMLInputElement * inputElement, WKBundleFrameRef frame, const void* clientInfo);
+typedef void (*WKBundlePageTextFieldDidEndEditingCallback)(WKBundlePageRef page, WebKitDOMHTMLInputElement * inputElement, WKBundleFrameRef frame, const void* clientInfo);
+typedef void (*WKBundlePageTextDidChangeInTextFieldCallback)(WKBundlePageRef page, WebKitDOMHTMLInputElement * inputElement, WKBundleFrameRef frame, const void* clientInfo);
 typedef void (*WKBundlePageTextDidChangeInTextAreaCallback)(WKBundlePageRef page, WKBundleNodeHandleRef htmlTextAreaElementHandle, WKBundleFrameRef frame, const void* clientInfo);
 typedef bool (*WKBundlePageShouldPerformActionInTextFieldCallback)(WKBundlePageRef page, WKBundleNodeHandleRef htmlInputElementHandle, WKInputFieldActionType actionType, WKBundleFrameRef frame, const void* clientInfo);
-typedef void (*WKBundlePageWillSubmitFormCallback)(WKBundlePageRef page, WKBundleNodeHandleRef htmlFormElementHandle, WKBundleFrameRef frame, WKBundleFrameRef sourceFrame, WKDictionaryRef values, WKTypeRef* userData, const void* clientInfo);
-typedef void (*WKBundlePageWillSendSubmitEventCallback)(WKBundlePageRef page, WKBundleNodeHandleRef htmlFormElementHandle, WKBundleFrameRef frame, WKBundleFrameRef sourceFrame, WKDictionaryRef values, const void* clientInfo);
-typedef void (*WKBundlePageDidFocusTextFieldCallback)(WKBundlePageRef page, WKBundleNodeHandleRef htmlInputElementHandle, WKBundleFrameRef frame, const void* clientInfo);
+typedef void (*WKBundlePageWillSubmitFormCallback)(WKBundlePageRef page, WebKitDOMHTMLFormElement * form, WKBundleFrameRef frame, WKBundleFrameRef sourceFrame, WKDictionaryRef values, WKTypeRef* userData, const void* clientInfo);
+typedef void (*WKBundlePageWillSendSubmitEventCallback)(WKBundlePageRef page, WebKitDOMHTMLFormElement * form, WKBundleFrameRef frame, WKBundleFrameRef sourceFrame, WKDictionaryRef values, const void* clientInfo);
+typedef void (*WKBundlePageDidFocusTextFieldCallback)(WKBundlePageRef page, WebKitDOMHTMLInputElement * inputElement, WKBundleFrameRef frame, const void* clientInfo);
 typedef bool (*WKBundlePageShouldNotifyOnFormChangesCallback)(WKBundlePageRef page, const void* clientInfo);
 typedef void (*WKBundlePageDidAssociateFormControlsCallback)(WKBundlePageRef page, WKArrayRef elementHandles, const void* clientInfo);
 

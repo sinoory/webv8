@@ -31,9 +31,14 @@
 #include "InjectedBundleNodeHandle.h"
 #include "WKAPICast.h"
 #include "WKBundleAPICast.h"
+#include "WebKitFrame.h"
+#include "WebKitWebPage.h"
 #include <WebCore/HTMLFormElement.h>
 #include <WebCore/HTMLInputElement.h>
 #include <WebCore/HTMLTextAreaElement.h>
+#include <webkitdom/webkitdom.h>
+#include <webkitdom/WebKitDOMHTMLFormElementPrivate.h>
+#include <webkitdom/WebKitDOMHTMLInputElementPrivate.h>
 
 using namespace WebCore;
 
@@ -50,7 +55,8 @@ void InjectedBundlePageFormClient::didFocusTextField(WebPage* page, HTMLInputEle
         return;
 
     RefPtr<InjectedBundleNodeHandle> nodeHandle = InjectedBundleNodeHandle::getOrCreate(inputElement);
-    m_client.didFocusTextField(toAPI(page), toAPI(nodeHandle.get()), toAPI(frame), m_client.base.clientInfo);
+    WebKitDOMHTMLInputElement* input_element = WebKit::wrapHTMLInputElement(inputElement);
+    m_client.didFocusTextField(toAPI(page), input_element, toAPI(frame), m_client.base.clientInfo);
 }
 
 void InjectedBundlePageFormClient::textFieldDidBeginEditing(WebPage* page, HTMLInputElement* inputElement, WebFrame* frame)
@@ -59,7 +65,8 @@ void InjectedBundlePageFormClient::textFieldDidBeginEditing(WebPage* page, HTMLI
         return;
 
     RefPtr<InjectedBundleNodeHandle> nodeHandle = InjectedBundleNodeHandle::getOrCreate(inputElement);
-    m_client.textFieldDidBeginEditing(toAPI(page), toAPI(nodeHandle.get()), toAPI(frame), m_client.base.clientInfo);
+    WebKitDOMHTMLInputElement* input_element = WebKit::wrapHTMLInputElement(inputElement);
+    m_client.textFieldDidBeginEditing(toAPI(page), input_element, toAPI(frame), m_client.base.clientInfo);
 }
 
 void InjectedBundlePageFormClient::textFieldDidEndEditing(WebPage* page, HTMLInputElement* inputElement, WebFrame* frame)
@@ -68,7 +75,8 @@ void InjectedBundlePageFormClient::textFieldDidEndEditing(WebPage* page, HTMLInp
         return;
 
     RefPtr<InjectedBundleNodeHandle> nodeHandle = InjectedBundleNodeHandle::getOrCreate(inputElement);
-    m_client.textFieldDidEndEditing(toAPI(page), toAPI(nodeHandle.get()), toAPI(frame), m_client.base.clientInfo);
+    WebKitDOMHTMLInputElement* input_element = WebKit::wrapHTMLInputElement(inputElement);
+    m_client.textFieldDidEndEditing(toAPI(page), input_element, toAPI(frame), m_client.base.clientInfo);
 }
 
 void InjectedBundlePageFormClient::textDidChangeInTextField(WebPage* page, HTMLInputElement* inputElement, WebFrame* frame, bool initiatedByUserTyping)
@@ -80,7 +88,8 @@ void InjectedBundlePageFormClient::textDidChangeInTextField(WebPage* page, HTMLI
         return;
 
     RefPtr<InjectedBundleNodeHandle> nodeHandle = InjectedBundleNodeHandle::getOrCreate(inputElement);
-    m_client.textDidChangeInTextField(toAPI(page), toAPI(nodeHandle.get()), toAPI(frame), m_client.base.clientInfo);
+    WebKitDOMHTMLInputElement* input_element = WebKit::wrapHTMLInputElement(inputElement);
+    m_client.textDidChangeInTextField(toAPI(page), input_element, toAPI(frame), m_client.base.clientInfo);
 }
 
 void InjectedBundlePageFormClient::textDidChangeInTextArea(WebPage* page, HTMLTextAreaElement* textAreaElement, WebFrame* frame)
@@ -130,13 +139,14 @@ void InjectedBundlePageFormClient::willSendSubmitEvent(WebPage* page, HTMLFormEl
         return;
 
     RefPtr<InjectedBundleNodeHandle> nodeHandle = InjectedBundleNodeHandle::getOrCreate(formElement);
+    WebKitDOMHTMLFormElement * form_node = WebKit::wrapHTMLFormElement(formElement);
 
     ImmutableDictionary::MapType map;
     for (size_t i = 0; i < values.size(); ++i)
         map.set(values[i].first, API::String::create(values[i].second));
     auto textFieldsMap = ImmutableDictionary::create(WTF::move(map));
 
-    m_client.willSendSubmitEvent(toAPI(page), toAPI(nodeHandle.get()), toAPI(frame), toAPI(sourceFrame), toAPI(textFieldsMap.get()), m_client.base.clientInfo);
+    m_client.willSendSubmitEvent(toAPI(page), form_node, toAPI(frame), toAPI(sourceFrame), toAPI(textFieldsMap.get()), m_client.base.clientInfo);
 }
 
 void InjectedBundlePageFormClient::willSubmitForm(WebPage* page, HTMLFormElement* formElement, WebFrame* frame, WebFrame* sourceFrame, const Vector<std::pair<String, String>>& values, RefPtr<API::Object>& userData)
@@ -145,6 +155,7 @@ void InjectedBundlePageFormClient::willSubmitForm(WebPage* page, HTMLFormElement
         return;
 
     RefPtr<InjectedBundleNodeHandle> nodeHandle = InjectedBundleNodeHandle::getOrCreate(formElement);
+    WebKitDOMHTMLFormElement * form_node = WebKit::wrapHTMLFormElement(formElement);
 
     ImmutableDictionary::MapType map;
     for (size_t i = 0; i < values.size(); ++i)
@@ -152,7 +163,7 @@ void InjectedBundlePageFormClient::willSubmitForm(WebPage* page, HTMLFormElement
     auto textFieldsMap = ImmutableDictionary::create(WTF::move(map));
 
     WKTypeRef userDataToPass = 0;
-    m_client.willSubmitForm(toAPI(page), toAPI(nodeHandle.get()), toAPI(frame), toAPI(sourceFrame), toAPI(textFieldsMap.get()), &userDataToPass, m_client.base.clientInfo);
+    m_client.willSubmitForm(toAPI(page), form_node, toAPI(frame), toAPI(sourceFrame), toAPI(textFieldsMap.get()), &userDataToPass, m_client.base.clientInfo);
     userData = adoptRef(toImpl(userDataToPass));
 }
 

@@ -20,6 +20,7 @@
 
 #include "config.h"
 #include "ephy-web-extension.h"
+#include "webkitdom/webkitdom.h"
 
 #include "ephy-debug.h"
 #include "ephy-embed-form-auth.h"
@@ -503,6 +504,13 @@ remove_user_choices (WebKitDOMDocument *document)
 }
 
 static gboolean
+username_did_changed_cb (EphyEmbedFormAuth* form_auth)
+{
+  pre_fill_form (form_auth);
+  return TRUE;
+}
+
+static gboolean
 username_changed_cb (WebKitDOMNode *username_node,
                      WebKitDOMEvent *dom_event,
                      EphyEmbedFormAuth *form_auth)
@@ -630,13 +638,13 @@ get_user_choice_anchor_style (gboolean selected)
 
 static void
 show_user_choices (WebKitDOMDocument *document,
-                   WebKitDOMNode     *username_node)
+                   WebKitDOMNode     *username_node,
+                   GSList * auth_data_list)
 {
   WebKitDOMNode *body;
   WebKitDOMElement *main_div;
   WebKitDOMElement *ul;
   GSList *iter;
-  GSList *auth_data_list;
   gboolean username_node_ever_edited;
   long x, y;
   long input_width;
@@ -681,8 +689,7 @@ show_user_choices (WebKitDOMDocument *document,
                                     "padding: 0;",
                                     NULL);
 
-  auth_data_list = (GSList*)g_object_get_data (G_OBJECT (username_node),
-                                               "ephy-auth-data-list");
+  //auth_data_list = (GSList*)g_object_get_data (G_OBJECT (username_node),"ephy-auth-data-list");
 
   username_node_ever_edited =
     GPOINTER_TO_INT (g_object_get_data (G_OBJECT (username_node),
@@ -762,15 +769,24 @@ username_node_changed_cb (WebKitDOMNode  *username_node,
 static gboolean
 username_node_clicked_cb (WebKitDOMNode  *username_node,
                           WebKitDOMEvent *dom_event,
+                          WebKitDOMDocument * document,
                           WebKitWebPage  *web_page)
 {
-  WebKitDOMDocument *document;
+  GSList *auth_data_list;
+  const char *uri_string;
+  SoupURI *uri;
+  EphyWebExtension* extension;
 
-  document = webkit_web_page_get_dom_document (web_page);
+  extension = ephy_web_extension_get ();
+  uri_string = webkit_web_page_get_uri (web_page);
+  uri = soup_uri_new (uri_string);
+  auth_data_list = ephy_form_auth_data_cache_get_list (extension->priv->form_auth_data_cache, uri->host);
+  soup_uri_free (uri);
+
   if (webkit_dom_document_get_element_by_id (document, "ephy-user-choices-container"))
     return TRUE;
 
-  show_user_choices (document, username_node);
+  show_user_choices (document, username_node, auth_data_list);
 
   return TRUE;
 }
@@ -835,7 +851,7 @@ username_node_keydown_cb (WebKitDOMNode  *username_node,
   main_div = webkit_dom_document_get_element_by_id (document, "ephy-user-choices-container");
 
   if (!main_div) {
-    show_user_choices (document, username_node);
+    show_user_choices (document, username_node, NULL);
     return TRUE;
   }
 
@@ -912,7 +928,7 @@ username_node_input_cb (WebKitDOMNode  *username_node,
   g_object_set_data (G_OBJECT (username_node), "ephy-user-ever-edited", GINT_TO_POINTER(TRUE));
   document = webkit_web_page_get_dom_document (web_page);
   remove_user_choices (document);
-  show_user_choices (document, username_node);
+  show_user_choices (document, username_node, NULL);
 
   /* Check if a username has been selected, otherwise clear password field. */
   main_div = webkit_dom_document_get_element_by_id (document, "ephy-user-choices-container");
@@ -932,6 +948,7 @@ form_destroyed_cb (gpointer form_auth, GObject *form)
 
 static void
 web_page_document_loaded (WebKitWebPage *web_page,
+                          WebKitFrame * web_frame,
                           EphyWebExtension *extension)
 {
   WebKitDOMHTMLCollection *forms = NULL;
@@ -939,12 +956,10 @@ web_page_document_loaded (WebKitWebPage *web_page,
   gulong forms_n;
   int i;
 
-  /*if (!extension->priv->form_auth_data_cache ||
-      !g_settings_get_boolean (EPHY_SETTINGS_MAIN, EPHY_PREFS_REMEMBER_PASSWORDS))
+  if (!extension->priv->form_auth_data_cache)
     return;
-    */
 
-  document = webkit_web_page_get_dom_document (web_page);
+  document = webkit_frame_get_frame_document (web_frame);
   forms = webkit_dom_document_get_forms (document);
   forms_n = webkit_dom_html_collection_get_length (forms);
 
@@ -972,9 +987,7 @@ web_page_document_loaded (WebKitWebPage *web_page,
 
       /* EphyEmbedFormAuth takes ownership of the nodes */
       form_auth = ephy_embed_form_auth_new (web_page, username_node, password_node, NULL);
-      webkit_dom_event_target_add_event_listener (WEBKIT_DOM_EVENT_TARGET (form), "submit",
-                                                  G_CALLBACK (form_submitted_cb), true,
-                                                  web_page);
+
       if (username_node) {
         webkit_dom_event_target_add_event_listener (WEBKIT_DOM_EVENT_TARGET (username_node), "blur",
                                                     G_CALLBACK (username_changed_cb), FALSE,
@@ -994,7 +1007,7 @@ web_page_document_loaded (WebKitWebPage *web_page,
         g_object_set_data (G_OBJECT (username_node), "ephy-auth-data-list", auth_data_list);
         g_object_set_data (G_OBJECT (username_node), "ephy-form-auth", form_auth);
         g_object_set_data (G_OBJECT (username_node), "ephy-document", document);
-        webkit_dom_event_target_add_event_listener (WEBKIT_DOM_EVENT_TARGET (username_node), "input",
+        /*webkit_dom_event_target_add_event_listener (WEBKIT_DOM_EVENT_TARGET (username_node), "input",
                                                     G_CALLBACK (username_node_input_cb), TRUE,
                                                     web_page);
         webkit_dom_event_target_add_event_listener (WEBKIT_DOM_EVENT_TARGET (username_node), "keydown",
@@ -1008,7 +1021,7 @@ web_page_document_loaded (WebKitWebPage *web_page,
                                                     web_page);
         webkit_dom_event_target_add_event_listener (WEBKIT_DOM_EVENT_TARGET (username_node), "blur",
                                                     G_CALLBACK (username_node_changed_cb), FALSE,
-                                                    web_page);
+                                                    web_page);*/
       } else
         LOG ("No items or a single item in auth_data_list, not hooking menu for choosing.");
 
@@ -1070,11 +1083,56 @@ ephy_web_extension_queue_page_created_signal_emission (EphyWebExtension *extensi
   extension->priv->page_created_signals_pending = g_array_append_val (extension->priv->page_created_signals_pending, page_id);
 }
 
+static void willSubmitForm(WKBundlePageRef page, WebKitDOMHTMLFormElement * form, WKBundleFrameRef frame, WKBundleFrameRef sourceFrame, WKDictionaryRef values, WKTypeRef* userData, const void* clientInfo)
+{
+    form_submitted_cb(form, 0, (WebKitWebPage*)clientInfo);
+}
+
+static void willSendSubmitEvent(WKBundlePageRef page, WebKitDOMHTMLFormElement * form, WKBundleFrameRef frame, WKBundleFrameRef sourceFrame, WKDictionaryRef values, const void* clientInfo)
+{
+    form_submitted_cb(form, 0, (WebKitWebPage*)clientInfo);
+}
+static void didFocusTextField(WKBundlePageRef page, WebKitDOMHTMLInputElement * inputElement, WKBundleFrameRef frame, const void* clientInfo)
+{
+    WebKitDOMDocument * document = webkit_frame_get_current_document(frame);
+    username_node_clicked_cb(WEBKIT_DOM_NODE(inputElement), 0, document, (WebKitWebPage*)clientInfo);
+}
+
+static void textFieldDidEndEditing (WKBundlePageRef page, WebKitDOMHTMLInputElement * inputElement, WKBundleFrameRef frame, const void* clientInfo)
+{
+    WebKitDOMHTMLCollection *forms = NULL;
+    char* element_name = NULL;
+    char* element_type = NULL;
+    g_object_get (WEBKIT_DOM_NODE(inputElement), "type", &element_type, "name", &element_name, NULL);
+    gulong forms_n;
+    int i;
+    EphyEmbedFormAuth *form_auth = NULL;
+    WebKitWebPage* web_page = (WebKitWebPage*)clientInfo;
+    
+    WebKitDOMDocument * document = webkit_frame_get_current_document(frame);
+    forms = webkit_dom_document_get_forms (document);
+    forms_n = webkit_dom_html_collection_get_length (forms);
+    for(i = 0; i < forms_n; ++i){
+        WebKitDOMHTMLFormElement* form = NULL;
+        WebKitDOMNode *password_node = NULL;
+        WebKitDOMNode *username_node = NULL;
+        form = WEBKIT_DOM_HTML_FORM_ELEMENT (webkit_dom_html_collection_item (forms, i));
+        if (ephy_web_dom_utils_find_form_auth_elements (form, &username_node, &password_node)) {
+            form_auth = ephy_embed_form_auth_new (web_page, username_node, password_node, NULL);
+            break;
+        }
+    }
+    if(form_auth)
+        username_did_changed_cb(form_auth);
+}
+
 static void
 ephy_web_extension_page_created_cb (EphyWebExtension *extension,
                                     WebKitWebPage *web_page)
 {
   guint64 page_id;
+  WebKitDOMDocument *document = NULL;
+  WebKitDOMHTMLElement* body = NULL;
 
   page_id = webkit_web_page_get_id (web_page);
   if (extension->priv->dbus_connection)
@@ -1082,6 +1140,15 @@ ephy_web_extension_page_created_cb (EphyWebExtension *extension,
   else
     ephy_web_extension_queue_page_created_signal_emission (extension, page_id);
 
+
+  WKBundlePageFormClientV2 formClient;
+  memset(&formClient, 0, sizeof(formClient));
+  formClient.base.version=2;
+  formClient.willSubmitForm=willSubmitForm;
+  formClient.willSendSubmitEvent = willSendSubmitEvent;
+  formClient.didFocusTextField = didFocusTextField;
+  formClient.textFieldDidEndEditing = textFieldDidEndEditing;
+  webkit_web_page_set_form_client(web_page, &formClient);
   g_signal_connect (web_page, "send-request",
                     G_CALLBACK (web_page_send_request),
                     extension);
