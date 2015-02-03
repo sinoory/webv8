@@ -547,3 +547,24 @@ ephy_web_extension_proxy_history_clear (EphyWebExtensionProxy *web_extension)
                      web_extension->priv->cancellable,
                      NULL, NULL);
 }*/
+
+void
+ephy_web_extension_proxy_form_auth_data_item_delete (EphyWebExtensionProxy *web_extension,
+                                                     const char *uri,
+               					     const char *form_username,
+					             const char *form_password,
+					             const char *username)
+{
+  g_return_if_fail (EPHY_IS_WEB_EXTENSION_PROXY (web_extension));
+  
+  if (!web_extension->priv->proxy)
+    return;
+  g_printerr("------------------------------------------------------------------------------------------------------------not return\n");
+  g_dbus_proxy_call (web_extension->priv->proxy,
+                     "FormAuthDataItemDelete",
+                     g_variant_new ("(ssss)", uri, form_username, form_password, username),
+                     G_DBUS_CALL_FLAGS_NONE,
+                     -1,
+                     web_extension->priv->cancellable,
+                     NULL, NULL);
+}

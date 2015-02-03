@@ -144,11 +144,17 @@ ephy_form_auth_data_store (const char *uri,
      */
     label = g_strdup_printf (_("Password in a form in %s"), fake_uri_str);
   }
-  secret_service_store (NULL, EPHY_FORM_PASSWORD_SCHEMA,
+  /*secret_service_store (NULL, EPHY_FORM_PASSWORD_SCHEMA,
                         attributes, NULL, label, value,
                         NULL,
                         (GAsyncReadyCallback)store_form_password_cb,
                         g_object_ref (res));
+  */
+  if(secret_service_store_sync (NULL, EPHY_FORM_PASSWORD_SCHEMA,
+                        attributes, NULL, label, value,
+                        NULL,
+                        NULL))
+    g_printerr("--------------------------storing the password successfully\n");
 
   g_free (label);
   secret_value_unref (value);
@@ -409,6 +415,65 @@ ephy_form_auth_data_cache_add (EphyFormAuthDataCache *cache,
   l = g_slist_append (l, data);
   g_hash_table_replace (cache->form_auth_data_map,
                         g_strdup (uri), l);
+}
+
+static void
+auth_data_delete_cb(SecretService *service,
+                    GAsyncResult *result,
+                    EphyFormAuthDataCache *cache)
+{
+  secret_service_clear_finish (service, result, NULL);
+}
+
+void
+ephy_form_auth_data_cache_del (EphyFormAuthDataCache *cache,
+                               const char *uri,
+                               const char *form_username,
+                               const char *form_password,
+                               const char *username)
+{
+  /*SoupURI *key;
+  char *key_str;
+  EphyFormAuthData* data;
+  GSList* l;
+
+  g_return_if_fail(cache);
+  g_return_if_fail(uri);
+  g_return_if_fail(form_password);
+  
+  g_printerr("--------------------------------------------delete uri: %s\n", uri);
+  g_printerr("--------------------------------------------cache pointer: %p\n", cache);
+  //guint size = g_hash_table_size((GHashTable*)(cache->form_auth_data_map));
+  //g_printerr("--------------------------------------------cache size: %d\n", size);
+  //l = g_hash_table_lookup ((GHashTable*)(cache->form_auth_data_map), uri);
+  //l = g_slist_remove (l, data);
+  //g_slist_foreach(l, print_iter, uri);
+  //g_hash_table_replace (cache->form_auth_data_map, g_strdup (uri), l);
+  //
+  GHashTable *attributes;
+
+  key = soup_uri_new (NULL);
+  soup_uri_set_scheme(key, SOUP_URI_SCHEME_HTTP);
+  char path[256];
+  g_sprintf(path, "//%s/", uri);
+  soup_uri_set_path(key,path);
+  g_return_if_fail (key);
+  key_str = soup_uri_to_string (key, FALSE);
+  */
+
+  GHashTable *attributes;
+  g_printerr("--------------------------------------------delete uri: %s\n", uri);
+  attributes = ephy_form_auth_data_get_secret_attributes_table (uri,
+                                                                form_username,
+                                                                form_password,
+                                                                username);
+  //attributes = secret_attributes_build (EPHY_FORM_PASSWORD_SCHEMA, NULL);
+  secret_service_clear (NULL,
+			EPHY_FORM_PASSWORD_SCHEMA,
+                        attributes,
+                        NULL,
+                        (GAsyncReadyCallback)auth_data_delete_cb,
+                        cache);
 }
 
 GSList *

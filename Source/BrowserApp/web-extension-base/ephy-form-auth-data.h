@@ -72,6 +72,11 @@ void                   ephy_form_auth_data_cache_add      (EphyFormAuthDataCache
                                                            const char            *form_username,
                                                            const char            *form_password,
                                                            const char            *username);
+void                   ephy_form_auth_data_cache_del      (EphyFormAuthDataCache *cache,
+                                                           const char            *uri,
+                                                           const char            *form_username,
+                                                           const char            *form_password,
+                                                           const char            *username);
 GSList                *ephy_form_auth_data_cache_get_list (EphyFormAuthDataCache *cache,
                                                            const char            *uri);
 

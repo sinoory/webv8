@@ -16,6 +16,8 @@
 
 #include "midori-browser.h"
 #include "midori-websettings.h"
+#include "midori-web-extension-proxy.h"
+
 
 G_BEGIN_DECLS
 
@@ -35,6 +37,27 @@ G_BEGIN_DECLS
 typedef struct _MidoriApp                MidoriApp;
 typedef struct _MidoriAppClass           MidoriAppClass;
 //static guint web_extension_count = 0;
+
+struct _MidoriApp
+{
+    GApplication parent_instance;
+
+    MidoriWebSettings* settings;
+    KatzeArray* bookmarks;
+    KatzeArray* trash;
+    KatzeArray* search_engines;
+    KatzeArray* history;
+    GKeyFile* speeddial;
+    KatzeArray* extensions;
+    KatzeArray* browsers;
+
+    MidoriBrowser* browser;
+    guint web_extensions_page_created_signal_id;
+    guint web_extensions_form_auth_save_signal_id;
+    //GList* web_extensions;
+    EphyWebExtensionProxy* web_extensions;
+    GDBusConnection *bus;
+};
 
 guint*
 midori_app_get_web_extension_count(void);

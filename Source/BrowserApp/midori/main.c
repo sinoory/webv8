@@ -49,7 +49,7 @@ snapshot_load_finished_cb (GtkWidget*      web_view,
 //extern guint web_extension_count;
 
 static void 
-initialize_web_extensions (WebKitWebContext* web_context)
+initialize_web_extensions (WebKitWebContext* web_context, gboolean save_password)
 {
   GVariant *user_data;
   gboolean private_profile;
@@ -61,7 +61,7 @@ initialize_web_extensions (WebKitWebContext* web_context)
   web_extension_id = g_strdup_printf ("%u-%u", getpid (), ++(*webExtensionsCount));
 
   private_profile = false;
-  user_data = g_variant_new ("(sb)", web_extension_id, private_profile);
+  user_data = g_variant_new ("(sb)", web_extension_id, save_password);
   webkit_web_context_set_web_extensions_initialization_user_data (web_context, user_data);
 }
 

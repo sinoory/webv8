@@ -39,13 +39,13 @@ webkit_web_extension_initialize_with_user_data(WebKitWebExtension *extension, GV
   EphyWebExtension *web_extension;
   char *service_name;
   const char *extension_id;
-  gboolean private_profile;
+  gboolean is_save_pass_word;
   GError *error = NULL;
 
-  g_variant_get (user_data, "(&sb)", &extension_id, &private_profile);
+  g_variant_get (user_data, "(&sb)", &extension_id, &is_save_pass_word);
 
   web_extension = ephy_web_extension_get ();
-  ephy_web_extension_initialize (web_extension, extension, /*dot_dir*/NULL, false);
+  ephy_web_extension_initialize (web_extension, extension, /*dot_dir*/NULL, is_save_pass_word);
 
   service_name = g_strdup_printf ("%s-%s", EPHY_WEB_EXTENSION_SERVICE_NAME, extension_id);
   g_bus_own_name (G_BUS_TYPE_SESSION,

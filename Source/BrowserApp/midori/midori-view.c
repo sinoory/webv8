@@ -3514,11 +3514,11 @@ midori_web_view_create_form_auth_save_confirmation_info_bar (MidoriView *web_vie
 
 // ZRL 区分gtk版本
 #if GTK_CHECK_VERSION (3, 10, 0)
-  info_bar = gtk_info_bar_new_with_buttons (_("Save"), GTK_RESPONSE_YES, 
+  info_bar = gtk_info_bar_new_with_buttons (_("保  存"), GTK_RESPONSE_YES, 
                                             NULL);
   gtk_info_bar_set_show_close_button (GTK_INFO_BAR (info_bar), TRUE);
 #else
-  info_bar = gtk_info_bar_new_with_buttons (_("Save"), GTK_RESPONSE_YES, _("Close"), GTK_RESPONSE_CLOSE,
+  info_bar = gtk_info_bar_new_with_buttons (_("保  存"), GTK_RESPONSE_YES, _("关  闭"), GTK_RESPONSE_CLOSE,
                                             NULL);
 #endif
 
@@ -3530,7 +3530,7 @@ midori_web_view_create_form_auth_save_confirmation_info_bar (MidoriView *web_vie
   /* Translators: The %s the hostname where this is happening. 
    * Example: mail.google.com.
    */
-  message = g_markup_printf_escaped (_("Do you want to save your password for “%s”?"),
+  message = g_markup_printf_escaped (_("是否要保存该网站用户名和密码： “%s”?"),
                                      hostname);
   gtk_label_set_markup (GTK_LABEL (label), message);
   gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);

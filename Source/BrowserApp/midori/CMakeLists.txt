@@ -2,11 +2,12 @@
 
 set(LIBMIDORI_VERSION 0.0.1)
 set(LIBMIDORI_SOVERSION 0)
+set(EXTRALIB_DIR_secret "/usr/include/libsecret-1")
 
 set(MIDORI_SOURCE_DIR "${CMAKE_SOURCE_DIR}/Source/BrowserApp")
 
 file(GLOB MIDORI_VALA_SOURCE ../katze/*.vala *.vala ../panels/*.vala)
-file(GLOB LIBMIDORI_SOURCE ../katze/*.c ../panels/*.c ../toolbars/*.c  midori-*.vala midori-*.c sokoke.c Certificate.c ../settings/*.c)
+file(GLOB LIBMIDORI_SOURCE ../katze/*.c ../panels/*.c ../toolbars/*.c  midori-*.vala midori-*.c sokoke.c Certificate.c password-manager.c ../settings/*.c)
 include(GLibHelpers)
 add_glib_marshal(LIBMIDORI_SOURCE marshal midori_cclosure_marshal "midori.h")
 set(MIDORI_SOURCE
@@ -49,6 +50,7 @@ endif()
 include_directories(
                     ${MIDORI_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}
+                    ${EXTRALIB_DIR_secret}
                     "${MIDORI_SOURCE_DIR}/katze"
                     "${MIDORI_SOURCE_DIR}/toolbars"
 		    "${MIDORI_SOURCE_DIR}/settings"

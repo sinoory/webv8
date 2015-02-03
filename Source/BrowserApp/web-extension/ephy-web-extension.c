@@ -90,6 +90,13 @@ static const char introspection_xml[] =
   "   <arg type='u' name='request_id' direction='in'/>"
   "   <arg type='b' name='should_store' direction='in'/>"
   "  </method>"
+  "  <method name='FormAuthDataItemDelete'>"
+  "   <arg type='s' name='uri' direction='in'/>"
+  "   <arg type='s' name='form_username' direction='in'/>"
+  "   <arg type='s' name='form_password' direction='in'/>"
+  "   <arg type='s' name='username' direction='in'/>"
+  "  </method>"
+
   "  <method name='HistorySetURLs'>"
   "   <arg type='a(ss)' name='urls' direction='in'/>"
   "  </method>"
@@ -1257,6 +1264,16 @@ handle_method_call (GDBusConnection *connection,
     if (should_store)
       store_password (form_auth);
     g_hash_table_remove (requests, GINT_TO_POINTER (request_id));
+  } else if (g_strcmp0 (method_name, "FormAuthDataItemDelete") == 0) {
+    const char* uri;
+    const char* form_username;
+    const char* form_password;
+    const char* username;
+
+    g_variant_get (parameters, "(ssss)", &uri, &form_username, &form_password, &username);
+    g_printerr("-----------------------%s---%s---%s---%s", uri, form_username, form_password, username);
+    ephy_form_auth_data_cache_del(extension->priv->form_auth_data_cache, uri, form_username, form_password, username);
+
   } else if (g_strcmp0 (method_name, "HistorySetURLs") == 0) {
     if (extension->priv->overview_model) {
       GVariantIter iter;
@@ -1524,8 +1541,11 @@ void
 ephy_web_extension_initialize (EphyWebExtension *extension,
                                WebKitWebExtension *wk_extension,
                                const char *dot_dir,
-                               gboolean is_private_profile)
+                               gboolean is_save_pass_word)
 {
+  //if(!is_save_pass_word)
+  //  return;
+  g_printerr("---------------------------------not return\n");
   g_return_if_fail (EPHY_IS_WEB_EXTENSION (extension));
 
   if (extension->priv->initialized)
@@ -1535,8 +1555,9 @@ ephy_web_extension_initialize (EphyWebExtension *extension,
 
   extension->priv->extension = g_object_ref (wk_extension);
   //extension->priv->uri_tester = uri_tester_new (dot_dir);
-  if (!is_private_profile)
-    extension->priv->form_auth_data_cache = ephy_form_auth_data_cache_new ();
+  //if (!is_private_profile)
+  extension->priv->form_auth_data_cache = ephy_form_auth_data_cache_new ();
+  
 
   g_signal_connect_swapped (extension->priv->extension, "page-created",
                             G_CALLBACK (ephy_web_extension_page_created_cb),

@@ -206,6 +206,7 @@ namespace Midori {
 		  public bool smart_zoom {get; set; default = false;} //lianxx add, 20150116
 		  public bool do_not_track {get; set; default = true;} //lianxx add, 20150120
 		  public double smart_zoom_level {get; set; default = 1.0;} //lianxx add, 20150120 
+        public bool save_form_user_password {get; set; default = true;} //wangjy for GUI save username
 
         // [IntegerType (min = 0, int.max)]
         public int maximum_cookie_age { get; set; default = 30; }

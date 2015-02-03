@@ -5,7 +5,6 @@
 #include "midori-app.h"
 #include "midori-platform.h"
 #include "cdosbrowser-core.h"
-#include "midori-web-extension-proxy.h"
 #include "midori-web-extension-names.h"
 
 #include <string.h>
@@ -28,7 +27,7 @@
 #ifdef HAVE_SIGNAL_H
     #include <signal.h>
 #endif
-struct _MidoriApp
+/*struct _MidoriApp
 {
     GApplication parent_instance;
 
@@ -47,7 +46,7 @@ struct _MidoriApp
     //GList* web_extensions;
     EphyWebExtensionProxy* web_extensions;
     GDBusConnection *bus;
-};
+};*/
 
 static gchar* app_name = NULL;
 

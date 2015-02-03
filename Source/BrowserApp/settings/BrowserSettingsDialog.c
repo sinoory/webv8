@@ -27,6 +27,7 @@
 //#include "BrowserCellRendererVariant.h"
 #include "../midori/Certificate.h"
 #include "panels/midori-extensions.h"
+#include "../midori/password-manager.h"
 
 
 //lxx add +, 20141210
@@ -486,6 +487,11 @@ static void trackLocationCallback(GtkComboBox *widget, MidoriWebSettings *settin
 //		webkit_settings_set_network_data_usage_tracking(settings, CurrentSelect);
 
 //	(WebKitSettings*)(settings)->fontNum = 5;
+}
+
+static void showPasswordManagerCallback(GtkButton* savedPasswordButton)
+{
+    password_manager_display();
 }
 
 //clear data callback 
@@ -1254,6 +1260,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 
 	button = gtk_button_new_with_label("　已保存密码　");
 	gtk_grid_attach(grid, button, 3, 3, 1, 1);
+        g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(showPasswordManagerCallback), NULL);
 
 	widget = gtk_label_new("HTTPS/SSL:");
 	gtk_grid_attach(grid, widget, 1, 4, 1, 1);
