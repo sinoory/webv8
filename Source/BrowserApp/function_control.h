@@ -14,4 +14,7 @@
 //控制网站鉴定功能
 #define ENABLE_WEBSITE_AUTH 1
 
+//把track-location的图标加到tab页上，该功能后续在做UI开发的时候会去掉
+#define TRACK_LOCATION_TAB_ICON 1
+
 #endif

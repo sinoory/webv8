@@ -1835,6 +1835,34 @@ static void
 _midori_browser_set_toolbar_items (MidoriBrowser* browser,
                                    const gchar*   items);
 
+#if TRACK_LOCATION_TAB_ICON //lxx, 20150202
+static void
+midori_track_location_cb(GtkWidget*     view,
+								gboolean       bTrackLocation,
+                        MidoriBrowser* browser)
+{
+	GtkWidget* tab = midori_browser_get_current_tab(browser);
+	GtkWidget *label = gtk_notebook_get_tab_label(MIDORI_NOTEBOOK (browser->notebook)->notebook, tab);
+	GtkButton* loc_simbo =  midori_tally_get_loc_simbo((MidoriTally*)label);
+	GtkWidget *icon;
+
+	switch (bTrackLocation) {
+		case 1:
+		{
+			icon = gtk_image_new_from_icon_name(STOCK_ALLOW_LOCATION, GTK_ICON_SIZE_MENU);
+		}
+			break;
+		default:
+		{
+			icon = gtk_image_new_from_icon_name(STOCK_BLOCK_LOCATION/*STOCK_EXTENSION*/, GTK_ICON_SIZE_MENU);
+		}
+			break;
+	}
+	gtk_button_set_image (loc_simbo, icon);
+	gtk_widget_show(GTK_WIDGET(loc_simbo));
+}
+#endif
+
 static void
 midori_view_new_view_cb (GtkWidget*     view,
                          GtkWidget*     new_view,
@@ -2113,6 +2141,10 @@ midori_browser_connect_tab (MidoriBrowser* browser,
                       midori_view_new_window_cb, browser,
                       "signal::new-view",
                       midori_view_new_view_cb, browser,
+#if TRACK_LOCATION_TAB_ICON //lxx, 20150202
+                      "signal::track-location",
+                      midori_track_location_cb, browser,
+#endif
                       "signal-after::download-requested",
                       midori_view_download_requested_cb, browser,
                       "signal::search-text",
@@ -2267,8 +2299,8 @@ _midori_browser_add_tab (MidoriBrowser* browser,
     katze_item_set_meta_integer (item, "append", -1);
 
     midori_notebook_insert (MIDORI_NOTEBOOK (browser->notebook), MIDORI_TAB (view), n);
-
     _midori_browser_update_actions (browser);
+
 //lxx add for much tab warning+
 	if(_midori_show_much_tab_warning(browser))
 	{

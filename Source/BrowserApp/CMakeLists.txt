@@ -224,6 +224,8 @@ if (HALF_BRO_INCOM_WEBKIT2)
     set(PKGS ${PKGS} gtk+-3.0)
     set(EXTRA_VAPIS ${EXTRA_VAPIS} "${CMAKE_SOURCE_DIR}/Source/BrowserApp/midori/webkit2gtk-3.0.vapi")
     set(VALAFLAGS ${VALAFLAGS} -D HAVE_GTK3)
+#lxx,20150130
+    set(VALAFLAGS ${VALAFLAGS} -D TRACK_LOCATION_TAB_ICON)
     set(VALAFLAGS ${VALAFLAGS} -D HAVE_WEBKIT2)
     set(VALAFLAGS ${VALAFLAGS} -D HAVE_WEBKIT2_3_91)
 elseif (USE_GTK3)
@@ -237,6 +239,8 @@ elseif (USE_GTK3)
     set(PKGS ${PKGS} gtk+-3.0)
     set(EXTRA_VAPIS ${EXTRA_VAPIS} "${CMAKE_SOURCE_DIR}/BrowserApp/webkitgtk-3.0.vapi")
     set(VALAFLAGS ${VALAFLAGS} -D HAVE_GTK3)
+#lxx,20150130
+    set(VALAFLAGS ${VALAFLAGS} -D TRACK_LOCATION_TAB_ICON)
 else ()
     pkg_check_modules(DEPS_GTK REQUIRED
                       gtk+-2.0>=2.24.0

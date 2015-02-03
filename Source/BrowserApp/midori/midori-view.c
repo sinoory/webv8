@@ -166,6 +166,9 @@ enum {
     NEW_TAB,
     NEW_WINDOW,
     NEW_VIEW,
+#if TRACK_LOCATION_TAB_ICON,lxx,20150203
+	 TRACK_LOCATION,
+#endif	 
     DOWNLOAD_REQUESTED,
     ADD_BOOKMARK,
     ABOUT_CONTENT,
@@ -272,7 +275,24 @@ midori_view_class_init (MidoriViewClass* class)
         MIDORI_TYPE_VIEW,
         MIDORI_TYPE_NEW_VIEW,
         G_TYPE_BOOLEAN);
-
+#if TRACK_LOCATION_TAB_ICON //lxx, 20150203
+    /**
+     * MidoriView::track-location:
+     * @bTrackLocation: %TRUE if settings allow track-location, %FALSE is settings block track-location
+     *
+     */
+    signals[TRACK_LOCATION] = g_signal_new (
+        "track-location",
+        G_TYPE_FROM_CLASS (class),
+        (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+        0,
+        0,
+        NULL,
+        g_cclosure_marshal_VOID__BOOLEAN,
+//			midori_cclosure_marshal_VOID__OBJECT_ENUM_BOOLEAN,
+        G_TYPE_NONE, 1,
+        G_TYPE_BOOLEAN);
+#endif
     /**
      * MidoriView::download-requested:
      * @view: the object on which the signal is emitted
@@ -576,6 +596,9 @@ midori_view_get_tls_info (MidoriView*           view,
     #endif
 }
 #endif
+
+#if TRACK_LOCATION_TAB_ICON //lxx, 20150203
+
 //lxx,20150127
 static char* getHostUri(const char * uri)
 {
@@ -605,17 +628,29 @@ static char* getHostUri(const char * uri)
 
 static void
 permission_response (GtkWidget*  infobar,
-                         gint        response_id,
-                         WebKitPermissionRequest *request)
+                     gint        response_id,
+                     WebKitPermissionRequest *request)
+
 {
+		  MidoriView* view = g_object_get_data (request, "location-track");
+	     gboolean bTrackLocation = false;
 	     switch (response_id) {
 	     case GTK_RESPONSE_ACCEPT:
-	         webkit_permission_request_allow (request);
+				{
+					bTrackLocation = true;
+		         webkit_permission_request_allow (request);
+				}
 	         break;
 	     default:
-	         webkit_permission_request_deny (request);
+				{
+					bTrackLocation = false;
+		         webkit_permission_request_deny (request);
+				}
 	         break;
 	}
+#if TRACK_LOCATION_TAB_ICON //lxx, 20150202
+	g_signal_emit (view, signals[TRACK_LOCATION], 0, bTrackLocation);
+#endif
 	gtk_widget_destroy (GTK_WIDGET (infobar));
 }
 
@@ -631,9 +666,7 @@ permission_request(WebKitWebView *web_view,
 	{
 		hostStr = getHostUri(uri);
 	}
-
 	char* message = g_strdup_printf("%s想要使用您的计算机的所在位置信息",  hostStr);
-
 	midori_view_add_info_bar(view, GTK_MESSAGE_QUESTION, message,
         G_CALLBACK (permission_response), request,
         "允许", GTK_RESPONSE_ACCEPT,
@@ -657,16 +690,30 @@ webkit_web_view_permission_request_cb (WebKitWebView *web_view,
 {
 	gint value = 0;
 	g_object_get(view->settings, "track-location", &value, NULL);
+	gboolean bTrackLocation = false;
 
 
 	switch(value) {
 	case 0:
-		webkit_permission_request_deny (request);
+		{
+			bTrackLocation = false;
+			webkit_permission_request_deny (request);
+#if TRACK_LOCATION_TAB_ICON //lxx, 20150202
+			g_signal_emit (view, signals[TRACK_LOCATION], 0, bTrackLocation);
+#endif
+		}
 		break;
 	case 1:
-		webkit_permission_request_allow (request);
+		{
+			bTrackLocation = true;
+			webkit_permission_request_allow (request);
+#if TRACK_LOCATION_TAB_ICON //lxx, 20150202
+			g_signal_emit (view, signals[TRACK_LOCATION], 0, bTrackLocation);
+#endif
+		}
       break;
 	case 2:
+		g_object_set_data (request, "location-track", view);
 		permission_request(web_view, request, view);
 		break;
     default:
@@ -674,6 +721,7 @@ webkit_web_view_permission_request_cb (WebKitWebView *web_view,
 	}
 	     return TRUE;
 }
+#endif //#if TRACK_LOCATION_TAB_ICON //lxx, 20150203
 
 //zgh 20150107
 static gboolean
@@ -1267,6 +1315,7 @@ midori_view_add_info_bar (MidoriView*    view,
 }
 
 #ifdef HAVE_WEBKIT2
+#if 0 //lxx delete, 20150130
 static gboolean
 midori_view_web_view_permission_request_cb (WebKitWebView*           web_view,
                                             WebKitPermissionRequest* decision,
@@ -1278,6 +1327,7 @@ midori_view_web_view_permission_request_cb (WebKitWebView*           web_view,
     } */
     return FALSE;
 }
+#endif
 #else
 static void
 midori_view_database_response_cb (GtkWidget*         infobar,
@@ -4160,8 +4210,8 @@ midori_view_constructor (GType                  type,
                       webkit_web_view_hovering_over_link_cb, view,
                       "signal::decide-policy",
                       midori_view_web_view_navigation_decision_cb, view,
-                      "signal::permission-request",
-                      midori_view_web_view_permission_request_cb, view,
+//                      "signal::permission-request",
+//                      midori_view_web_view_permission_request_cb, view,
                       "signal::context-menu",
                       midori_view_web_view_context_menu_cb, view,
                       "signal::create",
@@ -4169,9 +4219,11 @@ midori_view_constructor (GType                  type,
 // ZRL add new signal for console.log
                       "signal::console-message",
                       webkit_web_view_console_message_cb, view,
+#if TRACK_LOCATION_TAB_ICON //lxx, 20150203
 //lxx, 20150127	
                       "signal::permission-request",
 							 webkit_web_view_permission_request_cb, view,
+#endif
                       #else
                       "signal::notify::load-status",
                       midori_view_web_view_notify_load_status_cb, view,

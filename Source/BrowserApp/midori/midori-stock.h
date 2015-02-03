@@ -41,5 +41,8 @@
 #define STOCK_ENTRY              "authensite" 
 #define STOCK_SECURITY           "certifiedwebsite"
 #define MIDORI_STOCK_DOWNLOADING "downloading"
+//lxx, 20150202
+#define STOCK_ALLOW_LOCATION     "allowed_location"
+#define STOCK_BLOCK_LOCATION     "blocked_location"
 
 #endif /* !__MIDORI_STOCK_H__ */
