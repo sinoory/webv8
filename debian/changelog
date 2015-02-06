@@ -1,3 +1,11 @@
+cdosbrowser (0.1.5) Feb06; urgency=high
+
+  * New upstream release
+  - 用户名和密码保存功能完善，覆盖了更多场景，支持设置中的密码查看功能
+  - 用户位置信息提示功能，可在标签页上显示禁止或允许图标
+  - 修复添加书签目录时浏览器崩溃问题
+ -- ZhangRuili <zhangrl_os@sari.ac.cn>  Fri, 06 Feb 2015 15:35:20 +0800
+
 cdosbrowser (0.0.4) Jan30; urgency=low
 
   * New upstream release
