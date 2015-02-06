@@ -1849,17 +1849,33 @@ midori_track_location_cb(GtkWidget*     view,
 	switch (bTrackLocation) {
 		case 1:
 		{
+			midori_tally_set_track_location((MidoriTally*)label, true);
 			icon = gtk_image_new_from_icon_name(STOCK_ALLOW_LOCATION, GTK_ICON_SIZE_MENU);
 		}
 			break;
 		default:
 		{
-			icon = gtk_image_new_from_icon_name(STOCK_BLOCK_LOCATION/*STOCK_EXTENSION*/, GTK_ICON_SIZE_MENU);
+			midori_tally_set_track_location((MidoriTally*)label, false);
+			icon = gtk_image_new_from_icon_name(STOCK_BLOCK_LOCATION, GTK_ICON_SIZE_MENU);
 		}
 			break;
 	}
 	gtk_button_set_image (loc_simbo, icon);
 	gtk_widget_show(GTK_WIDGET(loc_simbo));
+}
+//lxx, 20150204
+static void
+midori_start_load_hide_location_icon_cb(GtkWidget*     view,
+													 MidoriBrowser* browser)
+{
+   g_return_if_fail (MIDORI_IS_VIEW (view));
+
+	GtkWidget* tab = midori_browser_get_current_tab(browser);
+	GtkWidget *label = gtk_notebook_get_tab_label(MIDORI_NOTEBOOK (browser->notebook)->notebook, tab);
+	GtkButton* loc_simbo =  midori_tally_get_loc_simbo((MidoriTally*)label);
+	gtk_widget_hide(GTK_WIDGET(loc_simbo));
+
+return;
 }
 #endif
 
@@ -2144,6 +2160,8 @@ midori_browser_connect_tab (MidoriBrowser* browser,
 #if TRACK_LOCATION_TAB_ICON //lxx, 20150202
                       "signal::track-location",
                       midori_track_location_cb, browser,
+                      "signal::start-load",
+                      midori_start_load_hide_location_icon_cb, browser,
 #endif
                       "signal-after::download-requested",
                       midori_view_download_requested_cb, browser,

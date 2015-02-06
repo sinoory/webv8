@@ -136,7 +136,12 @@ struct _MidoriView
 
     // ZRL 标记该view是否已是LOAD_COMMITED状态，用它辅助判断是否可以获取证书信息
     gboolean load_commited;
-    
+
+#if TRACK_LOCATION_TAB_ICON //lxx, 20150204
+	//lxx, 该view下是否显示过track-location icon，如果是，则发送信号，隐藏掉track-location相关icon
+	gboolean show_track_location_icon;    
+#endif
+
     //zgh 记录content-length,
     guint64 content_length;
     gchar** website_record_array;  //网站鉴定信息
@@ -169,6 +174,7 @@ enum {
 #if TRACK_LOCATION_TAB_ICON,lxx,20150203
 	 TRACK_LOCATION,
 #endif	 
+	 START_LOAD, //lxx, 20150204
     DOWNLOAD_REQUESTED,
     ADD_BOOKMARK,
     ABOUT_CONTENT,
@@ -293,6 +299,22 @@ midori_view_class_init (MidoriViewClass* class)
         G_TYPE_NONE, 1,
         G_TYPE_BOOLEAN);
 #endif
+//lxx, 20150204
+    /**
+     * MidoriView::start-load:
+     	    *hide the track-location icon when new navigation started
+     *
+     */
+    signals[START_LOAD] = g_signal_new (
+        "start-load",
+        G_TYPE_FROM_CLASS (class),
+        (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+        0,
+        0,
+        NULL,
+        g_cclosure_marshal_VOID__VOID,
+        G_TYPE_NONE, 0);
+
     /**
      * MidoriView::download-requested:
      * @view: the object on which the signal is emitted
@@ -692,6 +714,7 @@ webkit_web_view_permission_request_cb (WebKitWebView *web_view,
 	g_object_get(view->settings, "track-location", &value, NULL);
 	gboolean bTrackLocation = false;
 
+	view->show_track_location_icon = true;//lxx, 20150204
 
 	switch(value) {
 	case 0:
@@ -980,6 +1003,11 @@ midori_view_load_started (MidoriView* view)
     midori_view_update_load_status (view, MIDORI_LOAD_PROVISIONAL);
     midori_tab_set_progress (MIDORI_TAB (view), 0.0);
     midori_tab_set_load_error (MIDORI_TAB (view), MIDORI_LOAD_ERROR_NONE);
+
+#if TRACK_LOCATION_TAB_ICON //lxx, 20150204
+	if(true == view->show_track_location_icon)
+		g_signal_emit (view, signals[START_LOAD], 0);
+#endif
 }
 
 #ifdef HAVE_GCR

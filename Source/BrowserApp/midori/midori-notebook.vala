@@ -30,6 +30,8 @@ namespace Midori {
         public bool loc_simbo_button_left { get; set; default = false; }			//lxx, 20150129
         public bool loc_simbo_button_visible { get; set; default = false; }		//lxx, 20150129
 
+        public bool track_location { get; set; default = false; }		//lxx, 20150205
+
         protected Tally (Midori.Tab tab) {
             this.tab = tab;
             box = new Gtk.HBox (false, 1);
@@ -69,10 +71,6 @@ namespace Midori {
 				hbox = new Gtk.HBox(false, 0);
             align.add (hbox);
 //lxx, 20150129
-//            icon = new Gtk.Image.from_file("/home/lianxx/work/webkit/update/Webkit2Browser/Source/BrowserApp/data/settings-icons/allowed_location.png");
-//            icon = new Gtk.Image.from_stock(STOCK_ALLOW_LOCATION, GTK_ICON_SIZE_MENU);
-//            loc_simbo.add (icon);
-//            loc_simbo.hide();
             hbox.add (loc_simbo);
             hbox.add (close);
 //lxx, 20150129
@@ -113,10 +111,46 @@ namespace Midori {
         void close_clicked () {
             tab.destroy ();
         }
-//lxx, 20150202
-        void loc_simbo_clicked () {
-				stdout.printf("this is vala printing\n");
-        }
+//lxx, 20150205
+	void loc_simbo_clicked () 
+	{
+		string uriHost = tab.uri;
+		Gtk.Dialog dialog;
+		int index = uriHost.index_of_char('/');
+		string ihost = uriHost[index+2:uriHost.length];
+		index = ihost.index_of_char('/');
+		string host = ihost[0:index];
+
+		stdout.printf("%s   %s\n", uriHost, host);
+
+		if(track_location)
+		{
+			string output = string.join ("\n", "此网页包含来自以下网站的元素，这些网站正在跟踪您的位置：", host,"如需阻止，请到首选项中的隐私界面进行设置。");
+			dialog = new Gtk.MessageDialog(null,
+													 Gtk.DialogFlags.DESTROY_WITH_PARENT,
+													 Gtk.MessageType.INFO/*WARNING*/, Gtk.ButtonsType.NONE, output);
+		}
+		else
+		{
+			string output = string.join ("\n", "系统已阻止以下网站跟踪您在此网页上的位置：", host,"如需允许，请到首选项中的隐私界面进行设置。");
+			dialog = new Gtk.MessageDialog(null,
+													 Gtk.DialogFlags.DESTROY_WITH_PARENT,
+													 Gtk.MessageType.WARNING, Gtk.ButtonsType.NONE, output);
+		}
+
+		dialog.title = "提示";
+		dialog.add_buttons (/*"管理位置设置", Gtk.ResponseType.CANCEL,*/ "完成",  Gtk.ResponseType.ACCEPT);
+		bool cancel = dialog.run () != Gtk.ResponseType.ACCEPT;
+		dialog.destroy ();
+		if(cancel)
+		{
+			stdout.printf("this is vala printing\n");
+//			var view = tab as View;
+//			var settings = view.settings;
+		}
+                
+		stdout.printf("start_dl_clicked end\n");
+	}
 
         void uri_changed (GLib.ParamSpec pspec) {
             label.label = tab.uri;
