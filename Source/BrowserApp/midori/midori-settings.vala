@@ -201,7 +201,7 @@ namespace Midori {
 		  public bool clear_cached_images_and_files {get; set; default = false;} //lianxx add, 20141212
 		  public bool clear_passwords {get; set; default = false;} //lianxx add, 20141212
 		  public int cookie_setting {get; set; default = 0;} //lianxx add, 20141212
-		  public int track_location {get; set; default = 1;} //lianxx add, 20141212
+		  public int track_location {get; set; default = 2;} //lianxx add, 20141212
 		  public bool certificate_revocation {get; set; default = false;} //lianxx add, 20141212
 		  public bool smart_zoom {get; set; default = false;} //lianxx add, 20150116
 		  public bool do_not_track {get; set; default = true;} //lianxx add, 20150120
