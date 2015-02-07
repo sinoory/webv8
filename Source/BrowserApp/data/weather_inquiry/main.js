@@ -96,10 +96,41 @@ var model = {
 		};
 		if(this.cityInfo){
 			this.userInfo.cityCode = this.cityInfo.xian.code;
+                        this.getWeatherData(this.userInfo, false);
 		}
-		this.getWeatherData(this.userInfo, false);
-		// this.getWeatherData({}, this.view.renderTrend);
-		// this.getCitys(this.view.renderSet);
+                else {
+			var geolocation = new BMap.Geolocation();
+                        var that = this;
+			geolocation.getCurrentPosition(function(r){
+				if(geolocation.getStatus() == BMAP_STATUS_SUCCESS){
+					// 百度地图API功能
+					//var point = new BMap.Point(116.331398,39.897445);
+					var point = new BMap.Point(r.point.lng,r.point.lat);
+
+					function myFun(result){
+						var cityName = result.name;
+						//alert("当前定位城市:"+cityName);
+                                                if (cityName.indexOf("上海") >= 0)
+                                                    that.userInfo.cityCode = "101020100";
+                                                else if (cityName.indexOf("北京") >= 0)
+                                                    that.userInfo.cityCode = "101010100";
+                                                else if (cityName.indexOf("天津") >= 0)
+                                                    that.userInfo.cityCode = "101030100";
+                                                else if (cityName.indexOf("重庆") >= 0)
+                                                    that.userInfo.cityCode = "101040100";
+
+                                                that.getWeatherData(that.userInfo, false);
+					}
+					var myCity = new BMap.LocalCity();
+					myCity.get(myFun);
+				}
+				else {
+					alert('failed'+this.getStatus());
+                                        that.getWeatherData(that.userInfo, false);
+				}        
+			}.bind(that),{enableHighAccuracy: true});
+                }
+		//this.getWeatherData(this.userInfo, false);
 	},
     getWeatherData: function(userInfo, refresh) {
 		var lastTime = this.storage.get("lastTime");
