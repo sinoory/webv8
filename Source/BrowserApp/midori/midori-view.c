@@ -911,11 +911,11 @@ static void sendRequestCallback(GObject* object, GAsyncResult* result, gpointer 
 }
 
 //zgh 20150107
-static void
-midori_view_website_query_idle(MidoriView *view)
+static gboolean
+midori_view_website_query_idle(gpointer data)
 {
-//    MidoriView *view = MIDORI_VIEW (data);
-    gdk_threads_enter();
+    MidoriView *view = MIDORI_VIEW (data);
+//    gdk_threads_enter();
     GtkWidget* current_web_view = midori_view_get_web_view (view);
     gchar *uri = webkit_web_view_get_uri (current_web_view);
     WebKitURIRequest *request = webkit_uri_request_new(uri);
@@ -940,8 +940,8 @@ midori_view_website_query_idle(MidoriView *view)
     soup_request_send_async(view->soup_request, NULL, sendRequestCallback, view);   
 
     g_free(base_domain);
-    gdk_threads_leave();
-    return;
+ //   gdk_threads_leave();
+    return false;
 }
 
 static gboolean
@@ -985,8 +985,8 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
         if(!memcmp(w_uri, d_uri, strlen(w_uri) + 1))
         {
             //add by luyue 2015/2/9 start
-            g_thread_create(midori_view_website_query_idle,view,FALSE,NULL);
-            //g_idle_add (midori_view_website_query_idle, view);
+       //     g_thread_create(midori_view_website_query_idle,view,FALSE,NULL);
+            g_idle_add (midori_view_website_query_idle, view);
             //add end
         }
 #endif
