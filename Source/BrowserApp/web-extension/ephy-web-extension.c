@@ -1543,9 +1543,6 @@ ephy_web_extension_initialize (EphyWebExtension *extension,
                                const char *dot_dir,
                                gboolean is_save_pass_word)
 {
-  //if(!is_save_pass_word)
-  //  return;
-  g_printerr("---------------------------------not return\n");
   g_return_if_fail (EPHY_IS_WEB_EXTENSION (extension));
 
   if (extension->priv->initialized)

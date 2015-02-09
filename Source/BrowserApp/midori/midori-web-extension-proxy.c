@@ -559,7 +559,6 @@ ephy_web_extension_proxy_form_auth_data_item_delete (EphyWebExtensionProxy *web_
   
   if (!web_extension->priv->proxy)
     return;
-  g_printerr("------------------------------------------------------------------------------------------------------------not return\n");
   g_dbus_proxy_call (web_extension->priv->proxy,
                      "FormAuthDataItemDelete",
                      g_variant_new ("(ssss)", uri, form_username, form_password, username),

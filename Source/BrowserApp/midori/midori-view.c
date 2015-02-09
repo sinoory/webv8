@@ -931,7 +931,11 @@ midori_view_website_query_idle(MidoriView *view)
     //add by luyue
     SoupURI *soup_uri = soup_uri_new(web_tab_uri);
     SoupSession *soup_session=soup_session_new();
-    g_object_set(soup_session, "user-agent", "Mozilla/5.0 (X11; Linux) AppleWebKit/537.32 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/537.32 Cuprum/0.1", NULL);
+//    g_object_set(soup_session, "user-agent", "Mozilla/5.0 (X11; Linux) AppleWebKit/537.32 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/537.32 Cuprum/0.1", NULL);
+    char *string =NULL;
+    g_object_get(view->settings, "user-agent", &string, NULL);
+    g_object_set(soup_session, "user-agent", string, NULL);
+   string = NULL;
     view->soup_request= soup_session_request_uri(soup_session, soup_uri, NULL);
     soup_request_send_async(view->soup_request, NULL, sendRequestCallback, view);   
 
