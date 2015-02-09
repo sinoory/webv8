@@ -120,6 +120,11 @@ main (int    argc,
      { NULL }
     };
 
+    //add by luyue 2015/2/9
+    if (!g_thread_supported()) 
+       g_thread_init(NULL); 
+    gdk_threads_init();
+
     // 设置InjectedBundle相关的全局变量
     g_setenv("WEBKIT_INJECTED_BUNDLE_PATH", WEBKIT_INJECTED_BUNDLE_PATH, FALSE);
     g_setenv("WEBKIT_EXEC_PATH", WEBKIT_INJECTED_BUNDLE_PATH, FALSE);
@@ -300,7 +305,13 @@ main (int    argc,
         uri = sokoke_magic_uri (snapshot, FALSE, TRUE);
         webkit_web_view_load_uri (WEBKIT_WEB_VIEW (web_view), uri);
         g_free (uri);
+        //add by luyue 2015/2/9 start
+        gdk_threads_enter();
+        //add end
         gtk_main ();
+        //add by luyue 2015/2/9 start
+        gdk_threads_leave();
+        //add end
         g_free (filename);
         return 0;
     }
@@ -331,7 +342,14 @@ main (int    argc,
         g_signal_connect (window, "delete-event",
             G_CALLBACK (gtk_main_quit), window);
         gtk_widget_show_all (window);
+        //add by luyue 2015/2/9 start
+        gdk_threads_enter();
+        //add end
         gtk_main ();
+        //add by luyue 2015/2/9 start
+        gdk_threads_leave();
+        //add end
+
         return 0;
     }
 
@@ -365,7 +383,13 @@ main (int    argc,
                 g_error ("%s\n", msg);
                 g_free (msg);
             }
+            //add by luyue 2015/2/9 start
+            gdk_threads_enter(); 
+            //add end
             gtk_main ();
+            //add by luyue 2015/2/9 start
+            gdk_threads_leave();
+            //add end
         }
         else if (error != NULL)
         {
@@ -384,7 +408,13 @@ main (int    argc,
             uris, execute, inactivity_reset, block_uris);
         g_signal_connect (browser, "destroy", G_CALLBACK (gtk_main_quit), NULL);
         g_signal_connect (browser, "quit", G_CALLBACK (gtk_main_quit), NULL);
+        //add by luyur 2015/2/9 start
+        gdk_threads_enter();
+        //add end
         gtk_main ();
+        //add by luyue 2015/2/9 start
+        gdk_threads_leave();
+        //add end
         return 0;
     }
 
@@ -394,7 +424,13 @@ main (int    argc,
             uris, execute, inactivity_reset, block_uris);
         g_signal_connect (browser, "destroy", G_CALLBACK (gtk_main_quit), NULL);
         g_signal_connect (browser, "quit", G_CALLBACK (gtk_main_quit), NULL);
+        //add by luyue 2015/2/9 start
+        gdk_threads_enter();
+        //add end
         gtk_main ();
+        //add by luyue 2015/2/9 start
+        gdk_threads_leave();
+        //add end
         return 0;
     }
 
@@ -407,7 +443,13 @@ main (int    argc,
         return 1;
 
     g_signal_connect (app, "quit", G_CALLBACK (gtk_main_quit), NULL);
+    //add by luyue 2015/2/9 start
+    gdk_threads_enter();
+    //add end
     gtk_main ();
+    //add by luyue 2015/2/9 start
+    gdk_threads_leave();
+    //add end
     midori_normal_app_on_quit (app);
     g_object_unref (app);
     return 0;

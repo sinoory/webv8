@@ -5321,7 +5321,7 @@ midori_browser_pageinfo_button_cb(GtkWidget* view, gchar** data, GtkWidget* widg
 {
     if (!widget)
         return;
-    if (strcmp(data[1], "unknown"))
+    if (strcmp(data[0], "unknown"))
         gtk_widget_set_sensitive (widget, TRUE);
 }
 
@@ -5330,7 +5330,7 @@ midori_browser_pageinfo_labtext_cb(GtkWidget* view, gchar** data, GtkWidget* wid
 {
     if(!widget)
         return;
-    if (strcmp(data[1], "unknown"))
+    if (strcmp(data[0], "unknown"))
         gtk_label_set_text (GTK_LABEL(widget), _("already put on record"));
     else
         gtk_label_set_text (GTK_LABEL(widget), _("not put on record"));
@@ -5342,13 +5342,13 @@ midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* 
     if (!widget)
         return;
     GtkWidget *hbox, *title, *text;
-    if (data && strcmp(data[1], "unknown"))
+    if (data && strcmp(data[0], "unknown"))
     {
         hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
         title = gtk_label_new (_("host unit"));
         gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
         gtk_label_set_width_chars (GTK_LABEL (title), 16);
-        text = gtk_label_new (data[1]);
+        text = gtk_label_new (data[0]);
         gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX(widget), hbox, FALSE, FALSE, 0);
@@ -5356,6 +5356,19 @@ midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* 
 
         hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
         title = gtk_label_new (_("host unit type"));
+        gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
+        gtk_label_set_width_chars (GTK_LABEL (title), 16);
+        if (data[1])
+            text = gtk_label_new (data[1]);
+        else
+            text = gtk_label_new ("");
+        gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX(widget), hbox, FALSE, FALSE, 0);
+        gtk_widget_show_all (hbox);
+        
+        hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
+        title = gtk_label_new (_("licence number"));
         gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
         gtk_label_set_width_chars (GTK_LABEL (title), 16);
         if (data[2])
@@ -5368,7 +5381,7 @@ midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* 
         gtk_widget_show_all (hbox);
         
         hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-        title = gtk_label_new (_("licence number"));
+        title = gtk_label_new (_("website name"));
         gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
         gtk_label_set_width_chars (GTK_LABEL (title), 16);
         if (data[3])
@@ -5381,7 +5394,7 @@ midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* 
         gtk_widget_show_all (hbox);
         
         hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-        title = gtk_label_new (_("website name"));
+        title = gtk_label_new (_("website homepage"));
         gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
         gtk_label_set_width_chars (GTK_LABEL (title), 16);
         if (data[4])
@@ -5394,24 +5407,11 @@ midori_browser_pageinfo_recordbox_cb (GtkWidget* view, gchar** data, GtkWidget* 
         gtk_widget_show_all (hbox);
         
         hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-        title = gtk_label_new (_("website homepage"));
+        title = gtk_label_new (_("audit time"));
         gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
         gtk_label_set_width_chars (GTK_LABEL (title), 16);
         if (data[5])
             text = gtk_label_new (data[5]);
-        else
-            text = gtk_label_new ("");
-        gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX(widget), hbox, FALSE, FALSE, 0);
-        gtk_widget_show_all (hbox);
-        
-        hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-        title = gtk_label_new (_("audit time"));
-        gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
-        gtk_label_set_width_chars (GTK_LABEL (title), 16);
-        if (data[6])
-            text = gtk_label_new (data[6]);
         else
             text = gtk_label_new ("");
         gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
@@ -5425,7 +5425,8 @@ void
 _action_pageinfo_activate ( GtkAction*     action,
                             MidoriBrowser* browser)
 {
-    GtkWidget *dialog, *content_area, *lab_title, *lab_text, *image, *hbox, *button, *record_box, *frame, *lab_signal_text;
+    GtkWidget *dialog, *content_area, *lab_title, *lab_text, *image, *hbox;
+    GtkWidget *button, *record_box, *frame, *lab_signal_text;
     gboolean isConnectSignal = false;
     const gchar *title = midori_view_get_display_title(midori_browser_get_current_tab (browser));
     const gchar *uri = midori_browser_get_current_uri(browser);
@@ -5451,22 +5452,28 @@ _action_pageinfo_activate ( GtkAction*     action,
     WebKitWebView * web_view = WEBKIT_WEB_VIEW (midori_view_get_web_view (MIDORI_VIEW (view)));
     WebKitWebResource  *resource = webkit_web_view_get_main_resource (web_view);
     WebKitURIResponse* response = webkit_web_resource_get_response(resource);
-    const gchar* type = webkit_uri_response_get_mime_type (response);
+    gchar* type = NULL;
+    if(response)
+       type = webkit_uri_response_get_mime_type (response);
     gint content_bytes = midori_view_get_content_length(view);
-    if (!content_bytes)
+    if (!content_bytes && response)
         content_bytes = webkit_uri_response_get_content_length (response);
     gchar* bytes = g_strdup_printf (_("%d bytes"), content_bytes);
     gboolean isEncrypt = false;
     gchar *encrypt = g_strdup_printf (_("Connect Http %s"), connect);
-    SoupMessageHeaders* headers = webkit_uri_response_get_http_headers (response);
+    SoupMessageHeaders* headers = NULL;
+    if(response)
+        headers = webkit_uri_response_get_http_headers (response);
     if (!headers)
         date = "asdf, 31 Dec 2014";
     else
         date = soup_message_headers_get (headers, "Date");
     gchar year[16] = {0}, Month[4] = {0}, day[4] = {0};
-    sscanf(date, "%*s%s%s%s", day, Month, year);
-    midori_get_pageinfo_time(year, Month, day);
-    
+    if (date)
+    {
+       sscanf(date, "%*s%s%s%s", day, Month, year);
+       midori_get_pageinfo_time(year, Month, day);
+    }
     
     
     GTlsCertificate* tls_cert;
@@ -5518,11 +5525,24 @@ _action_pageinfo_activate ( GtkAction*     action,
 
     gchar** website_record_array = midori_view_get_website_record(MIDORI_VIEW(view));
     if (website_record_array) //如果不为NULL
-    {
-        if (strcmp(website_record_array[1], "unknown"))
+    {   
+        if (strcmp(website_record_array[0], "unknown"))
         {
             hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
             lab_title = gtk_label_new (_("host unit"));
+            gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
+            gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
+            if (website_record_array[0])
+                lab_text = gtk_label_new (website_record_array[0]);
+            else
+                lab_text = gtk_label_new ("");
+            gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
+            gtk_widget_show_all (hbox);
+            
+            hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
+            lab_title = gtk_label_new (_("host unit type"));
             gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
             gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
             if (website_record_array[1])
@@ -5533,9 +5553,9 @@ _action_pageinfo_activate ( GtkAction*     action,
             gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
             gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
             gtk_widget_show_all (hbox);
-            
+
             hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-            lab_title = gtk_label_new (_("host unit type"));
+            lab_title = gtk_label_new (_("licence number"));
             gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
             gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
             if (website_record_array[2])
@@ -5548,7 +5568,7 @@ _action_pageinfo_activate ( GtkAction*     action,
             gtk_widget_show_all (hbox);
 
             hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-            lab_title = gtk_label_new (_("licence number"));
+            lab_title = gtk_label_new (_("website name"));
             gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
             gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
             if (website_record_array[3])
@@ -5561,24 +5581,11 @@ _action_pageinfo_activate ( GtkAction*     action,
             gtk_widget_show_all (hbox);
 
             hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-            lab_title = gtk_label_new (_("website name"));
+            lab_title = gtk_label_new (_("website homepage"));
             gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
             gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
             if (website_record_array[4])
                 lab_text = gtk_label_new (website_record_array[4]);
-            else
-                lab_text = gtk_label_new ("");
-            gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (hbox), lab_text, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX(record_box), hbox, FALSE, FALSE, 0);
-            gtk_widget_show_all (hbox);
-
-            hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
-            lab_title = gtk_label_new (_("website homepage"));
-            gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
-            gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
-            if (website_record_array[5])
-                lab_text = gtk_label_new (website_record_array[5]);
             else
                 lab_text = gtk_label_new ("");
             gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
@@ -5590,8 +5597,8 @@ _action_pageinfo_activate ( GtkAction*     action,
             lab_title = gtk_label_new (_("audit time"));
             gtk_misc_set_alignment (GTK_MISC (lab_title), 0.0, 0.5);
             gtk_label_set_width_chars (GTK_LABEL (lab_title), 16);
-            if (website_record_array[6])
-                lab_text = gtk_label_new (website_record_array[6]);
+            if (website_record_array[5])
+                lab_text = gtk_label_new (website_record_array[5]);
             else
                 lab_text = gtk_label_new ("");
             gtk_box_pack_start (GTK_BOX (hbox), lab_title, FALSE, FALSE, 0);
@@ -5605,6 +5612,7 @@ _action_pageinfo_activate ( GtkAction*     action,
             lab_signal_text = gtk_label_new(_("not put on record"));
             gtk_widget_set_sensitive (button, FALSE);
         }
+ //       free_midori_view_get_website_record(MIDORI_VIEW(view));
     }
     else
     {

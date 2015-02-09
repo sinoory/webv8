@@ -10,6 +10,12 @@
  2014.12.22 解决下载crash问题，参见midori_view_web_view_navigation_decision_cb()
 */
 
+//add by luyue 2015/2/5  start
+#include <gio/gio.h>
+#include <glib.h>
+#include <libsoup/soup.h>
+//end
+
 #include "midori-view.h"
 #include "midori-browser.h"
 #include "midori-searchaction.h"
@@ -145,7 +151,12 @@ struct _MidoriView
     //zgh 记录content-length,
     guint64 content_length;
     gchar** website_record_array;  //网站鉴定信息
-    GtkWidget* website_webview;
+
+    //add by luyue
+   SoupRequest *soup_request;
+   GInputStream *inputStream;
+   char *once_read_buffer;
+   char *total_read_buffer;
 };
 
 struct _MidoriViewClass
@@ -178,11 +189,7 @@ enum {
     DOWNLOAD_REQUESTED,
     ADD_BOOKMARK,
     ABOUT_CONTENT,
-#if ENABLE_WEBSITE_AUTH
-    WEBSITE_QUERY,
-    WEBSITE_UNKNOWN,
     WEBSITE_DATA,
-#endif
     LAST_SIGNAL
 };
 
@@ -345,29 +352,6 @@ midori_view_class_init (MidoriViewClass* class)
         G_TYPE_BOOLEAN, 1,
         G_TYPE_OBJECT);
 
-#if ENABLE_WEBSITE_AUTH
-    //by sunh add signal of website_query
-    signals[WEBSITE_QUERY] = g_signal_new (
-        "website-query",
-        G_TYPE_FROM_CLASS (class),
-        (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
-        0,
-        0,
-        NULL,
-        g_cclosure_marshal_VOID__OBJECT,
-        G_TYPE_NONE, 1,
-        G_TYPE_OBJECT);
-
-    signals[WEBSITE_UNKNOWN] = g_signal_new (
-        "website-unknown",
-        G_TYPE_FROM_CLASS (class),
-        (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
-        0,
-        0,
-        NULL,
-        g_cclosure_marshal_VOID__VOID,
-        G_TYPE_NONE, 0);
-
     signals[WEBSITE_DATA] = g_signal_new (
         "website-data",
         G_TYPE_FROM_CLASS (class),
@@ -378,7 +362,6 @@ midori_view_class_init (MidoriViewClass* class)
         g_cclosure_marshal_VOID__STRING,
         G_TYPE_NONE, 1,
         G_TYPE_POINTER);
-#endif
 
     /**
      * MidoriView::add-bookmark:
@@ -746,58 +729,215 @@ webkit_web_view_permission_request_cb (WebKitWebView *web_view,
 }
 #endif //#if TRACK_LOCATION_TAB_ICON //lxx, 20150203
 
-//zgh 20150107
-static gboolean
-midori_view_website_query_idle(gpointer data)
+//add by luyue 2015/2/9
+static void
+free_midori_view_get_website_record (MidoriView*        view)
+{
+   if(view->website_record_array[0])
+      free(view->website_record_array[0]);
+   if(view->website_record_array[1])
+      free(view->website_record_array[1]);
+   if(view->website_record_array[2])
+      free(view->website_record_array[2]);
+   if(view->website_record_array[3])
+      free(view->website_record_array[3]);
+   if(view->website_record_array[4])
+      free(view->website_record_array[4]);
+   if(view->website_record_array[5])
+      free(view->website_record_array[5]);
+   free(view->website_record_array);
+   view->website_record_array = NULL;
+}
+
+//add by luyue 2015/02/07
+static void _get_website_record_info(MidoriView*        view)
+{
+    char *tmp = NULL;
+    char *tmp1 = NULL;
+
+    if( view->website_record_array)
+       free_midori_view_get_website_record(view);
+    if(strstr(view->total_read_buffer,"没有符合条件的记录"))
+    {
+       view->website_record_array = (char **)malloc(sizeof(char *));
+       view->website_record_array[0] = (char *)malloc(8);
+       strcpy(view->website_record_array[0],"unknown");
+       free(view->total_read_buffer);
+    }
+    else
+    {  
+       view->website_record_array = (char **)malloc(sizeof(char *)*6);
+     
+       if(strstr(view->total_read_buffer,"主办单位名称"))
+       {
+          tmp = strstr(view->total_read_buffer,"主办单位名称");
+          tmp = tmp +498;
+          if(strncmp(tmp,"kind",4)!=0)
+          {
+             view->website_record_array[0] = NULL;
+             view->website_record_array[1] = NULL;
+             view->website_record_array[2] = NULL;
+             tmp = NULL;
+          }
+          else
+          {
+             tmp = tmp + 6;
+             tmp1 = strstr(tmp,"</div>");
+             view->website_record_array[0] = (char *)malloc(strlen(tmp)-strlen(tmp1)+1);
+             strncpy(view->website_record_array[0],tmp,strlen(tmp)-strlen(tmp1));
+             view->website_record_array[0][strlen(tmp)-strlen(tmp1)]= '\0';
+             tmp = tmp1+92;
+             tmp1 = strstr(tmp,"</div>");
+             view->website_record_array[1] = (char *)malloc(strlen(tmp)-strlen(tmp1)+1);
+             strncpy(view->website_record_array[1],tmp,strlen(tmp)-strlen(tmp1));
+             view->website_record_array[1][strlen(tmp)-strlen(tmp1)]= '\0';
+             tmp = tmp1+157;
+             tmp1 = strstr(tmp,"</a>");
+             view->website_record_array[2] = (char *)malloc(strlen(tmp)-strlen(tmp1)+1);
+             strncpy(view->website_record_array[2],tmp,strlen(tmp)-strlen(tmp1));
+             view->website_record_array[2][strlen(tmp)-strlen(tmp1)]= '\0';
+             tmp = NULL;
+             tmp1 = NULL;
+          }
+       }
+       else
+       {
+          view->website_record_array[0] = NULL;
+          view->website_record_array[1] = NULL;
+          view->website_record_array[2] = NULL;
+       }
+
+       if(strstr(view->total_read_buffer,"<td><b>网站名称"))
+       {
+          tmp = strstr(view->total_read_buffer,"word-break:break-all;word-wrap:break-word;");
+          tmp = tmp +62;
+          tmp1 = strstr(tmp,"</td>");
+          view->website_record_array[3] = (char *)malloc(strlen(tmp)-strlen(tmp1)-13);
+          strncpy(view->website_record_array[3],tmp,strlen(tmp)-strlen(tmp1)-14);
+          view->website_record_array[3][strlen(tmp)-strlen(tmp1)-14]= '\0';
+          tmp = NULL;
+          tmp1 = NULL;
+       }
+       else
+          view->website_record_array[3] = NULL;
+
+       if(strstr(view->total_read_buffer,"网站首页网址"))
+       {
+          tmp = strstr(view->total_read_buffer,"home_url");
+          tmp = tmp +36;
+          tmp1 = strstr(tmp,"target");
+          view->website_record_array[4] = (char *)malloc(strlen(tmp)-strlen(tmp1)-1);
+          strncpy(view->website_record_array[4],tmp,strlen(tmp)-strlen(tmp1)-2);
+          view->website_record_array[4][strlen(tmp)-strlen(tmp1)-2]= '\0';
+          tmp = NULL;
+          tmp1 = NULL;
+       }
+       else
+          view->website_record_array[4] = NULL;
+
+       if(strstr(view->total_read_buffer,"审核时间"))
+       {
+          tmp = strstr(view->total_read_buffer,"pass_time");
+          if(!tmp)
+             view->website_record_array[5] = NULL;
+          else
+          {
+             tmp = tmp +11;
+             if(strlen(tmp)<16)
+                view->website_record_array[5] = NULL;
+             else
+             {
+                tmp1 = tmp+10;
+                if(strncmp(tmp1,"</div>",6)!=0)
+                {
+                   view->website_record_array[5] = NULL;
+                   tmp = NULL;
+                   tmp1 = NULL;
+                }
+                else
+                {
+                   view->website_record_array[5] = (char *)malloc(11);
+                   strncpy(view->website_record_array[5],tmp,10);
+                   view->website_record_array[5][10]= '\0';
+                   tmp = NULL;
+                   tmp1 = NULL;
+                }
+             }
+          }
+       }
+       else
+          view->website_record_array[5] = NULL;
+
+       free(view->total_read_buffer);
+    }
+    g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_DATA], 0, view->website_record_array);
+}
+
+//add by luyue 2015/02/07
+static void readCallback(GObject* object, GAsyncResult* asyncResult, gpointer data)
+{
+   MidoriView *view = MIDORI_VIEW (data);
+   gssize bytesRead = g_input_stream_read_finish(view->inputStream, asyncResult, NULL);
+   if (!bytesRead) {
+       g_input_stream_close(view->inputStream, 0, 0);
+       char *tmp_str = strstr(view->total_read_buffer,"</html>");
+       char *tmp_str1 = (char *) malloc(strlen(view->total_read_buffer)-strlen(tmp_str)+1);
+       memset(tmp_str1,0,strlen(view->total_read_buffer)-strlen(tmp_str)+1);
+       memcpy(tmp_str1,view->total_read_buffer,strlen(view->total_read_buffer)-strlen(tmp_str));
+       free(view->total_read_buffer);
+       free(view->once_read_buffer);
+
+       view->total_read_buffer = (char *) malloc(strlen(tmp_str1)+1);
+       memset(view->total_read_buffer,0,strlen(tmp_str1)+1);
+       strcpy(view->total_read_buffer,tmp_str1);
+       free(tmp_str1);
+       _get_website_record_info(view);  
+       return;
+   }
+   strcat(view->total_read_buffer,view->once_read_buffer);
+   g_input_stream_read_async(view->inputStream, view->once_read_buffer, 1024*10, G_PRIORITY_DEFAULT,NULL, readCallback, view);
+}
+
+//add by luyue 2015/02/07
+static void sendRequestCallback(GObject* object, GAsyncResult* result, gpointer data)
 {
     MidoriView *view = MIDORI_VIEW (data);
-    WebKitSettings *localSettings = webkit_settings_new();
-    g_object_set (localSettings, "enable-web-security", FALSE, NULL);
-    webkit_settings_set_enable_javascript(localSettings, true);
-    //webkit_settings_set_enable_web_security(localSettings, false);
-    GtkWidget* webview = webkit_web_view_new();//webkit_web_view_new_with_settings(localSettings);
-    webkit_web_view_set_settings(WEBKIT_WEB_VIEW(webview), localSettings);
-    
-    view->website_webview = webview;
-    g_object_connect(view->website_webview, "signal::console-message",
-                      webkit_web_view_console_message_cb, view,
-                        NULL);
+    view->once_read_buffer = (char *) malloc(1024*10);
+    view->total_read_buffer = (char *) malloc(1024*60);
+    memset(view->once_read_buffer,0,1024*10);
+    memset(view->total_read_buffer,0,1024*60);
+    view->inputStream = soup_request_send_finish(view->soup_request, result, NULL);
+    g_input_stream_read_async(view->inputStream, view->once_read_buffer, 1024*10, G_PRIORITY_DEFAULT,NULL, readCallback, view);
+}
+
+//zgh 20150107
+static void
+midori_view_website_query_idle(MidoriView *view)
+{
+//    MidoriView *view = MIDORI_VIEW (data);
+    gdk_threads_enter();
     GtkWidget* current_web_view = midori_view_get_web_view (view);
-    printf("ZRL midori_view_website_query_idle() midori-view = %p, webview = %p newWebView = %p\n", data, current_web_view, webview);
-    
     gchar *uri = webkit_web_view_get_uri (current_web_view);
     WebKitURIRequest *request = webkit_uri_request_new(uri);
-
     gchar *base_domain = webkit_uri_request_get_uri_host (request);
-
-    gchar *web_tab_uri = NULL;//g_strdup_printf("http://www.beianbeian.com/search/%s", "baidu.com"); //base_domain
+    gchar *web_tab_uri = NULL;
     if (base_domain == NULL || !strcmp(base_domain,"")) {
         web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", "null");
            }
     else {
         web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", base_domain);
            }
-//    g_print("\t\tsunh--web_tab_uri[%s]\n", web_tab_uri);
 
-    gchar* jquerySrc = NULL;
-    GError * _inner_error_ = NULL;
-    gchar *backgroundSrc = NULL;
+    //add by luyue
+    SoupURI *soup_uri = soup_uri_new(web_tab_uri);
+    SoupSession *soup_session=soup_session_new();
+    g_object_set(soup_session, "user-agent", "Mozilla/5.0 (X11; Linux) AppleWebKit/537.32 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/537.32 Cuprum/0.1", NULL);
+    view->soup_request= soup_session_request_uri(soup_session, soup_uri, NULL);
+    soup_request_send_async(view->soup_request, NULL, sendRequestCallback, view);   
 
-
-
-    g_file_get_contents (midori_paths_get_res_filename("websitequery/website_query_bg.html"), 
-                            &backgroundSrc, 
-                            NULL, 
-                            &_inner_error_);                            
-    gchar *queryStr = g_strdup_printf(backgroundSrc, web_tab_uri);
-    webkit_web_view_load_html(WEBKIT_WEB_VIEW (webview), queryStr, NULL);
-    //g_print("\t\tsunh--queryStr[%s]\n", queryStr);
     g_free(base_domain);
-    //g_free(jquerySrc);
-    g_free(queryStr);
-    g_free(backgroundSrc);
-//    g_print("sunh--midori_view_website_query_idel\n");
-    return false;
+    gdk_threads_leave();
+    return;
 }
 
 static gboolean
@@ -840,8 +980,10 @@ midori_view_web_view_navigation_decision_cb (WebKitWebView*             web_view
 
         if(!memcmp(w_uri, d_uri, strlen(w_uri) + 1))
         {
-//zgh 20150107            g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_QUERY], 0, web_view);
-            g_idle_add (midori_view_website_query_idle, view);
+            //add by luyue 2015/2/9 start
+            g_thread_create(midori_view_website_query_idle,view,FALSE,NULL);
+            //g_idle_add (midori_view_website_query_idle, view);
+            //add end
         }
 #endif
 
@@ -998,7 +1140,6 @@ midori_view_load_started (MidoriView* view)
 {
     //add by zgh 20150120
     katze_assign (view->website_record_array, NULL);
-    katze_object_assign (view->website_webview, NULL);
     
     midori_view_update_load_status (view, MIDORI_LOAD_PROVISIONAL);
     midori_tab_set_progress (MIDORI_TAB (view), 0.0);
@@ -3364,16 +3505,6 @@ webkit_web_view_console_message_cb (GtkWidget*   web_view,
             g_error_free (error);
         }
     }
-#if ENABLE_WEBSITE_AUTH
-    else if(!strncmp (message, "website_query_info", 18)) 
-    {
-        view->website_record_array = NULL;
-        view->website_record_array = g_strsplit (message, "#", -1);
-
-
-        g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_DATA], 0, view->website_record_array);
-    }
-#endif
     else {
         g_signal_emit_by_name (view, "console-message", message, line, source_id);
     }
@@ -3682,7 +3813,6 @@ midori_view_init (MidoriView* view)
     
     view->content_length = 0; //zgh 20150106
     view->website_record_array = NULL;  //zgh 20150108
-    view->website_webview = NULL;
     #ifndef HAVE_WEBKIT2
     /* Adjustments are not created initially, but overwritten later */
     view->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
@@ -3727,7 +3857,6 @@ midori_view_finalize (GObject* object)
     katze_object_assign (view->item, NULL);
     
     katze_assign (view->website_record_array, NULL);
-    katze_object_assign (view->website_webview, NULL);
 
     G_OBJECT_CLASS (midori_view_parent_class)->finalize (object);
 }

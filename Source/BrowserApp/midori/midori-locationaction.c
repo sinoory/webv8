@@ -1976,20 +1976,17 @@ midori_location_action_set_security_hint (MidoriLocationAction* location_action,
     gchar* tooltip;
     MidoriSecurity        hint;
 
-    g_print("sunh--midori_location_action_set_security_hint\n");
     g_return_if_fail (MIDORI_IS_LOCATION_ACTION (location_action));
 
     hint = midori_tab_get_security (MIDORI_TAB (view));
     if (hint == MIDORI_SECURITY_UNKNOWN)
     {
-        g_print("\tsunh--MIDORI_SECURITY_UNKNOWN\n");
         gchar* icon_names[] = { "channel-insecure-symbolic", "lock-insecure", "dialog-information", NULL };
         icon = g_themed_icon_new_from_names (icon_names, -1);
         tooltip = _("Not verified");
     }
     else if (hint == MIDORI_SECURITY_TRUSTED)
     {
-        g_print("\tsunh--MIDORI_SECURITY_TRUSTED\n");
         icon = g_themed_icon_new_with_default_fallbacks ("certifiedwebsite");
         //gchar* icon_names[] = { "channel-secure-symbolic", "lock-secure", "locked", NULL };
         //icon = g_themed_icon_new_from_names (icon_names, -1);
@@ -1997,21 +1994,9 @@ midori_location_action_set_security_hint (MidoriLocationAction* location_action,
     }
     else if (hint == MIDORI_SECURITY_NONE)
     {
-        g_print("\tsunh--MIDORI_SECURITY_NONE\n");
         icon = g_themed_icon_new_with_default_fallbacks ("text-html-symbolic");
         tooltip = _("Open, unencrypted connection");
     }
-    #if 0
-    else if (hint == MIDORI_SECURITY_AUTHENTICATION)
-    {
-        //by sunh modify entry primary icon
-        icon = g_themed_icon_new_with_default_fallbacks ("authensite");
-        g_signal_connect(view, "website-data",
-                  midori_view_website_data_cb, location_action);
-
-        //tooltip = auth_str;
-    }
-    #endif
     else
         g_assert_not_reached ();
 
