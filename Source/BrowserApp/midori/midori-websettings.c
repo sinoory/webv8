@@ -1555,6 +1555,10 @@ midori_settings_new_full (gchar*** extensions)
 	if(monospaceFontSize != webkit_settings_get_default_monospace_font_size((WebKitSettings*)settings))
 		webkit_settings_set_default_monospace_font_size((WebKitSettings*)settings, monospaceFontSize);
 #endif
+//cookie
+	int iCurrentSelect = katze_object_get_int(settings, "cookie-setting"); 
+	WebKitCookieManager* cookiemanager = webkit_web_context_get_cookie_manager(webkit_web_context_get_default());
+	webkit_cookie_manager_set_accept_policy(cookiemanager,iCurrentSelect);
 //lxx add, 20150123-
 
     return settings;
