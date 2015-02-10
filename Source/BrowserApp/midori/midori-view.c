@@ -906,8 +906,11 @@ static void sendRequestCallback(GObject* object, GAsyncResult* result, gpointer 
     view->total_read_buffer = (char *) malloc(1024*60);
     memset(view->once_read_buffer,0,1024*10);
     memset(view->total_read_buffer,0,1024*60);
-    view->inputStream = soup_request_send_finish(view->soup_request, result, NULL);
-    g_input_stream_read_async(view->inputStream, view->once_read_buffer, 1024*10, G_PRIORITY_DEFAULT,NULL, readCallback, view);
+    if(view->soup_request && result)
+    {
+       view->inputStream = soup_request_send_finish(view->soup_request, result, NULL);
+       g_input_stream_read_async(view->inputStream, view->once_read_buffer, 1024*10, G_PRIORITY_DEFAULT,NULL, readCallback, view);
+    }
 }
 
 //zgh 20150107
