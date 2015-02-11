@@ -183,9 +183,9 @@ enum {
     NEW_WINDOW,
     NEW_VIEW,
 #if TRACK_LOCATION_TAB_ICON,lxx,20150203
-	 TRACK_LOCATION,
+    TRACK_LOCATION,
 #endif	 
-	 START_LOAD, //lxx, 20150204
+    START_LOAD, //lxx, 20150204
     DOWNLOAD_REQUESTED,
     ADD_BOOKMARK,
     ABOUT_CONTENT,
@@ -927,10 +927,10 @@ midori_view_website_query_idle(gpointer data)
     gchar *web_tab_uri = NULL;
     if (base_domain == NULL || !strcmp(base_domain,"")) {
         web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", "null");
-           }
+    }
     else {
         web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", base_domain);
-           }
+    }
 
     //add by luyue
     SoupURI *soup_uri = soup_uri_new(web_tab_uri);
@@ -1259,6 +1259,90 @@ webkit_web_view_progress_changed_cb (WebKitWebView* web_view,
     midori_tab_set_progress (MIDORI_TAB (view), progress);
 }
 
+static void _midori_view_uri_loadres_scheme_data(WebKitURISchemeRequest* request, const gchar *uri) {
+    gchar* filepath = midori_paths_get_res_filename (&uri[6]);
+    gchar* contents;
+    gsize length;
+    if (g_file_get_contents (filepath, &contents, &length, NULL))
+    {
+        gchar* content_type = g_content_type_guess (filepath, (guchar*)contents, length, NULL);
+        gchar* mime_type = g_content_type_get_mime_type (content_type);
+        GInputStream* stream = g_memory_input_stream_new_from_data (contents, length, g_free);
+        webkit_uri_scheme_request_finish (request, stream, length, mime_type);
+        g_object_unref (stream);
+        g_free (mime_type);
+        g_free (content_type);
+    }
+    g_free (filepath);
+}
+
+static void _midori_view_uri_loadstock_scheme_data(MidoriView* view, WebKitURISchemeRequest* request, const gchar *uri) {
+    GdkPixbuf* pixbuf;
+    const gchar* icon_name = &uri[8] ? &uri[8] : "";
+    gint icon_size = GTK_ICON_SIZE_MENU;
+    static gint icon_size_large_dialog = 0;
+
+    if (!icon_size_large_dialog)
+    {
+        gint width = 48, height = 48;
+        gtk_icon_size_lookup (GTK_ICON_SIZE_DIALOG, &width, &height);
+        icon_size_large_dialog = gtk_icon_size_register ("large-dialog", width * 2, height * 2);
+    }
+    if (g_ascii_isalpha (icon_name[0]))
+    {
+        if (g_str_has_prefix (icon_name, "dialog/"))
+        {
+            icon_name = &icon_name [strlen("dialog/")];
+            icon_size = icon_size_large_dialog;
+        }
+        else
+            icon_size = GTK_ICON_SIZE_BUTTON;
+    }
+    else if (g_ascii_isdigit (icon_name[0]))
+    {
+        guint i = 0;
+        while (icon_name[i])
+            if (icon_name[i++] == '/')
+            {
+                gchar* size = g_strndup (icon_name, i - 1);
+                icon_size = atoi (size);
+                /* Compatibility: map pixel to symbolic size */
+                if (icon_size == 16)
+                    icon_size = GTK_ICON_SIZE_MENU;
+                g_free (size);
+                icon_name = &icon_name[i];
+            }
+    }
+
+    /* Render icon as a PNG at the desired size */
+    pixbuf = gtk_widget_render_icon (GTK_WIDGET (view), icon_name, icon_size, NULL);
+    if (!pixbuf)
+        pixbuf = gtk_widget_render_icon (GTK_WIDGET (view), GTK_STOCK_MISSING_IMAGE, icon_size, NULL);
+    if (pixbuf)
+    {
+        gboolean success;
+        gchar* buffer;
+        gsize buffer_size;
+        gchar* encoded;
+        gchar* data_uri;
+
+        success = gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &buffer_size, "png", NULL, NULL);
+        g_object_unref (pixbuf);
+        if (!success)
+            return;
+
+        encoded = g_base64_encode ((guchar*)buffer, buffer_size);
+        data_uri = g_strconcat ("data:image/png;base64,", encoded, NULL);
+        g_free (encoded);
+
+        GInputStream* stream = g_memory_input_stream_new_from_data (buffer, buffer_size, g_free);
+        webkit_uri_scheme_request_finish (request, stream, buffer_size, "image/png");
+        g_object_unref (stream);
+        g_free (data_uri);
+        return;
+    }
+}
+
 #ifdef HAVE_WEBKIT2
 static void
 midori_view_uri_scheme_res (WebKitURISchemeRequest* request,
@@ -1281,24 +1365,17 @@ midori_view_web_view_resource_request_cb (WebKitWebView*         web_view,
 
     /* Only apply custom URIs to special pages for security purposes */
     if (!midori_tab_get_special (MIDORI_TAB (view))) {
-        // ZRL 修复有时候进入about:页面，但却被判断view不属于特殊页面，导致res等特殊资源无法加载的问题。
+        // ZRL 修复有时候进入about:页面，但却被判断view不属于特殊页面，导致res和stock等特殊资源无法加载的问题。
         if (g_str_has_prefix (uri, "res://"))
         {
             gchar* filepath = midori_paths_get_res_filename (&uri[6]);
-            gchar* contents;
-            gsize length;
-            printf("ZRL midori-view.c midori_view_uri_scheme_res() should not be here! filepath = %s \n", filepath);
-            if (g_file_get_contents (filepath, &contents, &length, NULL))
-            {
-                gchar* content_type = g_content_type_guess (filepath, (guchar*)contents, length, NULL);
-                gchar* mime_type = g_content_type_get_mime_type (content_type);
-                GInputStream* stream = g_memory_input_stream_new_from_data (contents, length, g_free);
-                webkit_uri_scheme_request_finish (request, stream, length, mime_type);
-                g_object_unref (stream);
-                g_free (mime_type);
-                g_free (content_type);
-            }
-            g_free (filepath);
+            printf("ZRL midori-view.c midori_view_uri_scheme_res() should not be here for res://! filepath = %s \n", filepath);
+            _midori_view_uri_loadres_scheme_data(request, uri);
+        }
+        else if (g_str_has_prefix (uri, "stock://")) {
+            gchar* filepath = midori_paths_get_res_filename (&uri[6]);
+            printf("ZRL midori-view.c midori_view_uri_scheme_res() should not be here for stock://! filepath = %s \n", filepath);
+            _midori_view_uri_loadstock_scheme_data(view, request, uri);
         }
         return;
     }
