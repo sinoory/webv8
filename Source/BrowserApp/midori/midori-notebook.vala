@@ -12,7 +12,8 @@
 namespace Midori {
     protected class Tally : Gtk.EventBox {
         public Midori.Tab tab { get; set; }
-        Gtk.Spinner spinner;
+        Gtk.Image spinner;
+        Gdk.PixbufAnimation pixbuf;
         public Gtk.Label label;
         Gtk.HBox box;
         public Gtk.Image icon;
@@ -37,8 +38,10 @@ namespace Midori {
             box = new Gtk.HBox (false, 1);
             add (box);
 
-            spinner = new Gtk.Spinner ();
-            spinner.active = true;
+     //       spinner = new Gtk.Spinner ();
+    //        spinner.active = true;
+            pixbuf = new Gdk.PixbufAnimation.from_file(Midori.Paths.get_res_filename("spinner.gif"));
+            spinner = new Gtk.Image.from_animation(pixbuf);
             /* Ensure the spinner is the size of the icon */
             int icon_size = 16;
             Gtk.icon_size_lookup_for_settings (get_settings (),
@@ -642,7 +645,9 @@ namespace Midori {
 namespace Midori {
     protected class Tally : Gtk.EventBox {
         public Midori.Tab tab { get; set; }
-        Gtk.Spinner spinner;
+   //     Gtk.Spinner spinner;
+        Gtk.Image spinner;
+        Gdk.PixbufAnimation pixbuf;
         public Gtk.Label label;
         Gtk.HBox box;
         public Gtk.Image icon;
@@ -657,8 +662,10 @@ namespace Midori {
             box = new Gtk.HBox (false, 1);
             add (box);
 
-            spinner = new Gtk.Spinner ();
-            spinner.active = true;
+        //    spinner = new Gtk.Spinner ();
+         //   spinner.active = true;
+            pixbuf = new Gdk.PixbufAnimation.from_file(Midori.Paths.get_res_filename("spinner.gif"));
+            spinner = new Gtk.Image.from_animation(pixbuf);
             /* Ensure the spinner is the size of the icon */
             int icon_size = 16;
             Gtk.icon_size_lookup_for_settings (get_settings (),
