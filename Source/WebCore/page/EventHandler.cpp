@@ -634,8 +634,9 @@ bool EventHandler::zoomScrollOnClickNode(Node* hitNode)
                m_zoomstatus = true;
                scale = (double)m_frame.view()->width()/rc.pixelSnappedSize().width();
                if( scale-1.00 < 0.1 ) 
-                  scale = 1.0;
-               scale = (scale > 1.9) ? 1.9 : scale;
+         //         scale = 1.0;
+                    scale = 1.2;
+         //      scale = (scale > 1.9) ? 1.9 : scale;
             }
             else
             {
