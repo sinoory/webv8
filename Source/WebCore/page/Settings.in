@@ -137,7 +137,6 @@ scrollingTreeIncludesFrames initial=defaultScrollingTreeIncludesFrames
 scrollAnimatorEnabled initial=true, conditional=SMOOTH_SCROLLING
 forceUpdateScrollbarsOnMainThreadForPerformanceTesting initial=false
 notificationsEnabled initial=true
-doNotTrack initial=true
 
 # Some apps needs isLoadingInAPISense to account for active subresource loaders.
 needsIsLoadingInAPISenseQuirk initial=false
