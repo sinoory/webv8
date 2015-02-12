@@ -1659,8 +1659,9 @@ midori_location_action_connect_proxy (GtkAction* action,
     if (GTK_IS_TOOL_ITEM (proxy))
     {
         GtkWidget* entry = midori_location_action_entry_for_proxy (proxy);
-        gtk_entry_set_progress_fraction (GTK_ENTRY (entry),
-            MIDORI_LOCATION_ACTION (action)->progress);
+//luyue 暂时屏蔽，去掉地址栏进度条
+    //    gtk_entry_set_progress_fraction (GTK_ENTRY (entry),
+    //        MIDORI_LOCATION_ACTION (action)->progress);
 
         g_object_connect (entry,
                       "signal::changed",
@@ -1799,7 +1800,8 @@ midori_location_action_set_progress (MidoriLocationAction* location_action,
     if (GTK_IS_TOOL_ITEM (proxies->data))
     {
         GtkWidget* entry = midori_location_action_entry_for_proxy (proxies->data);
-        gtk_entry_set_progress_fraction (GTK_ENTRY (entry), location_action->progress);
+//luyue暂时屏蔽，去掉地址栏进度条
+  //      gtk_entry_set_progress_fraction (GTK_ENTRY (entry), location_action->progress);
     }
 }
 
