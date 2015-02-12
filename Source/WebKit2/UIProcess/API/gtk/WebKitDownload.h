@@ -61,6 +61,7 @@ struct _WebKitDownloadClass {
     void (*_webkit_reserved3) (void);
 };
 
+// Only for cdos browser
 WEBKIT_API void 
 DeleteList(WebKitDownload* download, size_t index);
 

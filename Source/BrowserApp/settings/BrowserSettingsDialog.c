@@ -1260,7 +1260,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 
 	button = gtk_button_new_with_label("　已保存密码　");
 	gtk_grid_attach(grid, button, 3, 3, 1, 1);
-        g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(showPasswordManagerCallback), NULL);
+    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(showPasswordManagerCallback), NULL);
 
 	widget = gtk_label_new("HTTPS/SSL:");
 	gtk_grid_attach(grid, widget, 1, 4, 1, 1);

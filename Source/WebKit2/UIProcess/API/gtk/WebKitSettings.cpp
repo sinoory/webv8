@@ -93,7 +93,7 @@ struct _WebKitSettingsPrivate {
     bool clearPasswords;
     bool certificateRevocation;
     bool askEverytimeBeforeDown;
-	 bool doNotTrack;
+	bool doNotTrack; //Only for cdos browser
     uint32_t onStartup;
     uint32_t openNewpage;
     uint32_t historySetting;

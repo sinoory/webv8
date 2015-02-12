@@ -66,6 +66,7 @@ webkit_uri_request_new              (const gchar      *uri);
 WEBKIT_API const gchar *
 webkit_uri_request_get_uri          (WebKitURIRequest *request);
 
+//Only for cdos browser
 WEBKIT_API const gchar *
 webkit_uri_request_get_uri_host     (WebKitURIRequest *request);
 

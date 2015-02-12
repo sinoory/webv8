@@ -253,11 +253,13 @@ struct AccessibilityTextUnderElementMode {
     
     ChildrenInclusion childrenInclusion;
     bool includeFocusableContent;
+    Node* ignoredChildNode;
     
-    AccessibilityTextUnderElementMode(ChildrenInclusion c = TextUnderElementModeSkipIgnoredChildren, bool i = false)
-    : childrenInclusion(c)
-    , includeFocusableContent(i)
-    { }
+    AccessibilityTextUnderElementMode(ChildrenInclusion c = TextUnderElementModeSkipIgnoredChildren, bool i = false, Node* ignored = nullptr)
+        : childrenInclusion(c)
+        , includeFocusableContent(i)
+        , ignoredChildNode(ignored)
+        { }
 };
     
 enum AccessibilityOrientation {
@@ -444,8 +446,7 @@ public:
     virtual bool isAccessibilitySVGRoot() const { return false; }
 
     bool accessibilityObjectContainsText(String *) const;
-    
-    virtual bool isAnchor() const { return false; }
+
     virtual bool isAttachment() const { return false; }
     virtual bool isHeading() const { return false; }
     virtual bool isLink() const { return false; }

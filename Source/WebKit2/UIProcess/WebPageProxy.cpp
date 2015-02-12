@@ -356,7 +356,7 @@ WebPageProxy::WebPageProxy(PageClient& pageClient, WebProcessProxy& process, uin
     , m_enableVerticalRubberBanding(true)
     , m_enableHorizontalRubberBanding(true)
     , m_backgroundExtendsBeyondPage(false)
-    , m_mainFrameInViewSourceMode(false)
+    , m_mainFrameInViewSourceMode(false) // for cdos browser
     , m_shouldRecordNavigationSnapshots(false)
     , m_isShowingNavigationGestureSnapshot(false)
     , m_pageCount(0)
@@ -640,7 +640,7 @@ void WebPageProxy::initializeWebPage()
 #endif
 
 #if ENABLE(INSPECTOR_SERVER)
-    if (pageGroup().preferences().developerExtrasEnabled())
+    if (m_preferences->developerExtrasEnabled())
         inspector()->enableRemoteInspection();
 #endif
 
@@ -4490,6 +4490,11 @@ void WebPageProxy::resetStateAfterProcessExited()
     m_isValid = false;
     m_isPageSuspended = false;
 
+    m_editorState = EditorState();
+#if PLATFORM(MAC) && !USE(ASYNC_NSTEXTINPUTCLIENT)
+    m_temporarilyClosedComposition = false;
+#endif
+
     if (m_mainFrame) {
         m_urlAtProcessExit = m_mainFrame->url();
         m_loadStateAtProcessExit = m_mainFrame->frameLoadState().m_state;
@@ -4514,12 +4519,6 @@ void WebPageProxy::resetStateAfterProcessExited()
 
 #if ENABLE(TOUCH_EVENTS) && !ENABLE(IOS_TOUCH_EVENTS)
     m_touchEventQueue.clear();
-#endif
-
-    // FIXME: Reset m_editorState.
-    // FIXME: Notify input methods about abandoned composition.
-#if PLATFORM(MAC) && !USE(ASYNC_NSTEXTINPUTCLIENT)
-    m_temporarilyClosedComposition = false;
 #endif
 
 #if PLATFORM(MAC)
@@ -5082,6 +5081,7 @@ void WebPageProxy::cancelComposition()
 }
 #endif // PLATFORM(GTK)
 
+// for cdos browser
 void WebPageProxy::setMainFrameInViewSourceMode(bool mainFrameInViewSourceMode)
 {
     if (m_mainFrameInViewSourceMode == mainFrameInViewSourceMode)

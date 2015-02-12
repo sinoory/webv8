@@ -157,6 +157,7 @@ typedef enum {
  *
  * Enum values to specify the different ways in which a #WebKitWebView
  * can display a web page.
+ * Only for cdos browser
  */
 typedef enum {
     WEBKIT_VIEW_MODE_WEB,
@@ -346,6 +347,7 @@ webkit_web_view_can_go_back                          (WebKitWebView             
 WEBKIT_API void
 webkit_web_view_go_forward                           (WebKitWebView             *web_view);
 
+// only for cdos browser
 WEBKIT_API void
 webkit_web_view_certificate                          (WebKitWebView             *web_view,
                                                       gchar                     **certificateData);
@@ -485,6 +487,8 @@ webkit_web_view_save_to_file_finish                  (WebKitWebView             
 WEBKIT_API WebKitDownload *
 webkit_web_view_download_uri                         (WebKitWebView             *web_view,
                                                       const char                *uri);
+
+// only for cdos browser
 WEBKIT_API void
 webkit_web_view_set_view_mode                        (WebKitWebView             *web_view,
                                                       WebKitViewMode             view_mode);

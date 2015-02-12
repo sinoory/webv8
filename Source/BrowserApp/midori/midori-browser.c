@@ -8211,28 +8211,27 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
 	{
 		gdouble dvalue = 0.0;
 		g_object_get(browser->settings, "zoom-level", &dvalue, NULL);
-                //add by luyue 2015/1/21
-                GList* tabs = midori_browser_get_tabs (browser);
-                for (; tabs; tabs = g_list_next (tabs))
+        //add by luyue 2015/1/21
+        GList* tabs = midori_browser_get_tabs (browser);
+        for (; tabs; tabs = g_list_next (tabs))
 		   midori_view_set_zoom_level (tabs->data, dvalue);
-                g_list_free (tabs);
+        g_list_free (tabs);
 	}
    else if(name == g_intern_string("zoom-text-and-images"))
 	{
 		bool bvalue = katze_object_get_boolean(browser->settings, "zoom-text-and-images");
                         
-      //add by luyue 2015/1/20               
-      GList* tabs = midori_browser_get_tabs (browser);
-      for (; tabs; tabs = g_list_next (tabs))
-         midori_view_set_zoomtext_state (tabs->data, browser->settings);
-      g_list_free (tabs);
+        //add by luyue 2015/1/20               
+        GList* tabs = midori_browser_get_tabs (browser);
+        for (; tabs; tabs = g_list_next (tabs))
+           midori_view_set_zoomtext_state (tabs->data, browser->settings);
+        g_list_free (tabs);
        
 		webkit_settings_set_zoom_text_only(browser->settings, !bvalue);
 	}
- 
    //add by luyue 2015/1/20
-      else if(name == g_intern_string("smart-zoom"))
-        {
+   else if(name == g_intern_string("smart-zoom"))
+   {
          bool smart_zoom_status = false;
          gtk_widget_destroy (browser->smart_zoom_image);
          g_object_get(browser->settings, "smart-zoom", &smart_zoom_status, NULL);
@@ -8253,8 +8252,7 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
             midori_view_set_doublezoom_level (tabs->data, browser->settings);
          }
          g_list_free (tabs);
-        }
-
+   }
    else if(name == g_intern_string("auto-load-images"))
 	{
 		bool bvalue = katze_object_get_boolean(browser->settings, "auto-load-images");
@@ -8265,20 +8263,19 @@ midori_browser_settings_notify (MidoriWebSettings* web_settings,
 		bool bvalue = katze_object_get_boolean(browser->settings, "enable-scripts");
 		webkit_settings_set_enable_javascript(browser->settings, bvalue);
 	}
-
 	else if(name == g_intern_string("do-not-track"))
 	{
 		bool bvalue = katze_object_get_boolean(browser->settings, "do-not-track");
 		webkit_settings_set_enable_do_not_track(browser->settings, bvalue);
 	}
 //luyue add by 2015/1/21
-                else if(name == g_intern_string("smart-zoom-level"))
-        {
-                GList* tabs = midori_browser_get_tabs (browser);
-                for (; tabs; tabs = g_list_next (tabs))
-                   midori_view_set_doublezoom_level (tabs->data, browser->settings);
-                g_list_free (tabs);
-        }
+    else if(name == g_intern_string("smart-zoom-level"))
+    {
+        GList* tabs = midori_browser_get_tabs (browser);
+        for (; tabs; tabs = g_list_next (tabs))
+           midori_view_set_doublezoom_level (tabs->data, browser->settings);
+        g_list_free (tabs);
+    }
 
 #endif
     g_value_unset (&value);
@@ -9197,10 +9194,10 @@ midori_browser_show_panel_window(MidoriBrowser* browser, gboolean show)
     }
 
 //        gtk_container_remove (GTK_CONTAINER (hpaned), browser->panel);
-        if(show)
-            gtk_widget_show_all(panel_window);
-        else
-            gtk_widget_hide (panel_window);
+    if(show)
+        gtk_widget_show_all(panel_window);
+    else
+        gtk_widget_hide (panel_window);
 
     browser->sari_panel_windows = panel_window;
 

@@ -85,6 +85,8 @@ webkit_favicon_database_get_favicon        (WebKitFaviconDatabase *database,
                                             GCancellable          *cancellable,
                                             GAsyncReadyCallback    callback,
                                             gpointer               user_data);
+											
+// Only for cdos browser
 WEBKIT_API GdkPixbuf*
 webkit_favicon_database_try_get_favicon_pixbuf    (WebKitFaviconDatabase* database,
                                                    const gchar*           page_uri,

@@ -631,6 +631,8 @@ static bool parseSimpleLengthValue(MutableStyleProperties* declaration, CSSPrope
     }
     if (number < 0 && !acceptsNegativeNumbers)
         return false;
+    if (std::isinf(number))
+        return false;
 
     RefPtr<CSSValue> value = cssValuePool().createValue(number, unit);
     declaration->addParsedProperty(CSSProperty(propertyId, value.release(), important));
@@ -1701,6 +1703,8 @@ bool CSSParser::validUnit(CSSParserValue* value, Units unitflags, CSSParserMode 
     }
     if (b && unitflags & FNonNeg && value->fValue < 0)
         b = false;
+    if (b && std::isinf(value->fValue))
+        b = false;
     return b;
 }
 
@@ -2501,7 +2505,8 @@ bool CSSParser::parseValue(CSSPropertyID propId, bool important)
     case CSSPropertyOrder:
         if (validUnit(value, FInteger, CSSStrictMode)) {
             // We restrict the smallest value to int min + 2 because we use int min and int min + 1 as special values in a hash set.
-            parsedValue = cssValuePool().createValue(std::max<double>(std::numeric_limits<int>::min() + 2, value->fValue), static_cast<CSSPrimitiveValue::UnitTypes>(value->unit));
+            double result = std::max<double>(std::numeric_limits<int>::min() + 2, parsedDouble(value, ReleaseParsedCalcValue));
+            parsedValue = cssValuePool().createValue(result, CSSPrimitiveValue::CSS_NUMBER);
             m_valueList->next();
         }
         break;
@@ -6426,7 +6431,7 @@ bool CSSParser::parseFontWeight(bool important)
         return true;
     }
     if (validUnit(value, FInteger | FNonNeg, CSSQuirksMode)) {
-        int weight = static_cast<int>(value->fValue);
+        int weight = static_cast<int>(parsedDouble(value, ReleaseParsedCalcValue));
         if (!(weight % 100) && weight >= 100 && weight <= 900) {
             addProperty(CSSPropertyFontWeight, cssValuePool().createIdentifierValue(createFontWeightValueKeyword(weight)), important);
             return true;

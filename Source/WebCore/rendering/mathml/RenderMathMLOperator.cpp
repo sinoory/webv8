@@ -77,7 +77,7 @@ static const StretchyCharacter stretchyCharacters[14] = {
 namespace MathMLOperatorDictionary {
 
 typedef std::pair<UChar, Form> Key;
-inline Key ExtractKey(const Entry* entry) { return Key(entry->character, entry->form); }
+inline Key ExtractKey(const Entry* entry) { return Key(entry->character, static_cast<Form>(entry->form)); }
 inline UChar ExtractChar(const Entry* entry) { return entry->character; }
 
 // This table has been automatically generated from the Operator Dictionary of the MathML3 specification (appendix C).
@@ -1157,10 +1157,25 @@ RenderMathMLOperator::RenderMathMLOperator(Document& document, PassRef<RenderSty
     updateTokenContent(operatorString);
 }
 
+void RenderMathMLOperator::setOperatorFlagAndScheduleLayoutIfNeeded(MathMLOperatorDictionary::Flag flag, const AtomicString& attributeValue)
+{
+    unsigned short oldOperatorFlags = m_operatorFlags;
+
+    setOperatorFlagFromAttributeValue(flag, attributeValue);
+
+    if (oldOperatorFlags != m_operatorFlags)
+        setNeedsLayoutAndPrefWidthsRecalc();
+}
+
 void RenderMathMLOperator::setOperatorFlagFromAttribute(MathMLOperatorDictionary::Flag flag, const QualifiedName& name)
 {
+    setOperatorFlagFromAttributeValue(flag, element().fastGetAttribute(name));
+}
+
+void RenderMathMLOperator::setOperatorFlagFromAttributeValue(MathMLOperatorDictionary::Flag flag, const AtomicString& attributeValue)
+{
     ASSERT(!isAnonymous());
-    const AtomicString& attributeValue = element().fastGetAttribute(name);
+
     if (attributeValue == "true")
         m_operatorFlags |= flag;
     else if (attributeValue == "false")
@@ -1231,7 +1246,7 @@ void RenderMathMLOperator::SetOperatorProperties()
                 // If the previous entry is another form for that operator, we move to that entry. Note that it only remains at most two forms so we don't need to move any further.
                 if (entry != MathMLOperatorDictionary::dictionary && (entry-1)->character == m_operator)
                     entry--;
-                m_operatorForm = entry->form; // We override the form previously determined.
+                m_operatorForm = static_cast<MathMLOperatorDictionary::Form>(entry->form); // We override the form previously determined.
                 setOperatorPropertiesFromOpDictEntry(entry);
             }
         }
@@ -1306,6 +1321,15 @@ void RenderMathMLOperator::stretchTo(LayoutUnit width)
     SetOperatorProperties();
 
     updateStyle();
+}
+
+void RenderMathMLOperator::resetStretchSize()
+{
+    if (m_isVertical) {
+        m_stretchHeightAboveBaseline = 0;
+        m_stretchDepthBelowBaseline = 0;
+    } else
+        m_stretchWidth = 0;
 }
 
 FloatRect RenderMathMLOperator::boundsForGlyph(const GlyphData& data) const

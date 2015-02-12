@@ -928,9 +928,11 @@ public:
             ASSERT_NOT_REACHED();
             break;
         case CSSValueBolder:
+            fontDescription.setWeight(styleResolver->parentStyle()->fontDescription().weight());
             fontDescription.setWeight(fontDescription.bolderWeight());
             break;
         case CSSValueLighter:
+            fontDescription.setWeight(styleResolver->parentStyle()->fontDescription().weight());
             fontDescription.setWeight(fontDescription.lighterWeight());
             break;
         default:
@@ -1555,7 +1557,7 @@ public:
         else if (primitiveValue->isLength()) {
             wordSpacing = primitiveValue->computeLength<Length>(csstoLengthConversionDataWithTextZoomFactor(*styleResolver));
         } else if (primitiveValue->isPercentage())
-            wordSpacing = Length(primitiveValue->getDoubleValue(), Percent);
+            wordSpacing = Length(clampTo<float>(primitiveValue->getDoubleValue(), minValueForCssLength, maxValueForCssLength), Percent);
         else if (primitiveValue->isNumber())
             wordSpacing = Length(primitiveValue->getDoubleValue(), Fixed);
         else

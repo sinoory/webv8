@@ -189,8 +189,7 @@ public:
 
     ~FrameProgressTracker()
     {
-        ASSERT(!m_inProgress || m_frame.page());
-        if (m_inProgress)
+        if (m_inProgress && m_frame.page())
             m_frame.page()->progress().progressCompleted(m_frame);
     }
 
@@ -529,8 +528,10 @@ void FrameLoader::willTransitionToCommitted()
     if (m_frame.editor().hasComposition()) {
         // The text was already present in DOM, so it's better to confirm than to cancel the composition.
         m_frame.editor().confirmComposition();
-        if (EditorClient* editorClient = m_frame.editor().client())
+        if (EditorClient* editorClient = m_frame.editor().client()) {
             editorClient->respondToChangedSelection(&m_frame);
+            editorClient->discardedComposition(&m_frame);
+        }
     }
 }
 
@@ -3147,7 +3148,10 @@ void FrameLoader::loadDifferentDocumentItem(HistoryItem* item, FrameLoadType loa
     history().setProvisionalItem(item);
 
     if (CachedPage* cachedPage = pageCache()->get(item)) {
-        loadWithDocumentLoader(cachedPage->documentLoader(), loadType, 0, AllowNavigationToInvalidURL::Yes);
+        auto documentLoader = cachedPage->documentLoader();
+        documentLoader->setTriggeringAction(NavigationAction(documentLoader->request(), loadType, false));
+        documentLoader->setLastCheckedRequest(ResourceRequest());
+        loadWithDocumentLoader(documentLoader, loadType, 0, AllowNavigationToInvalidURL::Yes);
         return;
     }
 

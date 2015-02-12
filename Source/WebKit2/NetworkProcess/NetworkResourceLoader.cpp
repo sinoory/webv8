@@ -131,9 +131,6 @@ void NetworkResourceLoader::start()
     if (m_defersLoading)
         return;
 
-    // Explicit ref() balanced by a deref() in NetworkResourceLoader::cleanup()
-    ref();
-
     m_networkingContext = RemoteNetworkingContext::create(sessionID(), m_parameters.shouldClearReferrerOnHTTPSToHTTPRedirect);
 
     consumeSandboxExtensions();
@@ -170,12 +167,10 @@ void NetworkResourceLoader::cleanup()
 
     NetworkProcess::shared().networkResourceLoadScheduler().removeLoader(this);
 
-    if (m_handle) {
-        // Explicit deref() balanced by a ref() in NetworkResourceLoader::start()
-        // This might cause the NetworkResourceLoader to be destroyed and therefore we do it last.
-        m_handle = 0;
-        deref();
-    }
+    m_handle = nullptr;
+
+    // This will cause NetworkResourceLoader to be destroyed and therefore we do it last.
+    m_connection->didCleanupResourceLoader(*this);
 }
 
 void NetworkResourceLoader::didConvertHandleToDownload()
@@ -203,8 +198,13 @@ void NetworkResourceLoader::didReceiveResponseAsync(ResourceHandle* handle, cons
 
     if (isSynchronous())
         m_synchronousLoadData->response = response;
-    else
+    else {
+        // For multipart/x-mixed-replace didReceiveResponseAsync gets called multiple times and buffering would require special handling.
+        if (response.isMultipart())
+            m_bufferedData = nullptr;
+
         sendAbortingOnFailure(Messages::WebResourceLoader::DidReceiveResponse(response, m_parameters.isMainResource));
+    }
 
     // m_handle will be null if the request got aborted above.
     if (!m_handle)
@@ -302,12 +302,13 @@ void NetworkResourceLoader::continueWillSendRequest(const ResourceRequest& newRe
     m_currentRequest.updateFromDelegatePreservingOldProperties(newRequest);
 #endif
 
-    m_handle->continueWillSendRequest(m_currentRequest);
-
     if (m_currentRequest.isNull()) {
         m_handle->cancel();
         didFail(m_handle.get(), cancelledError(m_currentRequest));
+        return;
     }
+
+    m_handle->continueWillSendRequest(m_currentRequest);
 }
 
 void NetworkResourceLoader::continueDidReceiveResponse()

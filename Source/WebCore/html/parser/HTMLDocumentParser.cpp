@@ -177,8 +177,9 @@ bool HTMLDocumentParser::processingData() const
 
 void HTMLDocumentParser::pumpTokenizerIfPossible(SynchronousMode mode)
 {
-    if (isStopped() || isWaitingForScripts())
+    if (isStopped() || isWaitingForScripts()) {
         return;
+}
 
     // Once a resume is scheduled, HTMLParserScheduler controls when we next pump.
     if (isScheduledForResume()) {

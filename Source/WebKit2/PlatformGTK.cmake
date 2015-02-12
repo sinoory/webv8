@@ -464,6 +464,15 @@ list(APPEND NetworkProcess_SOURCES
     NetworkProcess/EntryPoint/unix/NetworkProcessMain.cpp
 )
 
+file(WRITE ${CMAKE_BINARY_DIR}/test_atomic.cpp
+     "#include <atomic>\n"
+     "int main() { std::atomic<int64_t> i(0); i++; return 0; }\n")
+try_compile(ATOMIC_BUILD_SUCCEEDED ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/test_atomic.cpp)
+if (NOT ATOMIC_BUILD_SUCCEEDED)
+    list(APPEND WebKit2_LIBRARIES atomic)
+endif ()
+file(REMOVE ${CMAKE_BINARY_DIR}/test_atomic.cpp)
+
 set(SharedWebKit2Libraries
     ${WebKit2_LIBRARIES}
 )
@@ -723,11 +732,28 @@ add_library(webkit2gtkinjectedbundle MODULE "${WEBKIT2_DIR}/WebProcess/gtk/WebGt
 add_dependencies(webkit2gtkinjectedbundle GObjectDOMBindings)
 add_webkit2_prefix_header(webkit2gtkinjectedbundle)
 
+# Add ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} to LD_LIBRARY_PATH
+string(COMPARE EQUAL "$ENV{LD_LIBRARY_PATH}" "" ld_library_path_not_exist)
+if (ld_library_path_does_not_exist)
+    set(INTROSPECTION_ADDITIONAL_LIBRARY_PATH
+        "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+    )
+else ()
+    set(INTROSPECTION_ADDITIONAL_LIBRARY_PATH
+        "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}:$ENV{LD_LIBRARY_PATH}"
+    )
+endif ()
+
+# Add required -L flags from ${CMAKE_SHARED_LINKER_FLAGS} for g-ir-scanner
+string(REGEX MATCHALL "-L[^ ]*"
+    INTROSPECTION_ADDITIONAL_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS})
+
 add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/WebKit2-${WEBKITGTK_API_VERSION}.gir
     DEPENDS WebKit2
     DEPENDS ${CMAKE_BINARY_DIR}/JavaScriptCore-${WEBKITGTK_API_VERSION}.gir
     COMMAND CC=${CMAKE_C_COMPILER} CFLAGS=-Wno-deprecated-declarations LDFLAGS=
+        LD_LIBRARY_PATH="${INTROSPECTION_ADDITIONAL_LIBRARY_PATH}"
         ${INTROSPECTION_SCANNER}
         --quiet
         --warn-all
@@ -742,6 +768,7 @@ add_custom_command(
         --library=webkit2gtk-${WEBKITGTK_API_VERSION}
         --library=javascriptcoregtk-${WEBKITGTK_API_VERSION}
         -L${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+        ${INTROSPECTION_ADDITIONAL_LINKER_FLAGS}
         --no-libtool
         --pkg=gobject-2.0
         --pkg=gtk+-3.0
@@ -766,6 +793,7 @@ add_custom_command(
     DEPENDS ${CMAKE_BINARY_DIR}/JavaScriptCore-${WEBKITGTK_API_VERSION}.gir
     DEPENDS ${CMAKE_BINARY_DIR}/WebKit2-${WEBKITGTK_API_VERSION}.gir
     COMMAND CC=${CMAKE_C_COMPILER} CFLAGS=-Wno-deprecated-declarations LDFLAGS=
+        LD_LIBRARY_PATH="${INTROSPECTION_ADDITIONAL_LIBRARY_PATH}"
         ${INTROSPECTION_SCANNER}
         --quiet
         --warn-all
@@ -780,6 +808,7 @@ add_custom_command(
         --library=webkit2gtk-${WEBKITGTK_API_VERSION}
         --library=javascriptcoregtk-${WEBKITGTK_API_VERSION}
         -L${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+        ${INTROSPECTION_ADDITIONAL_LINKER_FLAGS}
         --no-libtool
         --pkg=gobject-2.0
         --pkg=gtk+-3.0
@@ -834,6 +863,7 @@ install(TARGETS webkit2gtkinjectedbundle DESTINATION "${BROWSER_LIB_INSTALL_DIR}
 #              ${WebKit2WebExtension_INSTALLED_HEADERS}
 #        DESTINATION "${WEBKITGTK_HEADER_INSTALL_DIR}/webkit2"
 #)
+#if (ENABLE_INTROSPECTION)
 #install(FILES ${CMAKE_BINARY_DIR}/WebKit2-${WEBKITGTK_API_VERSION}.gir
 #              ${CMAKE_BINARY_DIR}/WebKit2WebExtension-${WEBKITGTK_API_VERSION}.gir
 #        DESTINATION ${INTROSPECTION_INSTALL_GIRDIR}
@@ -842,6 +872,7 @@ install(TARGETS webkit2gtkinjectedbundle DESTINATION "${BROWSER_LIB_INSTALL_DIR}
 #              ${CMAKE_BINARY_DIR}/WebKit2WebExtension-${WEBKITGTK_API_VERSION}.typelib
 #        DESTINATION ${INTROSPECTION_INSTALL_TYPELIBDIR}
 #)
+#endif ()
 
 file(WRITE ${CMAKE_BINARY_DIR}/gtkdoc-webkit2gtk.cfg
     "[webkit2gtk]\n"

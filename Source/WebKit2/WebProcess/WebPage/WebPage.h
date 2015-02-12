@@ -585,6 +585,7 @@ public:
 #endif
 
     void didChangeSelection();
+    void discardedComposition();
 
 #if PLATFORM(COCOA)
     void registerUIProcessAccessibilityTokens(const IPC::DataReference& elemenToken, const IPC::DataReference& windowToken);
@@ -1041,6 +1042,7 @@ private:
 
     bool canHandleUserEvents() const;
 
+    // Only for cdos browser
     void setMainFrameInViewSourceMode(bool);
 
     static bool platformCanHandleRequest(const WebCore::ResourceRequest&);

@@ -638,7 +638,7 @@ static InlineCacheAction tryCacheGetByID(ExecState* exec, JSValue baseValue, con
     CodeBlock* codeBlock = exec->codeBlock();
     VM* vm = &exec->vm();
 
-    if ((isJSArray(baseValue) || isRegExpMatchesArray(baseValue) || isJSString(baseValue)) && propertyName == exec->propertyNames().length) {
+    if ((isJSArray(baseValue) || isJSString(baseValue)) && propertyName == exec->propertyNames().length) {
         GPRReg baseGPR = static_cast<GPRReg>(stubInfo.patch.baseGPR);
 #if USE(JSVALUE32_64)
         GPRReg resultTagGPR = static_cast<GPRReg>(stubInfo.patch.valueTagGPR);
@@ -647,7 +647,7 @@ static InlineCacheAction tryCacheGetByID(ExecState* exec, JSValue baseValue, con
 
         MacroAssembler stubJit;
 
-        if (isJSArray(baseValue) || isRegExpMatchesArray(baseValue)) {
+        if (isJSArray(baseValue)) {
             GPRReg scratchGPR = TempRegisterSet(stubInfo.patch.usedRegisters).getFreeGPR();
             bool needToRestoreScratch = false;
 
@@ -1182,7 +1182,7 @@ static InlineCacheAction tryCachePutByID(ExecState* exec, JSValue baseValue, con
     if (!baseValue.isCell())
         return GiveUpOnCache;
     JSCell* baseCell = baseValue.asCell();
-    Structure* structure = baseCell->structure();
+    Structure* structure = baseCell->structure(*vm);
     Structure* oldStructure = structure->previousID();
     
     if (!slot.isCacheablePut() && !slot.isCacheableCustom() && !slot.isCacheableSetter())
@@ -1288,15 +1288,18 @@ void repatchPutByID(ExecState* exec, JSValue baseValue, const Identifier& proper
         repatchCall(exec->codeBlock(), stubInfo.callReturnLocation, appropriateGenericPutByIdFunction(slot, putKind));
 }
 
-static InlineCacheAction tryBuildPutByIdList(ExecState* exec, JSValue baseValue, const Identifier& propertyName, const PutPropertySlot& slot, StructureStubInfo& stubInfo, PutKind putKind)
+static InlineCacheAction tryBuildPutByIdList(ExecState* exec, JSValue baseValue, Structure* structure, const Identifier& propertyName, const PutPropertySlot& slot, StructureStubInfo& stubInfo, PutKind putKind)
 {
     CodeBlock* codeBlock = exec->codeBlock();
     VM* vm = &exec->vm();
 
-    if (!baseValue.isCell())
+    if (!baseValue.isCell() || !structure)
         return GiveUpOnCache;
     JSCell* baseCell = baseValue.asCell();
-    Structure* structure = baseCell->structure();
+
+    if (baseCell->structure(*vm)->id() != structure->id())
+        return GiveUpOnCache;
+
     Structure* oldStructure = structure->previousID();
     
     
@@ -1413,11 +1416,11 @@ static InlineCacheAction tryBuildPutByIdList(ExecState* exec, JSValue baseValue,
     return GiveUpOnCache;
 }
 
-void buildPutByIdList(ExecState* exec, JSValue baseValue, const Identifier& propertyName, const PutPropertySlot& slot, StructureStubInfo& stubInfo, PutKind putKind)
+void buildPutByIdList(ExecState* exec, JSValue baseValue, Structure* structure, const Identifier& propertyName, const PutPropertySlot& slot, StructureStubInfo& stubInfo, PutKind putKind)
 {
     GCSafeConcurrentJITLocker locker(exec->codeBlock()->m_lock, exec->vm().heap);
     
-    if (tryBuildPutByIdList(exec, baseValue, propertyName, slot, stubInfo, putKind) == GiveUpOnCache)
+    if (tryBuildPutByIdList(exec, baseValue, structure, propertyName, slot, stubInfo, putKind) == GiveUpOnCache)
         repatchCall(exec->codeBlock(), stubInfo.callReturnLocation, appropriateGenericPutByIdFunction(slot, putKind));
 }
 

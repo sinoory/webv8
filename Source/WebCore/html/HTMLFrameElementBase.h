@@ -64,6 +64,7 @@ private:
 
     virtual bool isFrameElementBase() const override { return true; }
 
+     // Only for cdos browser
      bool viewSourceMode() const { return m_viewSource; }
 
     void setNameAndOpenURL();
@@ -77,6 +78,7 @@ private:
     int m_marginWidth;
     int m_marginHeight;
 
+    // Only for cdos browser
     bool m_viewSource;
 };
 

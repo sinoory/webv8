@@ -2,19 +2,20 @@ include(GNUInstallDirs)
 
 set(PROJECT_VERSION_MAJOR 2)
 set(PROJECT_VERSION_MINOR 6)
-set(PROJECT_VERSION_MICRO 2)
+set(PROJECT_VERSION_MICRO 5)
 set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_MICRO})
 set(WEBKITGTK_API_VERSION 4.0)
 
 # Libtool library version, not to be confused with API version.
 # See http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html
-CALCULATE_LIBRARY_VERSIONS_FROM_LIBTOOL_TRIPLE(WEBKIT2 39 3 2)
-CALCULATE_LIBRARY_VERSIONS_FROM_LIBTOOL_TRIPLE(JAVASCRIPTCORE 18 6 0)
+CALCULATE_LIBRARY_VERSIONS_FROM_LIBTOOL_TRIPLE(WEBKIT2 39 6 2)
+CALCULATE_LIBRARY_VERSIONS_FROM_LIBTOOL_TRIPLE(JAVASCRIPTCORE 18 9 0)
 
 set(ENABLE_CREDENTIAL_STORAGE ON CACHE BOOL "Whether or not to enable support for credential storage using libsecret.")
 set(ENABLE_GTKDOC OFF CACHE BOOL "Whether or not to use generate gtkdoc.")
 set(ENABLE_X11_TARGET ON CACHE BOOL "Whether to enable support for the X11 windowing target.")
 set(ENABLE_WAYLAND_TARGET OFF CACHE BOOL "Whether to enable support for the Wayland windowing target.")
+set(ENABLE_INTROSPECTION ON CACHE BOOL "Whether to enable GObject introspection.")
 
 # These are shared variables, but we special case their definition so that we can use the
 # CMAKE_INSTALL_* variables that are populated by the GNUInstallDirs macro.
@@ -113,7 +114,7 @@ WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_CSS3_CONDITIONAL_RULES ON)
 WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_CSS3_TEXT OFF)
 WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_CSS_DEVICE_ADAPTATION OFF)
 WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_CSS_GRID_LAYOUT OFF)
-WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_CSS_IMAGE_SET OFF)
+WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_CSS_IMAGE_SET ON)
 WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_CSS_REGIONS ON)
 WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_CSS_SELECTORS_LEVEL4 ON)
 WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_CUSTOM_SCHEME_HANDLER OFF)
@@ -348,10 +349,12 @@ endif ()
 # Add a typelib file to the list of all typelib dependencies. This makes it easy to
 # expose a 'gir' target with all gobject-introspection files.
 macro(ADD_TYPELIB typelib)
-    get_filename_component(target_name ${typelib} NAME_WE)
-    add_custom_target(${target_name}-gir ALL DEPENDS ${typelib})
-    list(APPEND GObjectIntrospectionTargets ${target_name}-gir)
-    set(GObjectIntrospectionTargets ${GObjectIntrospectionTargets} PARENT_SCOPE)
+    if (ENABLE_INTROSPECTION)
+        get_filename_component(target_name ${typelib} NAME_WE)
+        add_custom_target(${target_name}-gir ALL DEPENDS ${typelib})
+        list(APPEND GObjectIntrospectionTargets ${target_name}-gir)
+        set(GObjectIntrospectionTargets ${GObjectIntrospectionTargets} PARENT_SCOPE)
+    endif ()
 endmacro()
 
 # CMake does not automatically add --whole-archive when building shared objects from

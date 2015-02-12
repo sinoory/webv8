@@ -50,10 +50,10 @@ enum Flag {
 };
 struct Entry {
     UChar character;
-    Form form;
-    unsigned short lspace;
-    unsigned short rspace;
-    unsigned short flags;
+    unsigned form : 2;
+    unsigned lspace : 3;
+    unsigned rspace : 3;
+    unsigned flags : 8;
 };
 
 }
@@ -66,6 +66,7 @@ public:
     virtual void stretchTo(LayoutUnit heightAboveBaseline, LayoutUnit depthBelowBaseline);
     void stretchTo(LayoutUnit width);
     LayoutUnit stretchSize() const { return m_isVertical ? m_stretchHeightAboveBaseline + m_stretchDepthBelowBaseline : m_stretchWidth; }
+    void resetStretchSize();
     
     bool hasOperatorFlag(MathMLOperatorDictionary::Flag flag) const { return m_operatorFlags & flag; }
     // FIXME: The displaystyle property is not implemented (https://bugs.webkit.org/show_bug.cgi?id=118737).
@@ -78,6 +79,7 @@ public:
     void updateTokenContent(const String& operatorString);
     void updateTokenContent() override final;
     void updateOperatorProperties();
+    void setOperatorFlagAndScheduleLayoutIfNeeded(MathMLOperatorDictionary::Flag, const AtomicString& attributeValue);
 
 protected:
     virtual const char* renderName() const override { return isAnonymous() ? "RenderMathMLOperator (anonymous)" : "RenderMathMLOperator"; }
@@ -185,6 +187,7 @@ protected:
     LayoutUnit m_maxSize;
 
     void setOperatorFlagFromAttribute(MathMLOperatorDictionary::Flag, const QualifiedName&);
+    void setOperatorFlagFromAttributeValue(MathMLOperatorDictionary::Flag, const AtomicString& attributeValue);
     void setOperatorPropertiesFromOpDictEntry(const MathMLOperatorDictionary::Entry*);
     virtual void SetOperatorProperties();
 };

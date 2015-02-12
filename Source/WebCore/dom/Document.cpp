@@ -806,11 +806,11 @@ void Document::resetActiveLinkColor()
     m_activeLinkColor.setNamedColor("red");
 }
 
-DOMImplementation* Document::implementation()
+DOMImplementation& Document::implementation()
 {
     if (!m_implementation)
         m_implementation = std::make_unique<DOMImplementation>(*this);
-    return m_implementation.get();
+    return *m_implementation;
 }
 
 bool Document::hasManifest() const
@@ -1123,17 +1123,17 @@ PassRefPtr<DOMNamedFlowCollection> Document::webkitGetNamedFlows()
 
     updateStyleIfNeeded();
 
-    return namedFlows()->createCSSOMSnapshot();
+    return namedFlows().createCSSOMSnapshot();
 }
 
 #endif
 
-NamedFlowCollection* Document::namedFlows()
+NamedFlowCollection& Document::namedFlows()
 {
     if (!m_namedFlows)
         m_namedFlows = NamedFlowCollection::create(this);
 
-    return m_namedFlows.get();
+    return *m_namedFlows;
 }
 
 PassRefPtr<Element> Document::createElementNS(const String& namespaceURI, const String& qualifiedName, ExceptionCode& ec)
@@ -1317,7 +1317,7 @@ void Document::setContentLanguage(const String& language)
 
 void Document::setXMLVersion(const String& version, ExceptionCode& ec)
 {
-    if (!implementation()->hasFeature("XML", String())) {
+    if (!implementation().hasFeature("XML", String())) {
         ec = NOT_SUPPORTED_ERR;
         return;
     }
@@ -1332,7 +1332,7 @@ void Document::setXMLVersion(const String& version, ExceptionCode& ec)
 
 void Document::setXMLStandalone(bool standalone, ExceptionCode& ec)
 {
-    if (!implementation()->hasFeature("XML", String())) {
+    if (!implementation().hasFeature("XML", String())) {
         ec = NOT_SUPPORTED_ERR;
         return;
     }
@@ -1378,20 +1378,64 @@ String Document::suggestedMIMEType() const
     return String();
 }
 
-Element* Document::elementFromPoint(int x, int y) const
+Node* Document::nodeFromPoint(const LayoutPoint& clientPoint, LayoutPoint* localPoint)
+{
+    if (!frame() || !view())
+        return nullptr;
+    
+    Frame& frame = *this->frame();
+    
+    float scaleFactor = frame.pageZoomFactor() * frame.frameScaleFactor();
+
+    LayoutPoint contentsPoint = clientPoint;
+    contentsPoint.scale(scaleFactor, scaleFactor);
+    contentsPoint.moveBy(view()->contentsScrollPosition());
+
+    LayoutRect visibleRect;
+#if PLATFORM(IOS)
+    visibleRect = view()->unobscuredContentRect();
+#else
+    visibleRect = view()->visibleContentRect();
+#endif
+    if (!visibleRect.contains(contentsPoint))
+        return nullptr;
+
+    HitTestResult result(contentsPoint);
+    renderView()->hitTest(HitTestRequest(), result);
+
+    if (localPoint)
+        *localPoint = result.localPoint();
+
+    return result.innerNode();
+}
+
+Element* Document::elementFromPoint(const LayoutPoint& clientPoint)
 {
     if (!hasLivingRenderTree())
         return nullptr;
 
-    return TreeScope::elementFromPoint(x, y);
+    Node* node = nodeFromPoint(clientPoint);
+    while (node && !node->isElementNode())
+        node = node->parentNode();
+
+    if (node)
+        node = ancestorInThisScope(node);
+
+    return toElement(node);
 }
 
 PassRefPtr<Range> Document::caretRangeFromPoint(int x, int y)
 {
+    return caretRangeFromPoint(LayoutPoint(x, y));
+}
+
+PassRefPtr<Range> Document::caretRangeFromPoint(const LayoutPoint& clientPoint)
+{
     if (!hasLivingRenderTree())
         return nullptr;
+
     LayoutPoint localPoint;
-    Node* node = nodeFromPoint(this, x, y, &localPoint);
+    Node* node = nodeFromPoint(clientPoint, &localPoint);
     if (!node)
         return nullptr;
 
@@ -1582,11 +1626,11 @@ bool Document::hidden() const
 }
 
 #if ENABLE(CSP_NEXT)
-DOMSecurityPolicy* Document::securityPolicy()
+DOMSecurityPolicy& Document::securityPolicy()
 {
     if (!m_domSecurityPolicy)
         m_domSecurityPolicy = DOMSecurityPolicy::create(this);
-    return m_domSecurityPolicy.get();
+    return *m_domSecurityPolicy;
 }
 #endif
 
@@ -1721,6 +1765,7 @@ void Document::recalcStyle(Style::Change change)
         return; // Guard against re-entrancy. -dwh
 
     RenderView::RepaintRegionAccumulator repaintRegionAccumulator(renderView());
+    AnimationUpdateBlock animationUpdateBlock(&m_frame->animation());
 
     // FIXME: We should update style on our ancestor chain before proceeding (especially for seamless),
     // however doing so currently causes several tests to crash, as Frame::setDocument calls Document::attach
@@ -1772,6 +1817,10 @@ void Document::recalcStyle(Style::Change change)
 
     InspectorInstrumentation::didRecalculateStyle(cookie);
 
+    // Some animated images may now be inside the viewport due to style recalc,
+    // resume them if necessary.
+    frameView.resumeVisibleImageAnimationsIncludingSubframes();
+
     // As a result of the style recalculation, the currently hovered element might have been
     // detached (for example, by setting display:none in the :hover style), schedule another mouseMove event
     // to check if any other elements ended up under the mouse pointer due to re-layout.
@@ -1793,7 +1842,6 @@ void Document::updateStyleIfNeeded()
     if ((!m_pendingStyleRecalcShouldForce && !childNeedsStyleRecalc()) || inPageCache())
         return;
 
-    AnimationUpdateBlock animationUpdateBlock(m_frame ? &m_frame->animation() : nullptr);
     recalcStyle(Style::NoChange);
 }
 
@@ -1914,6 +1962,7 @@ void Document::pageSizeAndMarginsInPixels(int pageIndex, IntSize& pageSize, int&
     marginLeft = style->marginLeft().isAuto() ? marginLeft : intValueForLength(style->marginLeft(), width);
 }
 
+// Only for cdos browser
 void Document::setIsViewSource(bool isViewSource)
 {
     m_isViewSource = isViewSource;
@@ -3005,17 +3054,19 @@ void Document::processReferrerPolicy(const String& policy)
 {
     ASSERT(!policy.isNull());
 
-    if (equalIgnoringCase(policy, "never"))
-        m_referrerPolicy = ReferrerPolicyNever;
-    else if (equalIgnoringCase(policy, "always"))
-        m_referrerPolicy = ReferrerPolicyAlways;
+    // Note that we're supporting both the standard and legacy keywords for referrer
+    // policies, as defined by http://www.w3.org/TR/referrer-policy/#referrer-policy-delivery-meta
+    if (equalIgnoringCase(policy, "no-referrer") || equalIgnoringCase(policy, "never"))
+        setReferrerPolicy(ReferrerPolicyNever);
+    else if (equalIgnoringCase(policy, "unsafe-url") || equalIgnoringCase(policy, "always"))
+        setReferrerPolicy(ReferrerPolicyAlways);
     else if (equalIgnoringCase(policy, "origin"))
-        m_referrerPolicy = ReferrerPolicyOrigin;
-    else if (equalIgnoringCase(policy, "default"))
-        m_referrerPolicy = ReferrerPolicyDefault;
+        setReferrerPolicy(ReferrerPolicyOrigin);
+    else if (equalIgnoringCase(policy, "no-referrer-when-downgrade") || equalIgnoringCase(policy, "default"))
+        setReferrerPolicy(ReferrerPolicyDefault);
     else {
-        addConsoleMessage(MessageSource::Rendering, MessageLevel::Error, "Failed to set referrer policy: The value '" + policy + "' is not one of 'always', 'default', 'never', or 'origin'. Defaulting to 'never'.");
-        m_referrerPolicy = ReferrerPolicyNever;
+        addConsoleMessage(MessageSource::Rendering, MessageLevel::Error, "Failed to set referrer policy: The value '" + policy + "' is not one of 'no-referrer', 'origin', 'no-referrer-when-downgrade', or 'unsafe-url'. Defaulting to 'no-referrer'.");
+        setReferrerPolicy(ReferrerPolicyNever);
     }
 }
 
@@ -3173,11 +3224,11 @@ void Document::cloneDataFromDocument(const Document& other)
     setDecoder(other.decoder());
 }
 
-StyleSheetList* Document::styleSheets()
+StyleSheetList& Document::styleSheets()
 {
     if (!m_styleSheetList)
         m_styleSheetList = StyleSheetList::create(this);
-    return m_styleSheetList.get();
+    return *m_styleSheetList;
 }
 
 String Document::preferredStylesheetSet() const
@@ -5839,8 +5890,7 @@ void Document::didRemoveEventTargetNode(Node* handler)
     }
 }
 #endif
-
-void Document::resetLastHandledUserGestureTimestamp()
+void Document::updateLastHandledUserGestureTimestamp()
 {
     m_lastHandledUserGestureTimestamp = monotonicallyIncreasingTime();
 }

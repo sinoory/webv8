@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     // Keep this in sync with NetworkProcessMain.cpp.
     // https://bugzilla.gnome.org/show_bug.cgi?id=738633
     // ZRL comment this.
-    //setenv("G_TLS_GNUTLS_PRIORITY", "NORMAL:%COMPAT:!VERS-SSL3.0", 0);
+    //setenv("G_TLS_GNUTLS_PRIORITY", "NORMAL:%COMPAT:%LATEST_RECORD_VERSION:!VERS-SSL3.0", 0);
 
     return WebProcessMainUnix(argc, argv);
 }

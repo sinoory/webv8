@@ -141,7 +141,7 @@ enum {
     PROP_URI,
     PROP_ZOOM_LEVEL,
     PROP_IS_LOADING,
-    PROP_VIEW_MODE
+    PROP_VIEW_MODE // Only for cdos browser
 };
 
 typedef HashMap<uint64_t, GRefPtr<WebKitWebResource> > LoadingResourcesMap;
@@ -165,7 +165,7 @@ struct _WebKitWebViewPrivate {
     CString customTextEncoding;
     CString activeURI;
     bool isLoading;
-    WebKitViewMode viewMode;
+    WebKitViewMode viewMode; //Only for cdos browser
 
     std::unique_ptr<PageLoadStateObserver> loadObserver;
     bool waitingForMainResource;
@@ -288,7 +288,7 @@ private:
 // ZRL implement default console_message
 static gboolean webkitWebViewConsoleMessage(WebKitWebView* webView, const gchar* message, unsigned lineNumber, const char* sourceID)
 {
-    g_message("console message: %s @%d: %s\n", sourceID, lineNumber, message);
+    //g_message("console message: %s @%d: %s\n", sourceID, lineNumber, message);
     return TRUE;
 }
 
@@ -575,6 +575,7 @@ static gboolean webkitWebViewRunFileChooser(WebKitWebView* webView, WebKitFileCh
     return TRUE;
 }
 
+// Only for cdos browser. When download confirmed, close is emitted to browser.
 static void webkitWebViewHandleDownloadRequest(WebKitWebViewBase* webViewBase, DownloadProxy* downloadProxy)
 {
     GRefPtr<WebKitDownload> download = webkitWebContextGetOrCreateDownload(downloadProxy);
@@ -1136,17 +1137,6 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
             webkit_marshal_BOOLEAN__STRING_INT_STRING,
             G_TYPE_BOOLEAN, 3,
             G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING);
-
-/*    // lxx create DNT_HTTP_HEADER signal
-    signals[DNT_HTTP_HEADER] = g_signal_new("dnt-http-header",
-            G_TYPE_FROM_CLASS(webViewClass),
-            G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET(WebKitWebViewClass, dnt_http_header),
-            g_signal_accumulator_true_handled, 0,
-            webkit_marshal_BOOLEAN__OBJECT,
-            G_TYPE_BOOLEAN, 1,
-            G_TYPE_OBJECT);
-*/
 
     /**
      * WebKitWebView::script-dialog:
@@ -1780,7 +1770,6 @@ void webkitWebViewClosePage(WebKitWebView* webView)
 void webkitWebViewAddMessageToConsole(WebKitWebView* webView, const CString& message, unsigned lineNumber, const CString& sourceID)
 {
     gboolean returnValue;
-//    g_printerr("ZRL Enter WebKitWebView::webkitWebViewAddMessageToConsole() message = %s.  \n", message.data());
     g_signal_emit(webView, signals[CONSOLE_MESSAGE], 0, message.data(), lineNumber, sourceID.data(), &returnValue);
 }
 

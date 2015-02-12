@@ -383,7 +383,7 @@ messages -> WebPage LegacyReceiver {
     SetAcceleratedCompositingWindowId(uint64_t nativeWindowHandle)
 #endif
  
-#    SetMainFrameInViewSourceMode(bool inViewSourceMode) -> (bool handled)
+#   Only for cdos browser
     SetMainFrameInViewSourceMode(bool inViewSourceMode)
 
     SetScrollPinningBehavior(uint32_t pinning)

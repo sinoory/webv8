@@ -408,7 +408,7 @@ public:
 
     DocumentType* doctype() const;
 
-    DOMImplementation* implementation();
+    DOMImplementation& implementation();
     
     Element* documentElement() const
     {
@@ -441,10 +441,13 @@ public:
     PassRefPtr<DOMNamedFlowCollection> webkitGetNamedFlows();
 #endif
 
-    NamedFlowCollection* namedFlows();
+    NamedFlowCollection& namedFlows();
 
-    Element* elementFromPoint(int x, int y) const;
+    Element* elementFromPoint(int x, int y) { return elementFromPoint(LayoutPoint(x, y)); }
+    Element* elementFromPoint(const LayoutPoint& clientPoint);
+
     PassRefPtr<Range> caretRangeFromPoint(int x, int y);
+    PassRefPtr<Range> caretRangeFromPoint(const LayoutPoint& clientPoint);
 
     String readyState() const;
 
@@ -492,7 +495,7 @@ public:
     bool hidden() const;
 
 #if ENABLE(CSP_NEXT)
-    DOMSecurityPolicy* securityPolicy();
+    DOMSecurityPolicy& securityPolicy();
 #endif
 
     PassRefPtr<Node> adoptNode(PassRefPtr<Node> source, ExceptionCode&);
@@ -529,6 +532,7 @@ public:
 
     StyleResolver* styleResolverIfExists() const { return m_styleResolver.get(); }
 
+    // Only for cdos browser
     bool isViewSource() const { return m_isViewSource; }
     void setIsViewSource(bool);
 
@@ -546,7 +550,7 @@ public:
     bool haveStylesheetsLoaded() const;
 
     // This is a DOM function.
-    StyleSheetList* styleSheets();
+    StyleSheetList& styleSheets();
 
     DocumentStyleSheetCollection& styleSheetCollection() { return m_styleSheetCollection; }
 
@@ -1180,7 +1184,7 @@ public:
 #endif
 
 #if ENABLE(WEB_TIMING)
-    const DocumentTiming* timing() const { return &m_documentTiming; }
+    const DocumentTiming& timing() const { return m_documentTiming; }
 #endif
 
 #if ENABLE(REQUEST_ANIMATION_FRAME)
@@ -1201,7 +1205,7 @@ public:
     WEBCORE_EXPORT void didRemoveWheelEventHandler();
 
     double lastHandledUserGestureTimestamp() const { return m_lastHandledUserGestureTimestamp; }
-    void resetLastHandledUserGestureTimestamp();
+    void updateLastHandledUserGestureTimestamp();
 
 #if ENABLE(TOUCH_EVENTS)
     bool hasTouchEventHandlers() const { return (m_touchEventTargets.get()) ? m_touchEventTargets->size() : false; }
@@ -1346,6 +1350,8 @@ private:
     void displayBufferModifiedByEncodingInternal(CharacterType*, unsigned) const;
 
     PageVisibilityState pageVisibilityState() const;
+
+    Node* nodeFromPoint(const LayoutPoint& clientPoint, LayoutPoint* localPoint = nullptr);
 
     PassRefPtr<HTMLCollection> ensureCachedCollection(CollectionType);
 
@@ -1568,6 +1574,7 @@ private:
     bool m_isSynthesized;
     bool m_isNonRenderedPlaceholder;
 
+    // Only for cdos browser
     bool m_isViewSource;
     bool m_sawElementsInKnownNamespaces;
     bool m_isSrcdocDocument;

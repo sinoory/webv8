@@ -1141,7 +1141,8 @@ void FrameView::layout(bool allowSubtree)
         return;
 
     InspectorInstrumentationCookie cookie = InspectorInstrumentation::willLayout(&frame());
-
+    AnimationUpdateBlock animationUpdateBlock(&frame().animation());
+    
     if (!allowSubtree && m_layoutRoot) {
         m_layoutRoot->markContainingBlocksForLayout(false);
         m_layoutRoot = 0;
@@ -2768,7 +2769,12 @@ void FrameView::scrollToAnchor()
 
     // Scroll nested layers and frames to reveal the anchor.
     // Align to the top and to the closest side (this matches other browsers).
-    anchorNode->renderer()->scrollRectToVisible(rect, ScrollAlignment::alignToEdgeIfNeeded, ScrollAlignment::alignTopAlways);
+    if (anchorNode->renderer()->style().isHorizontalWritingMode())
+        anchorNode->renderer()->scrollRectToVisible(rect, ScrollAlignment::alignToEdgeIfNeeded, ScrollAlignment::alignTopAlways);
+    else if (anchorNode->renderer()->style().isFlippedBlocksWritingMode())
+        anchorNode->renderer()->scrollRectToVisible(rect, ScrollAlignment::alignRightAlways, ScrollAlignment::alignToEdgeIfNeeded);
+    else
+        anchorNode->renderer()->scrollRectToVisible(rect, ScrollAlignment::alignLeftAlways, ScrollAlignment::alignToEdgeIfNeeded);
 
     if (AXObjectCache* cache = frame().document()->existingAXObjectCache())
         cache->handleScrolledToAnchor(anchorNode.get());
@@ -3124,7 +3130,6 @@ void FrameView::updateOverflowStatus(bool horizontalOverflow, bool verticalOverf
 
         frame().document()->enqueueOverflowEvent(overflowEvent.release());
     }
-    
 }
 
 const Pagination& FrameView::pagination() const
@@ -3153,7 +3158,7 @@ IntRect FrameView::windowClipRect(bool clipToContents) const
     ASSERT(frame().view() == this);
 
     if (paintsEntireContents())
-        return IntRect(IntPoint(), totalContentsSize());
+        return contentsToWindow(IntRect(IntPoint(), totalContentsSize()));
 
     // Set our clip rect to be our contents.
     IntRect clipRect;
@@ -3880,6 +3885,8 @@ void FrameView::updateLayoutAndStyleIfNeededRecursive()
     // it is also incorrect, since if two frames overlap, the first could be excluded from the dirty
     // region but then become included later by the second frame adding rects to the dirty region
     // when it lays out.
+
+    AnimationUpdateBlock animationUpdateBlock(&frame().animation());
 
     frame().document()->updateStyleIfNeeded();
 

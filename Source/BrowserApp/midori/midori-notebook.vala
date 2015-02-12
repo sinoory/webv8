@@ -71,7 +71,7 @@ namespace Midori {
             icon = new Gtk.Image.from_gicon (new ThemedIcon.with_default_fallbacks ("window-close-symbolic"), Gtk.IconSize.MENU);
             close.add (icon);
             align = new Gtk.Alignment (1.0f, 0.5f, 0.0f, 0.0f);
-				hbox = new Gtk.HBox(false, 0);
+	    hbox = new Gtk.HBox(false, 0);
             align.add (hbox);
 //lxx, 20150129
             hbox.add (loc_simbo);
@@ -79,7 +79,7 @@ namespace Midori {
 //lxx, 20150129
             box.pack_start (align, false, false, 0);
             close.clicked.connect (close_clicked);
-				loc_simbo.clicked.connect(loc_simbo_clicked);
+	    loc_simbo.clicked.connect(loc_simbo_clicked);
             icon = new Gtk.Image.from_gicon (new ThemedIcon.with_default_fallbacks ("text-html-symbolic"), Gtk.IconSize.MENU);
             box.pack_start (icon, false, false, 0);
             box.show_all ();

@@ -117,7 +117,7 @@ namespace Transfers {
                 toolbar.insert (separator, -1);
                 clear = new Gtk.ToolButton.from_stock (Gtk.STOCK_CLEAR);
                 //clear.label = _("Clear All");
-		             clear.label = "清空";
+		clear.label = "清空";
                 clear.is_important = true;
                 clear.set_tooltip_text("清除已结束的下载任务");
                 clear.clicked.connect (clear_clicked);
@@ -138,8 +138,8 @@ namespace Transfers {
                 open_file.label = "打开文件";//_("OpenFile");
                 open_file.is_important = true;
                 open_file.clicked.connect (open_file_clicked);
-		             open_file.set_tooltip_text("打开文件");
-		             open_file.sensitive = false;
+		open_file.set_tooltip_text("打开文件");
+		open_file.sensitive = false;
                 toolbar.insert (open_file, 0);
                 //toolbar.insert (separator, 0);      
                 
@@ -147,8 +147,8 @@ namespace Transfers {
                 cancel_dl.label = "取消\\删除";
                 cancel_dl.is_important = true;
                 cancel_dl.clicked.connect (cancel_dl_clicked);
-		             cancel_dl.set_tooltip_text("暂停\\删除");
-		             cancel_dl.sensitive = false;
+		cancel_dl.set_tooltip_text("暂停\\删除");
+		cancel_dl.sensitive = false;
                 toolbar.insert (cancel_dl, 0);
                 //toolbar.insert (separator, 0);      
                 
@@ -156,8 +156,8 @@ namespace Transfers {
                 start_dl.label = "重新下载";
                 start_dl.is_important = true;
                 start_dl.clicked.connect (start_dl_clicked);
-		             start_dl.set_tooltip_text("重新下载");
-		             start_dl.sensitive = false;
+		start_dl.set_tooltip_text("重新下载");
+		start_dl.sensitive = false;
                 toolbar.insert (start_dl, 0);
                 //toolbar.insert (separator, 0);      
                 
@@ -459,7 +459,7 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
                 var menuitem = new Gtk.ImageMenuItem.from_stock (Gtk.STOCK_OPEN, null);
                 menuitem.activate.connect (() => {
                     try {
-//zgh                        Midori.Download.open (transfer.download, treeview);
+//zgh                   Midori.Download.open (transfer.download, treeview);
                         (Midori.Browser.get_for_widget (this).tab as Midori.Tab).open_uri (transfer.download.destination);
                     } catch (Error error_open) {
                         GLib.warning (_("Failed to open download: %s"), error_open.message);

@@ -127,6 +127,7 @@ const gchar* webkit_uri_request_get_uri(WebKitURIRequest* request)
     return request->priv->uri.data();
 }
 
+// Only for cdos browser
 const gchar* webkit_uri_request_get_uri_host(WebKitURIRequest* request)
 {
     g_return_val_if_fail(WEBKIT_IS_URI_REQUEST(request), 0);

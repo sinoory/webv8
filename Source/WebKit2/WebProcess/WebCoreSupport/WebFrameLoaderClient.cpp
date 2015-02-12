@@ -180,15 +180,15 @@ void WebFrameLoaderClient::dispatchWillSendRequest(DocumentLoader*, unsigned lon
 
     webPage->injectedBundleResourceLoadClient().willSendRequestForFrame(webPage, m_frame, identifier, request, redirectResponse);
 
+    // Only for cdos browser
     if (1 == webPage->corePage()->settings().doNotTrack()) 
-	  {
+	{
         request.setHTTPHeaderField(String("DNT"), String("1"));
-          }
+    }
     else if (0 == webPage->corePage()->settings().doNotTrack()) 
-	  {
+	{
         request.setHTTPHeaderField(String("DNT"), String("0"));
-          }
-
+    }
 }
 
 bool WebFrameLoaderClient::shouldUseCredentialStorage(DocumentLoader*, unsigned long identifier)

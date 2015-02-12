@@ -32,6 +32,7 @@
 #include <wtf/gobject/GRefPtr.h>
 #include <wtf/gobject/GUniquePtr.h>
 
+// Only for cdos browser
 #include "base/values.h"
 #include "base/files/file_path.h"
 #include "base/memory/scoped_ptr.h"
@@ -93,6 +94,7 @@ struct _WebKitDownloadPrivate {
     gdouble lastElapsed;
     bool allowOverwrite;
 
+    // Only for cdos browser
     scoped_ptr<JsonPrefStore> user_pref_store_;
     base::ListValue *download_list_lv;
     JsonPrefStore* pref_store;
@@ -100,6 +102,7 @@ struct _WebKitDownloadPrivate {
 
 static guint signals[LAST_SIGNAL] = { 0, };
 
+// Only for cdos browser
 enum {
     DOWNLOAD_N,
 
@@ -671,6 +674,7 @@ void webkit_download_set_allow_overwrite(WebKitDownload* download, gboolean allo
     g_object_notify(G_OBJECT(download), "allow-overwrite");
 }
 
+// Only for cdos browser
 void InitDownloadList(WebKitDownload* download)
 { 
     base::FilePath config_file;

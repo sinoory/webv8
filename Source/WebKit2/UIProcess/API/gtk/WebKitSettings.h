@@ -214,7 +214,7 @@ enum {
     PROP_ENABLE_WEB_SECURITY,
 
     //For Do Not Track
-	 PROP_ENABLE_DO_NOT_TRACK,
+	PROP_ENABLE_DO_NOT_TRACK, //Only for cdos browser
 
     PROP_SAVE_END
 };
