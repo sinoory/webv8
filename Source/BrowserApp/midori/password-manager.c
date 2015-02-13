@@ -74,7 +74,6 @@ screcet_service_search_finished (SecretService *service,
 {
   GList *results, *p;
   GError *error = NULL;
-  g_printerr("--------------------------------------------search finished\n");
 
   results = secret_service_search_finish (service, result, &error);
   if (error != NULL) {
@@ -200,7 +199,6 @@ static void delete_secret_service_item (const char *uri,
   g_return_if_fail(uri);
   g_return_if_fail(form_password);
   
-  g_printerr("--------------------------------------------delete uri: %s\n", uri);
   GHashTable *attributes;
 
   key = soup_uri_new (NULL);
@@ -211,7 +209,6 @@ static void delete_secret_service_item (const char *uri,
   g_return_if_fail (key);
   key_str = soup_uri_to_string (key, FALSE);
 
-  g_printerr("--------------------------------------------delete uri: %s\n", key_str);
   attributes = midori_form_auth_data_get_secret_attributes_table (key_str,
                                                                 form_username,
                                                                 form_password,
@@ -266,10 +263,7 @@ static void delete_auth_data_cb(PasswordManagerPrivate* priv)
     gtk_tree_model_get(model, &selected_item, 0, &uri,1, &form_username, 2, &form_password, 4, &username, -1);
     gtk_list_store_remove(store, &selected_item);
     delete_secret_service_item(uri, form_username, form_password, username);
-    g_printerr("----------------------------getting value %s%s\n", uri, username);
-    g_printerr("----------------------------pointer is: %p\n", &selected_item);
   }
-  g_printerr("-----------------------------------calling into delete cb\n");
 }
 
 static void delete_all_auth_data_cb(PasswordManagerPrivate* priv)
@@ -291,7 +285,6 @@ static void delete_all_auth_data_cb(PasswordManagerPrivate* priv)
 static int close_password_manager()
 {
   PasswordManager* manager = password_manager_get_default();
-  g_printerr("-----------------------------------destory window\n");
   manager->priv->p_auth_data_manager_window = NULL;
   return false;
 }
@@ -301,12 +294,10 @@ void password_manager_display(void)
   PasswordManager* passwordManager = password_manager_get_default();
   //GtkWindow* auth_data_manager_window = passwordManager->priv->p_auth_data_manager_window;
   if(passwordManager->priv->p_auth_data_manager_window != NULL){
-    g_printerr("-----------------------------------has window\n");
     gtk_window_present(GTK_WINDOW(passwordManager->priv->p_auth_data_manager_window));
       return;
   }
   
-  g_printerr("-----------------------------------no window create one\n");
   GtkGrid* grid = (GtkGrid*)gtk_grid_new();
   GtkTreeViewColumn* view_column;
   GtkCellRenderer* p_window_renderer;

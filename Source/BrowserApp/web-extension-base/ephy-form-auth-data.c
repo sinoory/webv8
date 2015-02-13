@@ -154,7 +154,6 @@ ephy_form_auth_data_store (const char *uri,
                         attributes, NULL, label, value,
                         NULL,
                         NULL))
-    g_printerr("--------------------------storing the password successfully\n");
 
   g_free (label);
   secret_value_unref (value);
@@ -462,7 +461,6 @@ ephy_form_auth_data_cache_del (EphyFormAuthDataCache *cache,
   */
 
   GHashTable *attributes;
-  g_printerr("--------------------------------------------delete uri: %s\n", uri);
   attributes = ephy_form_auth_data_get_secret_attributes_table (uri,
                                                                 form_username,
                                                                 form_password,

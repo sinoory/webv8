@@ -790,10 +790,11 @@ username_node_clicked_cb (WebKitDOMNode  *username_node,
   auth_data_list = ephy_form_auth_data_cache_get_list (extension->priv->form_auth_data_cache, uri->host);
   soup_uri_free (uri);
 
-  if (webkit_dom_document_get_element_by_id (document, "ephy-user-choices-container"))
+  /*if (webkit_dom_document_get_element_by_id (document, "ephy-user-choices-container"))
     return TRUE;
+  */
 
-  show_user_choices (document, username_node, auth_data_list);
+  //show_user_choices (document, username_node, auth_data_list);
 
   return TRUE;
 }
@@ -1271,7 +1272,6 @@ handle_method_call (GDBusConnection *connection,
     const char* username;
 
     g_variant_get (parameters, "(ssss)", &uri, &form_username, &form_password, &username);
-    g_printerr("-----------------------%s---%s---%s---%s", uri, form_username, form_password, username);
     ephy_form_auth_data_cache_del(extension->priv->form_auth_data_cache, uri, form_username, form_password, username);
 
   } else if (g_strcmp0 (method_name, "HistorySetURLs") == 0) {
