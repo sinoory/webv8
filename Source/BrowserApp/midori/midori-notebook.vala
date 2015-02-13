@@ -12,8 +12,13 @@
 namespace Midori {
     protected class Tally : Gtk.EventBox {
         public Midori.Tab tab { get; set; }
-        Gtk.Image spinner;
-        Gdk.PixbufAnimation pixbuf;
+//add by luyue 2015/2/13 start
+        Gtk.Widget spinner;
+        Gdk.Pixbuf pixbuf;
+        Gdk.PixbufSimpleAnim animation;
+        
+//        Gtk.Spinner spinner;
+//add end
         public Gtk.Label label;
         Gtk.HBox box;
         public Gtk.Image icon;
@@ -38,15 +43,27 @@ namespace Midori {
             box = new Gtk.HBox (false, 1);
             add (box);
 
-     //       spinner = new Gtk.Spinner ();
-    //        spinner.active = true;
-            pixbuf = new Gdk.PixbufAnimation.from_file(Midori.Paths.get_res_filename("spinner.gif"));
-            spinner = new Gtk.Image.from_animation(pixbuf);
+//add by luyue 2015/2/13 start 
+//            spinner = new Gtk.Spinner ();
+//            spinner.active = true;
+           animation = new Gdk.PixbufSimpleAnim(16,16,5);
+           pixbuf = new Gdk.Pixbuf.from_file(Midori.Paths.get_res_filename("spinner1.png"));
+           animation.add_frame(pixbuf);
+           pixbuf = new Gdk.Pixbuf.from_file(Midori.Paths.get_res_filename("spinner2.png"));
+           animation.add_frame(pixbuf);
+           pixbuf = new Gdk.Pixbuf.from_file(Midori.Paths.get_res_filename("spinner3.png"));
+           animation.add_frame(pixbuf);
+           pixbuf = new Gdk.Pixbuf.from_file(Midori.Paths.get_res_filename("spinner4.png"));
+           animation.add_frame(pixbuf);
+           animation.set_loop(true);
+           spinner = new Gtk.Image.from_animation(animation);
+        //    spinner.active = true;
             /* Ensure the spinner is the size of the icon */
-            int icon_size = 16;
-            Gtk.icon_size_lookup_for_settings (get_settings (),
-                Gtk.IconSize.MENU, out icon_size, null);
-            spinner.set_size_request (icon_size, icon_size);
+       //     int icon_size = 16;
+       //     Gtk.icon_size_lookup_for_settings (get_settings (),
+       //        Gtk.IconSize.MENU, out icon_size, null);
+       //     spinner.set_size_request (icon_size, icon_size);
+//add end
             box.pack_start (spinner, false, false, 0);
             label = new Gtk.Label (null);
             label.set_alignment (0.5f, 0.5f);
@@ -71,7 +88,7 @@ namespace Midori {
             icon = new Gtk.Image.from_gicon (new ThemedIcon.with_default_fallbacks ("window-close-symbolic"), Gtk.IconSize.MENU);
             close.add (icon);
             align = new Gtk.Alignment (1.0f, 0.5f, 0.0f, 0.0f);
-	    hbox = new Gtk.HBox(false, 0);
+				hbox = new Gtk.HBox(false, 0);
             align.add (hbox);
 //lxx, 20150129
             hbox.add (loc_simbo);
@@ -79,7 +96,7 @@ namespace Midori {
 //lxx, 20150129
             box.pack_start (align, false, false, 0);
             close.clicked.connect (close_clicked);
-	    loc_simbo.clicked.connect(loc_simbo_clicked);
+				loc_simbo.clicked.connect(loc_simbo_clicked);
             icon = new Gtk.Image.from_gicon (new ThemedIcon.with_default_fallbacks ("text-html-symbolic"), Gtk.IconSize.MENU);
             box.pack_start (icon, false, false, 0);
             box.show_all ();
@@ -222,6 +239,7 @@ namespace Midori {
         void progress_changed (GLib.ParamSpec pspec) {
             spinner.visible = tab.progress > 0.0;
             icon.visible = !spinner.visible;
+       //       icon.visible = !(tab.progress > 0.0);
         }
     }
 //Notebook class init here, lxx, 20150201
@@ -645,9 +663,12 @@ namespace Midori {
 namespace Midori {
     protected class Tally : Gtk.EventBox {
         public Midori.Tab tab { get; set; }
-   //     Gtk.Spinner spinner;
-        Gtk.Image spinner;
-        Gdk.PixbufAnimation pixbuf;
+//add by luyue 2015/2/13 start
+//        Gtk.Spinner spinner;
+        Gtk.Widget spinner;
+        Gdk.Pixbuf pixbuf;
+        Gdk.PixbufSimpleAnim animation;
+//add end
         public Gtk.Label label;
         Gtk.HBox box;
         public Gtk.Image icon;
@@ -661,16 +682,27 @@ namespace Midori {
             this.tab = tab;
             box = new Gtk.HBox (false, 1);
             add (box);
-
-        //    spinner = new Gtk.Spinner ();
-         //   spinner.active = true;
-            pixbuf = new Gdk.PixbufAnimation.from_file(Midori.Paths.get_res_filename("spinner.gif"));
-            spinner = new Gtk.Image.from_animation(pixbuf);
+//add by luyue 2015/2/13 start
+         //   spinner = new Gtk.Spinner ();
+        //   spinner.active = true;
+            animation = new Gdk.PixbufSimpleAnim(16,16,5);
+            pixbuf = new Gdk.Pixbuf.from_file(Midori.Paths.get_res_filename("spinner1.png"));
+            animation.add_frame(pixbuf);
+            pixbuf = new Gdk.Pixbuf.from_file(Midori.Paths.get_res_filename("spinner2.png"));
+            animation.add_frame(pixbuf);
+            pixbuf = new Gdk.Pixbuf.from_file(Midori.Paths.get_res_filename("spinner3.png"));
+            animation.add_frame(pixbuf);
+            pixbuf = new Gdk.Pixbuf.from_file(Midori.Paths.get_res_filename("spinner4.png"));
+            animation.add_frame(pixbuf);
+            animation.set_loop(true);
+            spinner = new Gtk.Image.from_animation(animation);
+     //         spinner.active = true;
             /* Ensure the spinner is the size of the icon */
-            int icon_size = 16;
-            Gtk.icon_size_lookup_for_settings (get_settings (),
-                Gtk.IconSize.MENU, out icon_size, null);
-            spinner.set_size_request (icon_size, icon_size);
+    //       int icon_size = 16;
+    //        Gtk.icon_size_lookup_for_settings (get_settings (),
+    //            Gtk.IconSize.MENU, out icon_size, null);
+    //        spinner.set_size_request (icon_size, icon_size);
+//add end
             box.pack_start (spinner, false, false, 0);
             label = new Gtk.Label (null);
             label.set_alignment (0.5f, 0.5f);
@@ -784,6 +816,7 @@ namespace Midori {
         void progress_changed (GLib.ParamSpec pspec) {
             spinner.visible = tab.progress > 0.0;
             icon.visible = !spinner.visible;
+        //    icon.visible = !(tab.progress > 0.0);
         }
     }
 
