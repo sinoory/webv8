@@ -1,3 +1,16 @@
+cdosbrowser (0.1.6) Feb15; urgency=low
+
+  * New upstream release
+  - WebKit内核升级到webkitgtk2.6.5版本
+  - 天气预报扩展可自动匹配用户当前所在城市（当前只支持定位到直辖市）
+  - 优化打开网页性能，提升1～2秒
+  - 修复126信箱无法登陆问题
+  - 智能缩放功能提升，着重体现主页面内容
+  - 网页打开过程中进度条体验优化，去除地址栏进度条，Tab页面增加Spinner动画
+  - 修复用户名/密码自动填充导致的Crash缺陷
+  - 修复加载flash插件Crash的缺陷
+ -- ZhangRuili <zhangrl_os@sari.ac.cn>  Sun, 15 Feb 2015 12:36:20 +0800
+
 cdosbrowser (0.1.5) Feb06; urgency=high
 
   * New upstream release

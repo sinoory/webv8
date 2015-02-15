@@ -18,7 +18,7 @@ add_definitions("-DPACKAGE_BUGREPORT=\"https://bugs.launchpad.net/cdosbrowser\""
 set(DERIVED_SOURCES_MIDORI_DIR "${CMAKE_BINARY_DIR}/DerivedSources/cdosbrowser")
 file(MAKE_DIRECTORY ${DERIVED_SOURCES_MIDORI_DIR})
 
-set(VERSION 0.1.5)
+set(VERSION 0.1.6)
 add_definitions("-DMIDORI_VERSION_SUFFIX=\"${VERSION}\"")
 
 string(REPLACE "." ";" VERSION_LIST ${VERSION})
