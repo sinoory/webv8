@@ -532,7 +532,6 @@ void WebPageProxy::didReceiveMessage(IPC::Connection* connection, IPC::MessageDe
         IPC::handleMessage<Messages::WebPageProxy::DidDestroyNavigation>(decoder, this, &WebPageProxy::didDestroyNavigation);
         return;
     }
-
     if (decoder.messageName() == Messages::WebPageProxy::FrameDidBecomeFrameSet::name()) {
         IPC::handleMessage<Messages::WebPageProxy::FrameDidBecomeFrameSet>(decoder, this, &WebPageProxy::frameDidBecomeFrameSet);
         return;
@@ -1098,6 +1097,10 @@ void WebPageProxy::didReceiveMessage(IPC::Connection* connection, IPC::MessageDe
 
 void WebPageProxy::didReceiveSyncMessage(IPC::Connection* connection, IPC::MessageDecoder& decoder, std::unique_ptr<IPC::MessageEncoder>& replyEncoder)
 {
+    if (decoder.messageName() == Messages::WebPageProxy::IsJavascriptPopupWindowIntercepted::name()) {
+        IPC::handleMessage<Messages::WebPageProxy::IsJavascriptPopupWindowIntercepted>(decoder, *replyEncoder, this, &WebPageProxy::IsJavascriptPopupWindowIntercepted);
+        return;
+    }
     if (decoder.messageName() == Messages::WebPageProxy::CreateNewPage::name()) {
         IPC::handleMessage<Messages::WebPageProxy::CreateNewPage>(decoder, *replyEncoder, this, &WebPageProxy::createNewPage);
         return;

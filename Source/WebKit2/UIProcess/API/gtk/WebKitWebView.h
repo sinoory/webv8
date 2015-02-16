@@ -257,9 +257,15 @@ struct _WebKitWebViewClass {
     gboolean   (* console_message)              (WebKitWebView               *web_view,
                                                 const gchar                 *message,
                                                 unsigned lineNumber, const char* sourceID);
+
+    // lxx define javascript_popup_window_block_message, 20150215
+    void   (* javascript_popup_window_block_message)              (WebKitWebView               *web_view);
+
+
     // lxx define dnt_http_header, 20150116
-    gboolean   (* dnt_http_header)              (WebKitWebView               *web_view,
+/*    gboolean   (* dnt_http_header)              (WebKitWebView               *web_view,
                                                 WebKitURIRequest *requestRequest);
+*/
     void (*_webkit_reserved0) (void);
     void (*_webkit_reserved1) (void);
     void (*_webkit_reserved2) (void);

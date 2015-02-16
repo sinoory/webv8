@@ -122,6 +122,30 @@ private:
     std::tuple<uint64_t, const WebCore::ResourceRequest&, const WebCore::WindowFeatures&, const WebKit::NavigationActionData&> m_arguments;
 };
 
+//lxx, 20150213
+class IsJavascriptPopupWindowIntercepted {
+public:
+    typedef std::tuple<> DecodeType;
+
+    static IPC::StringReference receiverName() { return messageReceiverName(); }
+    static IPC::StringReference name() { return IPC::StringReference("IsJavascriptPopupWindowIntercepted"); }
+    static const bool isSync = true;
+
+    typedef IPC::Arguments<> Reply;
+    IsJavascriptPopupWindowIntercepted()
+    {
+    }
+
+    const std::tuple<>& arguments() const
+    {
+        return m_arguments;
+    }
+
+private:
+    std::tuple<> m_arguments;
+};
+
+
 class ShowPage {
 public:
     typedef std::tuple<> DecodeType;

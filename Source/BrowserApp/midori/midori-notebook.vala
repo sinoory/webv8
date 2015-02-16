@@ -25,6 +25,9 @@ namespace Midori {
         public Gtk.Image loc_simbo_icon;
         Gtk.Alignment align;
 
+		  public Gtk.Button ? block_simbo { get; set; default = null; }
+     public Gtk.Image block_simbo_icon;
+
         Gtk.HBox hbox;
 		  public Gtk.Button ? loc_simbo { get; set; default = null; }
 
@@ -77,6 +80,10 @@ namespace Midori {
             loc_simbo.relief = Gtk.ReliefStyle.NONE;												//lxx, 20150129
             loc_simbo.focus_on_click = false;														//lxx, 20150129
 
+            block_simbo = new Gtk.Button ();															//lxx, 20150129
+            block_simbo.relief = Gtk.ReliefStyle.NONE;												//lxx, 20150129
+            block_simbo.focus_on_click = false;														//lxx, 20150129
+
 #if !HAVE_GTK3
             close.name = "midori-close-button";
             close.style_set.connect (close_style_set);
@@ -84,6 +91,8 @@ namespace Midori {
             loc_simbo.name = "midori-loc_simbo-button";														//lxx, 20150129
             loc_simbo.style_set.connect (midori-loc_style_set);											//lxx, 20150129
 
+            block_simbo.name = "midori-block-simbo-button";														//lxx, 20150129
+            block_simbo.style_set.connect (midori-block_style_set);											//lxx, 20150129
 #endif
             icon = new Gtk.Image.from_gicon (new ThemedIcon.with_default_fallbacks ("window-close-symbolic"), Gtk.IconSize.MENU);
             close.add (icon);
@@ -91,12 +100,14 @@ namespace Midori {
 				hbox = new Gtk.HBox(false, 0);
             align.add (hbox);
 //lxx, 20150129
+            hbox.add (block_simbo);
             hbox.add (loc_simbo);
             hbox.add (close);
 //lxx, 20150129
             box.pack_start (align, false, false, 0);
             close.clicked.connect (close_clicked);
 				loc_simbo.clicked.connect(loc_simbo_clicked);
+				block_simbo.clicked.connect(block_simbo_clicked);
             icon = new Gtk.Image.from_gicon (new ThemedIcon.with_default_fallbacks ("text-html-symbolic"), Gtk.IconSize.MENU);
             box.pack_start (icon, false, false, 0);
             box.show_all ();
@@ -131,6 +142,11 @@ namespace Midori {
         void close_clicked () {
             tab.destroy ();
         }
+//lxx, 20150215
+	void block_simbo_clicked()
+	{
+		stdout.printf("this is block printing\n");
+	}
 //lxx, 20150205
 	void loc_simbo_clicked () 
 	{

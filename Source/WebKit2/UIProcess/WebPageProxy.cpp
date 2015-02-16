@@ -3079,6 +3079,12 @@ void WebPageProxy::runJavaScriptConfirm(uint64_t frameID, const String& message,
     m_uiClient->runJavaScriptConfirm(this, message, frame, [reply](bool result) { reply->send(result); });
 }
 
+bool WebPageProxy::IsJavascriptPopupWindowIntercepted()
+{
+	m_uiClient->IsJavascriptPopupWindowIntercepted();
+	return true;
+}
+
 void WebPageProxy::runJavaScriptPrompt(uint64_t frameID, const String& message, const String& defaultValue, RefPtr<Messages::WebPageProxy::RunJavaScriptPrompt::DelayedReply> reply)
 {
     WebFrameProxy* frame = m_process->webFrame(frameID);

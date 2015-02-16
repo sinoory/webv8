@@ -433,6 +433,21 @@ bool WebChromeClient::shouldInterruptJavaScript()
     return shouldInterrupt;
 }
 
+#if 1
+//lxx, 20150213
+bool WebChromeClient::isJavascriptPopupWindowIntercepted() const
+{
+g_print("lxx------%s(%d) %s--------%p--\n", __FUNCTION__, __LINE__, __FILE__, m_page);
+    if (!WebProcess::shared().parentProcessConnection()->sendSync(Messages::WebPageProxy::IsJavascriptPopupWindowIntercepted(), Messages::WebPageProxy::IsJavascriptPopupWindowIntercepted::Reply(), m_page->pageID()))
+        return false;
+//	m_page->send(Messages::WebPageProxy::isJavascriptPopupWindowIntercepted());
+//	WebProcess::shared().parentProcessConnection()->sendSync(Messages::WebPageProxy::isJavascriptPopupWindowIntercepted(), Messages::WebPageProxy::isJavascriptPopupWindowIntercepted::Reply(), m_page->pageID());
+
+	return true;
+//    
+}
+#endif
+
 KeyboardUIMode WebChromeClient::keyboardUIMode()
 {
     return m_page->keyboardUIMode();

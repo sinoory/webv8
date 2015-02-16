@@ -344,23 +344,21 @@ static void showImageCallback(GtkToggleButton *togglebutton, MidoriWebSettings *
 
 static void runJavascriptCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
-    bool bvalue;
-    if(gtk_toggle_button_get_active(togglebutton)) {
-      if((void *)settings->radiobutton3_content == (void *)togglebutton) {
-        bvalue = TRUE;
-      }
-      else if((void *)settings->radiobutton4_content == (void *)togglebutton) {
-        bvalue = FALSE;
-      }
-      else {
-        printf("error runJavascriptCallback\n"); 
-        return;
-      }
-      g_object_set(settings,
-               "enable_scripts", bvalue,
-               NULL);
-    }
-} 
+g_print("lxx------%s(%d) %s----------\n", __FUNCTION__, __LINE__, __FILE__);
+    bool bvalue = gtk_toggle_button_get_active(togglebutton); 
+
+    g_object_set(settings, "enable_scripts", bvalue, NULL);
+}
+
+static void JavascriptCanOpenWindowsAutomaticallyCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
+{
+g_print("lxx------%s(%d) %s----------\n", __FUNCTION__, __LINE__, __FILE__);
+    bool bvalue = gtk_toggle_button_get_active(togglebutton); 
+
+	 webkit_settings_set_javascript_can_open_windows_automatically(settings, bvalue);
+
+    g_object_set(settings, "javascript-can-open-windows-automatically", bvalue, NULL);
+}
 
 static void pageContentCacheCallback(GtkToggleButton *togglebutton, MidoriWebSettings *settings)
 {
@@ -1040,6 +1038,28 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 
 	widget = gtk_label_new("JavaScript：");
 	gtk_grid_attach(grid, widget, 1, 12, 1, 1);
+	button = gtk_check_button_new_with_label("允许所有网站运行JavaScript");
+   bvalue = 1;
+   g_object_get(settings, "enable_scripts", &bvalue, NULL);
+	if(bvalue)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+	else
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
+   g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(runJavascriptCallback), settings);
+	gtk_grid_attach(grid,button,2,13,2,1);
+
+	button = gtk_check_button_new_with_label("JavaScript自动弹出窗口");
+   bvalue = 1;
+   g_object_get(settings, "javascript-can-open-windows-automatically", &bvalue, NULL);
+	if(bvalue)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+	else
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
+   g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(JavascriptCanOpenWindowsAutomaticallyCallback), settings);
+	gtk_grid_attach(grid,button,2,14,2,1);
+
+#if 0
+	gtk_grid_attach(grid, widget, 1, 12, 1, 1);
 	button = gtk_radio_button_new_with_label (NULL, "允许所有网站运行JavaScript（推荐）");
    g_signal_connect(G_OBJECT(button), "toggled", G_CALLBACK(runJavascriptCallback), settings);
 	settings->radiobutton3_content = GTK_WIDGET(button);
@@ -1054,6 +1074,7 @@ GtkWidget * browser_settings_window_new(MidoriWebSettings *settings)
 	else
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->radiobutton4_content), TRUE); 
 	gtk_grid_attach(grid, button, 2, 14, 2, 1);
+#endif
 
 	label = gtk_label_new("    ");
 	gtk_grid_attach( grid, label, 0, 15, 1, 1);

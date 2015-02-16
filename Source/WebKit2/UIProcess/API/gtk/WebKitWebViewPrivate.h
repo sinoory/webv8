@@ -61,5 +61,6 @@ void webkitWebViewWebProcessCrashed(WebKitWebView*);
 
 // ZRL create a new function for console.log
 void webkitWebViewAddMessageToConsole(WebKitWebView*, const CString& message, unsigned lineNumber, const CString& sourceID);
-
+//lxx, 20150215, lead JavascriptPopupWindowIntercepted to midori-view
+void webkitWebViewJavascriptPopupWindowIntercepted(WebKitWebView*);
 #endif // WebKitWebViewPrivate_h

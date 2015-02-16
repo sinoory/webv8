@@ -997,6 +997,7 @@ private:
 
     // UI client
     void createNewPage(uint64_t frameID, const WebCore::ResourceRequest&, const WebCore::WindowFeatures&, const NavigationActionData&, uint64_t& newPageID, WebPageCreationParameters&);
+			bool IsJavascriptPopupWindowIntercepted();//lxx, 20150213
     void showPage();
     void closePage(bool stopResponsivenessTimer);
     // ZRL declare addMessageToConsole.

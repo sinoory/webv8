@@ -17,5 +17,6 @@ foreach(SIZE 16x16 22x22 32x32 128x128 256x256)
 #lxx, 20150202
     install_icon(allowed_location categories ${SIZE})
     install_icon(blocked_location categories ${SIZE})
+    install_icon(blocked_popups categories ${SIZE})
 endforeach()
 

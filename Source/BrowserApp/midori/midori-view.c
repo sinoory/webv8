@@ -145,7 +145,8 @@ struct _MidoriView
 
 #if TRACK_LOCATION_TAB_ICON //lxx, 20150204
 	//lxx, 该view下是否显示过track-location icon，如果是，则发送信号，隐藏掉track-location相关icon
-	gboolean show_track_location_icon;    
+	gboolean show_track_location_icon;   
+	gboolean show_block_javascript_popup_window_icon;    
 #endif
 
     //zgh 记录content-length,
@@ -184,8 +185,10 @@ enum {
     NEW_VIEW,
 #if TRACK_LOCATION_TAB_ICON,lxx,20150203
     TRACK_LOCATION,
+		 JAVASCRIPT_POPUP_WINDOW_UI_MESSAGE,
 #endif	 
     START_LOAD, //lxx, 20150204
+		 START_LOAD_HIDE_BLOCK_JAVASCRIPT_WINDOW_ICON,
     DOWNLOAD_REQUESTED,
     ADD_BOOKMARK,
     ABOUT_CONTENT,
@@ -305,8 +308,19 @@ midori_view_class_init (MidoriViewClass* class)
 //			midori_cclosure_marshal_VOID__OBJECT_ENUM_BOOLEAN,
         G_TYPE_NONE, 1,
         G_TYPE_BOOLEAN);
+
+    // lxx create JAVASCRIPT_POPUP_WINDOW_UI_MESSAGE signal
+    signals[JAVASCRIPT_POPUP_WINDOW_UI_MESSAGE] = g_signal_new("javascript-popup-window-ui-message",
+            G_TYPE_FROM_CLASS(class),
+        (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+        0,
+        0,
+        NULL,
+            g_cclosure_marshal_VOID__VOID,
+                         G_TYPE_NONE, 0);
 #endif
 //lxx, 20150204
+
     /**
      * MidoriView::start-load:
      	    *hide the track-location icon when new navigation started
@@ -314,6 +328,20 @@ midori_view_class_init (MidoriViewClass* class)
      */
     signals[START_LOAD] = g_signal_new (
         "start-load",
+        G_TYPE_FROM_CLASS (class),
+        (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+        0,
+        0,
+        NULL,
+        g_cclosure_marshal_VOID__VOID,
+        G_TYPE_NONE, 0);
+    /**
+     * MidoriView::start-load-hide-block-javascript-window-icon
+     	    *hide the track-location icon when new navigation started
+     *
+     */
+    signals[START_LOAD_HIDE_BLOCK_JAVASCRIPT_WINDOW_ICON] = g_signal_new (
+        "start-load-hide-block-javascript-window-icon",
         G_TYPE_FROM_CLASS (class),
         (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
         0,
@@ -726,6 +754,14 @@ webkit_web_view_permission_request_cb (WebKitWebView *web_view,
 		break;
 	}
 	     return TRUE;
+}
+
+static void
+webkit_web_view_javascript_popup_window_block_cb(WebKitWebView *web_view,
+                                       MidoriView *view)
+{
+		 view->show_block_javascript_popup_window_icon = true;//lxx, 20150204
+    g_signal_emit(view, signals[JAVASCRIPT_POPUP_WINDOW_UI_MESSAGE], 0, NULL);
 }
 #endif //#if TRACK_LOCATION_TAB_ICON //lxx, 20150203
 
@@ -1160,6 +1196,9 @@ midori_view_load_started (MidoriView* view)
 #if TRACK_LOCATION_TAB_ICON //lxx, 20150204
 	if(true == view->show_track_location_icon)
 		g_signal_emit (view, signals[START_LOAD], 0);
+
+	if(true == view->show_block_javascript_popup_window_icon)
+		g_signal_emit (view, signals[START_LOAD_HIDE_BLOCK_JAVASCRIPT_WINDOW_ICON], 0);
 #endif
 }
 
@@ -3327,6 +3366,7 @@ webkit_web_view_create_web_view_cb (GtkWidget*      web_view,
                                     WebKitNavigationAction* navigationAction, // ZRL add the parameter for webkit2gtk-4.0
                                     MidoriView*     view)
 {
+g_print("lxx------%s(%d) %s----------\n", __FUNCTION__, __LINE__, __FILE__);
     MidoriView* new_view;
 
     WebKitURIRequest *naviationRequest = webkit_navigation_action_get_request(navigationAction);
@@ -4469,6 +4509,8 @@ midori_view_constructor (GType                  type,
 //lxx, 20150127	
                       "signal::permission-request",
 							 webkit_web_view_permission_request_cb, view,
+                      "signal::javascript-popup-window-block-message",
+							 webkit_web_view_javascript_popup_window_block_cb, view,
 #endif
                       #else
                       "signal::notify::load-status",

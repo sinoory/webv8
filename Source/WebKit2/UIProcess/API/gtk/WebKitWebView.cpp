@@ -125,6 +125,8 @@ enum {
 
     CONSOLE_MESSAGE, /*ZRL create for console.log*/
 
+    JAVASCRIPT_POPUP_WINDOW_BLOCK_MESSAGE, /*lxx create for javascript popup window message*/
+
     LAST_SIGNAL
 };
 
@@ -738,6 +740,7 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
     webViewClass->authenticate = webkitWebViewAuthenticate;
     // ZRL create console_message function
     webViewClass->console_message = webkitWebViewConsoleMessage;
+//    webViewClass->javascript_popup_window_block_message = webkitWebViewPopupWindowBlockMessage;
 
     /**
      * WebKitWebView:web-context:
@@ -1137,6 +1140,27 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
             webkit_marshal_BOOLEAN__STRING_INT_STRING,
             G_TYPE_BOOLEAN, 3,
             G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING);
+
+    // lxx create JAVASCRIPT_POPUP_WINDOW_BLOCK_MESSAGE signal
+    signals[JAVASCRIPT_POPUP_WINDOW_BLOCK_MESSAGE] = g_signal_new("javascript-popup-window-block-message",
+            G_TYPE_FROM_CLASS(webViewClass),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET(WebKitWebViewClass, javascript_popup_window_block_message),
+            0, 0,
+            g_cclosure_marshal_VOID__VOID,
+                         G_TYPE_NONE, 0);
+
+
+/*    // lxx create DNT_HTTP_HEADER signal
+    signals[DNT_HTTP_HEADER] = g_signal_new("dnt-http-header",
+            G_TYPE_FROM_CLASS(webViewClass),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET(WebKitWebViewClass, dnt_http_header),
+            g_signal_accumulator_true_handled, 0,
+            webkit_marshal_BOOLEAN__OBJECT,
+            G_TYPE_BOOLEAN, 1,
+            G_TYPE_OBJECT);
+*/
 
     /**
      * WebKitWebView::script-dialog:
@@ -1771,6 +1795,12 @@ void webkitWebViewAddMessageToConsole(WebKitWebView* webView, const CString& mes
 {
     gboolean returnValue;
     g_signal_emit(webView, signals[CONSOLE_MESSAGE], 0, message.data(), lineNumber, sourceID.data(), &returnValue);
+}
+
+//lxx,20150215
+void webkitWebViewJavascriptPopupWindowIntercepted(WebKitWebView* webView)
+{
+    g_signal_emit(webView, signals[JAVASCRIPT_POPUP_WINDOW_BLOCK_MESSAGE], 0, NULL);
 }
 
 void webkitWebViewRunJavaScriptAlert(WebKitWebView* webView, const CString& message)

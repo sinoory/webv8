@@ -1559,6 +1559,10 @@ midori_settings_new_full (gchar*** extensions)
 	int iCurrentSelect = katze_object_get_int(settings, "cookie-setting"); 
 	WebKitCookieManager* cookiemanager = webkit_web_context_get_cookie_manager(webkit_web_context_get_default());
 	webkit_cookie_manager_set_accept_policy(cookiemanager,iCurrentSelect);
+
+//test javascript open window automatically
+		bool JavascriptCanopenWindowAutomatically = katze_object_get_boolean(settings, "javascript-can-open-windows-automatically"); 
+		webkit_settings_set_javascript_can_open_windows_automatically(settings, JavascriptCanopenWindowAutomatically);
 //lxx add, 20150123-
 
     return settings;

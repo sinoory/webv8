@@ -45,6 +45,7 @@ public:
 private:
     virtual PassRefPtr<WebPageProxy> createNewPage(WebPageProxy*, WebFrameProxy*, const WebCore::ResourceRequest& resourceRequest, const WebCore::WindowFeatures& windowFeatures, const NavigationActionData& navigationActionData) override
     {
+		g_print("lxx------%s(%d) %s----------\n", __FUNCTION__, __LINE__, __FILE__);
         GRefPtr<WebKitURIRequest> request = adoptGRef(webkitURIRequestCreateForResourceRequest(resourceRequest));
         WebKitNavigationAction navigationAction(request.get(), navigationActionData);
         return webkitWebViewCreateNewPage(m_webView, windowFeatures, &navigationAction);
@@ -66,7 +67,10 @@ private:
         webkitWebViewAddMessageToConsole(m_webView, message.utf8(), lineNumber, sourceID.utf8());
         completionHandler();
     }
-
+    virtual void IsJavascriptPopupWindowIntercepted()
+	{
+		webkitWebViewJavascriptPopupWindowIntercepted(m_webView);
+	}
     virtual void runJavaScriptAlert(WebPageProxy*, const String& message, WebFrameProxy*, std::function<void ()> completionHandler) override
     {
         webkitWebViewRunJavaScriptAlert(m_webView, message.utf8());

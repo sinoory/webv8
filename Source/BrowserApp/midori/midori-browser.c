@@ -1874,8 +1874,34 @@ midori_start_load_hide_location_icon_cb(GtkWidget*     view,
 	GtkWidget *label = gtk_notebook_get_tab_label(MIDORI_NOTEBOOK (browser->notebook)->notebook, tab);
 	GtkButton* loc_simbo =  midori_tally_get_loc_simbo((MidoriTally*)label);
 	gtk_widget_hide(GTK_WIDGET(loc_simbo));
+}
 
-return;
+static void
+midori_start_load_hide_block_javascript_window_icon_cb(GtkWidget*     view,
+													 MidoriBrowser* browser)
+{
+   g_return_if_fail (MIDORI_IS_VIEW (view));
+
+	GtkWidget* tab = midori_browser_get_current_tab(browser);
+	GtkWidget *label = gtk_notebook_get_tab_label(MIDORI_NOTEBOOK (browser->notebook)->notebook, tab);
+	GtkButton* block_simbo =  midori_tally_get_block_simbo((MidoriTally*)label);
+	gtk_widget_hide(GTK_WIDGET(block_simbo));
+}
+
+static void
+midori_javascript_popup_window_icon_cb(GtkWidget*     view,
+													 MidoriBrowser* browser)
+{
+	GtkWidget* tab = midori_browser_get_current_tab(browser);
+	GtkWidget *label = gtk_notebook_get_tab_label(MIDORI_NOTEBOOK (browser->notebook)->notebook, tab);
+	GtkButton* block_simbo =  midori_tally_get_block_simbo((MidoriTally*)label);
+	GtkWidget *icon;
+
+	icon = gtk_image_new_from_icon_name(STOCK_BLOCK_POPUPS, GTK_ICON_SIZE_MENU);
+
+	gtk_button_set_image (block_simbo, icon);
+	gtk_widget_show(GTK_WIDGET(block_simbo));
+g_print("lxx------%s(%d) %s------%p----\n", __FUNCTION__, __LINE__, __FILE__, view);
 }
 #endif
 
@@ -2162,6 +2188,10 @@ midori_browser_connect_tab (MidoriBrowser* browser,
                       midori_track_location_cb, browser,
                       "signal::start-load",
                       midori_start_load_hide_location_icon_cb, browser,
+                      "signal::start-load-hide-block-javascript-window-icon",
+                      midori_start_load_hide_block_javascript_window_icon_cb, browser,
+                      "signal::javascript-popup-window-ui-message",
+                      midori_javascript_popup_window_icon_cb, browser,
 #endif
                       "signal-after::download-requested",
                       midori_view_download_requested_cb, browser,
