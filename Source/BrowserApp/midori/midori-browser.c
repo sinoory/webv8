@@ -1890,18 +1890,19 @@ midori_start_load_hide_block_javascript_window_icon_cb(GtkWidget*     view,
 
 static void
 midori_javascript_popup_window_icon_cb(GtkWidget*     view,
-													 MidoriBrowser* browser)
+																										const gchar* str,
+																									 MidoriBrowser* browser)
 {
 	GtkWidget* tab = midori_browser_get_current_tab(browser);
 	GtkWidget *label = gtk_notebook_get_tab_label(MIDORI_NOTEBOOK (browser->notebook)->notebook, tab);
 	GtkButton* block_simbo =  midori_tally_get_block_simbo((MidoriTally*)label);
+	midori_tally_set_block_uri_title ((MidoriTally*)label, str);
 	GtkWidget *icon;
 
 	icon = gtk_image_new_from_icon_name(STOCK_BLOCK_POPUPS, GTK_ICON_SIZE_MENU);
 
 	gtk_button_set_image (block_simbo, icon);
 	gtk_widget_show(GTK_WIDGET(block_simbo));
-g_print("lxx------%s(%d) %s------%p----\n", __FUNCTION__, __LINE__, __FILE__, view);
 }
 #endif
 

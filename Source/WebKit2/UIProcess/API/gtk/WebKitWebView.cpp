@@ -1147,8 +1147,8 @@ static void webkit_web_view_class_init(WebKitWebViewClass* webViewClass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET(WebKitWebViewClass, javascript_popup_window_block_message),
             0, 0,
-            g_cclosure_marshal_VOID__VOID,
-                         G_TYPE_NONE, 0);
+            g_cclosure_marshal_VOID__STRING,
+                         G_TYPE_NONE, 1, G_TYPE_STRING);
 
 
 /*    // lxx create DNT_HTTP_HEADER signal
@@ -1798,9 +1798,9 @@ void webkitWebViewAddMessageToConsole(WebKitWebView* webView, const CString& mes
 }
 
 //lxx,20150215
-void webkitWebViewJavascriptPopupWindowIntercepted(WebKitWebView* webView)
+void webkitWebViewJavascriptPopupWindowIntercepted(WebKitWebView* webView, const CString& str)
 {
-    g_signal_emit(webView, signals[JAVASCRIPT_POPUP_WINDOW_BLOCK_MESSAGE], 0, NULL);
+    g_signal_emit(webView, signals[JAVASCRIPT_POPUP_WINDOW_BLOCK_MESSAGE], 0, str.data());
 }
 
 void webkitWebViewRunJavaScriptAlert(WebKitWebView* webView, const CString& message)

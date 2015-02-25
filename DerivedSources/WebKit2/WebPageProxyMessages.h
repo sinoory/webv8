@@ -125,24 +125,24 @@ private:
 //lxx, 20150213
 class IsJavascriptPopupWindowIntercepted {
 public:
-    typedef std::tuple<> DecodeType;
+    typedef std::tuple<String> DecodeType;
 
     static IPC::StringReference receiverName() { return messageReceiverName(); }
     static IPC::StringReference name() { return IPC::StringReference("IsJavascriptPopupWindowIntercepted"); }
     static const bool isSync = true;
 
     typedef IPC::Arguments<> Reply;
-    IsJavascriptPopupWindowIntercepted()  : m_arguments()
+    IsJavascriptPopupWindowIntercepted(const String& str)  : m_arguments(str)
     {
     }
 
-    const std::tuple<>& arguments() const
+    const std::tuple<const String&>& arguments() const
     {
         return m_arguments;
     }
 
 private:
-    std::tuple<> m_arguments;
+    std::tuple<const String&> m_arguments;
 };
 
 class ShowPage {

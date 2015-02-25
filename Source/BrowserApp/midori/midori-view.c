@@ -316,8 +316,8 @@ midori_view_class_init (MidoriViewClass* class)
         0,
         0,
         NULL,
-            g_cclosure_marshal_VOID__VOID,
-                         G_TYPE_NONE, 0);
+            g_cclosure_marshal_VOID__STRING,
+                         G_TYPE_NONE, 1, G_TYPE_STRING);
 #endif
 //lxx, 20150204
 
@@ -758,10 +758,11 @@ webkit_web_view_permission_request_cb (WebKitWebView *web_view,
 
 static void
 webkit_web_view_javascript_popup_window_block_cb(WebKitWebView *web_view,
-                                       MidoriView *view)
+																													const gchar* str,
+			                                       MidoriView *view)
 {
 		 view->show_block_javascript_popup_window_icon = true;//lxx, 20150204
-    g_signal_emit(view, signals[JAVASCRIPT_POPUP_WINDOW_UI_MESSAGE], 0, NULL);
+    g_signal_emit(view, signals[JAVASCRIPT_POPUP_WINDOW_UI_MESSAGE], 0, str);
 }
 #endif //#if TRACK_LOCATION_TAB_ICON //lxx, 20150203
 

@@ -26,6 +26,7 @@ namespace Midori {
         Gtk.Alignment align;
 
 		  public Gtk.Button ? block_simbo { get; set; default = null; }
+		  public string ? block_uri_title { get; set; default = null; }
      public Gtk.Image block_simbo_icon;
 
         Gtk.HBox hbox;
@@ -145,7 +146,30 @@ namespace Midori {
 //lxx, 20150215
 	void block_simbo_clicked()
 	{
-		stdout.printf("this is block printing\n");
+		string output;
+		if(0 == block_uri_title.length)
+		{
+			output = string.join ("\n", "已拦截此网页下的下列弹出式窗口：", "about:blank","如需允许，请到首选项中的内容界面进行设置。");
+		}
+		else
+		{
+			output = string.join ("\n", "已拦截此网页下的下列弹出式窗口：", block_uri_title,"如需允许，请到首选项中的内容界面进行设置。");
+		}
+
+		Gtk.Dialog dialog = new Gtk.MessageDialog(null,
+												 Gtk.DialogFlags.DESTROY_WITH_PARENT,
+												 Gtk.MessageType.INFO/*WARNING*/, Gtk.ButtonsType.NONE, output);
+		
+//		stdout.printf("this is block printing %s	%d\n", block_uri_title, block_uri_title.length);
+
+		dialog.title = "提示";
+		dialog.add_buttons (/*"管理位置设置", Gtk.ResponseType.CANCEL,*/ "完成",  Gtk.ResponseType.ACCEPT);
+		bool cancel = dialog.run () != Gtk.ResponseType.ACCEPT;
+		dialog.destroy ();
+		if(cancel)
+		{
+//			stdout.printf("this is vala printing\n");
+		}
 	}
 //lxx, 20150205
 	void loc_simbo_clicked () 
@@ -181,8 +205,6 @@ namespace Midori {
 		if(cancel)
 		{
 			stdout.printf("this is vala printing\n");
-//			var view = tab as View;
-//			var settings = view.settings;
 		}
                 
 		stdout.printf("start_dl_clicked end\n");

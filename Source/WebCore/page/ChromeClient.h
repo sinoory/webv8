@@ -402,7 +402,8 @@ public:
 
     virtual void numWheelEventHandlersChanged(unsigned) = 0;
 
-    virtual bool isJavascriptPopupWindowIntercepted() const { return true; }//lxx add for intercepted javascript popup window, 201502213
+    virtual bool isJavascriptPopupWindowIntercepted(const String& str) const 
+					{int num = str.length();  return 1 || num; }//lxx add for intercepted javascript popup window, 201502213
 
     virtual bool isSVGImageChromeClient() const { return false; }
 

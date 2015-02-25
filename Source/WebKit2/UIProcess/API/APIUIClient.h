@@ -85,7 +85,7 @@ public:
 
     virtual void setStatusText(WebKit::WebPageProxy*, const WTF::String&) { }
     virtual void mouseDidMoveOverElement(WebKit::WebPageProxy*, const WebKit::WebHitTestResult::Data&, WebKit::WebEvent::Modifiers, API::Object*) { }
-    virtual void IsJavascriptPopupWindowIntercepted(){}//lxx, 20150215
+    virtual void IsJavascriptPopupWindowIntercepted(const WTF::String&){}//lxx, 20150215
 #if ENABLE(NETSCAPE_PLUGIN_API)
     virtual void unavailablePluginButtonClicked(WebKit::WebPageProxy*, WKPluginUnavailabilityReason, WebKit::ImmutableDictionary*) { }
 #endif // ENABLE(NETSCAPE_PLUGIN_API)

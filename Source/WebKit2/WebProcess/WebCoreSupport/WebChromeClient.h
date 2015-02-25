@@ -286,7 +286,7 @@ private:
     
     virtual void numWheelEventHandlersChanged(unsigned) override;
 
-    virtual bool isJavascriptPopupWindowIntercepted() const override;//lxx, for intercepted javascript popup window
+    virtual bool isJavascriptPopupWindowIntercepted(const String& str) const override;//lxx, for intercepted javascript popup window
 
     virtual void logDiagnosticMessage(const String& message, const String& description, const String& success) override;
 
