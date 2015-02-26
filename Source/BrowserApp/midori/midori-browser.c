@@ -4527,7 +4527,8 @@ _action_location_submit_uri (GtkAction*     action,
     gchar* new_uri;
 
     /* Switch to already open tab if possible */
-    KatzeItem* found = katze_array_find_uri (browser->proxy_array, uri);
+//modify by luyue 2015/2/26
+/*    KatzeItem* found = katze_array_find_uri (browser->proxy_array, uri);
     if (found != NULL && !new_tab
      && !g_str_equal (midori_browser_get_current_uri (browser), uri))
     {
@@ -4536,7 +4537,7 @@ _action_location_submit_uri (GtkAction*     action,
         if (midori_view_is_blank (MIDORI_VIEW (view)))
             midori_browser_close_tab (browser, view);
         return;
-    }
+    }*/
 
     uri = katze_skip_whitespace (uri);
     new_uri = sokoke_magic_uri (uri, TRUE, FALSE);
