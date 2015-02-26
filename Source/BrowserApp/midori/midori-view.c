@@ -932,6 +932,7 @@ static void readCallback(GObject* object, GAsyncResult* asyncResult, gpointer da
        return;
    }
    strcat(view->total_read_buffer,view->once_read_buffer);
+   memset(view->once_read_buffer,0,1024*10);
    g_input_stream_read_async(view->inputStream, view->once_read_buffer, 1024*10, G_PRIORITY_DEFAULT,NULL, readCallback, view);
 }
 
