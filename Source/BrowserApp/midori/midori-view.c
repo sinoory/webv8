@@ -944,9 +944,10 @@ static void sendRequestCallback(GObject* object, GAsyncResult* result, gpointer 
     view->total_read_buffer = (char *) malloc(1024*60);
     memset(view->once_read_buffer,0,1024*10);
     memset(view->total_read_buffer,0,1024*60);
-    if(result)
+    if(result && view->soup_request)
     {
        view->inputStream = soup_request_send_finish(view->soup_request, result, NULL);
+       view->soup_request = NULL;
        if(view->inputStream)
           g_input_stream_read_async(view->inputStream, view->once_read_buffer, 1024*10, G_PRIORITY_DEFAULT,NULL, readCallback, view);
     }
@@ -978,6 +979,7 @@ midori_view_website_query_idle(gpointer data)
     g_object_get(view->settings, "user-agent", &string, NULL);
     g_object_set(soup_session, "user-agent", string, NULL);
    string = NULL;
+   if(!view->soup_request) 
     view->soup_request= soup_session_request_uri(soup_session, soup_uri, NULL);
     if(view->soup_request)
        soup_request_send_async(view->soup_request, NULL, sendRequestCallback, view);   
