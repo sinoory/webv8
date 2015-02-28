@@ -1293,6 +1293,9 @@ msgstr "检查元素(_E)"
 msgid "Open or download file from %s"
 msgstr "从 %s 打开或下载文件"
 
+msgid "Open or download file"
+msgstr "打开或下载文件"
+
 #: ../midori/midori-view.c:2729 ../midori/midori-view.c:2732
 #, c-format
 msgid "File Name: %s"

@@ -12,6 +12,7 @@
 #include "midori-array.h"
 #include "midori-bookmarks-db.h"
 #include "midori-history.h"
+#include "midori-download-db.h"
 #include "midori-preferences.h"
 #include "midori-privatedata.h"
 #include "midori-session.h"
@@ -557,6 +558,14 @@ midori_normal_app_new (const gchar* config,
             _("The history couldn't be loaded: %s\n"), errmsg);
         katze_assign (errmsg, NULL);
     }
+    //add by zgh 20150206
+    KatzeArray* download;
+    if (!(download = midori_download_db_new (&errmsg)))
+    {
+        g_string_append_printf (error_messages,
+            _("The download couldn't be loaded: %s\n"), errmsg);
+        katze_assign (errmsg, NULL);
+    }
 
     katze_assign (config_file, midori_paths_get_config_filename_for_reading ("speeddial"));
     MidoriSpeedDial* dial = midori_speed_dial_new (config_file, NULL);
@@ -605,6 +614,7 @@ midori_normal_app_new (const gchar* config,
                        "trash", trash,
                        "search-engines", search_engines,
                        "history", history,
+                       "download", download,
                        "speed-dial", dial,
                        NULL);
     g_signal_connect (app, "add-browser",
@@ -623,10 +633,12 @@ midori_normal_app_on_quit (MidoriApp* app)
     MidoriWebSettings* settings = katze_object_get_object (app, "settings");
     MidoriBookmarksDb* bookmarks = katze_object_get_object (app, "bookmarks");
     KatzeArray* history = katze_object_get_object (app, "history");
+    KatzeArray* download = katze_object_get_object (app, "download");//zgh download
 
     g_object_notify (G_OBJECT (settings), "load-on-startup");
     midori_bookmarks_db_on_quit (bookmarks);
     midori_history_on_quit (history, settings);
+    midori_download_db_on_quit (download);  //zgh download
     midori_private_data_on_quit (settings);
 
     MidoriStartup load_on_startup = katze_object_get_int (settings, "load-on-startup");

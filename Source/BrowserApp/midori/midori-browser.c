@@ -6855,6 +6855,9 @@ midori_browser_destroy_cb (MidoriBrowser* browser)
 
     /* Destroy panel first, so panels don't need special care */
     gtk_widget_destroy (browser->panel);
+    //zgh 销毁管理器窗体
+    gtk_widget_hide (browser->sari_panel_windows);
+    
     /* Destroy tabs second, so child widgets don't need special care */
     gtk_container_foreach (GTK_CONTAINER (browser->notebook),
                            (GtkCallback) gtk_widget_destroy, NULL);
@@ -7209,6 +7212,7 @@ midori_browser_init (MidoriBrowser* browser)
     browser->trash = NULL;
     browser->search_engines = NULL;
     browser->dial = NULL;
+    browser->sari_panel_windows = NULL; //zgh 20150212
 
     /* Setup the window metrics */
     g_signal_connect (browser, "realize",
@@ -9213,7 +9217,7 @@ midori_browser_show_panel_window(MidoriBrowser* browser, gboolean show)
     g_object_ref (vpaned);
 
 
-    if(!panel_window){
+    if(!panel_window || !GTK_IS_WINDOW (panel_window)){
         panel_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
         gtk_window_set_transient_for(panel_window,GTK_WINDOW(browser));
         g_signal_connect(G_OBJECT(panel_window), "delete-event", midori_panel_window_hide , browser);
@@ -9222,15 +9226,20 @@ midori_browser_show_panel_window(MidoriBrowser* browser, gboolean show)
         gtk_window_set_default_size(GTK_WINDOW(panel_window), 460, 360);
         gtk_container_add(GTK_CONTAINER(panel_window), browser->panel);        
     }else{
-        gtk_window_present(panel_window);
+        GList* children = gtk_container_get_children (GTK_CONTAINER (panel_window));
+        if (!g_list_length (children))
+            gtk_container_add(GTK_CONTAINER(panel_window), browser->panel);
+        if (show)
+            gtk_window_present(panel_window);
     }
 
 //        gtk_container_remove (GTK_CONTAINER (hpaned), browser->panel);
-    if(show)
-        gtk_widget_show_all(panel_window);
-    else
-        gtk_widget_hide (panel_window);
-
+        if(show)
+            gtk_widget_show_all(panel_window);
+            /*  //为false时维持现状   zgh 20150212
+        else
+            gtk_widget_hide (panel_window);
+*/
     browser->sari_panel_windows = panel_window;
 
     g_object_unref (browser->panel);
@@ -9241,21 +9250,21 @@ midori_browser_show_panel_window(MidoriBrowser* browser, gboolean show)
 static void midori_browser_actiave_bookmark_in_window(GtkAction*     action,
                               MidoriBrowser* browser)
 {
+    midori_browser_show_panel_window(browser, true);    //zgh 20150226 将panel显示与设置显示页调换顺序   下同
     midori_panel_open_in_window(browser->panel, TRUE, PANEL_BOOKMARK);
-    midori_browser_show_panel_window(browser, true);
 }
 
 static void midori_browser_actiave_history_in_window(GtkAction*     action,
                               MidoriBrowser* browser)
 {
-    midori_panel_open_in_window(browser->panel, TRUE, PANEL_HISTORY);
     midori_browser_show_panel_window(browser, true);
+    midori_panel_open_in_window(browser->panel, TRUE, PANEL_HISTORY);
 }
 static void midori_browser_actiave_transfer_in_window(GtkAction*     action,
                               MidoriBrowser* browser)
 {
-    midori_panel_open_in_window(browser->panel, TRUE, PANEL_TRANSFER);
     midori_browser_show_panel_window(browser, true);
+    midori_panel_open_in_window(browser->panel, TRUE, PANEL_TRANSFER);
     
     //zgh 工具栏上图标变化
     GtkActionGroup *action_group = midori_browser_get_action_group (browser);

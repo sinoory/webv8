@@ -48,6 +48,8 @@ namespace Midori {
         [NoAccessorMethod]
         public Katze.Array history { get; set; }
         [NoAccessorMethod]
+        public Katze.Array download { get; set; }   //zgh 20150206
+        [NoAccessorMethod]
         public Katze.Array extensions { owned get; set; }
         [NoAccessorMethod]
         public Katze.Array browsers { get; }

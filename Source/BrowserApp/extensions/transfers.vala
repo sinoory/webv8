@@ -21,6 +21,13 @@ namespace Transfers {
     private class Transfer : GLib.Object {
         internal WebKit.Download download;
         internal string crtime;
+        internal int64 crtime_i;
+        internal string filename;
+        internal string filesize;
+        internal string uri;
+        internal string content_type;
+        internal int64 download_progress;
+        internal string destination;
 
         internal signal void changed ();
         internal signal void remove ();
@@ -33,11 +40,9 @@ namespace Transfers {
             return Midori.Download.get_progress (download);
         } }
 #if HAVE_WEBKIT2
-        public bool succeeded { get; protected set; default = false; }
-        public bool finished { get; protected set; default = false; }
-        internal string destination { get {
-            return download.destination;
-        } }
+        public bool succeeded { get; protected set; default = true; }
+        public bool finished { get; protected set; default = true; }
+
 #else
         internal bool succeeded { get {
             return download.status == WebKit.DownloadStatus.FINISHED;
@@ -49,14 +54,43 @@ namespace Transfers {
             return download.destination_uri;
         } }
 #endif
+  
+        internal void update_database()
+        {
+            Midori.Database database;
+            string sqlcmd = "UPDATE `download` SET file_size = :file_size, download_progress = :download_progress WHERE name = :filename";
+            
+            try {
+                    database = new Midori.Database ("download.db");
+                } catch (Midori.DatabaseError schema_error) {
+                    error (schema_error.message);
+                }
 
-        internal Transfer (WebKit.Download download) {
+            try {
+                    database.prepare (sqlcmd,
+                        ":file_size", typeof (string), this.filesize,
+                        ":download_progress", typeof (int64), this.download_progress,
+                        ":filename", typeof(string), this.filename).exec();
+                } catch (Error error) {
+                    critical (_("Failed to update database: %s"), error.message);
+                }
+        }
+
+        internal void set_download(WebKit.Download download)
+        {
             this.download = download;
-            GLib.DateTime time = new DateTime.now_local ();
-            this.crtime = time.format("%Y-%m-%d %H:%M:%S");
+            this.destination = download.destination;
+            succeeded = finished = false;
+
             #if HAVE_WEBKIT2
             download.notify["estimated-progress"].connect (transfer_changed);
             download.finished.connect (() => {
+            //zgh 更新数据库
+                this.filename = Midori.Download.get_basename_for_display (download.destination);
+                this.filesize = Midori.Download.get_size (download);
+                this.download_progress = (int64)(this.progress * 100);
+                update_database();
+                
                 succeeded = finished = true;
                 changed ();
             });
@@ -70,7 +104,16 @@ namespace Transfers {
             download.notify["progress"].connect (transfer_changed);
             #endif
         }
-
+        internal Transfer () {
+            this.download = null;
+            GLib.DateTime time = new DateTime.now_local ();
+            this.crtime_i = time.to_unix();
+            this.filename = null;
+            this.filesize = null;
+            this.uri = null;
+            this.content_type = null;
+            this.crtime = time.format("%Y-%m-%d %H:%M:%S");
+        }
         void transfer_changed (GLib.ParamSpec pspec) {
             changed ();
         }
@@ -97,6 +140,8 @@ namespace Transfers {
         Gtk.ListStore store = new Gtk.ListStore (1, typeof (Transfer));
         Gtk.TreeView treeview;
         Katze.Array array;
+        
+        Midori.Database database;
 
         public unowned string get_stock_id () {
             return Midori.Stock.TRANSFER;
@@ -184,21 +229,20 @@ namespace Transfers {
 
         void open_dir_clicked () {
             stdout.printf("open_dir_clicked\n");
-            foreach (GLib.Object item in array.get_items ()) {
-                var transfer = item as Transfer;
+            Gtk.TreeIter iter;
+            if (treeview.get_selection ().get_selected (null, out iter)) {
+                Transfer transfer;
+                store.get (iter, 0, out transfer);
                 var folder = GLib.File.new_for_uri (transfer.destination);
-//zgh                (Midori.Browser.get_for_widget (this).tab as Midori.Tab).open_uri (folder.get_parent ().get_uri ());
-
                 string[] argv = {"xdg-open", folder.get_parent ().get_uri (),null};
-
                 GLib.Process.spawn_async(null,argv,null,
                                         GLib.SpawnFlags.SEARCH_PATH
                                         |GLib.SpawnFlags.STDOUT_TO_DEV_NULL
                                         |GLib.SpawnFlags.STDERR_TO_DEV_NULL
                                         |GLib.SpawnFlags.STDERR_TO_DEV_NULL,
                                         null,null);
-                
-            }
+                                }
+
         }
 
         void open_file_clicked () {
@@ -210,7 +254,7 @@ namespace Transfers {
                 if (transfer.finished) {
                     try {
                         //Midori.Download.open (transfer.download, treeview);   //zgh 打开文件，修改
-                        (Midori.Browser.get_for_widget (this).tab as Midori.Tab).open_uri (transfer.download.destination);
+                        (Midori.Browser.get_for_widget (this).tab as Midori.Tab).open_uri (transfer.destination);
                         
                         //zgh 工具栏上图标变化
                         var action_group = (Midori.Browser.get_for_widget (this)).get_action_group();
@@ -277,7 +321,14 @@ namespace Transfers {
                 if(cancel)
                 {
                     transfer.remove ();
-                    Midori.Download.re_download(transfer.download);
+                    if (transfer.download != null)
+                        Midori.Download.re_download(transfer.download);
+                    else{
+                        WebKit.WebContext m_webContext = WebKit.WebContext.get_default();
+                        WebKit.Download downloadt = m_webContext.download_uri(transfer.uri);
+                        Midori.Download.set_filename(downloadt, transfer.filename);
+                        downloadt.get_request();
+                    }
                 }
                 
                 stdout.printf("start_dl_clicked end\n");
@@ -296,7 +347,7 @@ namespace Transfers {
             if (treeview.get_selection ().get_selected (null, out iter)) {
                 Transfer transfer;
                 store.get (iter, 0, out transfer);
-                if (transfer.finished) {
+                if (transfer.finished && transfer.download_progress == 100) {
                     open_file.sensitive = true;
                 }
                 else{
@@ -418,6 +469,12 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
             array.remove_item.connect_after (transfer_removed);
             foreach (GLib.Object item in array.get_items ())
                 transfer_added (item);
+                
+            try {
+                database = new Midori.Database ("download.db");
+            } catch (Midori.DatabaseError schema_error) {
+                error (schema_error.message);
+            }
         }
 
         void row_activated (Gtk.TreePath path, Gtk.TreeViewColumn column) {
@@ -561,8 +618,12 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
             Gtk.TreeModel model, Gtk.TreeIter iter) {
 
             Transfer transfer;
+            string content_type;
             model.get (iter, 0, out transfer);
-            string content_type = Midori.Download.get_content_type (transfer.download, null);
+            if(transfer.download != null)
+                content_type = Midori.Download.get_content_type (transfer.download, null);
+            else
+                content_type = transfer.content_type;
             var icon = GLib.ContentType.get_icon (content_type) as ThemedIcon;
             icon.append_name ("text-html");
             renderer.set ("gicon", icon,
@@ -575,18 +636,33 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
             Gtk.TreeModel model, Gtk.TreeIter iter) {
 
             Transfer transfer;
+            string tooltip;
+            int progrs = 0;
             model.get (iter, 0, out transfer);
-            string tooltip = Midori.Download.get_tooltip (transfer.download);
+            if (transfer.download != null)
+            {
+                tooltip = Midori.Download.get_tooltip (transfer.download);
+                progrs = (int)(transfer.progress * 100);
+            }
+            else
+            {
+                tooltip = transfer.filename;
+                progrs = (int)transfer.download_progress;
+            }
             renderer.set ("text", tooltip,
-                            "value", (int)(transfer.progress * 100));
+                            "value", progrs);
         }
 
         void on_render_size (Gtk.CellLayout column, Gtk.CellRenderer renderer,
             Gtk.TreeModel model, Gtk.TreeIter iter) {
 
             Transfer transfer;
+            string size;
             model.get (iter, 0, out transfer);
-            string size = Midori.Download.get_size (transfer.download);
+            if (transfer.download != null)
+                size = Midori.Download.get_size (transfer.download);
+            else
+                size = transfer.filesize;
             renderer.set ("text", size);
         }
 
@@ -594,8 +670,12 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
             Gtk.TreeModel model, Gtk.TreeIter iter) {
 
             Transfer transfer;
+            string remaining;
             model.get (iter, 0, out transfer);
-            string remaining = Midori.Download.get_remaining (transfer.download);
+            if (transfer.download != null)
+                remaining = Midori.Download.get_remaining (transfer.download);
+            else
+                remaining = "0";
             renderer.set ("text", remaining);
         }
 
@@ -603,8 +683,12 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
             Gtk.TreeModel model, Gtk.TreeIter iter) {
 
             Transfer transfer;
+            string website;
             model.get (iter, 0, out transfer);
-            string website = Midori.Download.get_website (transfer.download);
+            if (transfer.download != null)
+                website = Midori.Download.get_website (transfer.download);
+            else
+                website = transfer.uri;
             renderer.set ("text", website,
                             "ellipsize-set", true,
                             "ellipsize", Pango.EllipsizeMode.MIDDLE);
@@ -756,13 +840,37 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
         internal GLib.List<Gtk.Widget> widgets;
         internal GLib.List<string> notifications;
         internal uint notification_timeout;
+        internal Midori.Database database;
 
         void download_added (WebKit.Download download) {
-            var transfer = new Transfer (download);
+
+//            var transfer = new Transfer (download);
+            var transfer = new Transfer ();
+            transfer.set_download (download);
+            
             transfer.remove.connect (transfer_remove);
             transfer.changed.connect (transfer_changed);
             array.remove_item.connect (transfer_removed);
             array.add_item (transfer);
+            //zgh todo 写数据库，插入新的下载数据
+            
+//            int64 create_time = transfer.get_createtime_i();
+            string sqlcmd = "INSERT INTO `download` (`name`, `destination`, `file_size`, `uri`, `create_time`, `content_type`, `download_progress`) VALUES  (:name, :destination, :file_size, :uri, :create_time, :content_type, :download_progress);";
+            
+            try {
+                    int64 download_progress = 0;
+                    var statement = database.prepare (sqlcmd,
+                        ":name", typeof (string), Midori.Download.get_basename_for_display (download.destination),
+                        ":destination", typeof (string), transfer.destination,
+                        ":file_size", typeof (string), "0",
+                        ":uri", typeof (string), Midori.Download.get_website(download),
+                        ":create_time", typeof (int64), transfer.crtime_i,
+                        ":content_type", typeof (string), Midori.Download.get_content_type (transfer.download, null),
+                        ":download_progress", typeof (int64), download_progress);
+                    statement.exec ();
+                } catch (Error error) {
+                    critical (_("Failed to update database: %s"), error.message);
+                }
         }
 
         bool notification_timeout_triggered () {
@@ -816,6 +924,17 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
 
         void transfer_remove (Transfer transfer) {
             array.remove_item (transfer);
+            
+            //zgh delete from database
+            string sqlcmd = "DELETE FROM download WHERE destination = :destination";
+            try{
+                var statement = database.prepare(sqlcmd,
+                ":destination", typeof (string), transfer.destination);
+                statement.exec();
+            }catch (Error error){
+                critical(_("Failed to delete database: %s"), error.message);
+            }
+            
         }
 
         void transfer_removed (GLib.Object item) {
@@ -828,8 +947,9 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
 #else
         bool browser_closed (Gtk.Widget widget, Gdk.Event event) {
 #endif
+            var app = get_app ();
             var browser = widget as Midori.Browser;
-            if (pending_transfers (array)) {
+            if (1 == app.get_browsers ().length () && pending_transfers (array)) {
                 var dialog = new Gtk.MessageDialog (browser,
                     Gtk.DialogFlags.DESTROY_WITH_PARENT,
                     Gtk.MessageType.WARNING, Gtk.ButtonsType.NONE,
@@ -865,9 +985,38 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
             browser.add_download.connect (download_added);
             browser.delete_event.connect (browser_closed);
         }
+        
+        void get_download_array()
+        {
+            string sqlcmd = "SELECT name, destination, file_size, uri, create_time, content_type, download_progress FROM download ORDER BY create_time DESC";
+            
+            try {
+                    var statement = database.prepare (sqlcmd);
+                    while (statement.step ()) {
+                        var transfer = new Transfer ();
+                        transfer.remove.connect (transfer_remove);
+                        transfer.changed.connect (transfer_changed);
+                        array.remove_item.connect (transfer_removed);
+                        
+                        transfer.filename = statement.get_string ("name");
+                        transfer.destination = statement.get_string ("destination");
+                        transfer.filesize = statement.get_string ("file_size");
+                        transfer.uri = statement.get_string ("uri");
+                        transfer.crtime_i = statement.get_int64 ("create_time");
+                        transfer.crtime = new DateTime.from_unix_local (transfer.crtime_i).format("%Y-%m-%d %H:%M:%S");
+                        transfer.content_type = statement.get_string("content_type");
+                        transfer.download_progress = statement.get_int64 ("download_progress");
+
+                        array.add_item (transfer);
+                    }
+                } catch (Error error) {
+                    critical (_("Failed to select from database: %s"), error.message);
+                }
+        }
 
         void activated (Midori.App app) {
             array = new Katze.Array (typeof (Transfer));
+            get_download_array();
             widgets = new GLib.List<Gtk.Widget> ();
             notifications = new GLib.List<string> ();
             notification_timeout = 0;
@@ -893,6 +1042,11 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
                          description: _("View downloaded files"),
                          version: "0.1" + Midori.VERSION_SUFFIX,
                          authors: "Christian Dywan <christian@twotoasts.de>");
+            try {
+                    database = new Midori.Database ("download.db");
+                } catch (Midori.DatabaseError schema_error) {
+                    error (schema_error.message);
+                }
 
             this.activate.connect (activated);
             this.deactivate.connect (deactivated);

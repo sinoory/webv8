@@ -3491,7 +3491,11 @@ midori_view_download_decide_destination_cb (WebKitDownload*   download,
                                     const gchar * suggested_filename,
                                     MidoriView*      view)
 {
-    if(!midori_view_download_query_action (view, download, suggested_filename)) {
+    MidoriApp *app = midori_app_get_default();	
+    MidoriBrowser* browser = midori_app_get_browser (MIDORI_APP (app));
+    MidoriView * r_view = MIDORI_VIEW(midori_browser_get_nth_tab(browser, 0));
+    
+    if(!midori_view_download_query_action (r_view, download, suggested_filename)) {
         webkit_download_cancel (download);
     }
     return TRUE;    //we must return TRUE because we handled the signal

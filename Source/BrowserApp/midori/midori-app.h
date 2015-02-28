@@ -47,6 +47,7 @@ struct _MidoriApp
     KatzeArray* trash;
     KatzeArray* search_engines;
     KatzeArray* history;
+    KatzeArray* download;   //zgh download
     GKeyFile* speeddial;
     KatzeArray* extensions;
     KatzeArray* browsers;
