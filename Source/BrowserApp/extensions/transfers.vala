@@ -580,7 +580,8 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
         void transfer_added (GLib.Object item) {
             var transfer = item as Transfer;
             Gtk.TreeIter iter;
-            store.append (out iter);
+            //store.append (out iter);
+            store.insert (out iter, 0); //zgh 20150228 将新的下载任务添加到treeview的最上面
             store.set (iter, 0, transfer);
             transfer.changed.connect (transfer_changed);
             clear.sensitive = true;
@@ -988,7 +989,7 @@ gtk_tree_view_column_set_sizing (GtkTreeViewColumn       *tree_column,
         
         void get_download_array()
         {
-            string sqlcmd = "SELECT name, destination, file_size, uri, create_time, content_type, download_progress FROM download ORDER BY create_time DESC";
+            string sqlcmd = "SELECT name, destination, file_size, uri, create_time, content_type, download_progress FROM download ORDER BY create_time ASC";
             
             try {
                     var statement = database.prepare (sqlcmd);
