@@ -114,6 +114,10 @@ msgstr "执行指定的命令"
 msgid "List available commands to execute with -e/ --execute"
 msgstr "列出可以带 -e/ --execute 执行的命令"
 
+# 添加tab多进程启动模式 by sunh 2015.2.28
+msgid "single-process with --single-process"
+msgstr "启动tab单进程模式 --single-process"
+
 #: ../midori/main.c:103
 msgid "Display program version"
 msgstr "显示程序版本"
