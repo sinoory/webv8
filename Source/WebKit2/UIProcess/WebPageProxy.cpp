@@ -3079,7 +3079,7 @@ void WebPageProxy::runJavaScriptConfirm(uint64_t frameID, const String& message,
     m_uiClient->runJavaScriptConfirm(this, message, frame, [reply](bool result) { reply->send(result); });
 }
 
-bool WebPageProxy::IsJavascriptPopupWindowIntercepted(const WTF::String& str)
+bool WebPageProxy::isJavascriptPopupWindowIntercepted(const WTF::String& str)
 {
 	m_uiClient->IsJavascriptPopupWindowIntercepted(str);
 	return true;
