@@ -1,3 +1,12 @@
+cdosbrowser (0.1.7) Feb28; urgency=low
+
+  * New upstream release
+  - 默认以多进程打开网页
+  - 下载功能完善：历史下载记录保存、下载任务时图标提示、解决点击下载图标打开管理器显示书签页面问题、解决下载记录消失问题
+  - 解决当某URL已存在于打开的Tab中，在新标签页中输入该URL不会再打开该网址的问题
+  - 网址认证查询功能缺陷修复：同时打开多个Tab页时，信息查询异常
+ -- ZhangRuili <zhangrl_os@sari.ac.cn>  Sat, 28 Feb 2015 18:31:15 +0800
+
 cdosbrowser (0.1.6) Feb15; urgency=low
 
   * New upstream release
