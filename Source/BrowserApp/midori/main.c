@@ -84,6 +84,7 @@ main (int    argc,
     gchar** uris;
     gchar* block_uris;
     gint inactivity_reset;
+    gboolean single_process = FALSE;
     GOptionEntry entries[] =
     {
        { "app", 'a', 0, G_OPTION_ARG_STRING, &webapp,
@@ -106,6 +107,8 @@ main (int    argc,
        N_("Execute the specified command"), NULL },
        { "help-execute", 0, 0, G_OPTION_ARG_NONE, &help_execute,
        N_("List available commands to execute with -e/ --execute"), NULL },
+       { "single-process", 0, 0, G_OPTION_ARG_NONE, &single_process,
+       N_("single-process with --single-process"), NULL },
 #if 0
        { "version", 'V', 0, G_OPTION_ARG_NONE, &version,
        N_("Display program version"), NULL },
@@ -148,7 +151,12 @@ main (int    argc,
     g_signal_connect (context, "initialize-web-extensions",
                     G_CALLBACK (initialize_web_extensions),
                     NULL);
-
+    
+    if(!single_process)
+    {
+        webkit_web_context_set_process_model(context, WEBKIT_PROCESS_MODEL_MULTIPLE_SECONDARY_PROCESSES);
+    }
+    
     if (debug)
     {
         gchar* gdb = g_find_program_in_path ("gdb");
