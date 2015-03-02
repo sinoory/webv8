@@ -5556,7 +5556,7 @@ _action_pageinfo_activate ( GtkAction*     action,
     gtk_widget_show (button);
 
     gchar** website_record_array = midori_view_get_website_record(MIDORI_VIEW(view));
-    if (website_record_array) //如果不为NULL
+    if (website_record_array && website_record_array[0]) //如果不为NULL
     {   
         if (strcmp(website_record_array[0], "unknown"))
         {

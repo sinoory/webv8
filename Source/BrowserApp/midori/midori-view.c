@@ -16,6 +16,10 @@
 #include <libsoup/soup.h>
 //end
 
+//add by luyue 2015/3/2  start
+#include "parse_domain.h"
+#include "tld_tree.c"
+//end
 #include "midori-view.h"
 #include "midori-browser.h"
 #include "midori-searchaction.h"
@@ -804,6 +808,12 @@ static void _get_website_record_info(MidoriView*        view)
     else
     {  
        view->website_record_array = (char **)malloc(sizeof(char *)*6);
+       view->website_record_array[0] = NULL;
+       view->website_record_array[1] = NULL;
+       view->website_record_array[2] = NULL;
+       view->website_record_array[3] = NULL;
+       view->website_record_array[4] = NULL;
+       view->website_record_array[5] = NULL;
      
        if(strstr(view->total_read_buffer,"主办单位名称"))
        {
@@ -837,11 +847,18 @@ static void _get_website_record_info(MidoriView*        view)
                 view->website_record_array[3] = (char *)malloc(strlen(tmp1)-strlen(tmp)+1);
                 strncpy(view->website_record_array[3],tmp1,strlen(tmp1)-strlen(tmp));
                 view->website_record_array[3][strlen(tmp1)-strlen(tmp)]= '\0';
-                tmp1 = tmp+66;
+                tmp1 = tmp+58;
+                tmp = strstr(tmp1,"<em>");
+                char * tmp2 = (char *)malloc(strlen(tmp1)-strlen(tmp)+1);
+                strncpy(tmp2,tmp1,strlen(tmp1)-strlen(tmp));
+                tmp2[strlen(tmp1)-strlen(tmp)]= '\0';
+                tmp1 = tmp + 4;
                 tmp = strstr(tmp1,"</em>");
-                view->website_record_array[4] = (char *)malloc(strlen(tmp1)-strlen(tmp)+1);
-                strncpy(view->website_record_array[4],tmp1,strlen(tmp1)-strlen(tmp));
-                view->website_record_array[4][strlen(tmp1)-strlen(tmp)]= '\0';
+                view->website_record_array[4] = (char *)malloc(strlen(tmp1)-strlen(tmp)+1+strlen(tmp2));
+                strcpy(view->website_record_array[4],tmp2);
+                strncat(view->website_record_array[4],tmp1,strlen(tmp1)-strlen(tmp));
+                view->website_record_array[4][strlen(tmp1)-strlen(tmp)+strlen(tmp2)]= '\0';
+                free(tmp2);
                 tmp1 = tmp+82;
                 tmp = strstr(tmp1,"</s>");
                 view->website_record_array[5] = (char *)malloc(strlen(tmp1)-strlen(tmp)+1);
@@ -853,13 +870,7 @@ static void _get_website_record_info(MidoriView*        view)
                 return;
              }
              //add end
-             else
-             {
-                view->website_record_array[0] = NULL;
-                view->website_record_array[1] = NULL;
-                view->website_record_array[2] = NULL;
-                tmp = tmp1 = NULL;
-             }
+             tmp = tmp1 = NULL;
           }
           else
           {
@@ -878,78 +889,46 @@ static void _get_website_record_info(MidoriView*        view)
              view->website_record_array[2] = (char *)malloc(strlen(tmp)-strlen(tmp1)+1);
              strncpy(view->website_record_array[2],tmp,strlen(tmp)-strlen(tmp1));
              view->website_record_array[2][strlen(tmp)-strlen(tmp1)]= '\0';
+             if(strstr(view->total_read_buffer,"<td><b>网站名称"))
+             {
+                tmp = strstr(view->total_read_buffer,"word-break:break-all;word-wrap:break-word;");
+                tmp = tmp +62;
+                tmp1 = strstr(tmp,"</td>");
+                view->website_record_array[3] = (char *)malloc(strlen(tmp)-strlen(tmp1)-13);
+                strncpy(view->website_record_array[3],tmp,strlen(tmp)-strlen(tmp1)-14);
+                view->website_record_array[3][strlen(tmp)-strlen(tmp1)-14]= '\0';
+             }
+             if(strstr(view->total_read_buffer,"网站首页网址"))
+             {
+                tmp = strstr(view->total_read_buffer,"home_url");
+                tmp = tmp +36;
+                tmp1 = strstr(tmp,"target");
+                view->website_record_array[4] = (char *)malloc(strlen(tmp)-strlen(tmp1)-1);
+                strncpy(view->website_record_array[4],tmp,strlen(tmp)-strlen(tmp1)-2);
+                view->website_record_array[4][strlen(tmp)-strlen(tmp1)-2]= '\0';
+             }
+             if(strstr(view->total_read_buffer,"审核时间"))
+             {
+                tmp = strstr(view->total_read_buffer,"pass_time");
+                if(tmp)
+                {
+                   tmp = tmp +11;
+                   if(!strlen(tmp)<16)
+                   {
+                      tmp1 = tmp+10;
+                      if(strncmp(tmp1,"</div>",6)==0)
+                      {
+                         view->website_record_array[5] = (char *)malloc(11);
+                         strncpy(view->website_record_array[5],tmp,10);
+                         view->website_record_array[5][10]= '\0';
+                      }
+                   }
+                }
+             }
              tmp = NULL;
              tmp1 = NULL;
           }
        }
-       else
-       {
-          view->website_record_array[0] = NULL;
-          view->website_record_array[1] = NULL;
-          view->website_record_array[2] = NULL;
-       }
-
-       if(strstr(view->total_read_buffer,"<td><b>网站名称"))
-       {
-          tmp = strstr(view->total_read_buffer,"word-break:break-all;word-wrap:break-word;");
-          tmp = tmp +62;
-          tmp1 = strstr(tmp,"</td>");
-          view->website_record_array[3] = (char *)malloc(strlen(tmp)-strlen(tmp1)-13);
-          strncpy(view->website_record_array[3],tmp,strlen(tmp)-strlen(tmp1)-14);
-          view->website_record_array[3][strlen(tmp)-strlen(tmp1)-14]= '\0';
-          tmp = NULL;
-          tmp1 = NULL;
-       }
-       else
-          view->website_record_array[3] = NULL;
-
-       if(strstr(view->total_read_buffer,"网站首页网址"))
-       {
-          tmp = strstr(view->total_read_buffer,"home_url");
-          tmp = tmp +36;
-          tmp1 = strstr(tmp,"target");
-          view->website_record_array[4] = (char *)malloc(strlen(tmp)-strlen(tmp1)-1);
-          strncpy(view->website_record_array[4],tmp,strlen(tmp)-strlen(tmp1)-2);
-          view->website_record_array[4][strlen(tmp)-strlen(tmp1)-2]= '\0';
-          tmp = NULL;
-          tmp1 = NULL;
-       }
-       else
-          view->website_record_array[4] = NULL;
-
-       if(strstr(view->total_read_buffer,"审核时间"))
-       {
-          tmp = strstr(view->total_read_buffer,"pass_time");
-          if(!tmp)
-             view->website_record_array[5] = NULL;
-          else
-          {
-             tmp = tmp +11;
-             if(strlen(tmp)<16)
-                view->website_record_array[5] = NULL;
-             else
-             {
-                tmp1 = tmp+10;
-                if(strncmp(tmp1,"</div>",6)!=0)
-                {
-                   view->website_record_array[5] = NULL;
-                   tmp = NULL;
-                   tmp1 = NULL;
-                }
-                else
-                {
-                   view->website_record_array[5] = (char *)malloc(11);
-                   strncpy(view->website_record_array[5],tmp,10);
-                   view->website_record_array[5][10]= '\0';
-                   tmp = NULL;
-                   tmp1 = NULL;
-                }
-             }
-          }
-       }
-       else
-          view->website_record_array[5] = NULL;
-
        free(view->total_read_buffer);
     }
     g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_DATA], 0, view->website_record_array);
@@ -998,6 +977,31 @@ static void sendRequestCallback(GObject* object, GAsyncResult* result, gpointer 
     }
 }
 
+//add by luyue 2015/3/2
+static char * _get_base_domain (char * base_domain)
+{
+   char              line[MAX_LENGTH];
+   int               len;
+   tldnode          *tree;
+   string_t         *domain;
+   http_result_t     result;
+   public_suffix_t  *ps;
+
+   tree = init_tld_tree(tld_string);
+    if (tree == NULL)
+        return NULL;
+    domain = &result.domain;
+    strcpy(line,base_domain);
+    memset(&result, 0, sizeof(http_result_t));
+    len = strlen(line);
+    domain->data = line;
+    domain->len = len;
+    if (parse_domain(tree, &result, domain) != 0)
+       return NULL;
+    ps = &result.complex_domain;
+    return ps->domain.data;
+}
+
 //zgh 20150107
 static gboolean
 midori_view_website_query_idle(gpointer data)
@@ -1009,17 +1013,26 @@ midori_view_website_query_idle(gpointer data)
     WebKitURIRequest *request = webkit_uri_request_new(uri);
     gchar *base_domain = webkit_uri_request_get_uri_host (request);
     gchar *web_tab_uri = NULL;
-    if (base_domain == NULL || !strcmp(base_domain,"")) {
+    if (base_domain == NULL || !strcmp(base_domain,"")) 
+    {
         web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", "null");
     }
     else {
-        web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", base_domain);
+        //add by luyue 2015/3/2 start
+        //获取base_domain
+        base_domain = _get_base_domain(base_domain);
+        //add end
+        if (base_domain == NULL || !strcmp(base_domain,"")) 
+        {
+           web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", "null");
+        }
+        else
+           web_tab_uri = g_strdup_printf("http://www.beianbeian.com/search/%s", base_domain);
     }
 
     //add by luyue
     SoupURI *soup_uri = soup_uri_new(web_tab_uri);
     SoupSession *soup_session=soup_session_new();
-//    g_object_set(soup_session, "user-agent", "Mozilla/5.0 (X11; Linux) AppleWebKit/537.32 (KHTML, like Gecko) Chrome/18.0.1025.133 Safari/537.32 Cuprum/0.1", NULL);
     char *string =NULL;
     g_object_get(view->settings, "user-agent", &string, NULL);
     g_object_set(soup_session, "user-agent", string, NULL);
@@ -1029,8 +1042,6 @@ midori_view_website_query_idle(gpointer data)
     if(view->soup_request)
        soup_request_send_async(view->soup_request, NULL, sendRequestCallback, view);   
 
-    g_free(base_domain);
- //   gdk_threads_leave();
     return false;
 }
 
