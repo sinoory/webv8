@@ -807,14 +807,59 @@ static void _get_website_record_info(MidoriView*        view)
      
        if(strstr(view->total_read_buffer,"主办单位名称"))
        {
-          tmp = strstr(view->total_read_buffer,"主办单位名称");
+          tmp = tmp1 = strstr(view->total_read_buffer,"主办单位名称");
           tmp = tmp +498;
           if(strncmp(tmp,"kind",4)!=0)
           {
-             view->website_record_array[0] = NULL;
-             view->website_record_array[1] = NULL;
-             view->website_record_array[2] = NULL;
-             tmp = NULL;
+             //支持www.12306.cn 
+             // add by luyue 2015/3/2
+             tmp1 = tmp1 + 378;
+             if(strncmp(tmp1,"tr style",4) ==0)
+             {
+                tmp = NULL;              
+                tmp1 = tmp1 + 187;
+                tmp = strstr(tmp1,"</s>");
+                view->website_record_array[0] = (char *)malloc(strlen(tmp1)-strlen(tmp)+1);
+                strncpy(view->website_record_array[0],tmp1,strlen(tmp1)-strlen(tmp));
+                view->website_record_array[0][strlen(tmp1)-strlen(tmp)]= '\0';
+                tmp1 = tmp+69;
+                tmp = strstr(tmp1,"</s>");
+                view->website_record_array[1] = (char *)malloc(strlen(tmp1)-strlen(tmp)+1);
+                strncpy(view->website_record_array[1],tmp1,strlen(tmp1)-strlen(tmp));
+                view->website_record_array[1][strlen(tmp1)-strlen(tmp)]= '\0';
+                tmp1 = tmp+69;
+                tmp = strstr(tmp1,"</s>");
+                view->website_record_array[2] = (char *)malloc(strlen(tmp1)-strlen(tmp)+1);
+                strncpy(view->website_record_array[2],tmp1,strlen(tmp1)-strlen(tmp));
+                view->website_record_array[2][strlen(tmp1)-strlen(tmp)]= '\0';
+                tmp1 = tmp+104;
+                tmp = strstr(tmp1,"</s>");
+                view->website_record_array[3] = (char *)malloc(strlen(tmp1)-strlen(tmp)+1);
+                strncpy(view->website_record_array[3],tmp1,strlen(tmp1)-strlen(tmp));
+                view->website_record_array[3][strlen(tmp1)-strlen(tmp)]= '\0';
+                tmp1 = tmp+66;
+                tmp = strstr(tmp1,"</em>");
+                view->website_record_array[4] = (char *)malloc(strlen(tmp1)-strlen(tmp)+1);
+                strncpy(view->website_record_array[4],tmp1,strlen(tmp1)-strlen(tmp));
+                view->website_record_array[4][strlen(tmp1)-strlen(tmp)]= '\0';
+                tmp1 = tmp+82;
+                tmp = strstr(tmp1,"</s>");
+                view->website_record_array[5] = (char *)malloc(strlen(tmp1)-strlen(tmp)+1);
+                strncpy(view->website_record_array[5],tmp1,strlen(tmp1)-strlen(tmp));
+                view->website_record_array[5][strlen(tmp1)-strlen(tmp)]= '\0';
+                tmp = tmp1 = NULL;
+                free(view->total_read_buffer);
+                g_signal_emit (GTK_WIDGET(view), signals[WEBSITE_DATA], 0, view->website_record_array);
+                return;
+             }
+             //add end
+             else
+             {
+                view->website_record_array[0] = NULL;
+                view->website_record_array[1] = NULL;
+                view->website_record_array[2] = NULL;
+                tmp = tmp1 = NULL;
+             }
           }
           else
           {
