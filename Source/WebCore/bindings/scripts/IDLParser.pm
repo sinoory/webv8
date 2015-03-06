@@ -93,6 +93,9 @@ sub Parse
     my $dataAvailable = 0;
 
     # Simple IDL Parser (tm)
+    # wangcui adapte to android script, wrap idl with "module Webcore{}"
+    my @tmpdoc = ("module WebCore {\n",@documentContent,"}\n");
+    @documentContent=@tmpdoc;
     foreach (@documentContent) {
         my $newParseMode = $object->DetermineParseMode($_);
 
@@ -329,7 +332,7 @@ sub ParseInterface
                     my $line = $_;
 
                     $line =~ /$IDLStructure::interfaceParameterSelector/;
-                    my $paramDirection = $1;
+                    my $paramDirection = $1||"in"; #wangcui adapte to android script : need in | out for function param
                     my $paramExtendedAttributes = (defined($2) ? $2 : " "); chop($paramExtendedAttributes);
                     my $paramType = (defined($3) ? $3 : die("Parsing error!\nSource:\n$line\n)"));
                     my $paramName = (defined($4) ? $4 : die("Parsing error!\nSource:\n$line\n)"));
