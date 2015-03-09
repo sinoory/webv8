@@ -26,10 +26,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-[
+interface [
     DoNotCheckConstants,
     ImplementationLacksVTable,
-] exception XPathException {
+] XPathException {
 
     readonly attribute unsigned short   code;
     readonly attribute DOMString        name;

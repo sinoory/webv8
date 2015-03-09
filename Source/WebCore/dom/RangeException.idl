@@ -17,10 +17,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-[
+interface [
     DoNotCheckConstants,
     ImplementationLacksVTable,
-] exception RangeException {
+]  RangeException {
 
     readonly attribute unsigned short   code;
     readonly attribute DOMString        name;

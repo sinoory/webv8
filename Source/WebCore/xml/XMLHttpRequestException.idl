@@ -26,10 +26,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-[
+interface [
     DoNotCheckConstants,
     ImplementationLacksVTable,
-] exception XMLHttpRequestException {
+] XMLHttpRequestException {
 
     readonly attribute unsigned short   code;
     readonly attribute DOMString        name;

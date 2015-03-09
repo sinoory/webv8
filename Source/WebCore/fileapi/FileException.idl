@@ -28,11 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-[
+interface [
     NoInterfaceObject,
     DoNotCheckConstants,
     ImplementationLacksVTable,
-] exception FileException {
+] FileException {
 
     readonly attribute unsigned short   code;
     readonly attribute DOMString        name;

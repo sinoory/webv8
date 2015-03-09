@@ -18,10 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-[
+interface [
     DoNotCheckConstants,
     ImplementationLacksVTable,
-] exception SVGException {
+] SVGException {
 
     readonly attribute unsigned short   code;
     readonly attribute DOMString        name;

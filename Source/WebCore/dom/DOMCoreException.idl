@@ -26,11 +26,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-[
+interface [
     DoNotCheckConstants,
     InterfaceName=DOMException,
     ImplementationLacksVTable,
-] exception DOMCoreException {
+] DOMCoreException {
 
     readonly attribute unsigned short   code;
     readonly attribute DOMString        name;

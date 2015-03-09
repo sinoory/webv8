@@ -28,11 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-[
+interface [
     Conditional=SQL_DATABASE,
     DoNotCheckConstants,
     ImplementationLacksVTable
-] exception SQLException {
+] SQLException {
     readonly attribute unsigned long code;
     readonly attribute DOMString message;
 
