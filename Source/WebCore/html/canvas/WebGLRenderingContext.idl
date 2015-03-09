@@ -559,7 +559,6 @@ typedef unrestricted float GLclampf;
 
     [StrictTypeChecking, TreatReturnedNullStringAs=Null, RaisesException] DOMString    getShaderSource(WebGLShader shader);
 
-    [StrictTypeChecking, Custom] sequence<DOMString> getSupportedExtensions();
 
     [StrictTypeChecking, Custom, RaisesException] any getTexParameter(GLenum target, GLenum pname);
 

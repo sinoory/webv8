@@ -54,8 +54,6 @@ interface CanvasRenderingContext2D : CanvasRenderingContext {
     attribute unrestricted float shadowBlur;
     [TreatNullAs=NullString] attribute DOMString shadowColor;
 
-    void setLineDash(sequence<unrestricted float> dash);
-    sequence<unrestricted float> getLineDash();
     attribute unrestricted float lineDashOffset;
 
     [Custom] attribute Array webkitLineDash;

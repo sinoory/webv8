@@ -49,7 +49,6 @@
     [RaisesException] void appendBuffer(ArrayBuffer data);
     [RaisesException] void appendBuffer(ArrayBufferView data);
 
-    // Abort the current segment append sequence.
     [RaisesException] void abort();
     [RaisesException] void remove(unrestricted double start, unrestricted double end);
     

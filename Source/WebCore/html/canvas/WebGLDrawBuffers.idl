@@ -68,5 +68,4 @@ typedef unsigned long GLenum;
     const GLenum MAX_COLOR_ATTACHMENTS_WEBGL = 0x8CDF;
     const GLenum MAX_DRAW_BUFFERS_WEBGL = 0x8824;
 
-    void drawBuffersWEBGL(sequence<GLenum> buffers);
 };

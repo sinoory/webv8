@@ -58,8 +58,6 @@
     readonly attribute DOMString iceGatheringState;
     readonly attribute DOMString iceConnectionState;
 
-    sequence<MediaStream> getLocalStreams();
-    sequence<MediaStream> getRemoteStreams();
     MediaStream getStreamById(DOMString streamId);
 
     RTCConfiguration getConfiguration();

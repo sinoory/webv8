@@ -73,7 +73,6 @@
     void selectColorInColorChooser(Element element, DOMString colorValue);
 #endif
     [RaisesException] DOMString[] formControlStateOfPreviousHistoryItem();
-    [RaisesException] void setFormControlStateOfPreviousHistoryItem(sequence<DOMString> values);
 
     [RaisesException] ClientRect absoluteCaretBounds();
 
@@ -120,8 +119,6 @@
     [RaisesException] long lastSpellCheckRequestSequence();
     [RaisesException] long lastSpellCheckProcessedSequence();
 
-    sequence<DOMString> userPreferredLanguages();
-    void setUserPreferredLanguages(sequence<DOMString> languages);
 
     [RaisesException] unsigned long wheelEventHandlerCount();
     [RaisesException] unsigned long touchEventHandlerCount();
@@ -186,14 +183,12 @@
     [RaisesException] void setDeviceProximity(DOMString eventType, unrestricted double value, unrestricted double min, unrestricted double max);
 #endif
 
-    // As per spec: http://www.w3.org/TR/WebIDL/#idl-sequence
     // "Sequences must not be used as the type of an attribute, constant or exception field."
     // FIXME: this will lead to BUG interals.consoleProfiles !== interals.consoleProfiles as profile will always returns new array.
     readonly attribute ScriptProfile[] consoleProfiles;
 
     unsigned long numberOfLiveNodes();
     unsigned long numberOfLiveDocuments();
-    [Conditional=INSPECTOR] sequence<DOMString> consoleMessageArgumentCounts();
     [Conditional=INSPECTOR] DOMWindow openDummyInspectorFrontend(DOMString url);
     [Conditional=INSPECTOR] void closeDummyInspectorFrontend();
     [Conditional=INSPECTOR, RaisesException] void setJavaScriptProfilingEnabled(boolean creates);

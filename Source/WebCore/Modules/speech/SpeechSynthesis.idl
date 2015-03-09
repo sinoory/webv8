@@ -35,5 +35,4 @@
     void cancel();
     void pause();
     void resume();
-    sequence<SpeechSynthesisVoice> getVoices();
 };

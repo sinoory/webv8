@@ -158,7 +158,6 @@
 
     // CSS Regions API
     [Conditional=CSS_REGIONS] readonly attribute DOMString webkitRegionOverset;
-    [Conditional=CSS_REGIONS] sequence<Range> webkitGetRegionFlowRanges();
 
 #if !defined(LANGUAGE_OBJECTIVE_C) || !LANGUAGE_OBJECTIVE_C
     // Event handler DOM attributes
