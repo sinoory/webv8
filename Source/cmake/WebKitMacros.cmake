@@ -72,7 +72,7 @@ macro(GENERATE_BINDINGS _output_source _input_files _base_dir _idl_includes _fea
             OUTPUT ${_destination}/${_prefix}${_name}.${_extension} ${_destination}/${_prefix}${_name}.h
             MAIN_DEPENDENCY ${_file}
             DEPENDS ${COMMON_GENERATOR_DEPENDENCIES}
-            COMMAND ${PERL_EXECUTABLE} -I${WEBCORE_DIR}/bindings/scripts ${BINDING_GENERATOR} --defines "${_features}" --generator ${_generator} ${_idl_includes} --outputDir "${_destination}" --preprocessor "${CODE_GENERATOR_PREPROCESSOR}" --idlAttributesFile ${_idl_attributes_file} ${_supplemental_dependency} ${_file}
+            COMMAND ${PERL_EXECUTABLE} -I${WEBCORE_DIR}/bindings/scripts ${BINDING_GENERATOR} --defines "${_features}" --generator ${_generator} ${_idl_includes} --outputDir "${_destination}" --outputHeadersDir "${_destination}"  ${_file}
             WORKING_DIRECTORY ${_base_dir}
             VERBATIM)
 
