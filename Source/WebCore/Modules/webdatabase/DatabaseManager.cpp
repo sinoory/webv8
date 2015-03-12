@@ -48,7 +48,9 @@
 #include "SecurityOrigin.h"
 
 namespace WebCore {
-
+#ifdef None
+#undef None
+#endif
 DatabaseManager::ProposedDatabase::ProposedDatabase(DatabaseManager& manager,
     SecurityOrigin* origin, const String& name, const String& displayName, unsigned long estimatedSize)
     : m_manager(manager)

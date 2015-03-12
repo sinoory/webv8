@@ -80,6 +80,10 @@ public:
 #endif
     };
 
+//CMP_ERROR defined Status cause enum error
+#ifdef Status
+#undef Status
+#endif
     enum Status {
         Unknown,      // let cache decide what to do with it
         Pending,      // only partially loaded

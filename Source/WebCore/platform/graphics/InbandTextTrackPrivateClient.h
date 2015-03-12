@@ -94,7 +94,10 @@ public:
     
     Color highlightColor() const { return m_highlightColor; }
     void setHighlightColor(RGBA32 color) { m_highlightColor.setRGB(color); }
-    
+   
+#ifdef Status
+#undef Status
+#endif
     enum Status {
         Uninitialized,
         Partial,

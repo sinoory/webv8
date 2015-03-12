@@ -58,7 +58,9 @@ public:
             m_client->enabledChanged(this, enabled);
     };
     virtual bool enabled() const { return m_enabled; }
-
+#ifdef None
+#undef None
+#endif
     enum Kind { Alternative, Description, Main, MainDesc, Translation, Commentary, None };
     virtual Kind kind() const { return None; }
 
