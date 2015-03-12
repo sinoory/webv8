@@ -24,6 +24,7 @@
 #include "ContentSecurityPolicy.h"
 #include "DocumentLoader.h"
 #include "Frame.h"
+#include "Document.h"
 #include "FrameLoaderClient.h"
 #include "Page.h"
 #include "ScriptSourceCode.h"
@@ -35,13 +36,13 @@ namespace WebCore {
 bool ScriptController::canExecuteScripts(ReasonForCallingCanExecuteScripts reason)
 {
     // FIXME: We should get this information from the document instead of the frame.
-    if (m_frame->loader()->isSandboxed(SandboxScripts))
+    if (m_frame->document()->isSandboxed(SandboxScripts))
         return false;
 
     Settings* settings = m_frame->settings();
-    const bool allowed = m_frame->loader()->client()->allowJavaScript(settings && settings->isJavaScriptEnabled());
+    const bool allowed = m_frame->loader()->client()->allowJavaScript(settings && settings->isJavaEnabled());
     if (!allowed && reason == AboutToExecuteScript)
-        m_frame->loader()->client()->didNotAllowScript();
+        m_frame->loader().client()->didNotAllowScript();
     return allowed;
 }
 

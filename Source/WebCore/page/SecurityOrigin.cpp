@@ -162,7 +162,10 @@ SecurityOrigin::SecurityOrigin(const SecurityOrigin* other)
     , m_needsDatabaseIdentifierQuirkForFiles(other->m_needsDatabaseIdentifierQuirkForFiles)
 {
 }
-
+bool SecurityOrigin::isEmpty() const
+{
+    return m_protocol.isEmpty();
+}
 PassRefPtr<SecurityOrigin> SecurityOrigin::create(const URL& url)
 {
     RefPtr<SecurityOrigin> cachedOrigin = getCachedOrigin(url);

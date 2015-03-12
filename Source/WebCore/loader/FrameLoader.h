@@ -248,6 +248,7 @@ public:
     FrameLoaderStateMachine& stateMachine() { return m_stateMachine; }
 
     WEBCORE_EXPORT Frame* findFrameForNavigation(const AtomicString& name, Document* activeDocument = 0);
+    bool shouldAllowNavigation(Frame* targetFrame) const;
 
     void applyUserAgent(ResourceRequest&);
 

@@ -1581,7 +1581,63 @@ void FrameLoader::reload(bool endToEndReload)
     
     loadWithDocumentLoader(loader.get(), endToEndReload ? FrameLoadType::ReloadFromOrigin : FrameLoadType::Reload, 0, AllowNavigationToInvalidURL::Yes);
 }
+bool FrameLoader::shouldAllowNavigation(Frame* targetFrame) const
+{
+    // The navigation change is safe if the active frame is:
+    //   - in the same security origin as the target or one of the target's
+    //     ancestors.
+    //
+    // Or the target frame is:
+    //   - a top-level frame in the frame hierarchy and the active frame can
+    //     navigate the target frame's opener per above or it is the opener of
+    //     the target frame.
 
+    if (!targetFrame)
+        return true;
+
+    // Performance optimization.
+    if (m_frame == targetFrame)
+        return true;
+
+    // Let a frame navigate the top-level window that contains it.  This is
+    // important to allow because it lets a site "frame-bust" (escape from a
+    // frame created by another web site).
+    if (!isDocumentSandboxed(m_frame, SandboxTopNavigation) && targetFrame == m_frame->tree()->top())
+        return true;
+
+    // A sandboxed frame can only navigate itself and its descendants.
+    if (isDocumentSandboxed(m_frame, SandboxNavigation) && !targetFrame->tree()->isDescendantOf(m_frame))
+        return false;
+
+    // Let a frame navigate its opener if the opener is a top-level window.
+    if (!targetFrame->tree()->parent() && m_frame->loader()->opener() == targetFrame)
+        return true;
+
+    Document* activeDocument = m_frame->document();
+    ASSERT(activeDocument);
+    const SecurityOrigin* activeSecurityOrigin = activeDocument->securityOrigin();
+
+    // For top-level windows, check the opener.
+    if (!targetFrame->tree()->parent() && canAccessAncestor(activeSecurityOrigin, targetFrame->loader()->opener()))
+        return true;
+
+    // In general, check the frame's ancestors.
+    if (canAccessAncestor(activeSecurityOrigin, targetFrame))
+        return true;
+
+    Settings* settings = targetFrame->settings();
+    if (settings && !settings->privateBrowsingEnabled()) {
+        Document* targetDocument = targetFrame->document();
+        // FIXME: this error message should contain more specifics of why the navigation change is not allowed.
+        String message = makeString("Unsafe JavaScript attempt to initiate a navigation change for frame with URL ",
+                                    targetDocument->url().string(), " from frame with URL ", activeDocument->url().string(), ".\n");
+
+        // FIXME: should we print to the console of the activeFrame as well?
+        targetFrame->domWindow()->console()->addMessage(JSMessageSource, LogMessageType, ErrorMessageLevel, message, 1, String());
+    }
+    
+    return false;
+}
 void FrameLoader::stopAllLoaders(ClearProvisionalItemPolicy clearProvisionalItemPolicy)
 {
     ASSERT(!m_frame.document() || !m_frame.document()->inPageCache());

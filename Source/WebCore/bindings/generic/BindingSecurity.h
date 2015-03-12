@@ -148,7 +148,7 @@ template <class Binding>
 bool BindingSecurity<Binding>::shouldAllowNavigation(State<Binding>* state, Frame* frame)
 {
     Frame* activeFrame = state->activeFrame();
-    return activeFrame && activeFrame->loader()->shouldAllowNavigation(frame);
+    return activeFrame && activeFrame->loader().shouldAllowNavigation(frame);
 }
 
 }

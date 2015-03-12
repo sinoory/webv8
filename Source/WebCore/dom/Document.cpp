@@ -1844,7 +1844,17 @@ void Document::updateStyleIfNeeded()
 
     recalcStyle(Style::NoChange);
 }
+void Document::updateStyleForAllDocuments()
+{
+    ASSERT(isMainThread());
 
+    while (allDocuments().size()) {
+        HashSet<Document*>::iterator it = allDocuments().begin();
+        Document* doc = *it;
+        allDocuments().remove(doc);
+        doc->updateStyleIfNeeded();
+    }
+}
 void Document::updateLayout()
 {
     ASSERT(isMainThread());

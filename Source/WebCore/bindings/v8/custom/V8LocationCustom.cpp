@@ -34,7 +34,7 @@
 #include "Document.h"
 #include "Frame.h"
 #include "FrameLoader.h"
-#include "KURL.h"
+#include "URL.h"
 #include "Location.h"
 #include "PlatformString.h"
 #include "ScriptController.h"

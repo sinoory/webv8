@@ -33,7 +33,7 @@
 
 #include "Frame.h"
 #include "FrameLoader.h"
-
+#include "Document.h"
 namespace WebCore {
 
 // Used to instantiate binding templates for any methods shared among all
@@ -58,7 +58,7 @@ KURL completeURL(State<Binding>* state, const String& relativeURL)
     Frame* frame = state->firstFrame();
     if (!frame)
         return KURL();
-    return frame->loader()->completeURL(relativeURL);
+    return frame->document()->completeURL(relativeURL);
 }
 
 }

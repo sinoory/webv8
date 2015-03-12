@@ -46,7 +46,7 @@ DOMWindow* BindingSecurityBase::getDOMWindow(Frame* frame)
 
 Frame* BindingSecurityBase::getFrame(Node* node)
 {
-    return node->document()->frame();
+    return node->document().frame();
 }
 
 // Same origin policy implementation:
@@ -88,8 +88,8 @@ bool BindingSecurityBase::canAccess(DOMWindow* activeWindow,
     if (!activeWindow)
         return false;
 
-    const SecurityOrigin* activeSecurityOrigin = activeWindow->securityOrigin();
-    const SecurityOrigin* targetSecurityOrigin = targetWindow->securityOrigin();
+    const SecurityOrigin* activeSecurityOrigin = activeWindow->document()->securityOrigin();
+    const SecurityOrigin* targetSecurityOrigin = targetWindow->document()->securityOrigin();
 
     // We have seen crashes were the security origin of the target has not been
     // initialized. Defend against that.

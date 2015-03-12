@@ -620,6 +620,7 @@ public:
     // auto is specified.
     WEBCORE_EXPORT void pageSizeAndMarginsInPixels(int pageIndex, IntSize& pageSize, int& marginTop, int& marginRight, int& marginBottom, int& marginLeft);
 
+    static void updateStyleForAllDocuments(); // FIXME: Try to reduce the # of calls to this function.
     CachedResourceLoader* cachedResourceLoader() { return m_cachedResourceLoader.get(); }
 
     void didBecomeCurrentDocumentInFrame();

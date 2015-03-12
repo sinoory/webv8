@@ -26,6 +26,7 @@ set(WebCore_INCLUDE_DIRECTORIES
     "${WEBCORE_DIR}/bindings/generic"
     "${WEBCORE_DIR}/bindings/v8"
     "${WEBCORE_DIR}/bindings/v8/custom"
+    "${WEBCORE_DIR}/bindings/v8/specialization"
     "${WEBCORE_DIR}/bridge"
     "${WEBCORE_DIR}/bridge/c"
     "${WEBCORE_DIR}/bridge/jsc"
@@ -1034,7 +1035,6 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8DocumentLocationCustom.cpp
     bindings/v8/custom/V8ElementCustom.cpp
     bindings/v8/custom/V8LocationCustom.cpp
-    bindings/v8/custom/V8EntrySyncCustom.cpp
     bindings/v8/custom/V8HTMLImageElementConstructor.cpp
     bindings/v8/custom/V8NamedNodesCollection.cpp
     bindings/v8/custom/V8CustomSQLStatementErrorCallback.cpp
