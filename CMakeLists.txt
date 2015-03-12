@@ -9,6 +9,7 @@ set(BROWSER_EXTENSION_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/${BROWSER_PROJECT
 # -----------------------------------------------------------------------------
 set(WTF_DIR "${CMAKE_SOURCE_DIR}/Source/WTF")
 set(JAVASCRIPTCORE_DIR "${CMAKE_SOURCE_DIR}/Source/JavaScriptCore")
+set(V8_DIR "${CMAKE_SOURCE_DIR}/Source/ThirdParty/v8")
 set(WEBCORE_DIR "${CMAKE_SOURCE_DIR}/Source/WebCore")
 set(WEBKIT_DIR "${CMAKE_SOURCE_DIR}/Source/WebKit")
 set(WEBKIT2_DIR "${CMAKE_SOURCE_DIR}/Source/WebKit2")

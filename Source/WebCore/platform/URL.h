@@ -43,6 +43,8 @@ typedef const struct __CFURL* CFURLRef;
 OBJC_CLASS NSURL;
 #endif
 
+//CMP_ERROR , KURL is used in android,here URL
+#define URL KURL
 namespace WebCore {
 
 class TextEncoding;

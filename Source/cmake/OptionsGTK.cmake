@@ -337,12 +337,12 @@ set(SHOULD_INSTALL_JS_SHELL OFF) # ZRL disable this.
 # Push of rbp is needed after JSC JIT uses CStack. See http://wkbug.com/127777.
 if (UNIX AND NOT APPLE)
     if (CMAKE_COMPILER_IS_GNUCXX)
-        set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-omit-frame-pointer -fno-tree-dce")
-        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-omit-frame-pointer -fno-tree-dce")
+        set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-omit-frame-pointer -fno-tree-dce -Wno-unused-parameter")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-omit-frame-pointer -fno-tree-dce -Wno-unused-parameter")
     endif ()
     if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-        set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-omit-frame-pointer")
-        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-omit-frame-pointer")
+        set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-omit-frame-pointer -Wno-unused-parameter")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-omit-frame-pointer -Wno-unused-parameter")
     endif ()
 endif ()
 

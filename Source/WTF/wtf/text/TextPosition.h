@@ -29,6 +29,9 @@
 
 namespace WTF {
 
+//CMP_ERROR TextPosition1 not defined
+#define TextPosition1 TextPosition
+#define TextPosition0 TextPosition
 // An abstract number of element in a sequence. The sequence has a first element.
 // This type should be used instead of integer because 2 contradicting traditions can
 // call a first element '0' or '1' which makes integer type ambiguous.

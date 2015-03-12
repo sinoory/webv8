@@ -26,12 +26,12 @@
 #include "config.h"
 #include "IDBKeyRange.h"
 
+#if ENABLE(INDEXED_DATABASE)
 #include "DOMRequestState.h"
 #include "IDBBindingUtilities.h"
 #include "IDBDatabaseException.h"
 #include "IDBKey.h"
 
-#if ENABLE(INDEXED_DATABASE)
 
 namespace WebCore {
 

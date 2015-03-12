@@ -33,7 +33,7 @@
 
 #include "CachedResourceHandle.h"
 #include "CachedScript.h"
-#include "KURL.h"
+#include "URL.h" //CMP_ERROR no KURL
 #include "PlatformString.h"
 #include <wtf/text/TextPosition.h>
 
