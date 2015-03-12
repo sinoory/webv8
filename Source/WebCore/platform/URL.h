@@ -44,7 +44,7 @@ OBJC_CLASS NSURL;
 #endif
 
 //CMP_ERROR , KURL is used in android,here URL
-#define URL KURL
+#define KURL URL
 namespace WebCore {
 
 class TextEncoding;

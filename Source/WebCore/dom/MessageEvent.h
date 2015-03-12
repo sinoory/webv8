@@ -36,7 +36,8 @@
 #include <bindings/ScriptValue.h>
 #include <memory>
 #include <runtime/ArrayBuffer.h>
-
+//CMP_ERROR  Deprecated::ScriptValue is from JSC
+#define Deprecated WebCore  
 namespace WebCore {
 
 class EventTarget;

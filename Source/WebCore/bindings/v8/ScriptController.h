@@ -118,6 +118,7 @@ public:
     // Check if the javascript engine has been initialized.
     bool haveInterpreter() const;
 
+    bool shouldBypassMainWorldContentSecurityPolicy(){return true;}//CMP_ARRAND,android no such func
     static bool canAccessFromCurrentOrigin(Frame*);
 
 #if ENABLE(INSPECTOR)

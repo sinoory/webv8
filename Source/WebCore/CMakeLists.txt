@@ -102,6 +102,7 @@ set(WebCore_INCLUDE_DIRECTORIES
     "${WEBCORE_DIR}/workers"
     "${WEBCORE_DIR}/xml"
     "${WEBCORE_DIR}/xml/parser"
+    "${WEBCORE_DIR}/ForwardingHeaders/wtf"
     "${JAVASCRIPTCORE_DIR}"
     "${JAVASCRIPTCORE_DIR}/ForwardingHeaders"
     "${JAVASCRIPTCORE_DIR}/API"
@@ -1020,15 +1021,14 @@ set(WebCore_SOURCES
 
     bindings/generic/ActiveDOMCallback.cpp
     bindings/generic/RuntimeEnabledFeatures.cpp
+    bindings/generic/BindingSecurityBase.cpp
 
     bindings/PlatformBridge.h
     bindings/ScriptControllerBase.cpp
     bindings/v8/ScheduledAction.cpp
     bindings/v8/PageScriptDebugServer.cpp
-    bindings/v8/ScriptCachedFrameData.cpp
     bindings/v8/V8WorkerContextErrorHandler.cpp
     bindings/v8/V8Helpers.cpp
-    bindings/v8/custom/V8HTMLDataGridElementCustom.cpp
     bindings/v8/custom/V8HTMLElementCustom.cpp
     bindings/v8/custom/V8DeviceMotionEventCustom.cpp
     bindings/v8/custom/V8DocumentLocationCustom.cpp
