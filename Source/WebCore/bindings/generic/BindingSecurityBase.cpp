@@ -32,6 +32,8 @@
 #include "BindingSecurityBase.h"
 
 #include "DOMWindow.h"
+#include "Document.h"
+#include "Node.h"
 #include "Frame.h"
 #include "SecurityOrigin.h"
 
@@ -39,7 +41,7 @@ namespace WebCore {
 
 DOMWindow* BindingSecurityBase::getDOMWindow(Frame* frame)
 {
-    return frame->domWindow();
+    return frame->document()->domWindow();
 }
 
 Frame* BindingSecurityBase::getFrame(Node* node)

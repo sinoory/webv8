@@ -2693,6 +2693,7 @@ set(WebCore_SOURCES
     workers/WorkerRunLoop.cpp
     workers/WorkerScriptLoader.cpp
     workers/WorkerThread.cpp
+    workers/WorkerContext.cpp
 
     xml/DOMParser.cpp
     xml/NativeXPathNSResolver.cpp
