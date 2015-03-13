@@ -48,6 +48,7 @@ set(WebCore_INCLUDE_DIRECTORIES
     "${WEBCORE_DIR}/html/shadow"
     "${WEBCORE_DIR}/html/track"
     "${WEBCORE_DIR}/inspector"
+    "${WEBCORE_DIR}/ForwardingHeaders/inspector"
     "${WEBCORE_DIR}/loader"
     "${WEBCORE_DIR}/loader/appcache"
     "${WEBCORE_DIR}/loader/archive"
@@ -1032,108 +1033,12 @@ set(WebCore_SOURCES
     bindings/v8/V8Helpers.cpp
     bindings/v8/custom/V8HTMLElementCustom.cpp
     bindings/v8/custom/V8DeviceMotionEventCustom.cpp
-    bindings/v8/custom/V8DocumentLocationCustom.cpp
     bindings/v8/custom/V8ElementCustom.cpp
-    bindings/v8/custom/V8LocationCustom.cpp
     bindings/v8/custom/V8HTMLImageElementConstructor.cpp
-    bindings/v8/custom/V8NamedNodesCollection.cpp
     bindings/v8/custom/V8CustomSQLStatementErrorCallback.cpp
     bindings/v8/custom/V8HTMLAudioElementConstructor.cpp
-    bindings/v8/custom/V8HTMLAllCollectionCustom.cpp
-    bindings/v8/custom/V8HTMLSelectElementCustom.cpp
     bindings/v8/custom/V8HistoryCustom.cpp
-    bindings/v8/custom/V8CSSRuleCustom.cpp
     bindings/v8/custom/V8FileReaderCustom.cpp
-    bindings/v8/custom/V8NotificationCenterCustom.cpp
-    bindings/v8/custom/V8WebGLRenderingContextCustom.cpp
-    bindings/v8/custom/V8SQLTransactionCustom.cpp
-    bindings/v8/custom/V8ArrayBufferCustom.cpp
-    bindings/v8/custom/V8DataGridColumnListCustom.cpp
-    bindings/v8/custom/V8InspectorFrontendHostCustom.cpp
-    bindings/v8/custom/V8DedicatedWorkerContextCustom.cpp
-    bindings/v8/custom/V8PerformanceCustom.cpp
-    bindings/v8/custom/V8InjectedScriptHostCustom.cpp
-    bindings/v8/custom/V8WebKitCSSMatrixConstructor.cpp
-    bindings/v8/custom/V8Uint16ArrayCustom.cpp
-    bindings/v8/custom/V8MessageEventCustom.cpp
-    bindings/v8/custom/V8CustomXPathNSResolver.cpp
-    bindings/v8/custom/V8HTMLInputElementCustom.cpp
-    bindings/v8/custom/V8HTMLDocumentCustom.cpp
-    bindings/v8/custom/V8MessagePortCustom.cpp
-    bindings/v8/custom/V8StyleSheetListCustom.cpp
-    bindings/v8/custom/V8HTMLOptionsCollectionCustom.cpp
-    bindings/v8/custom/V8DOMTokenListCustom.cpp
-    bindings/v8/custom/V8Uint8ArrayCustom.cpp
-    bindings/v8/custom/V8IDBKeyCustom.cpp
-    bindings/v8/custom/V8MessageChannelConstructor.cpp
-    bindings/v8/custom/V8DOMSettableTokenListCustom.cpp
-    bindings/v8/custom/V8CustomApplicationInstalledCallback.cpp
-    bindings/v8/custom/V8CustomPositionCallback.cpp
-    bindings/v8/custom/V8HTMLCollectionCustom.cpp
-    bindings/v8/custom/V8NamedNodeMapCustom.cpp
-    bindings/v8/custom/V8CanvasPixelArrayCustom.cpp
-    bindings/v8/custom/V8Float32ArrayCustom.cpp
-    bindings/v8/custom/V8SVGPathSegCustom.cpp
-    bindings/v8/custom/V8DeviceOrientationEventCustom.cpp
-    bindings/v8/custom/V8XSLTProcessorCustom.cpp
-    bindings/v8/custom/V8SQLResultSetRowListCustom.cpp
-    bindings/v8/custom/V8EntryCustom.cpp
-    bindings/v8/custom/V8DOMFormDataCustom.cpp
-    bindings/v8/custom/V8WebKitAnimationCustom.cpp
-    bindings/v8/custom/V8DataViewCustom.cpp
-    bindings/v8/custom/V8CanvasRenderingContext2DCustom.cpp
-    bindings/v8/custom/V8AudioContextCustom.cpp
-    bindings/v8/custom/V8IDBAnyCustom.cpp
-    bindings/v8/custom/V8DirectoryEntryCustom.cpp
-    bindings/v8/custom/V8HTMLFrameSetElementCustom.cpp
-    bindings/v8/custom/V8AudioNodeCustom.cpp
-    bindings/v8/custom/V8HTMLPlugInElementCustom.cpp
-    bindings/v8/custom/V8CSSStyleSheetCustom.cpp
-    bindings/v8/custom/V8EventCustom.cpp
-    bindings/v8/custom/V8NavigatorCustom.cpp
-    bindings/v8/custom/V8ImageDataCustom.cpp
-    bindings/v8/custom/V8HTMLOptionElementConstructor.cpp
-    bindings/v8/custom/V8HTMLOutputElementCustom.cpp
-    bindings/v8/custom/V8StorageCustom.cpp
-    bindings/v8/custom/V8DOMStringMapCustom.cpp
-    bindings/v8/custom/V8WebKitPointConstructor.cpp
-    bindings/v8/custom/V8Uint32ArrayCustom.cpp
-    bindings/v8/custom/V8SVGLengthCustom.cpp
-    bindings/v8/custom/V8DirectoryEntrySyncCustom.cpp
-    bindings/v8/custom/V8StyleSheetCustom.cpp
-    bindings/v8/custom/V8CustomPositionErrorCallback.cpp
-    bindings/v8/custom/V8SVGElementCustom.cpp
-    bindings/v8/custom/V8CoordinatesCustom.cpp
-    bindings/v8/custom/V8NodeCustom.cpp
-    bindings/v8/custom/V8ClipboardCustom.cpp
-    bindings/v8/custom/V8HTMLCanvasElementCustom.cpp
-    bindings/v8/custom/V8ScriptProfileNodeCustom.cpp
-    bindings/v8/custom/V8WorkerContextCustom.cpp
-    bindings/v8/custom/V8SharedWorkerCustom.cpp
-    bindings/v8/custom/V8WorkerCustom.cpp
-    bindings/v8/custom/V8DOMWindowCustom.cpp
-    bindings/v8/custom/V8SVGDocumentCustom.cpp
-    bindings/v8/custom/V8InjectedScriptManager.cpp
-    bindings/v8/custom/V8GeolocationCustom.cpp
-    bindings/v8/custom/V8XMLHttpRequestConstructor.cpp
-    bindings/v8/custom/V8ScriptProfileCustom.cpp
-    bindings/v8/custom/V8ConsoleCustom.cpp
-    bindings/v8/custom/V8CSSValueCustom.cpp
-    bindings/v8/custom/V8CSSStyleDeclarationCustom.cpp
-    bindings/v8/custom/V8PopStateEventCustom.cpp
-    bindings/v8/custom/V8EventSourceConstructor.cpp
-    bindings/v8/custom/V8HTMLFormElementCustom.cpp
-    bindings/v8/custom/V8WebSocketCustom.cpp
-    bindings/v8/custom/V8Int8ArrayCustom.cpp
-    bindings/v8/custom/V8XMLHttpRequestCustom.cpp
-    bindings/v8/custom/V8CustomVoidCallback.cpp
-    bindings/v8/custom/V8NodeListCustom.cpp
-    bindings/v8/custom/V8Int32ArrayCustom.cpp
-    bindings/v8/custom/V8Int16ArrayCustom.cpp
-    bindings/v8/custom/V8DocumentCustom.cpp
-    bindings/v8/custom/V8SQLTransactionSyncCustom.cpp
-    bindings/v8/custom/V8HTMLFrameElementCustom.cpp
-    bindings/v8/custom/V8JavaScriptCallFrameCustom.cpp
     bindings/v8/V8EventListener.cpp
     bindings/v8/specialization/V8BindingState.cpp
     bindings/v8/ScriptEventListener.cpp

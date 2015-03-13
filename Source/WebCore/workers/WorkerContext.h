@@ -41,7 +41,11 @@
 #include <wtf/RefCounted.h>
 #include <wtf/RefPtr.h>
 #include <wtf/text/AtomicStringHash.h>
-
+//CMP_ERROR ,ScriptCallStack is under WebCore in android ,but under Inspector in webkit2
+namespace Inspector{
+    class ScriptCallStack;
+}
+#define ScriptCallStack Inspector::ScriptCallStack
 namespace WebCore {
 
     class Blob;
@@ -177,7 +181,7 @@ namespace WebCore {
         virtual void refEventTarget() { ref(); }
         virtual void derefEventTarget() { deref(); }
         virtual EventTargetData* eventTargetData();
-        virtual EventTargetData* ensureEventTargetData();
+        virtual EventTargetData& ensureEventTargetData();
 
         virtual const KURL& virtualURL() const;
         virtual KURL virtualCompleteURL(const String&) const;

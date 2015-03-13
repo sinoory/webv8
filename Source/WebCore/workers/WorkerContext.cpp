@@ -335,9 +335,9 @@ EventTargetData* WorkerContext::eventTargetData()
     return &m_eventTargetData;
 }
 
-EventTargetData* WorkerContext::ensureEventTargetData()
+EventTargetData& WorkerContext::ensureEventTargetData()
 {
-    return &m_eventTargetData;
+    return m_eventTargetData;
 }
 
 #if ENABLE(BLOB)

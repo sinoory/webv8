@@ -39,10 +39,10 @@ bool ScriptController::canExecuteScripts(ReasonForCallingCanExecuteScripts reaso
     if (m_frame->document()->isSandboxed(SandboxScripts))
         return false;
 
-    Settings* settings = m_frame->settings();
-    const bool allowed = m_frame->loader()->client()->allowJavaScript(settings && settings->isJavaEnabled());
+    Settings& settings = m_frame->settings();
+    const bool allowed =settings.isJavaEnabled();//CMP_ERROR,no allowJavaScript; m_frame->loader().client().allowJavaScript( settings.isJavaEnabled());
     if (!allowed && reason == AboutToExecuteScript)
-        m_frame->loader().client()->didNotAllowScript();
+        m_frame->loader().client().didNotAllowScript();
     return allowed;
 }
 
@@ -76,7 +76,7 @@ bool ScriptController::executeIfJavaScriptURL(const KURL& url, ShouldReplaceDocu
 
     if (!m_frame->page()
         || !m_frame->page()->javaScriptURLsAreAllowed()
-        || !m_frame->document()->contentSecurityPolicy()->allowJavaScriptURLs()
+        //CMP_ERROR_UNCLEAR,func not match|| !m_frame->document()->contentSecurityPolicy()->allowJavaScriptURLs()
         || m_frame->inViewSourceMode())
         return true;
 
@@ -115,7 +115,7 @@ bool ScriptController::executeIfJavaScriptURL(const KURL& url, ShouldReplaceDocu
         // DocumentWriter::replaceDocument can cause the DocumentLoader to get deref'ed and possible destroyed,
         // so protect it with a RefPtr.
         if (RefPtr<DocumentLoader> loader = m_frame->document()->loader())
-            loader->writer()->replaceDocument(scriptResult);
+            loader->writer().replaceDocument(scriptResult,m_frame->document());
     }
     return true;
 }

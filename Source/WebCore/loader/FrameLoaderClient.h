@@ -306,7 +306,7 @@ namespace WebCore {
         virtual bool shouldForceUniversalAccessFromLocalURL(const URL&) { return false; }
 
         virtual PassRefPtr<FrameNetworkingContext> createNetworkingContext() = 0;
-
+        virtual void didNotAllowScript() { }
 #if ENABLE(REQUEST_AUTOCOMPLETE)
         virtual void didRequestAutocomplete(PassRefPtr<FormState>) = 0;
 #endif

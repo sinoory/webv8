@@ -156,7 +156,7 @@ namespace WebCore {
     // and will be deallocated when the argument is deallocated.
     inline const uint16_t* fromWebCoreString(const String& str)
     {
-        return reinterpret_cast<const uint16_t*>(str.characters());
+        return reinterpret_cast<const uint16_t*>(str.characters<uint16_t*>());
     }
 
     bool isUndefinedOrNull(v8::Handle<v8::Value> value);

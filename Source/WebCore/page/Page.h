@@ -407,7 +407,7 @@ public:
 
     PageThrottler& pageThrottler() { return m_pageThrottler; }
     WEBCORE_EXPORT void enablePageThrottler();
-
+    bool javaScriptURLsAreAllowed(){return true;};////add func ,CMP_ERROR_UNCLEAR
     PageConsoleClient& console() { return *m_consoleClient; }
 
     void hiddenPageCSSAnimationSuspensionStateChanged();
