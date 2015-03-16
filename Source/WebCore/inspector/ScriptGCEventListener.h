@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Google Inc. All rights reserved.
+ * Copyright (C) 2010 Google Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -28,45 +28,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef ScriptHeapSnapshot_h
-#define ScriptHeapSnapshot_h
+#ifndef ScriptGCEventListener_h
+#define ScriptGCEventListener_h
 
-#include "PlatformString.h"
-namespace v8 {
-class HeapSnapshot;
-}
+#if ENABLE(INSPECTOR)
 
 namespace WebCore {
 
-class InspectorObject;
-
-class ScriptHeapSnapshot : public RefCounted<ScriptHeapSnapshot> {
+class ScriptGCEventListener
+{
 public:
-    class OutputStream {
-    public:
-        virtual ~OutputStream() { }
-        virtual void Write(const String& chunk) = 0;
-        virtual void Close() = 0;
-    };
-
-    static PassRefPtr<ScriptHeapSnapshot> create(const v8::HeapSnapshot* snapshot)
-    {
-        return adoptRef(new ScriptHeapSnapshot(snapshot));
-    }
-    virtual ~ScriptHeapSnapshot();
-
-    String title() const;
-    unsigned int uid() const;
-    void writeJSON(OutputStream* stream);
-
-private:
-    ScriptHeapSnapshot(const v8::HeapSnapshot* snapshot)
-        : m_snapshot(snapshot)
-    {}
-
-    const v8::HeapSnapshot* m_snapshot;
+    virtual void didGC(double startTime, double endTime, size_t collectedBytes) = 0;
+    virtual ~ScriptGCEventListener(){}
 };
-
+    
 } // namespace WebCore
 
-#endif // ScriptHeapSnapshot_h
+#endif // !ENABLE(INSPECTOR)
+#endif // !defined(ScriptGCEventListener_h)

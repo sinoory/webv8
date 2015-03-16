@@ -23,7 +23,7 @@
 #define TypeTraits_h
 
 #include "Platform.h"
-
+# include <tr1/memory>
 #if (defined(__GLIBCXX__) && (__GLIBCXX__ >= 20070724) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || (defined(_MSC_VER) && (_MSC_VER >= 1600))
 #include <type_traits>
 #endif

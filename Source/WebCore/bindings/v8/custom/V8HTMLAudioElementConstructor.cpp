@@ -69,7 +69,7 @@ static v8::Handle<v8::Value> v8HTMLAudioElementConstructorCallback(const v8::Arg
     String src;
     if (args.Length() > 0)
         src = toWebCoreString(args[0]);
-    RefPtr<HTMLAudioElement> audio = HTMLAudioElement::createForJSConstructor(document, src);
+    RefPtr<HTMLAudioElement> audio = HTMLAudioElement::createForJSConstructor(*document, src);
 
     V8DOMWrapper::setDOMWrapper(args.Holder(), &V8HTMLAudioElementConstructor::info, audio.get());
     audio->ref();

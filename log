@@ -1,0 +1,750 @@
+Using 64 bit Linux
+4
+
+~/work/webkit/4and/Webkit2Browser ~/work/webkit/4and/Webkit2Browser
+build release version start...
+-- Found ICU header files in /usr/include/x86_64-linux-gnu
+-- Found ICU libraries: /usr/lib/x86_64-linux-gnu/libicuuc.so
+-- Could NOT find GEOCLUE2 (missing:  VERSION_OK) 
+-- checking for module 'cairo-gl'
+--   package 'cairo-gl' not found
+-- checking for module 'cairo-glx'
+--   package 'cairo-glx' not found
+-- checking for module 'cairo-egl'
+--   package 'cairo-egl' not found
+-- Enabled features:
+--  ENABLE_3D_RENDERING ..................... ON
+--  ENABLE_ACCELERATED_2D_CANVAS              OFF
+--  ENABLE_ACCELERATED_OVERFLOW_SCROLLING ... OFF
+--  ENABLE_ACCESSIBILITY                      ON
+--  ENABLE_API_TESTS ........................ ON
+--  ENABLE_AVF_CAPTIONS                       OFF
+--  ENABLE_ASSEMBLER_WX_EXCLUSIVE ........... OFF
+--  ENABLE_BATTERY_STATUS                     OFF
+--  ENABLE_CACHE_PARTITIONING ............... OFF
+--  ENABLE_CANVAS_PATH                        OFF
+--  ENABLE_CANVAS_PROXY ..................... OFF
+--  ENABLE_CHANNEL_MESSAGING                  ON
+--  ENABLE_CONTENT_FILTERING ................ OFF
+--  ENABLE_CONTEXT_MENUS                      ON
+--  ENABLE_CSP_NEXT ......................... OFF
+--  ENABLE_CSS3_CONDITIONAL_RULES             ON
+--  ENABLE_CSS3_TEXT ........................ OFF
+--  ENABLE_CSS3_TEXT_LINE_BREAK               OFF
+--  ENABLE_CSS_BOX_DECORATION_BREAK ......... ON
+--  ENABLE_CSS_COMPOSITING                    OFF
+--  ENABLE_CSS_DEVICE_ADAPTATION ............ OFF
+--  ENABLE_CSS_GRID_LAYOUT                    OFF
+--  ENABLE_CSS_IMAGE_ORIENTATION ............ OFF
+--  ENABLE_CSS_IMAGE_RESOLUTION               OFF
+--  ENABLE_CSS_IMAGE_SET .................... ON
+--  ENABLE_CSS_REGIONS                        ON
+--  ENABLE_CSS_SELECTORS_LEVEL4 ............. ON
+--  ENABLE_CSS_SHAPES                         OFF
+--  ENABLE_CURSOR_VISIBILITY ................ OFF
+--  ENABLE_CUSTOM_SCHEME_HANDLER              OFF
+--  ENABLE_DASHBOARD_SUPPORT ................ OFF
+--  ENABLE_DATACUE_VALUE                      OFF
+--  ENABLE_DATALIST_ELEMENT ................. OFF
+--  ENABLE_DATA_TRANSFER_ITEMS                OFF
+--  ENABLE_DETAILS_ELEMENT .................. ON
+--  ENABLE_DEVICE_ORIENTATION                 OFF
+--  ENABLE_DOM4_EVENTS_CONSTRUCTOR .......... OFF
+--  ENABLE_DOWNLOAD_ATTRIBUTE                 OFF
+--  ENABLE_DRAG_SUPPORT ..................... ON
+--  ENABLE_ENCRYPTED_MEDIA                    OFF
+--  ENABLE_ENCRYPTED_MEDIA_V2 ............... OFF
+--  ENABLE_FONT_LOAD_EVENTS                   OFF
+--  ENABLE_FTL_JIT .......................... OFF
+--  ENABLE_FTPDIR                             OFF
+--  ENABLE_FULLSCREEN_API ................... ON
+--  ENABLE_GAMEPAD                            OFF
+--  ENABLE_GAMEPAD_DEPRECATED ............... OFF
+--  ENABLE_GEOLOCATION                        ON
+--  ENABLE_HIDDEN_PAGE_DOM_TIMER_THROTTLING . OFF
+--  ENABLE_ICONDATABASE                       ON
+--  ENABLE_IMAGE_DECODER_DOWN_SAMPLING ...... OFF
+--  ENABLE_INDEXED_DATABASE                   OFF
+--  ENABLE_INDIE_UI ......................... OFF
+--  ENABLE_INPUT_TYPE_COLOR                   OFF
+--  ENABLE_INPUT_TYPE_COLOR_POPOVER ......... OFF
+--  ENABLE_INPUT_TYPE_DATE                    OFF
+--  ENABLE_INPUT_TYPE_DATETIME_INCOMPLETE ... OFF
+--  ENABLE_INPUT_TYPE_DATETIMELOCAL           OFF
+--  ENABLE_INPUT_TYPE_MONTH ................. OFF
+--  ENABLE_INPUT_TYPE_TIME                    OFF
+--  ENABLE_INPUT_TYPE_WEEK .................. OFF
+--  ENABLE_INSPECTOR                          ON
+--  ENABLE_IOS_AIRPLAY ...................... OFF
+--  ENABLE_IOS_TEXT_AUTOSIZING                OFF
+--  ENABLE_JIT .............................. ON
+--  ENABLE_LEGACY_CSS_VENDOR_PREFIXES         OFF
+--  ENABLE_LEGACY_NOTIFICATIONS ............. OFF
+--  ENABLE_LEGACY_VENDOR_PREFIXES             ON
+--  ENABLE_LEGACY_WEB_AUDIO ................. OFF
+--  ENABLE_LETTERPRESS                        OFF
+--  ENABLE_LINK_PREFETCH .................... OFF
+--  ENABLE_LLINT_C_LOOP                       OFF
+--  ENABLE_MAC_LONG_PRESS ................... OFF
+--  ENABLE_MATHML                             OFF
+--  ENABLE_MEDIA_CAPTURE .................... OFF
+--  ENABLE_MEDIA_CONTROLS_SCRIPT              ON
+--  ENABLE_MEDIA_SOURCE ..................... OFF
+--  ENABLE_MEDIA_STATISTICS                   OFF
+--  ENABLE_MEDIA_STREAM ..................... OFF
+--  ENABLE_MEMORY_SAMPLER                     ON
+--  ENABLE_METER_ELEMENT .................... ON
+--  ENABLE_MHTML                              ON
+--  ENABLE_MOUSE_CURSOR_SCALE ............... OFF
+--  ENABLE_NAVIGATOR_CONTENT_UTILS            OFF
+--  ENABLE_NAVIGATOR_HWCONCURRENCY .......... ON
+--  ENABLE_NOSNIFF                            OFF
+--  ENABLE_NETSCAPE_PLUGIN_API .............. ON
+--  ENABLE_NETWORK_PROCESS                    ON
+--  ENABLE_NOTIFICATIONS .................... OFF
+--  ENABLE_ORIENTATION_EVENTS                 OFF
+--  ENABLE_PDFKIT_PLUGIN .................... OFF
+--  ENABLE_PERFORMANCE_TIMELINE               OFF
+--  ENABLE_PICTURE_SIZES .................... ON
+--  ENABLE_POINTER_LOCK                       OFF
+--  ENABLE_PROMISES ......................... ON
+--  ENABLE_PROXIMITY_EVENTS                   OFF
+--  ENABLE_PUBLIC_SUFFIX_LIST ............... OFF
+--  ENABLE_QUOTA                              OFF
+--  ENABLE_REMOTE_INSPECTOR ................. OFF
+--  ENABLE_REQUEST_ANIMATION_FRAME            ON
+--  ENABLE_RESOLUTION_MEDIA_QUERY ........... OFF
+--  ENABLE_RESOURCE_TIMING                    OFF
+--  ENABLE_SATURATED_LAYOUT_ARITHMETIC ...... ON
+--  ENABLE_SECCOMP_FILTERS                    OFF
+--  ENABLE_SERVICE_CONTROLS ................. OFF
+--  ENABLE_SHARED_WORKERS                     ON
+--  ENABLE_SPEECH_SYNTHESIS ................. OFF
+--  ENABLE_SPELLCHECK                         ON
+--  ENABLE_SQL_DATABASE ..................... ON
+--  ENABLE_SUBTLE_CRYPTO                      OFF
+--  ENABLE_SVG_FONTS ........................ ON
+--  ENABLE_TELEPHONE_NUMBER_DETECTION         OFF
+--  ENABLE_TEMPLATE_ELEMENT ................. ON
+--  ENABLE_TEXT_AUTOSIZING                    OFF
+--  ENABLE_TOUCH_EVENTS ..................... ON
+--  ENABLE_TOUCH_SLIDER                       OFF
+--  ENABLE_TOUCH_ICON_LOADING ............... OFF
+--  ENABLE_USERSELECT_ALL                     ON
+--  ENABLE_USER_TIMING ...................... OFF
+--  ENABLE_VIBRATION                          OFF
+--  ENABLE_VIDEO ............................ ON
+--  ENABLE_VIDEO_TRACK                        ON
+--  ENABLE_VIEW_MODE_CSS_MEDIA .............. ON
+--  ENABLE_WEB_AUDIO                          ON
+--  ENABLE_WEB_REPLAY ....................... OFF
+--  ENABLE_WEB_SOCKETS                        ON
+--  ENABLE_WEB_TIMING ....................... ON
+--  ENABLE_WEBGL                              OFF
+--  ENABLE_WEBVTT_REGIONS ................... OFF
+--  ENABLE_XHR_TIMEOUT                        ON
+--  ENABLE_XSLT ............................. ON
+--  ENABLE_WORKERS                            ON
+--  USE_SYSTEM_MALLOC ....................... OFF
+--  WTF_USE_TILED_BACKING_STORE               OFF
+--  ENABLE_PLUGIN_PROCESS_GTK2 .............. ON
+-- checking for module 'gstreamer-mpegts-1.0>=1.4.0'
+--   package 'gstreamer-mpegts-1.0>=1.4.0' not found
+-- Using platform-specific CMakeLists: /home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/PlatformGTK.cmake
+-- Using platform-specific CMakeLists: /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/PlatformGTK.cmake
+-- Using platform-specific CMakeLists: /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/shell/PlatformGTK.cmake
+-- Using platform-specific CMakeLists: /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/PlatformGTK.cmake
+-- Using platform-specific CMakeLists: /home/sin/work/webkit/4and/Webkit2Browser/Source/WebKit2/PlatformGTK.cmake
+-- valac 0.20.1 found
+-- ZRL Install_Mode
+-- gettext found: zh_CN en_GB 
+-- Using platform-specific CMakeLists: /home/sin/work/webkit/4and/Webkit2Browser/Source/PlatformGTK.cmake
+-- ZRL Not build any gtkdoc.................
+-- Configuring done
+CMake Warning (dev) in Source/JavaScriptCore/CMakeLists.txt:
+  Policy CMP0022 is not set: INTERFACE_LINK_LIBRARIES defines the link
+  interface.  Run "cmake --help-policy CMP0022" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  Target "JavaScriptCore" has an INTERFACE_LINK_LIBRARIES property which
+  differs from its LINK_INTERFACE_LIBRARIES properties.
+
+  INTERFACE_LINK_LIBRARIES:
+
+    WTF;/usr/lib/x86_64-linux-gnu/libicui18n.so;/usr/lib/x86_64-linux-gnu/libglib-2.0.so
+
+  LINK_INTERFACE_LIBRARIES:
+
+    
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) in Source/WebKit2/CMakeLists.txt:
+  Policy CMP0022 is not set: INTERFACE_LINK_LIBRARIES defines the link
+  interface.  Run "cmake --help-policy CMP0022" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  Target "WebKit2" has an INTERFACE_LINK_LIBRARIES property which differs
+  from its LINK_INTERFACE_LIBRARIES properties.
+
+  INTERFACE_LINK_LIBRARIES:
+
+    -Wl,--whole-archive;JavaScriptCore;-Wl,--no-whole-archive;-Wl,--whole-archive;WebCore;-Wl,--no-whole-archive;-Wl,--whole-archive;Chromium;-Wl,--no-whole-archive;-Wl,--whole-archive;/usr/lib/x86_64-linux-gnu/librt.so;-Wl,--no-whole-archive;-Wl,--whole-archive;GObjectDOMBindings;-Wl,--no-whole-archive;-Wl,--whole-archive;WebCorePlatformGTK;-Wl,--no-whole-archive;-Wl,--whole-archive;gtk-3;-Wl,--no-whole-archive;-Wl,--whole-archive;gdk-3;-Wl,--no-whole-archive;-Wl,--whole-archive;atk-1.0;-Wl,--no-whole-archive;-Wl,--whole-archive;gio-2.0;-Wl,--no-whole-archive;-Wl,--whole-archive;pangocairo-1.0;-Wl,--no-whole-archive;-Wl,--whole-archive;gdk_pixbuf-2.0;-Wl,--no-whole-archive;-Wl,--whole-archive;cairo-gobject;-Wl,--no-whole-archive;-Wl,--whole-archive;pango-1.0;-Wl,--no-whole-archive;-Wl,--whole-archive;cairo;-Wl,--no-whole-archive;-Wl,--whole-archive;gobject-2.0;-Wl,--no-whole-archive;-Wl,--whole-archive;glib-2.0;-Wl,--no-whole-archive;-Wl,--whole-archive ../../lib/libcrypto.so.1.0.0 -Wl,--no-whole-archive;-Wl,--whole-archive ../../lib/libssl.so.1.0.0 -Wl,--no-whole-archive
+
+  LINK_INTERFACE_LIBRARIES:
+
+    
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) in Source/BrowserApp/midori/CMakeLists.txt:
+  Policy CMP0022 is not set: INTERFACE_LINK_LIBRARIES defines the link
+  interface.  Run "cmake --help-policy CMP0022" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  Target "cdosbrowser-core" has an INTERFACE_LINK_LIBRARIES property which
+  differs from its LINK_INTERFACE_LIBRARIES properties.
+
+  INTERFACE_LINK_LIBRARIES:
+
+    -Wl,--whole-archive ../../../lib/libcrypto.so.1.0.0 -Wl,--no-whole-archive;-Wl,--whole-archive ../../../lib/libssl.so.1.0.0 -Wl,--no-whole-archive;cdosbrowser-core-vala;JavaScriptCore;WebKit2;/usr/lib/x86_64-linux-gnu/libgtk-3.so;/usr/lib/x86_64-linux-gnu/libgdk-3.so;/usr/lib/x86_64-linux-gnu/libglib-2.0.so;/usr/lib/x86_64-linux-gnu/libgio-2.0.so;/usr/lib/x86_64-linux-gnu/libgobject-2.0.so;atk-1.0;pangocairo-1.0;gdk_pixbuf-2.0;cairo-gobject;pango-1.0;/usr/lib/x86_64-linux-gnu/libcairo.so;xml2;secret-1;/usr/lib/x86_64-linux-gnu/libsoup-2.4.so;xslt;sqlite3;m;X11
+
+  LINK_INTERFACE_LIBRARIES:
+
+    
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Generating done
+-- Build files have been written to: /home/sin/work/webkit/4and/Webkit2Browser
+[  1%] [  1%] [  1%] [  1%] Built target JavaScriptCore-4-gir
+Built target Chromium
+[  1%] Built target fake-generated-webkitdom-headers
+[  1%] Built target WebKit2-fake-api-headers
+[  2%] Built target WebKit2-forwarding-headers
+Built target pofiles_1
+Built target ANGLESupport
+Scanning dependencies of target cdosbrowser.desktop
+Scanning dependencies of target adblock_disabled.png
+Scanning dependencies of target adblock_blocked.png
+Scanning dependencies of target adblock_enabled.png
+[  3%] [  4%] Merging translations into cdosbrowser.desktop.
+Built target pofiles_2
+Built target WTF
+[  4%] [  4%] Built target adblock_blocked.png
+Built target adblock_disabled.png
+[  4%] [  4%] Built target cdosbrowser.desktop
+Built target translations_1
+[  4%] Built target adblock_enabled.png
+[  4%] [  4%] Built target gtest
+Built target LLIntOffsetsExtractor
+[ 15%] Built target JavaScriptCore
+[ 15%] Built target jsc
+[ 15%] [ 15%] [ 15%] [ 15%] Generating ../../DerivedSources/WebCore/V8NavigatorBattery.cpp, ../../DerivedSources/WebCore/V8NavigatorBattery.h
+Generating ../../DerivedSources/WebCore/V8NavigatorGeolocation.cpp, ../../DerivedSources/WebCore/V8NavigatorGeolocation.h
+[ 15%] [ 15%] Generating ../../DerivedSources/WebCore/V8NavigatorGamepad.cpp, ../../DerivedSources/WebCore/V8NavigatorGamepad.h
+[ 15%] Generating ../../DerivedSources/WebCore/V8DOMWindowIndexedDatabase.cpp, ../../DerivedSources/WebCore/V8DOMWindowIndexedDatabase.h
+Generating ../../DerivedSources/WebCore/V8DOMURLMediaSource.cpp, ../../DerivedSources/WebCore/V8DOMURLMediaSource.h
+[ 15%] Generating ../../DerivedSources/WebCore/V8WorkerGlobalScopeIndexedDatabase.cpp, ../../DerivedSources/WebCore/V8WorkerGlobalScopeIndexedDatabase.h
+Generating ../../DerivedSources/WebCore/V8DOMURLMediaStream.cpp, ../../DerivedSources/WebCore/V8DOMURLMediaStream.h
+V8: Modules/battery/NavigatorBattery.idl
+V8: Modules/mediasource/DOMURLMediaSource.idl
+Generating ../../DerivedSources/WebCore/V8HTMLMediaElementMediaStream.cpp, ../../DerivedSources/WebCore/V8HTMLMediaElementMediaStream.h
+V8: Modules/geolocation/NavigatorGeolocation.idl
+V8: Modules/gamepad/deprecated/NavigatorGamepad.idl
+V8: Modules/indexeddb/WorkerGlobalScopeIndexedDatabase.idl
+V8: Modules/indexeddb/DOMWindowIndexedDatabase.idl
+[ 15%] [ 15%] Generating ../../DerivedSources/WebCore/V8NavigatorUserMedia.cpp, ../../DerivedSources/WebCore/V8NavigatorUserMedia.h
+V8: Modules/mediastream/HTMLMediaElementMediaStream.idl
+[ 15%] Generating ../../DerivedSources/WebCore/V8NavigatorContentUtils.cpp, ../../DerivedSources/WebCore/V8NavigatorContentUtils.h
+[ 15%] Generating ../../DerivedSources/WebCore/V8DOMWindowNotifications.cpp, ../../DerivedSources/WebCore/V8DOMWindowNotifications.h
+V8: Modules/mediastream/DOMURLMediaStream.idl
+[ 15%] [ 15%] V8: Modules/mediastream/NavigatorUserMedia.idl
+Generating ../../DerivedSources/WebCore/V8WorkerGlobalScopeNotifications.cpp, ../../DerivedSources/WebCore/V8WorkerGlobalScopeNotifications.h
+[ 16%] V8: Modules/navigatorcontentutils/NavigatorContentUtils.idl
+Generating ../../DerivedSources/WebCore/V8DOMWindowSpeechSynthesis.cpp, ../../DerivedSources/WebCore/V8DOMWindowSpeechSynthesis.h
+Generating ../../DerivedSources/WebCore/V8NavigatorVibration.cpp, ../../DerivedSources/WebCore/V8NavigatorVibration.h
+[ 16%] V8: Modules/notifications/DOMWindowNotifications.idl
+Generating ../../DerivedSources/WebCore/V8DOMWindowWebDatabase.cpp, ../../DerivedSources/WebCore/V8DOMWindowWebDatabase.h
+V8: Modules/notifications/WorkerGlobalScopeNotifications.idl
+V8: Modules/vibration/NavigatorVibration.idl
+Generating ../../DerivedSources/WebCore/V8WorkerGlobalScopeWebDatabase.cpp, ../../DerivedSources/WebCore/V8WorkerGlobalScopeWebDatabase.h
+V8: Modules/speech/DOMWindowSpeechSynthesis.idl
+V8: Modules/webdatabase/WorkerGlobalScopeWebDatabase.idl
+V8: Modules/webdatabase/DOMWindowWebDatabase.idl
+Scanning dependencies of target WebCore
+[ 16%] [ 16%] [ 16%] Building CXX object Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/PageScriptDebugServer.cpp.o
+[ 16%] [ 16%] Building CXX object Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/specialization/V8BindingState.cpp.o
+Building CXX object Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/ScriptEventListener.cpp.o
+Building CXX object Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/StaticDOMDataStore.cpp.o
+[ 16%] [ 16%] Building CXX object Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/ScriptGCEvent.cpp.o
+[ 16%] Building CXX object Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8DOMWrapper.cpp.o
+Building CXX object Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/DOMData.cpp.o
+Building CXX object Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/ScriptController.cpp.o
+[ 16%] Building CXX object Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/WorkerScriptController.cpp.o
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/V8DOMWrapper.cpp:34:40: fatal error: CSSMutableStyleDeclaration.h: 没有那个文件或目录
+ #include "CSSMutableStyleDeclaration.h"
+                                        ^
+compilation terminated.
+[ 16%] Building CXX object Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8WorkerContextEventListener.cpp.o
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/WorkerScriptController.cpp:43:29: fatal error: V8WorkerContext.h: 没有那个文件或目录
+ #include "V8WorkerContext.h"
+                             ^
+compilation terminated.
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/DOMDataStore.h:34:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/StaticDOMDataStore.h:34,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/StaticDOMDataStore.cpp:32:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/V8DOMMap.h: In instantiation of ‘void WebCore::WeakReferenceMap<KeyType, ValueType>::visit(WebCore::DOMDataStore*, typename WebCore::WeakReferenceMap<KeyType, ValueType>::Parent::Visitor*) [with KeyType = void; ValueType = v8::Object; typename WebCore::WeakReferenceMap<KeyType, ValueType>::Parent::Visitor = WebCore::AbstractWeakReferenceMap<void, v8::Object>::Visitor]’:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/StaticDOMDataStore.cpp:53:1:   required from here
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/V8DOMMap.h:131:17: error: ‘WTF::HashTableIteratorAdapter<WTF::HashTable<void*, WTF::KeyValuePair<void*, v8::Object*>, WTF::KeyValuePairKeyExtractor<WTF::KeyValuePair<void*, v8::Object*> >, WTF::PtrHash<void*>, WTF::HashMap<void*, v8::Object*, WTF::PtrHash<void*>, WTF::HashTraits<void*>, WTF::HashTraits<v8::Object*> >::KeyValuePairTraits, WTF::HashTraits<void*> >, WTF::KeyValuePair<void*, v8::Object*> >::ValueType’ has no member named ‘first’
+                 visitor->visitDOMWrapper(store, it->first, v8::Persistent<ValueType>(it->second));
+                 ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/V8DOMMap.h:131:17: error: ‘WTF::HashTableIteratorAdapter<WTF::HashTable<void*, WTF::KeyValuePair<void*, v8::Object*>, WTF::KeyValuePairKeyExtractor<WTF::KeyValuePair<void*, v8::Object*> >, WTF::PtrHash<void*>, WTF::HashMap<void*, v8::Object*, WTF::PtrHash<void*>, WTF::HashTraits<void*>, WTF::HashTraits<v8::Object*> >::KeyValuePairTraits, WTF::HashTraits<void*> >, WTF::KeyValuePair<void*, v8::Object*> >::ValueType’ has no member named ‘second’
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/V8DOMMap.h: In instantiation of ‘bool WebCore::WeakReferenceMap<KeyType, ValueType>::removeIfPresent(KeyType*, v8::Persistent<ValueType>) [with KeyType = void; ValueType = v8::Object]’:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/StaticDOMDataStore.cpp:53:1:   required from here
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/V8DOMMap.h:111:49: error: ‘WTF::HashTableIteratorAdapter<WTF::HashTable<void*, WTF::KeyValuePair<void*, v8::Object*>, WTF::KeyValuePairKeyExtractor<WTF::KeyValuePair<void*, v8::Object*> >, WTF::PtrHash<void*>, WTF::HashMap<void*, v8::Object*, WTF::PtrHash<void*>, WTF::HashTraits<void*>, WTF::HashTraits<v8::Object*> >::KeyValuePairTraits, WTF::HashTraits<void*> >, WTF::KeyValuePair<void*, v8::Object*> >::ValueType’ has no member named ‘second’
+             if (it == m_map.end() || it->second != *value)
+                                                 ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/DOMData.cpp: In static member function ‘static WebCore::DOMData* WebCore::DOMData::getCurrent()’:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/DOMData.cpp:55:64: error: expected primary-expression before ‘,’ token
+     DEFINE_STATIC_LOCAL(WTF::ThreadSpecific<ChildThreadDOMData>, childThreadDOMData, ());
+                                                                ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/DOMData.cpp:55:66: error: ‘childThreadDOMData’ was not declared in this scope
+     DEFINE_STATIC_LOCAL(WTF::ThreadSpecific<ChildThreadDOMData>, childThreadDOMData, ());
+                                                                  ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/DOMData.cpp:55:87: error: expected primary-expression before ‘)’ token
+     DEFINE_STATIC_LOCAL(WTF::ThreadSpecific<ChildThreadDOMData>, childThreadDOMData, ());
+                                                                                       ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/DOMData.cpp:55:88: error: ‘DEFINE_STATIC_LOCAL’ was not declared in this scope
+     DEFINE_STATIC_LOCAL(WTF::ThreadSpecific<ChildThreadDOMData>, childThreadDOMData, ());
+                                                                                        ^
+make[2]: *** [Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/StaticDOMDataStore.cpp.o] 错误 1
+make[2]: *** 正在等待未完成的任务....
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/DOMData.cpp:57:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+make[2]: *** [Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/DOMData.cpp.o] 错误 1
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/specialization/V8BindingState.cpp: In static member function ‘static WebCore::State<WebCore::V8Binding>* WebCore::State<WebCore::V8Binding>::Only()’:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/specialization/V8BindingState.cpp:43:30: error: expected primary-expression before ‘,’ token
+     DEFINE_STATIC_LOCAL(State, globalV8BindingState, ());
+                              ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/specialization/V8BindingState.cpp:43:32: error: ‘globalV8BindingState’ was not declared in this scope
+     DEFINE_STATIC_LOCAL(State, globalV8BindingState, ());
+                                ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/specialization/V8BindingState.cpp:43:55: error: expected primary-expression before ‘)’ token
+     DEFINE_STATIC_LOCAL(State, globalV8BindingState, ());
+                                                       ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/specialization/V8BindingState.cpp:43:56: error: ‘DEFINE_STATIC_LOCAL’ was not declared in this scope
+     DEFINE_STATIC_LOCAL(State, globalV8BindingState, ());
+                                                        ^
+In file included from /usr/include/X11/Xlib.h:44:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/plugins/npapi.h:89,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/PlatformBridge.h:34,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/V8Proxy.h:34,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.h:38,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:33:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:1603:5: error: expected identifier before numeric constant
+     None = 45,
+     ^
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:1603:5: error: expected ‘}’ before numeric constant
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:1603:5: error: expected unqualified-id before numeric constant
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2034:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Debugger::Location> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2039:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Debugger::FunctionDetails> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2045:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Debugger::CallFrame> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2051:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Debugger::Scope::Type> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2056:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Debugger::Scope> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2061:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Runtime::RemoteObject::Type> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2066:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Runtime::RemoteObject::Subtype> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2071:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Runtime::RemoteObject> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2077:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Runtime::ObjectPreview> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2082:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Runtime::PropertyPreview::Type> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2087:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Runtime::PropertyPreview::Subtype> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2092:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Runtime::PropertyPreview> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2097:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Runtime::PropertyDescriptor> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2103:37: error: specialization of ‘template<class T> struct Inspector::Protocol::BindingTraits’ in different namespace [-fpermissive]
+ template<> struct JS_EXPORT_PRIVATE BindingTraits<Inspector::Protocol::Runtime::InternalPropertyDescriptor> {
+                                     ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/InspectorProtocolTypes.h:192:8: error:   from definition of ‘template<class T> struct Inspector::Protocol::BindingTraits’ [-fpermissive]
+ struct BindingTraits {
+        ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/InspectorJSProtocolTypes.h:3:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallFrame.h:39,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/JavaScriptCore/inspector/ScriptCallStack.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/ForwardingHeaders/JavaScriptCore/ScriptCallStack.h:1,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/ForwardingHeaders/inspector/ScriptCallStack.h:3,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:2112:1: error: expected declaration before ‘}’ token
+ } // namespace Inspector
+ ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptInstance.h:36:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptController.cpp:33:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/PassRefPtr.h: In instantiation of ‘WTF::PassRefPtr<T>::PassRefPtr(const WTF::PassRefPtr<U>&) [with U = Inspector::Protocol::Runtime::StructureDescription; T = Inspector::InspectorObjectBase]’:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:1741:81:   required from here
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/PassRefPtr.h:54:84: error: cannot convert ‘Inspector::Protocol::Runtime::StructureDescription*’ to ‘Inspector::InspectorObjectBase*’ in initialization
+         template<typename U> PassRefPtr(const PassRefPtr<U>& o) : m_ptr(o.leakRef()) { }
+                                                                                    ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/PassRefPtr.h: In instantiation of ‘WTF::PassRefPtr<T>::PassRefPtr(const WTF::PassRefPtr<U>&) [with U = Inspector::Protocol::Runtime::TypeSet; T = Inspector::InspectorObjectBase]’:
+/home/sin/work/webkit/4and/Webkit2Browser/DerivedSources/JavaScriptCore/InspectorJSProtocolTypes.h:1936:70:   required from here
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/PassRefPtr.h:54:84: error: cannot convert ‘Inspector::Protocol::Runtime::TypeSet*’ to ‘Inspector::InspectorObjectBase*’ in initialization
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/platform/URL.h:32:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/dom/IconURL.h:34,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/loader/FrameLoader.h:38,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/page/Frame.h:32,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/generic/GenericBinding.h:34,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/specialization/V8BindingState.h:34,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/specialization/V8BindingState.cpp:32:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/text/WTFString.h: At global scope:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/text/WTFString.h:178:33: warning: inline function ‘const CharacterType* WTF::String::characters() const [with CharacterType = short unsigned int*]’ used but never defined
+     inline const CharacterType* characters() const;
+                                 ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/specialization/V8BindingState.cpp: In static member function ‘static WebCore::State<WebCore::V8Binding>* WebCore::State<WebCore::V8Binding>::Only()’:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/specialization/V8BindingState.cpp:45:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+make[2]: *** [Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/specialization/V8BindingState.cpp.o] 错误 1
+make[2]: *** [Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8DOMWrapper.cpp.o] 错误 1
+make[2]: *** [Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/ScriptController.cpp.o] 错误 1
+make[2]: *** [Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/WorkerScriptController.cpp.o] 错误 1
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp: In function ‘WTF::PassRefPtr<WebCore::V8LazyEventListener> WebCore::createAttributeEventListener(WebCore::Node*, WebCore::Attribute*)’:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:49:15: error: ‘class WebCore::Attribute’ has no member named ‘isNull’
+     if (attr->isNull())
+               ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:53:33: error: ‘WTF::ZeroBasedNumber’ has not been declared
+     TextPosition0 position(WTF::ZeroBasedNumber::fromZeroBasedInt(1), WTF::ZeroBasedNumber::base());
+                                 ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:53:76: error: ‘WTF::ZeroBasedNumber’ has not been declared
+     TextPosition0 position(WTF::ZeroBasedNumber::fromZeroBasedInt(1), WTF::ZeroBasedNumber::base());
+                                                                            ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:56:40: error: base operand of ‘->’ has non-pointer type ‘WebCore::Document’
+     if (Frame* frame = node->document()->frame()) {
+                                        ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:57:60: error: cannot convert ‘WebCore::ScriptController’ to ‘WebCore::ScriptController*’ in initialization
+         ScriptController* scriptController = frame->script();
+                                                            ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:58:30: error: invalid use of incomplete type ‘class WebCore::ScriptController’
+         if (!scriptController->canExecuteScripts(AboutToExecuteScript))
+                              ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:37:0:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/page/Frame.h:88:11: error: forward declaration of ‘class WebCore::ScriptController’
+     class ScriptController;
+           ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:58:50: error: ‘AboutToExecuteScript’ was not declared in this scope
+         if (!scriptController->canExecuteScripts(AboutToExecuteScript))
+                                                  ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:61:36: error: invalid use of incomplete type ‘class WebCore::ScriptController’
+         position = scriptController->eventHandlerPosition();
+                                    ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:37:0:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/page/Frame.h:88:11: error: forward declaration of ‘class WebCore::ScriptController’
+     class ScriptController;
+           ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:62:37: error: base operand of ‘->’ has non-pointer type ‘WebCore::Document’
+         sourceURL = node->document()->url().string();
+                                     ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp: In function ‘WTF::PassRefPtr<WebCore::V8LazyEventListener> WebCore::createAttributeEventListener(WebCore::Frame*, WebCore::Attribute*)’:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:74:15: error: ‘class WebCore::Attribute’ has no member named ‘isNull’
+     if (attr->isNull())
+               ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:77:56: error: cannot convert ‘WebCore::ScriptController’ to ‘WebCore::ScriptController*’ in initialization
+     ScriptController* scriptController = frame->script();
+                                                        ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:78:26: error: invalid use of incomplete type ‘class WebCore::ScriptController’
+     if (!scriptController->canExecuteScripts(AboutToExecuteScript))
+                          ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:37:0:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/page/Frame.h:88:11: error: forward declaration of ‘class WebCore::ScriptController’
+     class ScriptController;
+           ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:78:46: error: ‘AboutToExecuteScript’ was not declared in this scope
+     if (!scriptController->canExecuteScripts(AboutToExecuteScript))
+                                              ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:81:46: error: invalid use of incomplete type ‘class WebCore::ScriptController’
+     TextPosition0 position = scriptController->eventHandlerPosition();
+                                              ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:37:0:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/page/Frame.h:88:11: error: forward declaration of ‘class WebCore::ScriptController’
+     class ScriptController;
+           ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp: In function ‘WTF::String WebCore::eventListenerHandlerBody(WebCore::Document*, WebCore::EventListener*)’:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:93:87: error: ‘toV8Context’ was not declared in this scope
+     v8::Handle<v8::Context> context = toV8Context(document, v8Listener->worldContext());
+                                                                                       ^
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp: In function ‘bool WebCore::eventListenerHandlerLocation(WebCore::Document*, WebCore::EventListener*, WTF::String&, int&)’:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:109:87: error: ‘toV8Context’ was not declared in this scope
+     v8::Handle<v8::Context> context = toV8Context(document, v8Listener->worldContext());
+                                                                                       ^
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/text/AtomicString.h:26:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/platform/text/TextBreakIterator.h:25,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/PlatformString.h:2,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/V8LazyEventListener.h:34,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.h:34,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/ScriptEventListener.cpp:32:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/text/WTFString.h: At global scope:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/text/WTFString.h:178:33: warning: inline function ‘const CharacterType* WTF::String::characters() const [with CharacterType = short unsigned int*]’ used but never defined
+     inline const CharacterType* characters() const;
+                                 ^
+make[2]: *** [Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/ScriptEventListener.cpp.o] 错误 1
+In file included from /home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/text/AtomicString.h:26:0,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/dom/EventListenerMap.h:40,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/dom/EventTarget.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/dom/Node.h:29,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/dom/ContainerNode.h:28,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/dom/Document.h:33,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/dom/Element.h:29,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/generic/BindingSecurity.h:35,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/V8Binding.h:34,
+                 from /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/bindings/v8/V8WorkerContextEventListener.cpp:37:
+/home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/text/WTFString.h:178:33: warning: inline function ‘const CharacterType* WTF::String::characters() const [with CharacterType = short unsigned int*]’ used but never defined
+     inline const CharacterType* characters() const;
+                                 ^
+make[1]: *** [Source/WebCore/CMakeFiles/WebCore.dir/all] 错误 2
+make: *** [all] 错误 2
+~/work/webkit/4and/Webkit2Browser

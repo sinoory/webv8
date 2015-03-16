@@ -1037,7 +1037,6 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8HTMLImageElementConstructor.cpp
     bindings/v8/custom/V8CustomSQLStatementErrorCallback.cpp
     bindings/v8/custom/V8HTMLAudioElementConstructor.cpp
-    bindings/v8/custom/V8HistoryCustom.cpp
     bindings/v8/custom/V8FileReaderCustom.cpp
     bindings/v8/V8EventListener.cpp
     bindings/v8/specialization/V8BindingState.cpp

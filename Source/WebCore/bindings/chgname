@@ -1,0 +1,6 @@
+cmd='find . -type f |xargs -i sed -i "s,\<'$1'\>,'$1'A,g" {}'
+echo $cmd
+eval $cmd
+cmd='find . -type f |xargs -i sed -i "s,'$1'A.h,'$1'.h,g" {}'
+echo $cmd
+eval $cmd

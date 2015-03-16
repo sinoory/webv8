@@ -40,13 +40,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define HAVE_NULLPTR 1
 
 #else
-
+#if 0
 namespace std {
     class nullptr_t { };
 }
 
 extern std::nullptr_t nullptr;
-
+#endif
 #endif
 
 #endif
