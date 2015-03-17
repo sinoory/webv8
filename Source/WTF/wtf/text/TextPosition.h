@@ -50,8 +50,9 @@ public:
     static OrdinalNumber first() { return OrdinalNumber(0); }
     static OrdinalNumber beforeFirst() { return OrdinalNumber(-1); }
 
-private:
+
     OrdinalNumber(int zeroBasedInt) : m_zeroBasedValue(zeroBasedInt) { }
+private:
     int m_zeroBasedValue;
 };
 

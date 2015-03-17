@@ -52,6 +52,7 @@ public:
     const QualifiedName& name() const { return m_name; }
     static ptrdiff_t nameMemoryOffset() { return OBJECT_OFFSETOF(Attribute, m_name); }
 
+    bool isNull() const { return m_value.isNull(); }
     bool isEmpty() const { return m_value.isEmpty(); }
     static bool nameMatchesFilter(const QualifiedName&, const AtomicString& filterPrefix, const AtomicString& filterLocalName, const AtomicString& filterNamespaceURI);
     bool matches(const AtomicString& prefix, const AtomicString& localName, const AtomicString& namespaceURI) const;

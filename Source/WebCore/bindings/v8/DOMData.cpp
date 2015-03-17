@@ -30,7 +30,7 @@
 
 #include "config.h"
 #include "DOMData.h"
-
+#include "PlatformString.h"
 #include "ChildThreadDOMData.h"
 #include "MainThreadDOMData.h"
 #include "WebGLContextAttributes.h"

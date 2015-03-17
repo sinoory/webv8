@@ -30,7 +30,8 @@
 
 #include "config.h"
 #include "ScriptEventListener.h"
-
+#include "ScriptController.h"
+#include "ScriptControllerBase.h"
 #include "Attribute.h"
 #include "Document.h"
 #include "EventListener.h"
@@ -50,16 +51,16 @@ PassRefPtr<V8LazyEventListener> createAttributeEventListener(Node* node, Attribu
         return 0;
 
     // FIXME: Very strange: we initialize zero-based number with '1'.
-    TextPosition0 position(WTF::ZeroBasedNumber::fromZeroBasedInt(1), WTF::ZeroBasedNumber::base());
+    TextPosition0 position(WTF::OrdinalNumber::fromZeroBasedInt(1), 0);
     String sourceURL;
 
-    if (Frame* frame = node->document()->frame()) {
-        ScriptController* scriptController = frame->script();
-        if (!scriptController->canExecuteScripts(AboutToExecuteScript))
+    if (Frame* frame = node->document().frame()) {
+        ScriptController& scriptController = frame->script();
+        if (!scriptController.canExecuteScripts(AboutToExecuteScript))
             return 0;
 
-        position = scriptController->eventHandlerPosition();
-        sourceURL = node->document()->url().string();
+        position = scriptController.eventHandlerPosition();
+        sourceURL = node->document().url().string();
     }
 
     return V8LazyEventListener::create(attr->localName().string(), node->isSVGElement(), attr->value(), sourceURL, position, WorldContextHandle(UseMainWorld));
@@ -74,11 +75,11 @@ PassRefPtr<V8LazyEventListener> createAttributeEventListener(Frame* frame, Attri
     if (attr->isNull())
         return 0;
 
-    ScriptController* scriptController = frame->script();
-    if (!scriptController->canExecuteScripts(AboutToExecuteScript))
+    ScriptController& scriptController = frame->script();
+    if (!scriptController.canExecuteScripts(AboutToExecuteScript))
         return 0;
 
-    TextPosition0 position = scriptController->eventHandlerPosition();
+    TextPosition0 position = scriptController.eventHandlerPosition();
     String sourceURL = frame->document()->url().string();
     return V8LazyEventListener::create(attr->localName().string(), frame->document()->isSVGDocument(), attr->value(), sourceURL, position, WorldContextHandle(UseMainWorld));
 }

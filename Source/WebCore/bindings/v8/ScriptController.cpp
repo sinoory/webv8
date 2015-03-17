@@ -34,7 +34,7 @@
 
 #include "PlatformBridge.h"
 #include "Document.h"
-#include "ScriptCallStack.h"
+//#include "ScriptCallStack.h" //CMP_ERROR_UNCLEAR,no such file
 #include "ScriptCallStackFactory.h"
 #include "ScriptableDocumentParser.h"
 #include "DOMWindow.h"
@@ -162,7 +162,7 @@ bool ScriptController::processingUserGesture()
     if (!activeFrame)
         return UserGestureIndicator::getUserGestureState() != DefinitelyNotProcessingUserGesture;
 
-    V8Proxy* activeProxy = activeFrame->script()->proxy();
+    V8Proxy* activeProxy = activeFrame->script().proxy();
 
     v8::HandleScope handleScope;
     v8::Handle<v8::Context> v8Context = V8Proxy::mainWorldContext(activeFrame);
@@ -188,12 +188,12 @@ bool ScriptController::processingUserGesture()
     // FIXME: We check the javascript anchor navigation from the last entered
     // frame becuase it should only be initiated on the last entered frame in
     // which execution began if it does happen.    
-    const String* sourceURL = activeFrame->script()->sourceURL();
+    const String* sourceURL = activeFrame->script().sourceURL();
     if (sourceURL && sourceURL->isNull() && !activeProxy->timerCallback()) {
         // This is the <a href="javascript:window.open('...')> case -> we let it through.
         return true;
     }
-    if (activeFrame->script()->allowPopupsFromPlugin())
+    if (activeFrame->script().allowPopupsFromPlugin())
         return true;
     // This is the <script>window.open(...)</script> case or a timer callback -> block it.
     // Based on JSC version, use returned value of UserGestureIndicator::processingUserGesture for all other situations. 
@@ -457,7 +457,7 @@ void ScriptController::clearWindowShell(bool)
 #if ENABLE(INSPECTOR)
 void ScriptController::setCaptureCallStackForUncaughtExceptions(bool value)
 {
-    v8::V8::SetCaptureStackTraceForUncaughtExceptions(value, ScriptCallStack::maxCallStackSizeToCapture, stackTraceOptions);
+    //v8::V8::SetCaptureStackTraceForUncaughtExceptions(value, ScriptCallStack::maxCallStackSizeToCapture, stackTraceOptions);//CMP_ERROR_UNCLEAR
 }
 #endif
 

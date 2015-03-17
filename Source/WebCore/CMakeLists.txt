@@ -1052,7 +1052,6 @@ set(WebCore_SOURCES
     bindings/v8/DOMData.cpp
     bindings/v8/WorkerScriptController.cpp
     bindings/v8/V8WorkerContextEventListener.cpp
-    bindings/v8/ScriptControllerQt.cpp
     bindings/v8/V8DOMWindowShell.cpp
     bindings/v8/RetainedDOMInfo.cpp
     bindings/v8/V8AbstractEventListener.cpp
