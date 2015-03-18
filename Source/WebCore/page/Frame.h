@@ -31,6 +31,7 @@
 #include "AdjustViewSizeOrNot.h"
 #include "FrameLoader.h"
 #include "FrameTree.h"
+#include "Document.h"
 #include "IntRect.h"
 #include "NavigationScheduler.h"
 #include "ScrollTypes.h"
@@ -89,6 +90,7 @@ namespace WebCore {
     class Settings;
     class VisiblePosition;
     class Widget;
+    class DOMWindow;
 
 #if PLATFORM(IOS)
     enum {
@@ -144,6 +146,7 @@ namespace WebCore {
         HTMLFrameOwnerElement* ownerElement() const;
 
         Document* document() const;
+        DOMWindow* domWindow(){return document()->domWindow();};
         FrameView* view() const;
 
         Editor& editor() const;
@@ -175,7 +178,7 @@ namespace WebCore {
 
         bool inViewSourceMode() const;
         void setInViewSourceMode(bool = true);
-
+        void keepAlive(){} // Used to keep the frame alive when running a script that might destroy it.
         void setDocument(PassRefPtr<Document>);
 
         WEBCORE_EXPORT void setPageZoomFactor(float);

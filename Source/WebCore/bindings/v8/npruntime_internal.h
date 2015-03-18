@@ -30,7 +30,7 @@
 #include "npfunctions.h"
 
 #ifdef XP_UNIX
-    #include <X11/Xresource.h>
+    //#include <X11/Xresource.h> //CMP_ERROR_UNCLEAR /usr/include/X11/Xresource.h:270:8: error: ‘Status’ does not name a type
 
     #undef None
     #undef Above

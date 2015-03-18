@@ -86,8 +86,8 @@ namespace WTF {
         template<typename... Args>
         void createTransactionally(Args...);
 
-    private:
         explicit OwnPtr(PtrType ptr) : m_ptr(ptr) { }
+    private:
 
         // We should never have two OwnPtrs for the same underlying object (otherwise we'll get
         // double-destruction), so these equality operators should never be needed.

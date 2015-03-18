@@ -105,7 +105,7 @@ public:
     
     EventTarget* target() const { return m_target.get(); }
     void setTarget(PassRefPtr<EventTarget>);
-
+        bool fromUserGesture();
     EventTarget* currentTarget() const { return m_currentTarget; }
     void setCurrentTarget(EventTarget* currentTarget) { m_currentTarget = currentTarget; }
 
@@ -124,7 +124,8 @@ public:
 
     bool legacyReturnValue() const { return !defaultPrevented(); }
     void setLegacyReturnValue(bool returnValue) { setDefaultPrevented(!returnValue); }
-
+        virtual bool storesResultAsString() const;
+        virtual void storeResult(const String&);
     DataTransfer* clipboardData() const { return isClipboardEvent() ? internalDataTransfer() : 0; }
 
     virtual EventInterface eventInterface() const;

@@ -185,6 +185,8 @@ struct KeyValuePair {
     KeyValuePair(K&& key, V&& value)
         : key(std::forward<K>(key))
         , value(std::forward<V>(value))
+        , first(std::forward<K>(key))
+        , second(std::forward<V>(value))
     {
     }
 
@@ -192,11 +194,15 @@ struct KeyValuePair {
     KeyValuePair(KeyValuePair<OtherKeyType, OtherValueType>&& other)
         : key(std::forward<OtherKeyType>(other.key))
         , value(std::forward<OtherValueType>(other.value))
+        , first(std::forward<OtherKeyType>(other.key))
+        , second(std::forward<OtherValueType>(other.value))
     {
     }
 
     KeyTypeArg key;
     ValueTypeArg value;
+    KeyTypeArg first;
+    ValueTypeArg second;
 };
 
 template<typename KeyTraitsArg, typename ValueTraitsArg>

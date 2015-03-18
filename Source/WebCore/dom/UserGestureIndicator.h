@@ -42,7 +42,7 @@ class UserGestureIndicator {
     WTF_MAKE_NONCOPYABLE(UserGestureIndicator);
 public:
     static bool processingUserGesture();
-
+    static ProcessingUserGestureState getUserGestureState() { return s_state; }
     // If a document is provided, its last known user gesture timestamp is updated.
     WEBCORE_EXPORT explicit UserGestureIndicator(ProcessingUserGestureState, Document* = nullptr);
     WEBCORE_EXPORT ~UserGestureIndicator();
