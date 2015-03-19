@@ -28,47 +28,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SharedWorkerGlobalScope_h
-#define SharedWorkerGlobalScope_h
+#include "config.h"
 
 #if ENABLE(SHARED_WORKERS)
 
-#include "ContentSecurityPolicy.h"
-#include "WorkerGlobalScope.h"
+#include "SharedWorkerContext.h"
+
+#include "DOMWindow.h"
+#include "EventNames.h"
+#include "MessageEvent.h"
+#include "NotImplemented.h"
+#include "SharedWorkerThread.h"
 
 namespace WebCore {
 
-    class MessageEvent;
-    class SharedWorkerThread;
+PassRefPtr<MessageEvent> createConnectEvent(PassRefPtr<MessagePort> port)
+{
+    RefPtr<MessageEvent> event = MessageEvent::create(new MessagePortArray(1, port));
+    event->initEvent(eventNames().connectEvent, false, false);
+    return event;
+}
 
-    class SharedWorkerGlobalScope : public WorkerGlobalScope {
-    public:
-        typedef WorkerGlobalScope Base;
-        static PassRefPtr<SharedWorkerGlobalScope> create(const String& name, const URL&, const String& userAgent, std::unique_ptr<GroupSettings>, SharedWorkerThread&, const String& contentSecurityPolicy, ContentSecurityPolicy::HeaderType contentSecurityPolicyType);
-        virtual ~SharedWorkerGlobalScope();
+SharedWorkerContext::SharedWorkerContext(const String& name, const KURL& url, const String& userAgent, SharedWorkerThread* thread)
+    : WorkerContext(url, userAgent, thread)
+    , m_name(name)
+{
+}
 
-        virtual bool isSharedWorkerGlobalScope() const override { return true; }
+SharedWorkerContext::~SharedWorkerContext()
+{
+}
 
-        // EventTarget
-        virtual EventTargetInterface eventTargetInterface() const override;
-
-        // Setters/Getters for attributes in SharedWorkerGlobalScope.idl
-        DEFINE_ATTRIBUTE_EVENT_LISTENER(connect);
-        String name() const { return m_name; }
-
-        SharedWorkerThread& thread();
-
-    private:
-        SharedWorkerGlobalScope(const String& name, const URL&, const String& userAgent, std::unique_ptr<GroupSettings>, SharedWorkerThread&);
-        virtual void logExceptionToConsole(const String& errorMessage, const String& sourceURL, int lineNumber, int columnNumber, PassRefPtr<WebCore::ScriptCallStack>) override;
-
-        String m_name;
-    };
-
-    PassRefPtr<MessageEvent> createConnectEvent(PassRefPtr<MessagePort>);
+SharedWorkerThread* SharedWorkerContext::thread()
+{
+    return static_cast<SharedWorkerThread*>(Base::thread());
+}
 
 } // namespace WebCore
 
 #endif // ENABLE(SHARED_WORKERS)
-
-#endif // SharedWorkerGlobalScope_h

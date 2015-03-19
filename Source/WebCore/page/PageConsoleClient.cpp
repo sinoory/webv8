@@ -136,7 +136,7 @@ void PageConsoleClient::addMessage(MessageSource source, MessageLevel level, con
 }
 
 
-void PageConsoleClient::messageWithTypeAndLevel(MessageType type, MessageLevel level, JSC::ExecState* exec, PassRefPtr<Inspector::ScriptArguments> prpArguments)
+void PageConsoleClient::messageWithTypeAndLevel(MessageType type, MessageLevel level, JSC::ExecState* exec, PassRefPtr<WebCore::ScriptArguments> prpArguments)
 {
     RefPtr<ScriptArguments> arguments = prpArguments;
 

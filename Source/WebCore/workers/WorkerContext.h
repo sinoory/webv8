@@ -42,10 +42,10 @@
 #include <wtf/RefPtr.h>
 #include <wtf/text/AtomicStringHash.h>
 //CMP_ERROR ,ScriptCallStack is under WebCore in android ,but under Inspector in webkit2
-namespace Inspector{
+namespace WebCore{
     class ScriptCallStack;
 }
-#define ScriptCallStack Inspector::ScriptCallStack
+#define ScriptCallStack WebCore::ScriptCallStack
 namespace WebCore {
 
     class Blob;

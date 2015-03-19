@@ -36,7 +36,7 @@
 #include <memory>
 #include <wtf/WeakPtr.h>
 
-namespace Inspector {
+namespace WebCore {
 class ScriptCallStack;
 }
 
@@ -244,7 +244,7 @@ namespace WebCore {
         // Needed for Objective-C bindings (see bug 28774).
         void postMessage(PassRefPtr<SerializedScriptValue> message, MessagePort*, const String& targetOrigin, DOMWindow& source, ExceptionCode&);
         void postMessageTimerFired(PostMessageTimer&);
-        void dispatchMessageEventWithOriginCheck(SecurityOrigin* intendedTargetOrigin, PassRefPtr<Event>, PassRefPtr<Inspector::ScriptCallStack>);
+        void dispatchMessageEventWithOriginCheck(SecurityOrigin* intendedTargetOrigin, PassRefPtr<Event>, PassRefPtr<WebCore::ScriptCallStack>);
 
         void scrollBy(int x, int y) const;
         void scrollTo(int x, int y) const;

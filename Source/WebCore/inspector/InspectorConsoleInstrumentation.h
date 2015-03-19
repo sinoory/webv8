@@ -39,7 +39,7 @@
 
 namespace WebCore {
 
-inline void InspectorInstrumentation::addMessageToConsole(Page* page, MessageSource source, MessageType type, MessageLevel level, const String& message, PassRefPtr<Inspector::ScriptCallStack> callStack, unsigned long requestIdentifier)
+inline void InspectorInstrumentation::addMessageToConsole(Page* page, MessageSource source, MessageType type, MessageLevel level, const String& message, PassRefPtr<WebCore::ScriptCallStack> callStack, unsigned long requestIdentifier)
 {
 #if ENABLE(INSPECTOR)
     if (InstrumentingAgents* instrumentingAgents = instrumentingAgentsForPage(page))
@@ -55,7 +55,7 @@ inline void InspectorInstrumentation::addMessageToConsole(Page* page, MessageSou
 #endif
 }
 
-inline void InspectorInstrumentation::addMessageToConsole(Page* page, MessageSource source, MessageType type, MessageLevel level, const String& message, JSC::ExecState* state, PassRefPtr<Inspector::ScriptArguments> arguments, unsigned long requestIdentifier)
+inline void InspectorInstrumentation::addMessageToConsole(Page* page, MessageSource source, MessageType type, MessageLevel level, const String& message, JSC::ExecState* state, PassRefPtr<WebCore::ScriptArguments> arguments, unsigned long requestIdentifier)
 {
 #if ENABLE(INSPECTOR)
     if (InstrumentingAgents* instrumentingAgents = instrumentingAgentsForPage(page))
@@ -91,7 +91,7 @@ inline void InspectorInstrumentation::addMessageToConsole(Page* page, MessageSou
 #endif
 }
 
-inline void InspectorInstrumentation::addMessageToConsole(WorkerGlobalScope* workerGlobalScope, MessageSource source, MessageType type, MessageLevel level, const String& message, PassRefPtr<Inspector::ScriptCallStack> callStack, unsigned long requestIdentifier)
+inline void InspectorInstrumentation::addMessageToConsole(WorkerGlobalScope* workerGlobalScope, MessageSource source, MessageType type, MessageLevel level, const String& message, PassRefPtr<WebCore::ScriptCallStack> callStack, unsigned long requestIdentifier)
 {
 #if ENABLE(INSPECTOR)
     if (InstrumentingAgents* instrumentingAgents = instrumentingAgentsForWorkerGlobalScope(workerGlobalScope))
@@ -126,7 +126,7 @@ inline void InspectorInstrumentation::addMessageToConsole(WorkerGlobalScope* wor
 #endif
 }
 
-inline void InspectorInstrumentation::consoleCount(Page* page, JSC::ExecState* state, PassRefPtr<Inspector::ScriptArguments> arguments)
+inline void InspectorInstrumentation::consoleCount(Page* page, JSC::ExecState* state, PassRefPtr<WebCore::ScriptArguments> arguments)
 {
 #if ENABLE(INSPECTOR)
     if (InstrumentingAgents* instrumentingAgents = instrumentingAgentsForPage(page))
@@ -149,7 +149,7 @@ inline void InspectorInstrumentation::startConsoleTiming(Frame* frame, const Str
 #endif
 }
 
-inline void InspectorInstrumentation::stopConsoleTiming(Frame* frame, const String& title, PassRefPtr<Inspector::ScriptCallStack> stack)
+inline void InspectorInstrumentation::stopConsoleTiming(Frame* frame, const String& title, PassRefPtr<WebCore::ScriptCallStack> stack)
 {
 #if ENABLE(INSPECTOR)
     if (InstrumentingAgents* instrumentingAgents = instrumentingAgentsForFrame(frame))
@@ -161,7 +161,7 @@ inline void InspectorInstrumentation::stopConsoleTiming(Frame* frame, const Stri
 #endif
 }
 
-inline void InspectorInstrumentation::consoleTimeStamp(Frame* frame, PassRefPtr<Inspector::ScriptArguments> arguments)
+inline void InspectorInstrumentation::consoleTimeStamp(Frame* frame, PassRefPtr<WebCore::ScriptArguments> arguments)
 {
 #if ENABLE(INSPECTOR)
     FAST_RETURN_IF_NO_FRONTENDS(void());

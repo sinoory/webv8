@@ -56,7 +56,7 @@ namespace Deprecated {
 class ScriptObject;
 }
 
-namespace Inspector {
+namespace WebCore {
 class ScriptArguments;
 class ScriptCallStack;
 }
@@ -214,18 +214,18 @@ public:
     static void didWriteHTML(const InspectorInstrumentationCookie&, unsigned endLine);
 
     // FIXME: Remove once we no longer generate stacks outside of Inspector.
-    static void addMessageToConsole(Page*, MessageSource, MessageType, MessageLevel, const String& message, PassRefPtr<Inspector::ScriptCallStack>, unsigned long requestIdentifier = 0);
-    static void addMessageToConsole(Page*, MessageSource, MessageType, MessageLevel, const String& message, JSC::ExecState*, PassRefPtr<Inspector::ScriptArguments>, unsigned long requestIdentifier = 0);
+    static void addMessageToConsole(Page*, MessageSource, MessageType, MessageLevel, const String& message, PassRefPtr<WebCore::ScriptCallStack>, unsigned long requestIdentifier = 0);
+    static void addMessageToConsole(Page*, MessageSource, MessageType, MessageLevel, const String& message, JSC::ExecState*, PassRefPtr<WebCore::ScriptArguments>, unsigned long requestIdentifier = 0);
     static void addMessageToConsole(Page*, MessageSource, MessageType, MessageLevel, const String& message, const String& scriptID, unsigned lineNumber, unsigned columnNumber, JSC::ExecState* = nullptr, unsigned long requestIdentifier = 0);
 
     // FIXME: Convert to ScriptArguments to match non-worker context.
-    static void addMessageToConsole(WorkerGlobalScope*, MessageSource, MessageType, MessageLevel, const String& message, PassRefPtr<Inspector::ScriptCallStack>, unsigned long requestIdentifier = 0);
+    static void addMessageToConsole(WorkerGlobalScope*, MessageSource, MessageType, MessageLevel, const String& message, PassRefPtr<WebCore::ScriptCallStack>, unsigned long requestIdentifier = 0);
     static void addMessageToConsole(WorkerGlobalScope*, MessageSource, MessageType, MessageLevel, const String& message, const String& scriptID, unsigned lineNumber, unsigned columnNumber, JSC::ExecState* = nullptr, unsigned long requestIdentifier = 0);
 
-    static void consoleCount(Page*, JSC::ExecState*, PassRefPtr<Inspector::ScriptArguments>);
+    static void consoleCount(Page*, JSC::ExecState*, PassRefPtr<WebCore::ScriptArguments>);
     static void startConsoleTiming(Frame*, const String& title);
-    static void stopConsoleTiming(Frame*, const String& title, PassRefPtr<Inspector::ScriptCallStack>);
-    static void consoleTimeStamp(Frame*, PassRefPtr<Inspector::ScriptArguments>);
+    static void stopConsoleTiming(Frame*, const String& title, PassRefPtr<WebCore::ScriptCallStack>);
+    static void consoleTimeStamp(Frame*, PassRefPtr<WebCore::ScriptArguments>);
 
     static void didRequestAnimationFrame(Document*, int callbackId);
     static void didCancelAnimationFrame(Document*, int callbackId);
@@ -412,16 +412,16 @@ private:
     static InspectorInstrumentationCookie willWriteHTMLImpl(InstrumentingAgents*, unsigned startLine, Frame*);
     static void didWriteHTMLImpl(const InspectorInstrumentationCookie&, unsigned endLine);
 
-    static void addMessageToConsoleImpl(InstrumentingAgents*, MessageSource, MessageType, MessageLevel, const String& message, JSC::ExecState*, PassRefPtr<Inspector::ScriptArguments>, unsigned long requestIdentifier);
+    static void addMessageToConsoleImpl(InstrumentingAgents*, MessageSource, MessageType, MessageLevel, const String& message, JSC::ExecState*, PassRefPtr<WebCore::ScriptArguments>, unsigned long requestIdentifier);
     static void addMessageToConsoleImpl(InstrumentingAgents*, MessageSource, MessageType, MessageLevel, const String& message, const String& scriptID, unsigned lineNumber, unsigned columnNumber, JSC::ExecState*, unsigned long requestIdentifier);
 
     // FIXME: Remove once we no longer generate stacks outside of Inspector.
-    static void addMessageToConsoleImpl(InstrumentingAgents*, MessageSource, MessageType, MessageLevel, const String& message, PassRefPtr<Inspector::ScriptCallStack>, unsigned long requestIdentifier);
+    static void addMessageToConsoleImpl(InstrumentingAgents*, MessageSource, MessageType, MessageLevel, const String& message, PassRefPtr<WebCore::ScriptCallStack>, unsigned long requestIdentifier);
 
-    static void consoleCountImpl(InstrumentingAgents*, JSC::ExecState*, PassRefPtr<Inspector::ScriptArguments>);
+    static void consoleCountImpl(InstrumentingAgents*, JSC::ExecState*, PassRefPtr<WebCore::ScriptArguments>);
     static void startConsoleTimingImpl(InstrumentingAgents*, Frame*, const String& title);
-    static void stopConsoleTimingImpl(InstrumentingAgents*, Frame*, const String& title, PassRefPtr<Inspector::ScriptCallStack>);
-    static void consoleTimeStampImpl(InstrumentingAgents*, Frame*, PassRefPtr<Inspector::ScriptArguments>);
+    static void stopConsoleTimingImpl(InstrumentingAgents*, Frame*, const String& title, PassRefPtr<WebCore::ScriptCallStack>);
+    static void consoleTimeStampImpl(InstrumentingAgents*, Frame*, PassRefPtr<WebCore::ScriptArguments>);
 
     static void didRequestAnimationFrameImpl(InstrumentingAgents*, int callbackId, Frame*);
     static void didCancelAnimationFrameImpl(InstrumentingAgents*, int callbackId, Frame*);

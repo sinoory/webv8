@@ -1197,7 +1197,7 @@ public:
     void sendWillRevealEdgeEventsIfNeeded(const IntPoint& oldPosition, const IntPoint& newPosition, const IntRect& visibleRect, const IntSize& contentsSize, Element* target = nullptr);
 
     virtual EventTarget* errorEventTarget() override;
-    virtual void logExceptionToConsole(const String& errorMessage, const String& sourceURL, int lineNumber, int columnNumber, PassRefPtr<Inspector::ScriptCallStack>) override;
+    virtual void logExceptionToConsole(const String& errorMessage, const String& sourceURL, int lineNumber, int columnNumber, PassRefPtr<WebCore::ScriptCallStack>) override;
 
     void initDNSPrefetch();
 
@@ -1329,7 +1329,7 @@ private:
     virtual void refScriptExecutionContext() override { ref(); }
     virtual void derefScriptExecutionContext() override { deref(); }
 
-    virtual void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL, unsigned lineNumber, unsigned columnNumber, PassRefPtr<Inspector::ScriptCallStack>, JSC::ExecState* = 0, unsigned long requestIdentifier = 0) override;
+    virtual void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL, unsigned lineNumber, unsigned columnNumber, PassRefPtr<WebCore::ScriptCallStack>, JSC::ExecState* = 0, unsigned long requestIdentifier = 0) override;
 
     virtual double minimumTimerInterval() const override;
 

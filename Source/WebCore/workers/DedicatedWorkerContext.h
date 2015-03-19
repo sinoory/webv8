@@ -28,47 +28,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SharedWorkerGlobalScope_h
-#define SharedWorkerGlobalScope_h
+#ifndef DedicatedWorkerContext_h
+#define DedicatedWorkerContext_h
 
-#if ENABLE(SHARED_WORKERS)
+#if ENABLE(WORKERS)
 
-#include "ContentSecurityPolicy.h"
-#include "WorkerGlobalScope.h"
+#include "MessagePort.h"
+#include "WorkerContext.h"
 
 namespace WebCore {
 
-    class MessageEvent;
-    class SharedWorkerThread;
+    class DedicatedWorkerThread;
 
-    class SharedWorkerGlobalScope : public WorkerGlobalScope {
+    class DedicatedWorkerContext : public WorkerContext {
     public:
-        typedef WorkerGlobalScope Base;
-        static PassRefPtr<SharedWorkerGlobalScope> create(const String& name, const URL&, const String& userAgent, std::unique_ptr<GroupSettings>, SharedWorkerThread&, const String& contentSecurityPolicy, ContentSecurityPolicy::HeaderType contentSecurityPolicyType);
-        virtual ~SharedWorkerGlobalScope();
+        typedef WorkerContext Base;
+        static PassRefPtr<DedicatedWorkerContext> create(const KURL& url, const String& userAgent, DedicatedWorkerThread* thread)
+        {
+            return adoptRef(new DedicatedWorkerContext(url, userAgent, thread));
+        }
 
-        virtual bool isSharedWorkerGlobalScope() const override { return true; }
+        virtual bool isDedicatedWorkerContext() const { return true; }
+
+        // Overridden to allow us to check our pending activity after executing imported script.
+        virtual void importScripts(const Vector<String>& urls, ExceptionCode&);
 
         // EventTarget
-        virtual EventTargetInterface eventTargetInterface() const override;
+        virtual DedicatedWorkerContext* toDedicatedWorkerContext() { return this; }
+        void postMessage(PassRefPtr<SerializedScriptValue>, ExceptionCode&);
+        void postMessage(PassRefPtr<SerializedScriptValue>, const MessagePortArray*, ExceptionCode&);
+        // FIXME: remove this when we update the ObjC bindings (bug #28774).
+        void postMessage(PassRefPtr<SerializedScriptValue>, MessagePort*, ExceptionCode&);
 
-        // Setters/Getters for attributes in SharedWorkerGlobalScope.idl
-        DEFINE_ATTRIBUTE_EVENT_LISTENER(connect);
-        String name() const { return m_name; }
+        DEFINE_ATTRIBUTE_EVENT_LISTENER(message);
 
-        SharedWorkerThread& thread();
-
+        DedicatedWorkerThread* thread();
     private:
-        SharedWorkerGlobalScope(const String& name, const URL&, const String& userAgent, std::unique_ptr<GroupSettings>, SharedWorkerThread&);
-        virtual void logExceptionToConsole(const String& errorMessage, const String& sourceURL, int lineNumber, int columnNumber, PassRefPtr<WebCore::ScriptCallStack>) override;
-
-        String m_name;
+        DedicatedWorkerContext(const KURL&, const String&, DedicatedWorkerThread*);
     };
-
-    PassRefPtr<MessageEvent> createConnectEvent(PassRefPtr<MessagePort>);
 
 } // namespace WebCore
 
-#endif // ENABLE(SHARED_WORKERS)
+#endif // ENABLE(WORKERS)
 
-#endif // SharedWorkerGlobalScope_h
+#endif // DedicatedWorkerContext_h

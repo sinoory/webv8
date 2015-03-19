@@ -28,40 +28,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SharedWorkerGlobalScope_h
-#define SharedWorkerGlobalScope_h
+#ifndef SharedWorkerContext_h
+#define SharedWorkerContext_h
 
 #if ENABLE(SHARED_WORKERS)
 
-#include "ContentSecurityPolicy.h"
-#include "WorkerGlobalScope.h"
+#include "WorkerContext.h"
 
 namespace WebCore {
 
     class MessageEvent;
     class SharedWorkerThread;
 
-    class SharedWorkerGlobalScope : public WorkerGlobalScope {
+    class SharedWorkerContext : public WorkerContext {
     public:
-        typedef WorkerGlobalScope Base;
-        static PassRefPtr<SharedWorkerGlobalScope> create(const String& name, const URL&, const String& userAgent, std::unique_ptr<GroupSettings>, SharedWorkerThread&, const String& contentSecurityPolicy, ContentSecurityPolicy::HeaderType contentSecurityPolicyType);
-        virtual ~SharedWorkerGlobalScope();
+        typedef WorkerContext Base;
+        static PassRefPtr<SharedWorkerContext> create(const String& name, const KURL& url, const String& userAgent, SharedWorkerThread* thread)
+        {
+            return adoptRef(new SharedWorkerContext(name, url, userAgent, thread));
+        }
+        virtual ~SharedWorkerContext();
 
-        virtual bool isSharedWorkerGlobalScope() const override { return true; }
+        virtual bool isSharedWorkerContext() const { return true; }
 
         // EventTarget
-        virtual EventTargetInterface eventTargetInterface() const override;
+        virtual SharedWorkerContext* toSharedWorkerContext() { return this; }
 
-        // Setters/Getters for attributes in SharedWorkerGlobalScope.idl
+        // Setters/Getters for attributes in SharedWorkerContext.idl
         DEFINE_ATTRIBUTE_EVENT_LISTENER(connect);
         String name() const { return m_name; }
 
-        SharedWorkerThread& thread();
-
+        SharedWorkerThread* thread();
     private:
-        SharedWorkerGlobalScope(const String& name, const URL&, const String& userAgent, std::unique_ptr<GroupSettings>, SharedWorkerThread&);
-        virtual void logExceptionToConsole(const String& errorMessage, const String& sourceURL, int lineNumber, int columnNumber, PassRefPtr<WebCore::ScriptCallStack>) override;
-
+        SharedWorkerContext(const String& name, const KURL&, const String&, SharedWorkerThread*);
         String m_name;
     };
 
@@ -71,4 +70,4 @@ namespace WebCore {
 
 #endif // ENABLE(SHARED_WORKERS)
 
-#endif // SharedWorkerGlobalScope_h
+#endif // SharedWorkerContext_h
