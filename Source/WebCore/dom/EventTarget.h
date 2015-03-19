@@ -123,7 +123,11 @@ namespace WebCore {
         virtual Node* toNode();
         virtual DOMWindow* toDOMWindow();
         virtual bool isMessagePort() const;
-
+        virtual Worker* toWorker(){return 0;};///CMP_ERROR_UNCLEAR 5 android not implement
+        virtual WebSocket* toWebSocket(){return 0;};
+        virtual XMLHttpRequest* toXMLHttpRequest(){return 0;};
+        virtual MessagePort* toMessagePort(){return 0;};
+        virtual XMLHttpRequestUpload* toXMLHttpRequestUpload(){return 0;};
         virtual bool addEventListener(const AtomicString& eventType, PassRefPtr<EventListener>, bool useCapture);
         virtual bool removeEventListener(const AtomicString& eventType, EventListener*, bool useCapture);
         virtual void removeAllEventListeners();

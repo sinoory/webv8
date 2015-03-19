@@ -79,7 +79,10 @@ public:
     OrdinalNumber m_line;
     OrdinalNumber m_column;
 };
-
+inline TextPosition0 toZeroBasedTextPosition(const TextPosition1& position)
+{
+    return TextPosition0(position.m_line.zeroBasedInt(), position.m_column.zeroBasedInt());
+}
 }
 
 using WTF::OrdinalNumber;

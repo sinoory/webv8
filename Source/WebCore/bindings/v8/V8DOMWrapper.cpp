@@ -31,7 +31,7 @@
 #include "config.h"
 #include "V8DOMWrapper.h"
 
-#include "CSSMutableStyleDeclaration.h"
+//#include "CSSMutableStyleDeclaration.h" 
 #include "DOMDataStore.h"
 #include "DocumentLoader.h"
 #include "FrameLoaderClient.h"
@@ -40,7 +40,7 @@
 #include "V8AbstractEventListener.h"
 #include "V8Binding.h"
 #include "V8Collection.h"
-#include "V8DedicatedWorkerContext.h"
+//#include "V8DedicatedWorkerContext.h"
 #include "V8DOMApplicationCache.h"
 #include "V8DOMMap.h"
 #include "V8DOMWindow.h"
@@ -64,7 +64,7 @@
 #include "V8Notification.h"
 #include "V8Proxy.h"
 #include "V8SharedWorker.h"
-#include "V8SharedWorkerContext.h"
+//#include "V8SharedWorkerContext.h"
 #include "V8StyleSheet.h"
 #include "V8WebSocket.h"
 #include "V8Worker.h"
@@ -85,7 +85,7 @@
 
 #if ENABLE(WEB_AUDIO)
 #include "V8AudioContext.h"
-#include "V8JavaScriptAudioNode.h"
+//#include "V8JavaScriptAudioNode.h"
 #endif
 
 #include <algorithm>
@@ -237,13 +237,14 @@ static bool globalObjectPrototypeIsDOMWindow(v8::Handle<v8::Object> objectProtot
     // We can identify what type of context the global object is wrapping by looking at the
     // internal field count of its prototype. This assumes WorkerContexts and DOMWindows have different numbers
     // of internal fields, so a COMPILE_ASSERT is included to warn if this ever changes.
-#if ENABLE(WORKERS)
+#if 0 //ENABLE(WORKERS)
     COMPILE_ASSERT(V8DOMWindow::internalFieldCount != V8WorkerContext::internalFieldCount,
         DOMWindowAndWorkerContextHaveUnequalFieldCounts);
-    COMPILE_ASSERT(V8DOMWindow::internalFieldCount != V8DedicatedWorkerContext::internalFieldCount,
-        DOMWindowAndDedicatedWorkerContextHaveUnequalFieldCounts);
+//CMP_ERROR_UNCLEAR
+    //COMPILE_ASSERT(V8DOMWindow::internalFieldCount != V8DedicatedWorkerContext::internalFieldCount,
+    //    DOMWindowAndDedicatedWorkerContextHaveUnequalFieldCounts);
 #endif
-#if ENABLE(SHARED_WORKERS)
+#if 0 // ENABLE(SHARED_WORKERS)
     COMPILE_ASSERT(V8DOMWindow::internalFieldCount != V8SharedWorkerContext::internalFieldCount,
         DOMWindowAndSharedWorkerContextHaveUnequalFieldCounts);
 #endif
@@ -366,12 +367,12 @@ v8::Handle<v8::Value> V8DOMWrapper::convertEventTargetToV8Object(EventTarget* ta
 #if ENABLE(WORKERS)
     if (Worker* worker = target->toWorker())
         return toV8(worker);
-
-    if (DedicatedWorkerContext* workerContext = target->toDedicatedWorkerContext())
-        return toV8(workerContext);
+//CMP_ERROR_UNCLEAR DedicatedWorkerContext
+    //if (DedicatedWorkerContext* workerContext = target->toDedicatedWorkerContext())
+    //    return toV8(workerContext);
 #endif // WORKERS
 
-#if ENABLE(SHARED_WORKERS)
+#if 0 // ENABLE(SHARED_WORKERS) CMP_ERROR_UNCLEAR SharedWorkerContext
     if (SharedWorker* sharedWorker = target->toSharedWorker())
         return toV8(sharedWorker);
 
@@ -444,7 +445,7 @@ v8::Handle<v8::Value> V8DOMWrapper::convertEventTargetToV8Object(EventTarget* ta
         return toV8(fileWriter);
 #endif
 
-#if ENABLE(WEB_AUDIO)
+#if 0 // ENABLE(WEB_AUDIO) //CMP_ERROR_UNCLEAR
     if (JavaScriptAudioNode* jsAudioNode = target->toJavaScriptAudioNode())
         return toV8(jsAudioNode);
     if (AudioContext* audioContext = target->toAudioContext())

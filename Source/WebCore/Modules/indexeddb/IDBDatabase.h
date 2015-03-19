@@ -26,6 +26,7 @@
 #ifndef IDBDatabase_h
 #define IDBDatabase_h
 
+#if ENABLE(INDEXED_DATABASE)
 #include "ActiveDOMObject.h"
 #include "DOMStringList.h"
 #include "Dictionary.h"
@@ -41,7 +42,6 @@
 #include <wtf/RefCounted.h>
 #include <wtf/RefPtr.h>
 
-#if ENABLE(INDEXED_DATABASE)
 
 namespace WebCore {
 

@@ -76,8 +76,8 @@ ScriptValue WorkerScriptController::evaluate(const ScriptSourceCode& sourceCode,
     if (state.hadException) {
         if (exception)
             *exception = state.exception;
-        else
-            m_workerContext->reportException(state.errorMessage, state.lineNumber, state.sourceURL, 0);
+        else //CMP_ERROR_UNCLEAR, param dismatch,change cause other prolems
+            m_workerContext->reportException(state.errorMessage, state.lineNumber,0, state.sourceURL, 0);
     }
 
     return result;

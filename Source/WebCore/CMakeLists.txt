@@ -616,6 +616,8 @@ set(WebCore_NON_SVG_IDL_FILES
     workers/Worker.idl
     workers/WorkerGlobalScope.idl
     workers/WorkerLocation.idl
+    workers/SharedWorkerContext.idl
+    workers/WorkerContext.idl
 
     xml/DOMParser.idl
     xml/XMLHttpRequest.idl

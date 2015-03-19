@@ -32,7 +32,7 @@
 #include "V8DOMWindowShell.h"
 
 #include "PlatformBridge.h"
-#include "CSSMutableStyleDeclaration.h"
+//#include "CSSMutableStyleDeclaration.h" //
 #include "DateExtension.h"
 #include "DocumentLoader.h"
 #include "Frame.h"
@@ -123,7 +123,7 @@ static void v8UncaughtExceptionHandler(v8::Handle<v8::Message> message, v8::Hand
     bool useURL = resourceName.IsEmpty() || !resourceName->IsString();
     Document* document = frame->document();
     String resourceNameString = useURL ? document->url() : toWebCoreString(resourceName);
-    document->reportException(errorMessage, message->GetLineNumber(), resourceNameString, callStack);
+    document->reportException(errorMessage, message->GetLineNumber(),0, resourceNameString, callStack);
 }
 
 // Returns the owner frame pointer of a DOM wrapper object. It only works for

@@ -767,7 +767,21 @@ void Node::invalidateNodeListAndCollectionCachesInAncestors(const QualifiedName*
             data->nodeLists()->invalidateCaches(attrName);
     }
 }
-
+Node* Node::traverseNextNode(const Node* stayWithin) const
+{
+    if (firstChild())
+        return firstChild();
+    if (this == stayWithin)
+        return 0;
+    if (nextSibling())
+        return nextSibling();
+    const Node *n = this;
+    while (n && !n->nextSibling() && (!stayWithin || n->parentNode() != stayWithin))
+        n = n->parentNode();
+    if (n)
+        return n->nextSibling();
+    return 0;
+}
 NodeListsNodeData* Node::nodeLists()
 {
     return hasRareData() ? rareData()->nodeLists() : 0;

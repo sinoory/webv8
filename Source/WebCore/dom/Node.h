@@ -416,7 +416,11 @@ public:
     virtual bool childTypeAllowed(NodeType) const { return false; }
     unsigned countChildNodes() const;
     Node* traverseToChildAt(unsigned) const;
-
+    // Does a pre-order traversal of the tree to find the next node after this one.
+    // This uses the same order that tags appear in the source file. If the stayWithin
+    // argument is non-null, the traversal will stop once the specified node is reached.
+    // This can be used to restrict traversal to a particular sub-tree.
+    Node* traverseNextNode(const Node* stayWithin = 0) const;
     void checkSetPrefix(const AtomicString& prefix, ExceptionCode&);
 
     WEBCORE_EXPORT bool isDescendantOf(const Node*) const;
