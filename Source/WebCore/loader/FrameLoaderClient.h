@@ -284,7 +284,11 @@ namespace WebCore {
         virtual void dispatchDidClearWindowObjectInWorld(DOMWrapperWorld&) = 0;
 
         virtual void registerForIconNotification(bool listen = true) = 0;
-
+			////CMP_ERROR_UNCLEAR add 4 empty fun
+        virtual void didCreateScriptContextForFrame() {};
+        virtual void didDestroyScriptContextForFrame() {};
+        virtual void didCreateIsolatedScriptContext() {};
+        virtual bool allowScriptExtension(const String& extensionName, int extensionGroup) {return true;};
 #if PLATFORM(COCOA)
         // Allow an accessibility object to retrieve a Frame parent if there's no PlatformWidget.
         virtual RemoteAXObjectRef accessibilityRemoteObject() = 0;

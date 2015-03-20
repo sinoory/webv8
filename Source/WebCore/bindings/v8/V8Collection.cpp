@@ -40,7 +40,7 @@ namespace WebCore {
 v8::Handle<v8::Value> toOptionsCollectionSetter(uint32_t index, v8::Handle<v8::Value> value, HTMLSelectElement* base)
 {
     if (value->IsNull() || value->IsUndefined()) {
-        base->remove(index);
+        base->removeByIndex(index);
         return value;
     }
 

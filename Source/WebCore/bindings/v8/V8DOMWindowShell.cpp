@@ -58,6 +58,7 @@
 #include "V8Location.h"
 #include "V8Proxy.h"
 #include "WorkerContextExecutionProxy.h"
+#include "V8IsolatedContext.h"
 
 #include <algorithm>
 #include <stdio.h>
@@ -177,7 +178,7 @@ bool V8DOMWindowShell::isContextInitialized()
 void V8DOMWindowShell::disposeContextHandles()
 {
     if (!m_context.IsEmpty()) {
-        m_frame->loader()->client()->didDestroyScriptContextForFrame();
+        m_frame->loader().client().didDestroyScriptContextForFrame();
         m_context.Dispose();
         m_context.Clear();
 
@@ -346,11 +347,13 @@ bool V8DOMWindowShell::initContextIfNeeded()
 
     setSecurityToken();
 
-    m_frame->loader()->client()->didCreateScriptContextForFrame();
+    m_frame->loader().client().didCreateScriptContextForFrame();
 
     // FIXME: This is wrong. We should actually do this for the proper world once
     // we do isolated worlds the WebCore way.
-    m_frame->loader()->dispatchDidClearWindowObjectInWorld(0);
+    V8IsolatedContext* isolatedContext = V8IsolatedContext::getEntered();
+    DOMWrapperWorld& domword=*(isolatedContext->world());//CMP_ERROR,api dismatch
+    m_frame->loader().dispatchDidClearWindowObjectInWorld(domword);
 
 #ifdef ANDROID_INSTRUMENT
     android::TimeCounter::record(android::TimeCounter::JavaScriptInitTimeCounter, __FUNCTION__);
@@ -364,7 +367,7 @@ v8::Persistent<v8::Context> V8DOMWindowShell::createNewContext(v8::Handle<v8::Ob
     v8::Persistent<v8::Context> result;
 
     // The activeDocumentLoader pointer could be 0 during frame shutdown.
-    if (!m_frame->loader()->activeDocumentLoader())
+    if (!m_frame->loader().activeDocumentLoader())
         return result;
 
     // Create a new environment using an empty template for the shadow
@@ -390,7 +393,7 @@ v8::Persistent<v8::Context> V8DOMWindowShell::createNewContext(v8::Handle<v8::Ob
     for (size_t i = 0; i < extensions.size(); ++i) {
         // Ensure our date extension is always allowed.
         if (extensions[i] != DateExtension::get()
-            && !m_frame->loader()->client()->allowScriptExtension(extensions[i]->name(), extensionGroup))
+            && !m_frame->loader().client().allowScriptExtension(extensions[i]->name(), extensionGroup))
             continue;
 
         extensionNames[index++] = extensions[i]->name();
@@ -643,7 +646,7 @@ v8::Local<v8::Object> V8DOMWindowShell::createWrapperFromCacheSlowCase(WrapperTy
 void V8DOMWindowShell::setLocation(DOMWindow* window, const String& locationString)
 {
     State<V8Binding>* state = V8BindingState::Only();
-    window->setLocation(locationString, state->activeWindow(), state->firstWindow());
+    window->setLocation(locationString, *(state->activeWindow()), *(state->firstWindow()));
 }
 
 } // WebCore
