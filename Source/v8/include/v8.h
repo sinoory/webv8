@@ -2371,7 +2371,13 @@ class V8EXPORT DeclareExtension {
 
 // --- S t a t i c s ---
 
+#ifdef True
+#undef True
+#endif
 
+#ifdef False
+#undef False
+#endif
 Handle<Primitive> V8EXPORT Undefined();
 Handle<Primitive> V8EXPORT Null();
 Handle<Boolean> V8EXPORT True();
