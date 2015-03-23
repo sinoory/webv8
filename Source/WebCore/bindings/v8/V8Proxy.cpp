@@ -62,6 +62,8 @@
 #include "V8XPathException.h"
 #include "WorkerContext.h"
 #include "WorkerContextExecutionProxy.h"
+#include "Console.h"
+#include "MainFrame.h"
 
 #if ENABLE(INDEXED_DATABASE)
 #include "V8IDBDatabaseException.h"
@@ -140,7 +142,7 @@ bool AllowAllocation::m_current = false;
 static void addMessageToConsole(Page* page, const String& message, const String& sourceID, unsigned lineNumber)
 {
     ASSERT(page);
-    Console* console = page->mainFrame()->domWindow()->console();
+    Console* console = (Console*)(page->mainFrame().domWindow()->console());
     console->addMessage(JSMessageSource, LogMessageType, ErrorMessageLevel, message, lineNumber, sourceID);
 }
 
@@ -251,9 +253,9 @@ bool V8Proxy::handleOutOfMemory()
 #endif
 
     // Disable JS.
-    Settings* settings = frame->settings();
+    Settings& settings = frame->settings();
     ASSERT(settings);
-    settings->setJavaScriptEnabled(false);
+    //settings->setJavaScriptEnabled(false);
 
     return true;
 }
@@ -337,7 +339,7 @@ PassOwnPtr<v8::ScriptData> V8Proxy::precompileScript(v8::Handle<v8::String> code
 
     CachedMetadata* cachedMetadata = cachedScript->cachedMetadata(dataTypeID);
     if (cachedMetadata)
-        return v8::ScriptData::New(cachedMetadata->data(), cachedMetadata->size());
+        return PassOwnPtr<v8::ScriptData>(v8::ScriptData::New(cachedMetadata->data(), cachedMetadata->size()));//CMP_ERROR
 
     OwnPtr<v8::ScriptData> scriptData(v8::ScriptData::PreCompile(code));
     cachedScript->setCachedMetadata(dataTypeID, scriptData->Data(), scriptData->Length());
@@ -391,7 +393,7 @@ v8::Local<v8::Value> V8Proxy::evaluate(const ScriptSourceCode& source, Node* nod
     PlatformBridge::traceEventEnd("v8.run", node, "");
 #endif
 
-    InspectorInstrumentation::didEvaluateScript(cookie);
+    InspectorInstrumentation::didEvaluateScript(cookie,frame());
 
     return result;
 }
@@ -504,14 +506,14 @@ v8::Local<v8::Value> V8Proxy::callFunction(v8::Handle<v8::Function> function, v8
                 resourceName = toWebCoreString(origin.ResourceName());
                 lineNumber = function->GetScriptLineNumber() + 1;
             }
-            cookie = InspectorInstrumentation::willCallFunction(m_frame, resourceName, lineNumber);
+            cookie = InspectorInstrumentation::willCallFunction(getScriptExecutionContext(), resourceName, lineNumber);
         }
 
         m_recursion++;
         result = function->Call(receiver, argc, args);
         m_recursion--;
 
-        InspectorInstrumentation::didCallFunction(cookie);
+        InspectorInstrumentation::didCallFunction(cookie,getScriptExecutionContext());
     }
 
     // Release the storage mutex if applicable.
@@ -611,7 +613,7 @@ V8Proxy* V8Proxy::retrieve(Frame* frame)
 {
     if (!frame)
         return 0;
-    return frame->script()->canExecuteScripts(NotAboutToExecuteScript) ? frame->script()->proxy() : 0;
+    return frame->script().canExecuteScripts(NotAboutToExecuteScript) ? frame->script().proxy() : 0;
 }
 
 V8Proxy* V8Proxy::retrieve(ScriptExecutionContext* context)

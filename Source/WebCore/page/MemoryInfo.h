@@ -31,28 +31,27 @@
 #ifndef MemoryInfo_h
 #define MemoryInfo_h
 
-#include "JSDOMWindow.h"
 #include <wtf/PassRefPtr.h>
 #include <wtf/RefCounted.h>
 
 namespace WebCore {
 
+class Frame;
+
 class MemoryInfo : public RefCounted<MemoryInfo> {
 public:
-    static PassRefPtr<MemoryInfo> create() { return adoptRef(new MemoryInfo); }
+    static PassRefPtr<MemoryInfo> create(Frame* frame) { return adoptRef(new MemoryInfo(frame)); }
 
-    size_t usedJSHeapSize() const { return m_usedJSHeapSize; }
     size_t totalJSHeapSize() const { return m_totalJSHeapSize; }
+    size_t usedJSHeapSize() const { return m_usedJSHeapSize; }
+    size_t jsHeapSizeLimit() const { return m_jsHeapSizeLimit; }
 
 private:
-    MemoryInfo()
-        : m_usedJSHeapSize(JSDOMWindow::commonVM().heap.size())
-        , m_totalJSHeapSize(JSDOMWindow::commonVM().heap.capacity())
-    {
-    }
+    MemoryInfo(Frame*);
 
-    size_t m_usedJSHeapSize;
     size_t m_totalJSHeapSize;
+    size_t m_usedJSHeapSize;
+    size_t m_jsHeapSizeLimit;
 };
 
 } // namespace WebCore

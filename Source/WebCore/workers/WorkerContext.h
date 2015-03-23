@@ -45,7 +45,7 @@
 namespace WebCore{
     class ScriptCallStack;
 }
-#define ScriptCallStack WebCore::ScriptCallStack
+//#define ScriptCallStack WebCore::ScriptCallStack
 namespace WebCore {
 
     class Blob;

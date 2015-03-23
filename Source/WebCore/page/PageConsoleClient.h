@@ -42,10 +42,11 @@ namespace WebCore {
 
 class Document;
 class Page;
+class Console;
 
 typedef Vector<RefPtr<JSC::Profile>> ProfilesArray;
 
-class PageConsoleClient final : public JSC::ConsoleClient {
+class PageConsoleClient final : public Console {
 public:
     explicit PageConsoleClient(Page&);
     virtual ~PageConsoleClient();

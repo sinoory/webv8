@@ -97,7 +97,7 @@ void ScriptState::weakReferenceCallback(v8::Persistent<v8::Value> object, void* 
 ScriptState* mainWorldScriptState(Frame* frame)
 {
     v8::HandleScope handleScope;
-    V8Proxy* proxy = frame->script()->proxy();
+    V8Proxy* proxy = frame->script().proxy();
     return ScriptState::forContext(proxy->mainWorldContext());
 }
 

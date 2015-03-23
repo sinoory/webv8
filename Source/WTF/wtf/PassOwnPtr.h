@@ -30,8 +30,8 @@
 #include <wtf/Assertions.h>
 #include <wtf/GetPtr.h>
 #include <wtf/OwnPtrCommon.h>
-#include <type_traits>
-
+//#include <type_traits>
+#include "TypeTraits.h"
 namespace WTF {
 
     template<typename T> class OwnPtr;
@@ -43,7 +43,7 @@ namespace WTF {
 
     template<typename T> class PassOwnPtr {
     public:
-        typedef T ValueType;
+        typedef typename RemovePointer<T>::Type ValueType;
         typedef ValueType* PtrType;
 
         PassOwnPtr() : m_ptr(0) { }
@@ -73,9 +73,10 @@ namespace WTF {
         PassOwnPtr& operator=(const PassOwnPtr&) { COMPILE_ASSERT(!sizeof(T*), PassOwnPtr_should_never_be_assigned_to); return *this; }
 
         template<typename U> friend PassOwnPtr<U> adoptPtr(U*);
-
-    private:
+        PassOwnPtr& operator=(PtrType);
         explicit PassOwnPtr(PtrType ptr) : m_ptr(ptr) { }
+    private:
+
 
         // We should never have two OwnPtrs for the same underlying object (otherwise we'll get
         // double-destruction), so these equality operators should never be needed.
@@ -93,7 +94,15 @@ namespace WTF {
         m_ptr = 0;
         return ptr;
     }
-
+    template<typename T> inline PassOwnPtr<T>& PassOwnPtr<T>::operator=(PtrType optr)
+    {
+        PtrType ptr = m_ptr;
+        m_ptr = optr;
+        ASSERT(!ptr || m_ptr != ptr);
+        if (ptr)
+            deleteOwnedPtr(ptr);
+        return *this;
+    }
     template<typename T, typename U> inline bool operator==(const PassOwnPtr<T>& a, const PassOwnPtr<U>& b) 
     {
         return a.get() == b.get(); 
