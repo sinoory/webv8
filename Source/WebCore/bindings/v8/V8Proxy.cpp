@@ -64,6 +64,7 @@
 #include "WorkerContextExecutionProxy.h"
 #include "Console.h"
 #include "MainFrame.h"
+#include "ExceptionCodeDescription.h"
 
 #if ENABLE(INDEXED_DATABASE)
 #include "V8IDBDatabaseException.h"
@@ -673,12 +674,12 @@ void V8Proxy::setDOMException(int exceptionCode)
     if (exceptionCode <= 0)
         return;
 
-    ExceptionCodeDescription description;
-    getExceptionCodeDescription(exceptionCode, description);
+    ExceptionCodeDescription description(exceptionCode);
+    //getExceptionCodeDescription(exceptionCode, description);
 
     v8::Handle<v8::Value> exception;
     switch (description.type) {
-    case DOMExceptionType:
+    case DOMCoreExceptionType:
         exception = toV8(DOMCoreException::create(description));
         break;
     case RangeExceptionType:

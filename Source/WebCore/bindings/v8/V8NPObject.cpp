@@ -81,10 +81,10 @@ static v8::Handle<v8::Value> npObjectInvokeImpl(const v8::Arguments& args, Invok
             element = V8HTMLEmbedElement::toNative(args.Holder());
         else
             element = V8HTMLObjectElement::toNative(args.Holder());
-        ScriptInstance scriptInstance = element->getInstance();
-        if (scriptInstance)
-            npObject = v8ObjectToNPObject(scriptInstance->instance());
-        else
+        //ScriptInstance scriptInstance = element->getInstance(); //CMP_ERROR_UNCLEAR
+        //if (scriptInstance)
+        //    npObject = v8ObjectToNPObject(scriptInstance->instance());
+        //else
             npObject = 0;
     } else {
         // The holder object is not a subtype of HTMLPlugInElement, it must be an NPObject which has three
