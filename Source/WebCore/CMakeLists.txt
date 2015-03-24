@@ -571,6 +571,7 @@ set(WebCore_NON_SVG_IDL_FILES
     inspector/InspectorFrontendHost.idl
     inspector/ScriptProfile.idl
     inspector/ScriptProfileNode.idl
+    inspector/InjectedScriptHost.idl
 
     loader/appcache/DOMApplicationCache.idl
 
