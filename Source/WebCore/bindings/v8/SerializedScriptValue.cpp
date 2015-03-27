@@ -337,6 +337,12 @@ private:
 class Serializer {
     class StateBase;
 public:
+#ifdef Status
+#undef Status
+#endif
+#ifdef Success
+#undef Success
+#endif
     enum Status {
         Success,
         InputError,
@@ -744,7 +750,12 @@ public:
     }
 
     bool isEof() const { return m_position >= m_length; }
-
+#ifdef True
+#undef True
+#endif
+#ifdef False
+#undef False
+#endif
     bool read(v8::Handle<v8::Value>* value, CompositeCreator& creator)
     {
         SerializationTag tag;

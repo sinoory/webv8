@@ -53,7 +53,10 @@ public:
     {
         return adoptRef(new Blob(WTF::move(data), contentType));
     }
-
+    static PassRefPtr<Blob> create(const KURL& srcURL, const String& type, long long size)
+    {
+        return adoptRef(new Blob(deserializationContructor,srcURL, type, size));
+    }
     static PassRefPtr<Blob> create(Vector<BlobPart> blobParts, const String& contentType)
     {
         return adoptRef(new Blob(WTF::move(blobParts), contentType));

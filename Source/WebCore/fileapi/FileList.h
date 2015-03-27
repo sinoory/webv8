@@ -53,6 +53,7 @@ public:
     bool isEmpty() const { return m_files.isEmpty(); }
     Vector<String> paths() const;
 
+    void append(PassRefPtr<File> file) { m_files.append(file); }
 private:
     FileList();
     FileList(Vector<RefPtr<File>>&& files) : m_files(files) { }
@@ -60,7 +61,6 @@ private:
     // FileLists can only be changed by their owners.
     friend class DataTransfer;
     friend class FileInputType;
-    void append(PassRefPtr<File> file) { m_files.append(file); }
     void clear() { m_files.clear(); }
 
     Vector<RefPtr<File>> m_files;

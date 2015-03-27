@@ -265,19 +265,19 @@ inline void InspectorObject::setString(const String& name, const String& value)
 
 inline void InspectorObject::setValue(const String& name, PassRefPtr<InspectorValue> value)
 {
-    if (m_data.set(name, value).second)
+    if (m_data.set(name, value).iterator.get())
         m_order.append(name);
 }
 
 inline void InspectorObject::setObject(const String& name, PassRefPtr<InspectorObject> value)
 {
-    if (m_data.set(name, value).second)
+    if (m_data.set(name, value).iterator.get())//CMP_ERROR m_data.set(name, value).second not exist in wtf
         m_order.append(name);
 }
 
 inline void InspectorObject::setArray(const String& name, PassRefPtr<InspectorArray> value)
 {
-    if (m_data.set(name, value).second)
+    if (m_data.set(name, value).iterator.get())
         m_order.append(name);
 }
 

@@ -45,7 +45,10 @@ public:
     {
         return adoptRef(new File(deserializationContructor, path, srcURL, type, name));
     }
-
+    static PassRefPtr<File> create(const String& path, const URL& srcURL, const String& type)
+    {
+        return adoptRef(new File(deserializationContructor,path, srcURL, type));
+    }
     // Create a file with a name exposed to the author (via File.name and associated DOM properties) that differs from the one provided in the path.
     static PassRefPtr<File> createWithName(const String& path, const String& nameOverride)
     {
@@ -73,6 +76,7 @@ private:
     File(const String& path, const String& nameOverride);
 
     File(DeserializationContructor, const String& path, const URL& srcURL, const String& type, const String& name);
+    File(DeserializationContructor, const String& path, const URL& srcURL, const String& type);
 
     static void computeNameAndContentType(const String& path, const String& nameOverride, String& effectiveName, String& effectiveContentType);
 #if ENABLE(FILE_REPLACEMENT)

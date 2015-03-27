@@ -84,7 +84,7 @@ class ScriptCallStack;
 class ScriptProfile;
 class SharedBuffer;
 class StorageArea;
-
+using std::pair;
 #if ENABLE(OFFLINE_WEB_APPLICATIONS)
 class InspectorApplicationCacheAgent;
 #endif

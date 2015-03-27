@@ -63,7 +63,12 @@ File::File(DeserializationContructor, const String& path, const URL& url, const 
     , m_name(name)
 {
 }
-
+File::File(DeserializationContructor, const String& path, const URL& url, const String& type)
+    : Blob(deserializationContructor, url, type, -1)
+    , m_path(path)
+{
+    m_name = pathGetFileName(path);
+}
 double File::lastModifiedDate() const
 {
     time_t modificationTime;
