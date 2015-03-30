@@ -33,7 +33,7 @@
 
 #include <wtf/Forward.h>
 #include <v8.h>
-
+#include "URL.h"
 namespace WebCore {
 
     class EventListener;

@@ -31,7 +31,7 @@
 #include "PlatformBridge.h"
 #include "DOMWindow.h"
 #include "Frame.h"
-#include "OwnArrayPtr.h"
+#include <wtf/OwnArrayPtr.h>
 #include "PlatformString.h"
 #include "ScriptController.h"
 #include "UserGestureIndicator.h"
@@ -351,7 +351,7 @@ bool _NPN_SetProperty(NPP npp, NPObject* npObject, NPIdentifier propertyName, co
 
         v8::Handle<v8::Object> obj(object->v8Object);
         obj->Set(npIdentifierToV8Identifier(propertyName),
-                 convertNPVariantToV8Object(value, object->rootObject->frame()->script()->windowScriptNPObject()));
+                 convertNPVariantToV8Object(value, object->rootObject->frame()->script().windowScriptNPObject()));
         return true;
     }
 
