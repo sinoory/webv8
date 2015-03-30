@@ -36,8 +36,8 @@
 #include "MathExtras.h"
 #include "PlatformString.h"
 #include "QualifiedName.h"
-#include "StdLibExtras.h"
-#include "Threading.h"
+#include <wtf/StdLibExtras.h>
+#include <wtf/Threading.h>
 #include "V8Element.h"
 #include "V8Proxy.h"
 #include <wtf/text/AtomicString.h>
@@ -85,7 +85,7 @@ public:
 
     virtual const uint16_t* data() const
     {
-        return reinterpret_cast<const uint16_t*>(m_plainString.impl()->characters());
+        return reinterpret_cast<const uint16_t*>(m_plainString.impl()->characters16());
     }
 
     virtual size_t length() const { return m_plainString.impl()->length(); }
@@ -250,7 +250,10 @@ bool isUndefinedOrNull(v8::Handle<v8::Value> value)
 {
     return value->IsNull() || value->IsUndefined();
 }
-
+#ifdef True
+#undef True
+#undef False
+#endif
 v8::Handle<v8::Boolean> v8Boolean(bool value)
 {
     return value ? v8::True() : v8::False();
@@ -283,7 +286,7 @@ double toWebCoreDate(v8::Handle<v8::Value> object)
 
 v8::Handle<v8::Value> v8DateOrNull(double value)
 {
-    if (isfinite(value))
+    if (std::isfinite(value))
         return v8::Date::New(value);
     return v8::Null();
 }

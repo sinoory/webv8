@@ -34,7 +34,7 @@
 
 #include "Frame.h"
 #include "FrameLoaderClient.h"
-#include "HashMap.h"
+#include <wtf/HashMap.h>
 #include "ScriptController.h"
 #include "V8DOMWindow.h"
 #include "V8HiddenPropertyName.h"
@@ -75,7 +75,7 @@ V8IsolatedContext::V8IsolatedContext(V8Proxy* proxy, int extensionGroup)
     //        changes.
     m_context->get()->UseDefaultSecurityToken();
 
-    proxy->frame()->loader()->client()->didCreateIsolatedScriptContext();
+    proxy->frame()->loader().client().didCreateIsolatedScriptContext();
 }
 
 void V8IsolatedContext::destroy()

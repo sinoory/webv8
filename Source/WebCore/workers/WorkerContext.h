@@ -34,6 +34,8 @@
 #include "EventTarget.h"
 #include "ScriptExecutionContext.h"
 #include "WorkerScriptController.h"
+#include "WorkerEventQueue.h"
+
 #include <wtf/Assertions.h>
 #include <wtf/HashMap.h>
 #include <wtf/OwnPtr.h>
@@ -79,6 +81,20 @@ namespace WebCore {
         const KURL& url() const { return m_url; }
         KURL completeURL(const String&) const;
 
+        //<CMP_ERROR_UNCLEAR add empty implement func disableEval addConsoleMessage postTask ...
+        virtual EventTargetInterface eventTargetInterface() const {return EventTargetInterface(0);} 
+        virtual void disableEval(const String& errorMessage){} 
+        virtual void addConsoleMessage(MessageSource, MessageLevel, const String& message, unsigned long requestIdentifier = 0){}
+        virtual SecurityOrigin* topOrigin() const {return 0;}
+        virtual void postTask(Task) {}
+        virtual EventQueue& eventQueue() const {
+            EventQueue* pe = 0;//new WorkerEventQueue(*(static_cast<ScriptExecutionContext*>(this)));
+            return *pe;
+        };
+        virtual void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL, unsigned lineNumber, unsigned columnNumber, PassRefPtr<WebCore::ScriptCallStack>, JSC::ExecState* = nullptr, unsigned long requestIdentifier = 0) {}
+        virtual void logExceptionToConsole(const String& errorMessage, const String& sourceURL, int lineNumber, int columnNumber, PassRefPtr<WebCore::ScriptCallStack>) {}
+        //>
+        
         virtual String userAgent(const KURL&) const;
 
         WorkerScriptController* script() { return m_script.get(); }

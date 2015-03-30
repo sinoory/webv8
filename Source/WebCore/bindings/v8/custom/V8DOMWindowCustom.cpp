@@ -216,7 +216,7 @@ void V8DOMWindow::openerAccessorSetter(v8::Local<v8::String> name, v8::Local<v8:
         // imp->frame() cannot be null,
         // otherwise, SameOrigin check would have failed.
         ASSERT(imp->frame());
-        imp->frame()->loader()->setOpener(0);
+        imp->frame()->loader().setOpener(0);
     }
 
     // Delete the accessor from this object.

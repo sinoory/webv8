@@ -73,7 +73,7 @@ static void v8MessageHandler(v8::Handle<v8::Message> message, v8::Handle<v8::Val
         String errorMessage = toWebCoreString(message->Get());
         int lineNumber = message->GetLineNumber();
         String sourceURL = toWebCoreString(message->GetScriptResourceName());
-        context->reportException(errorMessage, lineNumber, sourceURL, 0);
+        context->reportException(errorMessage, lineNumber,0, sourceURL, 0);
     }
 
     isReportingException = false;
@@ -214,7 +214,8 @@ ScriptValue WorkerContextExecutionProxy::evaluate(const String& script, const St
         state->errorMessage = toWebCoreString(message->Get());
         state->lineNumber = message->GetLineNumber();
         state->sourceURL = toWebCoreString(message->GetScriptResourceName());
-        if (m_workerContext->sanitizeScriptError(state->errorMessage, state->lineNumber, state->sourceURL))
+        int c=0;
+        if (m_workerContext->sanitizeScriptError(state->errorMessage, state->lineNumber,c, state->sourceURL))
             state->exception = V8Proxy::throwError(V8Proxy::GeneralError, state->errorMessage.utf8().data());
         else
             state->exception = ScriptValue(exceptionCatcher.Exception());
