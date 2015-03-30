@@ -659,8 +659,8 @@ private:
         ImageData* imageData = V8ImageData::toNative(value.As<v8::Object>());
         if (!imageData)
             return;
-        WTF::ByteArray* pixelArray = imageData->data()->data();
-        m_writer.writeImageData(imageData->width(), imageData->height(), pixelArray->data(), pixelArray->length());
+        //WTF::ByteArray* pixelArray = imageData->data()->data();//CMP_ERROR_UNCLEAR
+        //m_writer.writeImageData(imageData->width(), imageData->height(), pixelArray->data(), pixelArray->length());
     }
 
     void writeRegExp(v8::Handle<v8::Value> value)
@@ -934,7 +934,7 @@ private:
         if (m_position + pixelDataLength > m_length)
             return false;
         RefPtr<ImageData> imageData = ImageData::create(IntSize(width, height));
-        WTF::ByteArray* pixelArray = imageData->data()->data();
+        WTF::ByteArray* pixelArray = 0;//imageData->data()->data(); //CMP_ERROR_UNCLEAR
         ASSERT(pixelArray);
         ASSERT(pixelArray->length() >= pixelDataLength);
         memcpy(pixelArray->data(), m_buffer + m_position, pixelDataLength);
@@ -1219,7 +1219,7 @@ SerializedScriptValue* SerializedScriptValue::undefinedValue()
 PassRefPtr<SerializedScriptValue> SerializedScriptValue::release()
 {
     RefPtr<SerializedScriptValue> result = adoptRef(new SerializedScriptValue(m_data));
-    m_data = String().crossThreadString();
+    m_data = String().isolatedCopy();
     return result.release();
 }
 
@@ -1258,12 +1258,12 @@ SerializedScriptValue::SerializedScriptValue(v8::Handle<v8::Value> value, bool& 
         return;
     }
     ASSERT(status == Serializer::Success);
-    m_data = String(StringImpl::adopt(writer.data())).crossThreadString();
+    m_data = String(StringImpl::adopt(writer.data())).isolatedCopy();
 }
 
 SerializedScriptValue::SerializedScriptValue(String wireData)
 {
-    m_data = wireData.crossThreadString();
+    m_data = wireData.isolatedCopy();
 }
 
 v8::Handle<v8::Value> SerializedScriptValue::deserialize()
@@ -1271,7 +1271,7 @@ v8::Handle<v8::Value> SerializedScriptValue::deserialize()
     if (!m_data.impl())
         return v8::Null();
     COMPILE_ASSERT(sizeof(BufferValueType) == 2, BufferValueTypeIsTwoBytes);
-    Reader reader(reinterpret_cast<const uint8_t*>(m_data.impl()->characters()), 2 * m_data.length());
+    Reader reader(reinterpret_cast<const uint8_t*>(m_data.impl()->characters8()), 2 * m_data.length());
     Deserializer deserializer(reader);
     return deserializer.deserialize();
 }

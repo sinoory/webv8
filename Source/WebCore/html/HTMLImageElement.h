@@ -78,7 +78,7 @@ public:
     int y() const;
 
     bool complete() const;
-
+    bool haveFiredLoadEvent() const { return false; }//CMP_ERROR_UNCLEAR,a4 return m_imageLoader.haveFiredLoadEvent()
 #if PLATFORM(IOS)
     virtual bool willRespondToMouseClickEvents() override;
 #endif

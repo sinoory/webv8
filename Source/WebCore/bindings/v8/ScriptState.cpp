@@ -112,7 +112,9 @@ ScriptState* scriptStateFromNode(DOMWrapperWorld*, Node* node)
 ScriptState* scriptStateFromPage(DOMWrapperWorld*, Page* page)
 {
     // This should be only reached with V8 bindings from single process layout tests.
-    return mainWorldScriptState(page->mainFrame());
+    // CMP_ERROR_UNCLEAR not used func scriptStateFromPage
+    Frame* f=0;//static_cast<Frame*>(&(page->mainFrame()));
+    return mainWorldScriptState(f);
 }
 
 #if ENABLE(WORKERS)

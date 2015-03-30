@@ -50,6 +50,7 @@
 #include "V8StyleSheet.h"
 #include "V8StyleSheetList.h"
 #include "WrapperTypeInfo.h"
+#include "StyleBase.h"
 
 #include <algorithm>
 #include <utility>
@@ -269,7 +270,7 @@ typedef Vector<GrouperItem> GrouperList;
 static GroupId calculateGroupId(Node* node)
 {
     if (node->inDocument() || (node->hasTagName(HTMLNames::imgTag) && !static_cast<HTMLImageElement*>(node)->haveFiredLoadEvent()))
-        return GroupId(node->document());
+        return GroupId(&(node->document()));
 
     Node* root = node;
     if (node->isAttributeNode()) {
@@ -294,6 +295,7 @@ static GroupId calculateGroupId(StyleBase* styleBase)
     while (true) {
         // Special case: CSSStyleDeclarations might be either inline and in this case
         // we need to group them with their node or regular ones.
+#if 0 //CMP_ERROR_UNCLEAR CSSMutableStyleDeclaration
         if (current->isMutableStyleDeclaration()) {
             CSSMutableStyleDeclaration* cssMutableStyleDeclaration = static_cast<CSSMutableStyleDeclaration*>(current);
             if (cssMutableStyleDeclaration->isInlineStyleDeclaration()) {
@@ -303,7 +305,7 @@ static GroupId calculateGroupId(StyleBase* styleBase)
             // Either we have no parent, or this parent is a CSSRule.
             ASSERT(cssMutableStyleDeclaration->parent() == cssMutableStyleDeclaration->parentRule());
         }
-
+#endif 
         if (current->isStyleSheet())
             styleSheet = static_cast<StyleSheet*>(current);
 
@@ -346,13 +348,14 @@ public:
         } else if (typeInfo->isSubclass(&V8DOMImplementation::info)) {
             DOMImplementation* domImplementation = static_cast<DOMImplementation*>(object);
             GroupId groupId(domImplementation);
-            if (Document* document = domImplementation->ownerDocument())
+            if (Document* document = domImplementation->document())
                 groupId = GroupId(document);
             m_grouper.append(GrouperItem(groupId, wrapper));
 
         } else if (typeInfo->isSubclass(&V8StyleSheet::info) || typeInfo->isSubclass(&V8CSSRule::info)) {
             m_grouper.append(GrouperItem(calculateGroupId(static_cast<StyleBase*>(object)), wrapper));
 
+#if 0 //CMP_ERROR_UNCLEAR CSSMutableStyleDeclaration
         } else if (typeInfo->isSubclass(&V8CSSStyleDeclaration::info)) {
             CSSStyleDeclaration* cssStyleDeclaration = static_cast<CSSStyleDeclaration*>(object);
 
@@ -376,7 +379,6 @@ public:
                 if (!values.isEmpty())
                     v8::V8::AddImplicitReferences(wrapper, values.data(), values.size());
             }
-
         } else if (typeInfo->isSubclass(&V8CSSRuleList::info)) {
             CSSRuleList* cssRuleList = static_cast<CSSRuleList*>(object);
             GroupId groupId(cssRuleList);
@@ -384,6 +386,7 @@ public:
             if (styleList)
                 groupId = calculateGroupId(styleList);
             m_grouper.append(GrouperItem(groupId, wrapper));
+#endif
         }
     }
 
@@ -547,10 +550,11 @@ void V8GCController::checkMemoryUsage()
 #else
     return;
 #endif
-
+/* not in any
     int memoryUsageMB = getMemoryUsageInMB();
     if ((memoryUsageMB > lowUsageMB && memoryUsageMB > 2 * workingSetEstimateMB) || (memoryUsageMB > highUsageMB && memoryUsageMB > workingSetEstimateMB + highUsageDeltaMB))
         v8::V8::LowMemoryNotification();
+*/
 }
 
 

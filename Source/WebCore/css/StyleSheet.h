@@ -26,6 +26,7 @@
 #include <wtf/Forward.h>
 #include <wtf/ListHashSet.h>
 #include <wtf/RefCounted.h>
+#include "StyleBase.h"
 
 namespace WebCore {
 
@@ -34,7 +35,7 @@ class MediaList;
 class Node;
 class StyleSheet;
 
-class StyleSheet : public RefCounted<StyleSheet> {
+class StyleSheet : public RefCounted<StyleSheet>,public StyleBase {//CMP_ERROR,add StyleBase
 public:
     virtual ~StyleSheet();
 
