@@ -26,8 +26,9 @@
 #include "config.h"
 #include "IdentifierRep.h"
 
-#include "JSDOMBinding.h"
+//#include "JSDOMBinding.h"
 #include <wtf/HashMap.h>
+#include <wtf/HashSet.h>
 #include <wtf/NeverDestroyed.h>
 #include <wtf/StdLibExtras.h>
 #include <wtf/text/WTFString.h>
@@ -77,7 +78,6 @@ IdentifierRep* IdentifierRep::get(int intID)
     
     return result.iterator->value;
 }
-
 typedef HashMap<RefPtr<StringImpl>, IdentifierRep*> StringIdentifierMap;
 
 static StringIdentifierMap& stringIdentifierMap()
@@ -85,7 +85,7 @@ static StringIdentifierMap& stringIdentifierMap()
     static NeverDestroyed<StringIdentifierMap> stringIdentifierMap;
     return stringIdentifierMap;
 }
-
+/* CMP_ERROR_UNCLEAR wtf
 IdentifierRep* IdentifierRep::get(const char* name)
 {
     ASSERT(name);
@@ -103,10 +103,9 @@ IdentifierRep* IdentifierRep::get(const char* name)
     
     return result.iterator->value;
 }
-
+*/
 bool IdentifierRep::isValid(IdentifierRep* identifier)
 {
     return identifierSet().contains(identifier);
 }
-    
 } // namespace WebCore

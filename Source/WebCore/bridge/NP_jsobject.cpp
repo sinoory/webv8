@@ -33,7 +33,7 @@
 #include "c_utility.h"
 #include "c_instance.h"
 #include "IdentifierRep.h"
-#include "JSDOMBinding.h"
+//#include "JSDOMBinding.h"
 #include "npruntime_impl.h"
 #include "npruntime_priv.h"
 #include "runtime_root.h"
