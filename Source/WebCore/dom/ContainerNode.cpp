@@ -34,8 +34,8 @@
 #include "FrameView.h"
 #include "InlineTextBox.h"
 #include "InsertionPoint.h"
-#include "JSLazyEventListener.h"
-#include "JSNode.h"
+//#include "JSLazyEventListener.h"
+#include "ScriptEventListener.h"
 #include "LabelsNodeList.h"
 #include "MutationEvent.h"
 #include "NameNodeList.h"
@@ -976,7 +976,7 @@ static void dispatchChildRemovalEvents(Node& child)
 
     ASSERT(!NoEventDispatchAssertion::isEventDispatchForbidden());
 
-    willCreatePossiblyOrphanedTreeByRemoval(&child);
+    //willCreatePossiblyOrphanedTreeByRemoval(&child); //CMP_ERROR , fun in JSNodeCustom.h
     InspectorInstrumentation::willRemoveDOMNode(&child.document(), &child);
 
     RefPtr<Node> c = &child;
@@ -1010,7 +1010,8 @@ void ContainerNode::updateTreeAfterInsertion(Node& child)
 
 void ContainerNode::setAttributeEventListener(const AtomicString& eventType, const QualifiedName& attributeName, const AtomicString& attributeValue)
 {
-    setAttributeEventListener(eventType, JSLazyEventListener::createForNode(*this, attributeName, attributeValue));
+    Attribute ab(attributeName,attributeValue);
+    setAttributeEventListener(eventType, createAttributeEventListener(this, &ab));//CMP_ERROR , use v8 instead of jsc
 }
 
 Element* ContainerNode::querySelector(const String& selectors, ExceptionCode& ec)

@@ -26,15 +26,17 @@
 #include "config.h"
 #include "CollectionIndexCache.h"
 
-#include "JSDOMWindowBase.h"
+//#include "JSDOMWindowBase.h"
 
 namespace WebCore {
 
 void reportExtraMemoryCostForCollectionIndexCache(size_t cost)
 {
+    /* //CMP_ERRRO
     JSC::VM& vm = JSDOMWindowBase::commonVM();
     JSC::JSLockHolder lock(vm);
     vm.heap.reportExtraMemoryCost(cost);
+    */
 }
 
 }

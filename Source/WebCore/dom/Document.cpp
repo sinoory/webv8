@@ -45,7 +45,6 @@
 #include "DOMNamedFlowCollection.h"
 #include "DOMWindow.h"
 #include "DateComponents.h"
-#include "Dictionary.h"
 #include "DocumentLoader.h"
 #include "DocumentMarkerController.h"
 #include "DocumentSharedObjectPool.h"
@@ -91,7 +90,8 @@
 #include "IconController.h"
 #include "ImageLoader.h"
 #include "InspectorInstrumentation.h"
-#include "JSLazyEventListener.h"
+//#include "JSLazyEventListener.h"
+#include "ScriptEventListener.h"
 #include "Language.h"
 #include "LoaderStrategy.h"
 #include "Logging.h"
@@ -3755,7 +3755,8 @@ void Document::setWindowAttributeEventListener(const AtomicString& eventType, co
 {
     if (!m_frame)
         return;
-    setWindowAttributeEventListener(eventType, JSLazyEventListener::createForDOMWindow(*m_frame, attributeName, attributeValue));
+    Attribute ab(attributeName,attributeValue);
+    setWindowAttributeEventListener(eventType, createAttributeEventListener(m_frame, &ab));
 }
 
 EventListener* Document::getWindowAttributeEventListener(const AtomicString& eventType)

@@ -29,7 +29,7 @@
 #include "Event.h"
 #include "SerializedScriptValue.h"
 #include <bindings/ScriptValue.h>
-
+#define Deprecated WebCore //CMP_ERROR
 namespace WebCore {
 
 struct CustomEventInit : public EventInit {

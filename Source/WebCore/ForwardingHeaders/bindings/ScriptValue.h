@@ -1,4 +1,4 @@
 #ifndef WebCore_FWD_ScriptValue_h
 #define WebCore_FWD_ScriptValue_h
-#include <JavaScriptCore/ScriptValue.h>
+#include "v8/ScriptValue.h"
 #endif
