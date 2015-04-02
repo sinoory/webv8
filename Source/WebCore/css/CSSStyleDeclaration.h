@@ -38,7 +38,6 @@ class StyledElement;
 typedef int ExceptionCode;
 
 class CSSStyleDeclaration : public ScriptWrappable {
-    WTF_MAKE_NONCOPYABLE(CSSStyleDeclaration); WTF_MAKE_FAST_ALLOCATED;
 public:
     virtual ~CSSStyleDeclaration() { }
 

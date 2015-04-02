@@ -35,7 +35,7 @@ class MediaList;
 class Node;
 class StyleSheet;
 
-class StyleSheet : public RefCounted<StyleSheet>,public StyleBase {//CMP_ERROR,add StyleBase
+class StyleSheet : public StyleBase {//CMP_ERROR,add StyleBase
 public:
     virtual ~StyleSheet();
 
