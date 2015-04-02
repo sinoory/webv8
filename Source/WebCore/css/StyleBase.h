@@ -83,13 +83,13 @@ namespace WebCore {
 
         static size_t reportStyleSize();
 #endif
-
+/* //CMP_ERROR_UNCLEAR rm constructor
     protected:
         StyleBase(StyleBase* parent)
             : m_parent(parent)
         {
         }
-
+*/
     private:
         StyleBase* m_parent;
     };

@@ -32,6 +32,7 @@
 #include <inspector/ScriptCallStack.h>
 #include <runtime/ConsoleClient.h>
 #include <wtf/Forward.h>
+#include "Console.h"
 
 namespace JSC {
 class ExecState;
@@ -57,21 +58,9 @@ public:
     static void mute();
     static void unmute();
 
-    void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL, unsigned lineNumber, unsigned columnNumber, PassRefPtr<WebCore::ScriptCallStack> = nullptr, JSC::ExecState* = nullptr, unsigned long requestIdentifier = 0);
-    void addMessage(MessageSource, MessageLevel, const String& message, PassRefPtr<WebCore::ScriptCallStack>);
-    void addMessage(MessageSource, MessageLevel, const String& message, unsigned long requestIdentifier = 0, Document* = nullptr);
-
+    void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL,unsigned line,unsigned col);
     const ProfilesArray& profiles() const { return m_profiles; }
     void clearProfiles();
-
-protected:
-    virtual void messageWithTypeAndLevel(MessageType, MessageLevel, JSC::ExecState*, PassRefPtr<WebCore::ScriptArguments>) override;
-    virtual void count(JSC::ExecState*, PassRefPtr<WebCore::ScriptArguments>) override;
-    virtual void profile(JSC::ExecState*, const String& title) override;
-    virtual void profileEnd(JSC::ExecState*, const String& title) override;
-    virtual void time(JSC::ExecState*, const String& title) override;
-    virtual void timeEnd(JSC::ExecState*, const String& title) override;
-    virtual void timeStamp(JSC::ExecState*, PassRefPtr<WebCore::ScriptArguments>) override;
 
 private:
     Page& m_page;

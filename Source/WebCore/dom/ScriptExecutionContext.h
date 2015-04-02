@@ -34,7 +34,7 @@
 #include "ScheduledAction.h"
 #include "SecurityContext.h"
 #include "Supplementable.h"
-#include <runtime/ConsoleTypes.h>
+#include "Console.h"
 #include <wtf/HashSet.h>
 #include "ScriptCallStack.h"
 

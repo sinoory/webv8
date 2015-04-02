@@ -56,7 +56,18 @@ enum MessageSource {
     XMLMessageSource,
     JSMessageSource,
     CSSMessageSource,
-    OtherMessageSource
+    OtherMessageSource,
+    //webkit2 type
+    XML,
+    JS,
+    Network,
+    ConsoleAPI,
+    StorageMessageSource, // compile error
+    AppCache,
+    Rendering,
+    CSS,
+    Security,
+    Other
 };
 
 enum MessageType {
@@ -68,7 +79,21 @@ enum MessageType {
     EndGroupMessageType,
     AssertMessageType,
     UncaughtExceptionMessageType,
-    NetworkErrorMessageType
+    NetworkErrorMessageType,
+    //webkit2 type
+    Log,
+    Dir,
+    DirXML,
+    Table,
+    Trace,
+    StartGroup,
+    StartGroupCollapsed,
+    EndGroup,
+    Clear,
+    Assert,
+    Timing,
+    Profile,
+    ProfileEnd,
 };
 
 enum MessageLevel {
@@ -76,7 +101,12 @@ enum MessageLevel {
     LogMessageLevel,
     WarningMessageLevel,
     ErrorMessageLevel,
-    DebugMessageLevel
+    DebugMessageLevel,
+    //webkit2 type
+    //Log ,//redefine compile error for Log,mark it
+    Warning ,
+    Error ,
+    Debug ,
 };
 
 class Console : public RefCounted<Console> {
