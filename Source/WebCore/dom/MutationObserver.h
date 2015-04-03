@@ -77,7 +77,7 @@ public:
 
     ~MutationObserver();
 
-    void observe(Node*, const Dictionary&, ExceptionCode&);
+    //void observe(Node*, const Dictionary&, ExceptionCode&);
     Vector<RefPtr<MutationRecord>> takeRecords();
     void disconnect();
     void observationStarted(MutationObserverRegistration*);

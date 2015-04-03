@@ -41,7 +41,7 @@
 #include <wtf/Ref.h>
 
 // FIXME: This is a layering violation.
-#include "JSDOMWindow.h"
+//#include "JSDOMWindow.h"
 
 #if PLATFORM(IOS)
 #include "Document.h"
@@ -51,7 +51,7 @@
 #include "DatabaseContext.h"
 #endif
 
-using namespace Inspector;
+//using namespace Inspector;
 
 namespace WebCore {
 
@@ -446,7 +446,7 @@ double ScriptExecutionContext::timerAlignmentInterval() const
 {
     return Settings::defaultDOMTimerAlignmentInterval();
 }
-
+/* CMP_ERROR
 JSC::VM& ScriptExecutionContext::vm()
 {
      if (isDocument())
@@ -454,7 +454,7 @@ JSC::VM& ScriptExecutionContext::vm()
 
     return toWorkerGlobalScope(*this).script()->vm();
 }
-
+*/
 #if ENABLE(SQL_DATABASE)
 void ScriptExecutionContext::setDatabaseContext(DatabaseContext* databaseContext)
 {

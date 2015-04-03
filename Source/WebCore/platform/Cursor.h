@@ -75,7 +75,9 @@ namespace WebCore {
 #else
     typedef void* PlatformCursor;
 #endif
-
+#ifdef None
+#undef None
+#endif
     class Cursor {
         WTF_MAKE_FAST_ALLOCATED;
     public:

@@ -160,7 +160,7 @@ public:
     void removeTimeout(int timeoutId) { m_timeouts.remove(timeoutId); }
     DOMTimer* findTimeout(int timeoutId) { return m_timeouts.get(timeoutId); }
 
-    WEBCORE_EXPORT JSC::VM& vm();
+    //WEBCORE_EXPORT JSC::VM& vm(); //CMP_ERROR
 
     // Interval is in seconds.
     void adjustMinimumTimerInterval(double oldMinimumTimerInterval);

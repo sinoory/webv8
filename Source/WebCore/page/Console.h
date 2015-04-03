@@ -67,7 +67,7 @@ enum MessageSource {
     Rendering,
     CSS,
     Security,
-    Other
+    //Other //compile error , conflict define
 };
 
 enum MessageType {

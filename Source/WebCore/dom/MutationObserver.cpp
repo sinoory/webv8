@@ -32,7 +32,7 @@
 
 #include "MutationObserver.h"
 
-#include "Dictionary.h"
+//#include "Dictionary.h"
 #include "Document.h"
 #include "ExceptionCode.h"
 #include "MutationCallback.h"
@@ -69,7 +69,7 @@ bool MutationObserver::validateOptions(MutationObserverOptions options)
         && ((options & Attributes) || !(options & AttributeFilter))
         && ((options & CharacterData) || !(options & CharacterDataOldValue));
 }
-
+/* //CMP_ERROR js diction
 void MutationObserver::observe(Node* node, const Dictionary& optionsDictionary, ExceptionCode& ec)
 {
     if (!node) {
@@ -106,7 +106,7 @@ void MutationObserver::observe(Node* node, const Dictionary& optionsDictionary, 
 
     node->registerMutationObserver(this, options, attributeFilter);
 }
-
+*/
 Vector<RefPtr<MutationRecord>> MutationObserver::takeRecords()
 {
     Vector<RefPtr<MutationRecord>> records;

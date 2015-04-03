@@ -24,6 +24,7 @@
 
 #include "config.h"
 #include "NodeIterator.h"
+#include "NodeTraversal.h"
 
 #include "Document.h"
 #include "ExceptionCode.h"
