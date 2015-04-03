@@ -59,6 +59,8 @@ public:
     static void unmute();
 
     void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL,unsigned line,unsigned col);
+    void addMessage(MessageSource source, MessageLevel level, const String& message, unsigned long requestIdentifier, Document* document);
+    void addMessage(MessageSource source, MessageLevel level, const String& message, const String& url, unsigned lineNumber, unsigned columnNumber, PassRefPtr<ScriptCallStack> callStack);
     const ProfilesArray& profiles() const { return m_profiles; }
     void clearProfiles();
 

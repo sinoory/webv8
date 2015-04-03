@@ -35,6 +35,7 @@
 #include <v8.h>
 #include <wtf/Noncopyable.h>
 #include <wtf/RefCounted.h>
+#define Deprecated WebCore //js ScriptValue.h use Deprecated:: namespace, here change to WebCore for v8
 
 namespace WebCore {
 class DOMWrapperWorld;

@@ -1371,7 +1371,7 @@ PassRefPtr<Inspector::Protocol::DOM::EventListener> InspectorDOMAgent::buildObje
     String sourceName;
     if (auto scriptListener = JSEventListener::cast(eventListener.get())) {
         JSC::JSLockHolder lock(scriptListener->isolatedWorld().vm());
-        state = execStateFromNode(scriptListener->isolatedWorld(), &node->document());
+        state = scriptStateFromNode(scriptListener->isolatedWorld(), &node->document());
         handler = scriptListener->jsFunction(&node->document());
         if (handler) {
             body = handler->toString(state)->value(state);

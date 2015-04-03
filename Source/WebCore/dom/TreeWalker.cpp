@@ -29,7 +29,8 @@
 #include "ContainerNode.h"
 #include "NodeTraversal.h"
 
-#include <runtime/JSCJSValueInlines.h>
+#include "ScriptState.h"
+#include <wtf/PassRefPtr.h>
 
 namespace WebCore {
 
@@ -54,7 +55,7 @@ inline Node* TreeWalker::setCurrent(PassRefPtr<Node> node)
     return m_current.get();
 }
 
-Node* TreeWalker::parentNode(JSC::ExecState* state)
+Node* TreeWalker::parentNode(ScriptState* state)
 {
     RefPtr<Node> node = m_current;
     while (node != root()) {
@@ -70,7 +71,7 @@ Node* TreeWalker::parentNode(JSC::ExecState* state)
     return 0;
 }
 
-Node* TreeWalker::firstChild(JSC::ExecState* state)
+Node* TreeWalker::firstChild(ScriptState* state)
 {
     for (RefPtr<Node> node = m_current->firstChild(); node; ) {
         short acceptNodeResult = acceptNode(state, node.get());
@@ -103,7 +104,7 @@ Node* TreeWalker::firstChild(JSC::ExecState* state)
     return 0;
 }
 
-Node* TreeWalker::lastChild(JSC::ExecState* state)
+Node* TreeWalker::lastChild(ScriptState* state)
 {
     for (RefPtr<Node> node = m_current->lastChild(); node; ) {
         short acceptNodeResult = acceptNode(state, node.get());
@@ -136,7 +137,7 @@ Node* TreeWalker::lastChild(JSC::ExecState* state)
     return 0;
 }
 
-Node* TreeWalker::previousSibling(JSC::ExecState* state)
+Node* TreeWalker::previousSibling(ScriptState* state)
 {
     RefPtr<Node> node = m_current;
     if (node == root())
@@ -173,7 +174,7 @@ Node* TreeWalker::previousSibling(JSC::ExecState* state)
     }
 }
 
-Node* TreeWalker::nextSibling(JSC::ExecState* state)
+Node* TreeWalker::nextSibling(ScriptState* state)
 {
     RefPtr<Node> node = m_current;
     if (node == root())
@@ -210,7 +211,7 @@ Node* TreeWalker::nextSibling(JSC::ExecState* state)
     }
 }
 
-Node* TreeWalker::previousNode(JSC::ExecState* state)
+Node* TreeWalker::previousNode(ScriptState* state)
 {
     RefPtr<Node> node = m_current;
     while (node != root()) {
@@ -249,7 +250,7 @@ Node* TreeWalker::previousNode(JSC::ExecState* state)
     return 0;
 }
 
-Node* TreeWalker::nextNode(JSC::ExecState* state)
+Node* TreeWalker::nextNode(ScriptState* state)
 {
     RefPtr<Node> node = m_current;
 Children:

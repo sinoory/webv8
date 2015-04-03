@@ -85,6 +85,9 @@ public:
     // as a string.
     ScriptValue evaluate(const ScriptSourceCode&);
 
+    //CMP_ERROR_UNCLEAR add empty enableEval disableEval
+    void enableEval(){}
+    void disableEval(const String& errorMessage){}
     void evaluateInIsolatedWorld(unsigned worldID, const Vector<ScriptSourceCode>&);
 
     // Executes JavaScript in an isolated world. The script gets its own global scope,

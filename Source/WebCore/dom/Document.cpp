@@ -159,6 +159,7 @@
 #include <wtf/TemporaryChange.h>
 #include <wtf/text/StringBuffer.h>
 #include <yarr/RegularExpression.h>
+#include <wtf/StackStats.h>
 
 #if ENABLE(SHARED_WORKERS)
 #include "SharedWorkerRepository.h"
@@ -4977,7 +4978,7 @@ void Document::addMessage(MessageSource source, MessageLevel level, const String
     }
 
     if (Page* page = this->page())
-        page->console().addMessage(source, level, message, sourceURL, lineNumber, columnNumber, callStack, state, requestIdentifier);
+        page->console().addMessage(source, level, message, sourceURL, lineNumber, columnNumber, callStack);
 }
 
 SecurityOrigin* Document::topOrigin() const
@@ -6247,7 +6248,7 @@ void Document::ensurePlugInsInjectedScript(DOMWrapperWorld& world)
     if (!jsString)
         jsString = plugInsJavaScript;
 
-    m_frame->mainFrame().script().evaluateInWorld(ScriptSourceCode(jsString), world);
+    m_frame->mainFrame().script().evaluateInWorld(ScriptSourceCode(jsString), &world);
 
     m_hasInjectedPlugInsScript = true;
 }

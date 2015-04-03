@@ -32,7 +32,9 @@
 #include <JavaScriptCore/MacroAssemblerCodeRef.h>
 
 #define CSS_SELECTOR_JIT_PROFILING 0
-
+#ifdef Status
+#undef Status
+#endif
 namespace JSC {
 class MacroAssemblerCodeRef;
 class VM;

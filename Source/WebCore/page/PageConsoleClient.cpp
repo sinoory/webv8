@@ -74,6 +74,30 @@ void PageConsoleClient::setShouldPrintExceptions(bool print)
 void PageConsoleClient::addMessage(MessageSource source, MessageLevel level, const String& message, const String& sourceURL,unsigned line,unsigned col){
     addMessage(source,LogMessageType,level,message,line,sourceURL);
 }
+void PageConsoleClient::addMessage(MessageSource source, MessageLevel level, const String& message, const String& url, unsigned lineNumber, unsigned columnNumber, PassRefPtr<ScriptCallStack> callStack)
+{
+    addMessage(source,LogMessageType,level,message,line,sourceURL,callStack);
+}
+void PageConsoleClient::addMessage(MessageSource source, MessageLevel level, const String& message, unsigned long requestIdentifier, Document* document)
+{
+    String url;
+    if (document)
+        url = document->url().string();
+
+
+    unsigned line = 0;
+    unsigned column = 0;
+    if (document && document->parsing() && !document->isInDocumentWrite() && document->scriptableDocumentParser()) {
+        ScriptableDocumentParser* parser = document->scriptableDocumentParser();
+        if (!parser->isWaitingForScripts() && !JSMainThreadExecState::currentState()) {
+            TextPosition position = parser->textPosition();
+            line = position.m_line.oneBasedInt();
+            column = position.m_column.oneBasedInt();
+        }
+    }
+    addMessage(source, LogMessageType,level, message,  line, column, url);
+}
+
 void PageConsoleClient::mute()
 {
     muteCount++;

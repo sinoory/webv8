@@ -27,9 +27,8 @@
 
 #include "Document.h"
 #include "ExceptionCode.h"
-#include "NodeTraversal.h"
-
-#include <runtime/JSCJSValueInlines.h>
+#include "NodeFilter.h"
+#include "ScriptState.h"
 
 namespace WebCore {
 
@@ -89,7 +88,7 @@ NodeIterator::~NodeIterator()
     root()->document().detachNodeIterator(this);
 }
 
-PassRefPtr<Node> NodeIterator::nextNode(JSC::ExecState* state, ExceptionCode& ec)
+PassRefPtr<Node> NodeIterator::nextNode(ScriptState* state, ExceptionCode& ec)
 {
     if (m_detached) {
         ec = INVALID_STATE_ERR;
@@ -118,7 +117,7 @@ PassRefPtr<Node> NodeIterator::nextNode(JSC::ExecState* state, ExceptionCode& ec
     return result.release();
 }
 
-PassRefPtr<Node> NodeIterator::previousNode(JSC::ExecState* state, ExceptionCode& ec)
+PassRefPtr<Node> NodeIterator::previousNode(ScriptState* state, ExceptionCode& ec)
 {
     if (m_detached) {
         ec = INVALID_STATE_ERR;
