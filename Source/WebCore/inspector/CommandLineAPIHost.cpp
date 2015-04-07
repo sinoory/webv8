@@ -29,7 +29,7 @@
  */
 
 #include "config.h"
-#include "CommandLineAPIHost.h"
+//#include "CommandLineAPIHost.h"
 
 #if ENABLE(INSPECTOR)
 
@@ -96,13 +96,14 @@ void CommandLineAPIHost::inspectImpl(PassRefPtr<InspectorValue> object, PassRefP
 {
     if (!m_inspectorAgent)
         return;
-
+#if 0 //CMP_ERROR_UNCLEAR
     RefPtr<InspectorObject> hintsObject;
     if (!hints->asObject(hintsObject))
         return;
 
     RefPtr<Inspector::Protocol::Runtime::RemoteObject> remoteObject = BindingTraits<Inspector::Protocol::Runtime::RemoteObject>::runtimeCast(object);
     m_inspectorAgent->inspect(remoteObject.release(), hintsObject.release());
+#endif
 }
 
 void CommandLineAPIHost::getEventListenersImpl(Node* node, Vector<EventListenerInfo>& listenersArray)
@@ -124,9 +125,9 @@ void CommandLineAPIHost::copyText(const String& text)
     Pasteboard::createForCopyAndPaste()->writePlainText(text, Pasteboard::CannotSmartReplace);
 }
 
-Deprecated::ScriptValue CommandLineAPIHost::InspectableObject::get(JSC::ExecState*)
+ScriptValue CommandLineAPIHost::InspectableObject::get(ScriptState*)
 {
-    return Deprecated::ScriptValue();
+    return ScriptValue();
 };
 
 void CommandLineAPIHost::addInspectedObject(std::unique_ptr<CommandLineAPIHost::InspectableObject> object)

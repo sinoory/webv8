@@ -1089,7 +1089,6 @@ set(WebCore_SOURCES
     bindings/v8/ScriptState.cpp
     bindings/v8/WorkerContextExecutionProxy.cpp
     bindings/v8/ScriptProfileNode.cpp
-    bindings/v8/ScriptProfile.cpp
     bindings/v8/V8Binding.cpp
     bindings/v8/DOMWrapperWorld.cpp
     bindings/v8/MainThreadDOMData.cpp

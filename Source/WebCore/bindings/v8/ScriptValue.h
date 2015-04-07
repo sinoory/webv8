@@ -41,9 +41,9 @@
 #include "V8Proxy.h"  // for register and unregister global handles.
 #endif
 
-#include "inspector/InspectorValues.h"
-
 namespace WebCore {
+
+class InspectorValue;
 class SerializedScriptValue;
 
 class ScriptValue {

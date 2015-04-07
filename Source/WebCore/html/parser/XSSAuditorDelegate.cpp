@@ -69,7 +69,7 @@ static inline String buildConsoleError(const XSSInfo& xssInfo)
 
     return message.toString();
 }
-
+#if 0
 PassRefPtr<FormData> XSSAuditorDelegate::generateViolationReport(const XSSInfo& xssInfo)
 {
     ASSERT(isMainThread());
@@ -90,7 +90,7 @@ PassRefPtr<FormData> XSSAuditorDelegate::generateViolationReport(const XSSInfo& 
 
     return FormData::create(reportObject->toJSONString().utf8().data());
 }
-
+#endif
 void XSSAuditorDelegate::didBlockScript(const XSSInfo& xssInfo)
 {
     ASSERT(isMainThread());
@@ -106,8 +106,8 @@ void XSSAuditorDelegate::didBlockScript(const XSSInfo& xssInfo)
 
         frameLoader.client().didDetectXSS(m_document.url(), xssInfo.m_didBlockEntirePage);
 
-        if (!m_reportURL.isEmpty())
-            PingLoader::sendViolationReport(*m_document.frame(), m_reportURL, generateViolationReport(xssInfo));
+        //if (!m_reportURL.isEmpty())
+        //    PingLoader::sendViolationReport(*m_document.frame(), m_reportURL, generateViolationReport(xssInfo));
     }
 
     if (xssInfo.m_didBlockEntirePage)

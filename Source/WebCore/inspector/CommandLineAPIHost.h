@@ -89,7 +89,7 @@ public:
     class InspectableObject {
         WTF_MAKE_FAST_ALLOCATED;
     public:
-        virtual Deprecated::ScriptValue get(JSC::ExecState*);
+        virtual ScriptValue get(ScriptState*);
         virtual ~InspectableObject() { }
     };
     void addInspectedObject(std::unique_ptr<InspectableObject>);

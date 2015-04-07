@@ -62,7 +62,7 @@ public:
     void setReportURL(const URL& url) { m_reportURL = url; }
 
 private:
-    PassRefPtr<FormData> generateViolationReport(const XSSInfo&);
+    //PassRefPtr<FormData> generateViolationReport(const XSSInfo&);
 
     Document& m_document;
     bool m_didSendNotifications;

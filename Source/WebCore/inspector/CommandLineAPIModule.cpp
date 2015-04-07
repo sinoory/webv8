@@ -29,7 +29,7 @@
 #if ENABLE(INSPECTOR)
 
 #include "CommandLineAPIModuleSource.h"
-#include "JSCommandLineAPIHost.h"
+//#include "JSCommandLineAPIHost.h"
 #include "WebInjectedScriptManager.h"
 #include <inspector/InjectedScript.h>
 
