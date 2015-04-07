@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 add_subdirectory(WTF)
 
-add_subdirectory(JavaScriptCore)
+#add_subdirectory(JavaScriptCore) //rm jsc compile
 
 if (ENABLE_API_TESTS)
     add_subdirectory(cmake/gtest)
@@ -35,7 +35,7 @@ WEBKIT_INCLUDE_CONFIG_FILES_IF_EXISTS()
 # Set compiler flags for all targets
 # -----------------------------------------------------------------------------
 WEBKIT_SET_EXTRA_COMPILER_FLAGS(WTF ${ADDITIONAL_COMPILER_FLAGS})
-WEBKIT_SET_EXTRA_COMPILER_FLAGS(JavaScriptCore ${ADDITIONAL_COMPILER_FLAGS})
+#WEBKIT_SET_EXTRA_COMPILER_FLAGS(JavaScriptCore ${ADDITIONAL_COMPILER_FLAGS})
 
 if (ENABLE_WEBCORE)
     WEBKIT_SET_EXTRA_COMPILER_FLAGS(WebCoreTestSupport ${ADDITIONAL_COMPILER_FLAGS})

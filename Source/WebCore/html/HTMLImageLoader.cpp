@@ -31,9 +31,9 @@
 #include "HTMLParserIdioms.h"
 #include "Settings.h"
 
-#include "JSDOMWindowBase.h"
-#include <runtime/JSCInlines.h>
-#include <runtime/JSLock.h>
+//#include "JSDOMWindowBase.h"
+//#include <runtime/JSCInlines.h>
+//#include <runtime/JSLock.h>
 
 namespace WebCore {
 
@@ -79,9 +79,9 @@ void HTMLImageLoader::notifyFinished(CachedResource*)
     bool loadError = cachedImage->errorOccurred() || cachedImage->response().httpStatusCode() >= 400;
     if (!loadError) {
         if (!element().inDocument()) {
-            JSC::VM& vm = JSDOMWindowBase::commonVM();
-            JSC::JSLockHolder lock(vm);
-            vm.heap.reportExtraMemoryCost(cachedImage->encodedSize());
+            //JSC::VM& vm = JSDOMWindowBase::commonVM();
+            //JSC::JSLockHolder lock(vm);
+            //vm.heap.reportExtraMemoryCost(cachedImage->encodedSize());
         }
     }
 

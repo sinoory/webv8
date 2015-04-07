@@ -445,9 +445,9 @@ public:
 
 #if ENABLE(MEDIA_CONTROLS_SCRIPT)
     void pageScaleFactorChanged();
+    MediaControlsHost* mediaControlsHost() { return m_mediaControlsHost.get(); }
 #endif
 
-    MediaControlsHost* mediaControlsHost() { return m_mediaControlsHost.get(); }
 
 protected:
     HTMLMediaElement(const QualifiedName&, Document&, bool);
@@ -706,7 +706,7 @@ private:
     void registerWithDocument(Document&);
     void unregisterWithDocument(Document&);
 
-    void updateCaptionContainer();
+    //void updateCaptionContainer();
 
     Timer<HTMLMediaElement> m_loadTimer;
     Timer<HTMLMediaElement> m_progressEventTimer;

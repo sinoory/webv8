@@ -49,7 +49,7 @@
 #include "FrameView.h"
 #include "HTMLSourceElement.h"
 #include "HTMLVideoElement.h"
-#include "JSHTMLMediaElement.h"
+//#include "JSHTMLMediaElement.h"
 #include "Language.h"
 #include "Logging.h"
 #include "MIMETypeRegistry.h"
@@ -132,12 +132,14 @@
 #endif
 
 #if ENABLE(MEDIA_CONTROLS_SCRIPT)
-#include "JSMediaControlsHost.h"
+//#include "JSMediaControlsHost.h"
 #include "MediaControlsHost.h"
-#include "ScriptGlobalObject.h"
+//#include "ScriptGlobalObject.h"
 #include <bindings/ScriptObject.h>
 #endif
-
+#ifdef None
+#undef None
+#endif
 namespace WebCore {
 
 static const double SeekRepeatDelay = 0.1;
@@ -414,8 +416,8 @@ HTMLMediaElement::~HTMLMediaElement()
 #endif
 
 #if ENABLE(MEDIA_CONTROLS_SCRIPT)
-    if (m_isolatedWorld)
-        m_isolatedWorld->clearWrappers();
+    //if (m_isolatedWorld)
+        //m_isolatedWorld->clearWrappers();
 #endif
 
     m_completelyLoaded = true;
@@ -682,15 +684,15 @@ void HTMLMediaElement::removedFrom(ContainerNode& insertionPoint)
             exitFullscreen();
 
         if (m_player) {
-            JSC::VM& vm = JSDOMWindowBase::commonVM();
-            JSC::JSLockHolder lock(vm);
+            //JSC::VM& vm = JSDOMWindowBase::commonVM();
+            //JSC::JSLockHolder lock(vm);
 
             size_t extraMemoryCost = m_player->extraMemoryCost();
             size_t extraMemoryCostDelta = extraMemoryCost - m_reportedExtraMemoryCost;
             m_reportedExtraMemoryCost = extraMemoryCost;
 
-            if (extraMemoryCostDelta > 0)
-                vm.heap.reportExtraMemoryCost(extraMemoryCostDelta);
+            //if (extraMemoryCostDelta > 0)
+              //  vm.heap.reportExtraMemoryCost(extraMemoryCostDelta);
         }
     }
 
@@ -3658,11 +3660,11 @@ void HTMLMediaElement::configureTextTrackGroup(const TrackGroup& group)
             m_webkitLegacyClosedCaptionOverride = true;
     }
 
-    updateCaptionContainer();
+    //updateCaptionContainer();
 
     m_processingPreferenceChange = false;
 }
-
+#if 0 //CMP_ERROR_UNCLEAR JSC::JSValue controllerJSValue
 static JSC::JSValue controllerJSValue(JSC::ExecState& exec, JSDOMGlobalObject& globalObject, HTMLMediaElement& media)
 {
     auto mediaJSWrapper = toJS(&exec, &globalObject, &media);
@@ -3688,7 +3690,6 @@ static JSC::JSValue controllerJSValue(JSC::ExecState& exec, JSDOMGlobalObject& g
 
     return controllerJSWrapper;
 }
-    
 void HTMLMediaElement::updateCaptionContainer()
 {
     LOG(Media, "HTMLMediaElement::updateCaptionContainer");
@@ -3740,7 +3741,7 @@ void HTMLMediaElement::updateCaptionContainer()
         exec->clearException();
 #endif
 }
-    
+#endif
 void HTMLMediaElement::setSelectedTextTrack(TextTrack* trackToSelect)
 {
     TextTrackList* trackList = textTracks();

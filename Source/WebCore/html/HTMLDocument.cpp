@@ -70,7 +70,7 @@
 #include "HTMLFrameOwnerElement.h"
 #include "HTMLFrameSetElement.h"
 #include "HTMLNames.h"
-#include "JSDOMBinding.h"
+//#include "JSDOMBinding.h"
 #include "Page.h"
 #include "ScriptController.h"
 #include "Settings.h"
@@ -305,7 +305,7 @@ static HashSet<AtomicStringImpl*>* createHtmlCaseInsensitiveAttributesSet()
 void HTMLDocument::addDocumentNamedItem(const AtomicStringImpl& name, Element& item)
 {
     m_documentNamedItem.add(name, item, *this);
-    addImpureProperty(AtomicString(const_cast<AtomicStringImpl*>(&name)));
+    //addImpureProperty(AtomicString(const_cast<AtomicStringImpl*>(&name))); //jsc addImpureProperty
 }
 
 void HTMLDocument::removeDocumentNamedItem(const AtomicStringImpl& name, Element& item)

@@ -857,7 +857,7 @@
 /* CSS Selector JIT Compiler */
 #if !defined(ENABLE_CSS_SELECTOR_JIT)
 #if (CPU(X86_64) || CPU(ARM64) || (CPU(ARM_THUMB2) && PLATFORM(IOS))) && ENABLE(JIT) && (OS(DARWIN) || PLATFORM(GTK) || PLATFORM(EFL))
-#define ENABLE_CSS_SELECTOR_JIT 1
+#define ENABLE_CSS_SELECTOR_JIT 0 //CMP_ERROR_UNCLEAR jit used by jsc
 #else
 #define ENABLE_CSS_SELECTOR_JIT 0
 #endif

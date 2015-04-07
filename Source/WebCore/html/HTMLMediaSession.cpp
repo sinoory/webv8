@@ -253,7 +253,9 @@ void HTMLMediaSession::setHasPlaybackTargetAvailabilityListeners(const HTMLMedia
         MediaSessionManager::sharedManager().stopMonitoringAirPlayRoutes();
 }
 #endif
-
+#ifdef None
+#undef None
+#endif
 MediaPlayer::Preload HTMLMediaSession::effectivePreloadForElement(const HTMLMediaElement& element) const
 {
     MediaSessionManager::SessionRestrictions restrictions = MediaSessionManager::sharedManager().restrictions(mediaType());

@@ -49,8 +49,8 @@
 #include "Settings.h"
 #include <math.h>
 
-#include <runtime/JSCInlines.h>
-#include <runtime/JSLock.h>
+//#include <runtime/JSCInlines.h>
+//#include <runtime/JSLock.h>
 
 #if ENABLE(WEBGL)    
 #include "WebGLContextAttributes.h"
@@ -569,10 +569,11 @@ void HTMLCanvasElement::createImageBuffer() const
     m_imageBuffer->context()->setStrokeThickness(1);
     m_contextStateSaver = std::make_unique<GraphicsContextStateSaver>(*m_imageBuffer->context());
 
+    /* CMP_ERROR
     JSC::JSLockHolder lock(scriptExecutionContext()->vm());
     size_t numBytes = 4 * m_imageBuffer->internalSize().width() * m_imageBuffer->internalSize().height();
     scriptExecutionContext()->vm().heap.reportExtraMemoryCost(numBytes);
-
+    */
 #if USE(IOSURFACE_CANVAS_BACKING_STORE) || ENABLE(ACCELERATED_2D_CANVAS)
     if (m_context && m_context->is2d())
         // Recalculate compositing requirements if acceleration state changed.

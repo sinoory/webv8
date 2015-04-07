@@ -66,7 +66,10 @@ namespace WebCore {
 
 using namespace HTMLNames;
 using namespace WTF;
-
+#ifdef True
+#undef True
+#undef False
+#endif
 PassRefPtr<HTMLElement> HTMLElement::create(const QualifiedName& tagName, Document& document)
 {
     return adoptRef(new HTMLElement(tagName, document));

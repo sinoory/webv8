@@ -28,7 +28,7 @@
 
 #include "PluginReplacement.h"
 #include "ScriptState.h"
-#include <bindings/ScriptObject.h>
+#include <v8/ScriptObject.h>
 #include <wtf/RefCounted.h>
 #include <wtf/text/WTFString.h>
 

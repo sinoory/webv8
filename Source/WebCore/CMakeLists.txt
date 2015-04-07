@@ -3061,7 +3061,7 @@ set(WebCoreTestSupport_SOURCES
 )
 
 set(WebCoreTestSupport_LIBRARIES
-    JavaScriptCore
+    #JavaScriptCore rm dependence of jsc
     WTF
     WebCore
 )

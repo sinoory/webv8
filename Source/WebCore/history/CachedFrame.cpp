@@ -86,7 +86,7 @@ void CachedFrameBase::restore()
         m_view->setParentVisible(true);
 
     Frame& frame = m_view->frame();
-    m_cachedFrameScriptData->restore(frame);
+    m_cachedFrameScriptData->restore(&frame);
 
     if (m_document->svgExtensions())
         m_document->accessSVGExtensions()->unpauseAnimations();
@@ -167,7 +167,7 @@ CachedFrame::CachedFrame(Frame& frame)
     m_document->documentWillSuspendForPageCache();
     m_document->suspendScriptedAnimationControllerCallbacks();
     m_document->suspendActiveDOMObjects(ActiveDOMObject::DocumentWillBecomeInactive);
-    m_cachedFrameScriptData = std::make_unique<ScriptCachedFrameData>(frame);
+    m_cachedFrameScriptData = std::make_unique<ScriptCachedFrameData>(&frame);
 
     m_document->domWindow()->suspendForPageCache();
 
