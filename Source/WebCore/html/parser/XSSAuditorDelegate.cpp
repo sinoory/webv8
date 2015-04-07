@@ -39,7 +39,6 @@
 #include <wtf/text/StringBuilder.h>
 #include <wtf/text/CString.h>
 
-using namespace Inspector;
 
 namespace WebCore {
 

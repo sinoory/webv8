@@ -115,7 +115,7 @@ private:
     virtual bool isRestartedPlugin() const override final { return m_isRestartedPlugin; }
 
     virtual void finishParsingChildren() override final;
-    virtual void didAddUserAgentShadowRoot(ShadowRoot*) override final;
+    //virtual void didAddUserAgentShadowRoot(ShadowRoot*) override final;
 
     virtual RenderPtr<RenderElement> createElementRenderer(PassRef<RenderStyle>) override;
     virtual bool willRecalcStyle(Style::Change) override final;

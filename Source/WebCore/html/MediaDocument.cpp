@@ -44,7 +44,7 @@
 #include "RawDataDocumentParser.h"
 #include "ScriptController.h"
 #include "ShadowRoot.h"
-
+#include <wtf/text/StringBuilder.h>
 namespace WebCore {
 
 using namespace HTMLNames;

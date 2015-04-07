@@ -25,16 +25,11 @@
 
 #include "HTMLFrameOwnerElement.h"
 #include "Image.h"
+#include "ScriptInstance.h"
 
 #if ENABLE(NETSCAPE_PLUGIN_API)
 struct NPObject;
 #endif
-
-namespace JSC {
-namespace Bindings {
-class Instance;
-}
-}
 
 namespace WebCore {
 
@@ -49,7 +44,7 @@ public:
 
     void resetInstance();
 
-    PassRefPtr<JSC::Bindings::Instance> getInstance();
+    PassScriptInstance getInstance();
 
     enum class PluginLoadingPolicy { DoNotLoad, Load };
     WEBCORE_EXPORT Widget* pluginWidget(PluginLoadingPolicy = PluginLoadingPolicy::Load) const;
@@ -125,7 +120,7 @@ private:
     virtual bool isKeyboardFocusable(KeyboardEvent*) const override;
     virtual bool isPluginElement() const override final;
 
-    RefPtr<JSC::Bindings::Instance> m_instance;
+    mutable ScriptInstance m_instance;
     Timer<HTMLPlugInElement> m_swapRendererTimer;
     RefPtr<PluginReplacement> m_pluginReplacement;
 #if ENABLE(NETSCAPE_PLUGIN_API)

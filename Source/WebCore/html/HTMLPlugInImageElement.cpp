@@ -30,7 +30,7 @@
 #include "FrameLoaderClient.h"
 #include "FrameView.h"
 #include "HTMLImageLoader.h"
-#include "JSDocumentFragment.h"
+//#include "JSDocumentFragment.h"
 #include "LocalizedStrings.h"
 #include "Logging.h"
 #include "MainFrame.h"
@@ -50,10 +50,11 @@
 #include "ShadowRoot.h"
 #include "StyleResolver.h"
 #include "SubframeLoader.h"
-#include <JavaScriptCore/APICast.h>
-#include <JavaScriptCore/JSBase.h>
+//#include <JavaScriptCore/APICast.h>
+//#include <JavaScriptCore/JSBase.h>
 #include <wtf/HashMap.h>
 #include <wtf/text/StringHash.h>
+#include <wtf/CurrentTime.h>
 
 namespace WebCore {
 
@@ -346,12 +347,12 @@ void HTMLPlugInImageElement::updateSnapshot(PassRefPtr<Image> image)
         renderer()->repaint();
 }
 
+#if 0 //CMP_ERROR_UNCLEAR HTMLPlugInImageElement::didAddUserAgentShadowRoot JSC
 static DOMWrapperWorld& plugInImageElementIsolatedWorld()
 {
     static DOMWrapperWorld& isolatedWorld = *DOMWrapperWorld::create(JSDOMWindow::commonVM()).leakRef();
     return isolatedWorld;
 }
-
 void HTMLPlugInImageElement::didAddUserAgentShadowRoot(ShadowRoot* root)
 {
     HTMLPlugInElement::didAddUserAgentShadowRoot(root);
@@ -396,6 +397,7 @@ void HTMLPlugInImageElement::didAddUserAgentShadowRoot(ShadowRoot* root)
 
     JSC::call(exec, overlay, callType, callData, globalObject, argList);
 }
+#endif
 
 bool HTMLPlugInImageElement::partOfSnapshotOverlay(Node* node)
 {

@@ -126,7 +126,7 @@ void HTMLPlugInElement::resetInstance()
     m_instance.clear();
 }
 
-PassRefPtr<JSC::Bindings::Instance> HTMLPlugInElement::getInstance()
+PassScriptInstance HTMLPlugInElement::getInstance()
 {
     Frame* frame = document().frame();
     if (!frame)
