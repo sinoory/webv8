@@ -624,7 +624,7 @@ void FrameLoader::clear(Document* newDocument, bool clearWindowProperties, bool 
     if (clearWindowProperties) {
         InspectorInstrumentation::frameWindowDiscarded(&m_frame, m_frame.document()->domWindow());
         m_frame.document()->domWindow()->resetUnlessSuspendedForPageCache();
-        m_frame.script().clearWindowShell(newDocument->domWindow(), m_frame.document()->inPageCache());
+        m_frame.script().clearWindowShell( m_frame.document()->inPageCache());
     }
 
     m_frame.selection().prepareForDestruction();
@@ -1596,9 +1596,9 @@ bool FrameLoader::shouldAllowNavigation(Frame* targetFrame) const
         return true;
 
     // Performance optimization.
-    if (m_frame == targetFrame)
+    if (&m_frame == targetFrame)
         return true;
-
+#if 0 //CMP_ERROR
     // Let a frame navigate the top-level window that contains it.  This is
     // important to allow because it lets a site "frame-bust" (escape from a
     // frame created by another web site).
@@ -1635,8 +1635,8 @@ bool FrameLoader::shouldAllowNavigation(Frame* targetFrame) const
         // FIXME: should we print to the console of the activeFrame as well?
         targetFrame->domWindow()->console()->addMessage(JSMessageSource, LogMessageType, ErrorMessageLevel, message, 1, String());
     }
-    
-    return false;
+#endif
+    return true;
 }
 void FrameLoader::stopAllLoaders(ClearProvisionalItemPolicy clearProvisionalItemPolicy)
 {
@@ -3338,15 +3338,15 @@ void FrameLoader::dispatchDidClearWindowObjectsInAllWorlds()
     if (!m_frame.script().canExecuteScripts(NotAboutToExecuteScript))
         return;
 
-    Vector<Ref<DOMWrapperWorld>> worlds;
+    Vector<DOMWrapperWorld*> worlds;
     ScriptController::getAllWorlds(worlds);
     for (size_t i = 0; i < worlds.size(); ++i)
-        dispatchDidClearWindowObjectInWorld(worlds[i].get());
+        dispatchDidClearWindowObjectInWorld(*(worlds[i]));
 }
 
 void FrameLoader::dispatchDidClearWindowObjectInWorld(DOMWrapperWorld& world)
 {
-    if (!m_frame.script().canExecuteScripts(NotAboutToExecuteScript) || !m_frame.script().existingWindowShell(world))
+    if (!m_frame.script().canExecuteScripts(NotAboutToExecuteScript) || !m_frame.script().existingWindowShell(&world))
         return;
 
     m_client.dispatchDidClearWindowObjectInWorld(world);
@@ -3361,10 +3361,10 @@ void FrameLoader::dispatchDidClearWindowObjectInWorld(DOMWrapperWorld& world)
 
 void FrameLoader::dispatchGlobalObjectAvailableInAllWorlds()
 {
-    Vector<Ref<DOMWrapperWorld>> worlds;
+    Vector<DOMWrapperWorld*> worlds;
     ScriptController::getAllWorlds(worlds);
     for (size_t i = 0; i < worlds.size(); ++i)
-        m_client.dispatchGlobalObjectAvailable(worlds[i].get());
+        m_client.dispatchGlobalObjectAvailable(*(worlds[i]));
 }
 
 SandboxFlags FrameLoader::effectiveSandboxFlags() const

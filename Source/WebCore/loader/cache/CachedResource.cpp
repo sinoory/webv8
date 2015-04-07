@@ -483,7 +483,7 @@ void CachedResource::setCachedMetadata(unsigned dataTypeID, const char* data, si
     ASSERT(!m_cachedMetadata);
 
     m_cachedMetadata = CachedMetadata::create(dataTypeID, data, size);
-    ResourceHandle::cacheMetadata(m_response, m_cachedMetadata->serialize());
+    //ResourceHandle::cacheMetadata(m_response, m_cachedMetadata->serialize());
 }
 
 CachedMetadata* CachedResource::cachedMetadata(unsigned dataTypeID) const

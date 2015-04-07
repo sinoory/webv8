@@ -243,7 +243,7 @@ void CaptionUserPreferences::updateCaptionStyleSheetOveride()
     auto& pages = m_pageGroup.pages();
     for (auto& page : pages) {
         if (auto* pageUserContentController = page->userContentController())
-            pageUserContentController->removeUserStyleSheet(mainThreadNormalWorld(), captionsStyleSheetURL);
+            pageUserContentController->removeUserStyleSheet(*(mainThreadNormalWorld()), captionsStyleSheetURL);
     }
 
     String captionsOverrideStyleSheet = captionsStyleSheetOverride();
@@ -253,7 +253,7 @@ void CaptionUserPreferences::updateCaptionStyleSheetOveride()
     for (auto& page : pages) {
         if (auto* pageUserContentController = page->userContentController()) {
             auto userStyleSheet = std::make_unique<UserStyleSheet>(captionsOverrideStyleSheet, captionsStyleSheetURL, Vector<String>(), Vector<String>(), InjectInAllFrames, UserStyleAuthorLevel);
-            pageUserContentController->addUserStyleSheet(mainThreadNormalWorld(), WTF::move(userStyleSheet), InjectInExistingDocuments);
+            pageUserContentController->addUserStyleSheet(*(mainThreadNormalWorld()), WTF::move(userStyleSheet), InjectInExistingDocuments);
         }
     }
 }
