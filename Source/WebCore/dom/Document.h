@@ -1329,7 +1329,7 @@ private:
     virtual void refScriptExecutionContext() override { ref(); }
     virtual void derefScriptExecutionContext() override { deref(); }
 
-    virtual void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL, unsigned lineNumber, unsigned columnNumber, PassRefPtr<WebCore::ScriptCallStack>, JSC::ExecState* = 0, unsigned long requestIdentifier = 0) override;
+    virtual void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL, unsigned lineNumber, unsigned columnNumber, PassRefPtr<WebCore::ScriptCallStack>, ScriptState* = 0, unsigned long requestIdentifier = 0) override;
 
     virtual double minimumTimerInterval() const override;
 

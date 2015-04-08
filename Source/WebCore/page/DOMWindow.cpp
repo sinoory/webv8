@@ -68,7 +68,7 @@
 #include "HTMLFrameOwnerElement.h"
 #include "History.h"
 #include "InspectorInstrumentation.h"
-#include "JSMainThreadExecState.h"
+//#include "JSMainThreadExecState.h"
 #include "Location.h"
 #include "MainFrame.h"
 #include "MediaQueryList.h"
@@ -101,7 +101,7 @@
 #include "WindowFocusAllowedIndicator.h"
 #include <algorithm>
 #include <inspector/ScriptCallStack.h>
-#include <inspector/ScriptCallStackFactory.h>
+#include <v8/ScriptCallStackFactory.h>
 #include <memory>
 #include <wtf/CurrentTime.h>
 #include <wtf/MainThread.h>
@@ -476,7 +476,7 @@ void DOMWindow::frameDestroyed()
     willDestroyDocumentInFrame();
     FrameDestructionObserver::frameDestroyed();
     resetDOMWindowProperties();
-    JSDOMWindowBase::fireFrameClearedWatchpointsForWindow(this);
+    //JSDOMWindowBase::fireFrameClearedWatchpointsForWindow(this);
 }
 
 void DOMWindow::willDetachPage()
@@ -915,7 +915,7 @@ void DOMWindow::postMessage(PassRefPtr<SerializedScriptValue> message, const Mes
     // Capture stack trace only when inspector front-end is loaded as it may be time consuming.
     RefPtr<ScriptCallStack> stackTrace;
     if (InspectorInstrumentation::consoleAgentEnabled(sourceDocument))
-        stackTrace = createScriptCallStack(JSMainThreadExecState::currentState(), ScriptCallStack::maxCallStackSizeToCapture);
+        stackTrace = createScriptCallStack( ScriptCallStack::maxCallStackSizeToCapture);
 
     // Schedule the message.
     PostMessageTimer* timer = new PostMessageTimer(this, message, sourceOrigin, &source, WTF::move(channels), target.get(), stackTrace.release());
@@ -1036,7 +1036,7 @@ void DOMWindow::close(ScriptExecutionContext* context)
     bool allowScriptsToCloseWindows = m_frame->settings().allowScriptsToCloseWindows();
 
     if (!(page->openedByDOM() || page->backForward().count() <= 1 || allowScriptsToCloseWindows)) {
-        console()->addMessage(MessageSource::JS, MessageLevel::Warning, ASCIILiteral("Can't close the window since it was not opened by JavaScript"));
+        //console()->addMessage(MessageSource::JS, MessageLevel::Warning, ASCIILiteral("Can't close the window since it was not opened by JavaScript"));
         return;
     }
 

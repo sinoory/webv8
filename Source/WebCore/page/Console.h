@@ -148,11 +148,11 @@ public:
 
     MemoryInfo* memory() const;
 
+    Console(Frame*);
 private:
     inline Page* page() const;
     void addMessage(MessageType, MessageLevel, PassRefPtr<ScriptArguments>, PassRefPtr<ScriptCallStack>, bool acceptNoArguments = false);
 
-    Console(Frame*);
 
     Frame* m_frame;
 #if ENABLE(JAVASCRIPT_DEBUGGER)

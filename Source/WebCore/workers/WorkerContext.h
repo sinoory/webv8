@@ -91,7 +91,7 @@ namespace WebCore {
             EventQueue* pe = 0;//new WorkerEventQueue(*(static_cast<ScriptExecutionContext*>(this)));
             return *pe;
         };
-        virtual void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL, unsigned lineNumber, unsigned columnNumber, PassRefPtr<WebCore::ScriptCallStack>, JSC::ExecState* = nullptr, unsigned long requestIdentifier = 0) {}
+        virtual void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL, unsigned lineNumber, unsigned columnNumber, PassRefPtr<WebCore::ScriptCallStack>, ScriptState* = nullptr, unsigned long requestIdentifier = 0) {}
         virtual void logExceptionToConsole(const String& errorMessage, const String& sourceURL, int lineNumber, int columnNumber, PassRefPtr<WebCore::ScriptCallStack>) {}
         //>
         

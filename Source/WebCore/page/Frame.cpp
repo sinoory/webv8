@@ -64,7 +64,7 @@
 #include "HitTestResult.h"
 #include "ImageBuffer.h"
 #include "InspectorInstrumentation.h"
-#include "JSDOMWindowShell.h"
+//#include "JSDOMWindowShell.h"
 #include "Logging.h"
 #include "MainFrame.h"
 #include "MathMLNames.h"
@@ -104,12 +104,12 @@
 #include "htmlediting.h"
 #include "markup.h"
 #include "npruntime_impl.h"
-#include "runtime_root.h"
+//#include "runtime_root.h"
 #include <bindings/ScriptValue.h>
 #include <wtf/RefCountedLeakCounter.h>
 #include <wtf/StdLibExtras.h>
 #include <yarr/RegularExpression.h>
-
+#include <wtf/text/StringBuilder.h>
 #if PLATFORM(IOS)
 #include "WKContentObservation.h"
 #endif
@@ -155,7 +155,7 @@ Frame::Frame(Page& page, HTMLFrameOwnerElement* ownerElement, FrameLoaderClient&
     , m_loader(*this, frameLoaderClient)
     , m_navigationScheduler(*this)
     , m_ownerElement(ownerElement)
-    , m_script(std::make_unique<ScriptController>(*this))
+    , m_script(std::make_unique<ScriptController>(this))
     , m_editor(std::make_unique<Editor>(*this))
     , m_selection(std::make_unique<FrameSelection>(this))
     , m_eventHandler(std::make_unique<EventHandler>(*this))
@@ -728,7 +728,7 @@ void Frame::injectUserScriptsForWorld(DOMWrapperWorld& world, const UserScriptVe
             continue;
 
         if (script->injectionTime() == injectionTime && UserContentURLPattern::matchesPatterns(doc->url(), script->whitelist(), script->blacklist()))
-            m_script->evaluateInWorld(ScriptSourceCode(script->source(), script->url()), world);
+            m_script->evaluateInWorld(ScriptSourceCode(script->source(), script->url()), &world);
     }
 }
 

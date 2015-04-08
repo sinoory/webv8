@@ -35,7 +35,6 @@
 
 #include "ContentSecurityPolicy.h"
 #include "DOMWindow.h"
-#include "Dictionary.h"
 #include "Document.h"
 #include "Event.h"
 #include "EventException.h"
@@ -70,7 +69,7 @@ inline EventSource::EventSource(ScriptExecutionContext& context, const URL& url,
     , m_requestInFlight(false)
     , m_reconnectDelay(defaultReconnectDelay)
 {
-    eventSourceInit.get("withCredentials", m_withCredentials);
+    //eventSourceInit.get("withCredentials", m_withCredentials); //CMP_ERROR not used withCredentials
 }
 
 PassRefPtr<EventSource> EventSource::create(ScriptExecutionContext& context, const String& url, const Dictionary& eventSourceInit, ExceptionCode& ec)

@@ -34,10 +34,7 @@
 #include <wtf/Forward.h>
 #include "Console.h"
 
-namespace JSC {
-class ExecState;
-class Profile;
-}
+
 
 namespace WebCore {
 
@@ -45,7 +42,6 @@ class Document;
 class Page;
 class Console;
 
-typedef Vector<RefPtr<JSC::Profile>> ProfilesArray;
 
 class PageConsoleClient final : public Console {
 public:
@@ -61,12 +57,14 @@ public:
     void addMessage(MessageSource, MessageLevel, const String& message, const String& sourceURL,unsigned line,unsigned col);
     void addMessage(MessageSource source, MessageLevel level, const String& message, unsigned long requestIdentifier, Document* document);
     void addMessage(MessageSource source, MessageLevel level, const String& message, const String& url, unsigned lineNumber, unsigned columnNumber, PassRefPtr<ScriptCallStack> callStack);
-    const ProfilesArray& profiles() const { return m_profiles; }
+    void addMessage(WebCore::MessageSource, WebCore::MessageLevel, String& message, PassRefPtr<WebCore::ScriptCallStack>);
+    void addMessage(WebCore::MessageSource, WebCore::MessageLevel, const WTF::String&);
+    //const ProfilesArray& profiles() const { return m_profiles; }
     void clearProfiles();
 
 private:
     Page& m_page;
-    ProfilesArray m_profiles;
+    //ProfilesArray m_profiles;
 };
 
 } // namespace WebCore

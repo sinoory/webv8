@@ -33,9 +33,9 @@
 #include "ChromeClient.h"
 #include "Document.h"
 #include "Frame.h"
-#include "InspectorConsoleInstrumentation.h"
+//#include "InspectorConsoleInstrumentation.h"
 #include "InspectorController.h"
-#include "JSMainThreadExecState.h"
+//#include "JSMainThreadExecState.h"
 #include "MainFrame.h"
 #include "Page.h"
 #include "ScriptableDocumentParser.h"
@@ -71,12 +71,21 @@ void PageConsoleClient::setShouldPrintExceptions(bool print)
     printExceptions = print;
 }
 
+
+void PageConsoleClient::addMessage(MessageSource source, MessageLevel level, String& message, PassRefPtr<WebCore::ScriptCallStack> callStack){
+    //addMessage(source,LogMessageType,level,message,"undefinedurl",0,0,callStack); //CMP_ERROR_UNCLEAR implement it
+}
+
+void PageConsoleClient::addMessage(MessageSource source, MessageLevel level, const String& message){
+    //addMessage(source,LogMessageType,level,message,"undefinedurl",0,0);
+}
+
 void PageConsoleClient::addMessage(MessageSource source, MessageLevel level, const String& message, const String& sourceURL,unsigned line,unsigned col){
-    addMessage(source,LogMessageType,level,message,line,sourceURL);
+    //addMessage(source,LogMessageType,level,message,line,sourceURL);
 }
 void PageConsoleClient::addMessage(MessageSource source, MessageLevel level, const String& message, const String& url, unsigned lineNumber, unsigned columnNumber, PassRefPtr<ScriptCallStack> callStack)
 {
-    addMessage(source,LogMessageType,level,message,line,sourceURL,callStack);
+    //addMessage(source,LogMessageType,level,message,line,sourceURL,callStack);
 }
 void PageConsoleClient::addMessage(MessageSource source, MessageLevel level, const String& message, unsigned long requestIdentifier, Document* document)
 {
@@ -89,13 +98,13 @@ void PageConsoleClient::addMessage(MessageSource source, MessageLevel level, con
     unsigned column = 0;
     if (document && document->parsing() && !document->isInDocumentWrite() && document->scriptableDocumentParser()) {
         ScriptableDocumentParser* parser = document->scriptableDocumentParser();
-        if (!parser->isWaitingForScripts() && !JSMainThreadExecState::currentState()) {
+        if (!parser->isWaitingForScripts() /*&& !JSMainThreadExecState::currentState()*/) {
             TextPosition position = parser->textPosition();
             line = position.m_line.oneBasedInt();
             column = position.m_column.oneBasedInt();
         }
     }
-    addMessage(source, LogMessageType,level, message,  line, column, url);
+    //addMessage(source, LogMessageType,level, message,  line, column, url);
 }
 
 void PageConsoleClient::mute()
@@ -113,7 +122,7 @@ void PageConsoleClient::unmute()
 
 void PageConsoleClient::clearProfiles()
 {
-    m_profiles.clear();
+    //m_profiles.clear();
 }
 
 } // namespace WebCore
