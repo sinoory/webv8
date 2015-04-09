@@ -136,3 +136,4 @@ Tools/CTestTestfile.cmake
 Tools/cmake_install.cmake
 cmake_install.cmake
 install_manifest.txt
+b.sh

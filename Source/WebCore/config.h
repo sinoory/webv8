@@ -18,7 +18,9 @@
  * Boston, MA 02110-1301, USA.
  *
  */
-
+#ifdef None
+#undef None
+#endif
 #if defined(HAVE_CONFIG_H) && HAVE_CONFIG_H && defined(BUILDING_WITH_CMAKE)
 #include "cmakeconfig.h"
 #endif

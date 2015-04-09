@@ -97,6 +97,9 @@ sub Parse
     my @tmpdoc = ("module WebCore {\n",@documentContent,"}\n");
     @documentContent=@tmpdoc;
     foreach (@documentContent) {
+        #readonly attribute unrestricted double? altitude ==> readonly attribute  double altitude; for android binding script
+        $_=~s/unrestricted//g;
+        $_=~s/\?//g;
         my $newParseMode = $object->DetermineParseMode($_);
 
         if ($newParseMode ne MODE_UNDEF) {

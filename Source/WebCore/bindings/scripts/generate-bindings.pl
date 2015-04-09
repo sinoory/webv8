@@ -78,7 +78,7 @@ print "$generator: $idlFile\n";
 # Parse the given IDL file.
 my $parser = IDLParser->new(!$verbose);
 my $document = $parser->Parse($idlFile, $defines, $preprocessor);
-if ($idlFile =~ /Attr.idl/){
+if ($idlFile =~ /BatteryManager.idl/){
     printf "=====1======Attr.idl============\n";
     printf "ARGV=@ARGV\n";
     printf "idlDirectories=@idlDirectories\n";

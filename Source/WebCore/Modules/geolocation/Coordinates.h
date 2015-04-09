@@ -43,10 +43,14 @@ public:
     double latitude() const { return m_latitude; }
     double longitude() const { return m_longitude; }
     double altitude(bool& isNull) const;
+    double altitude() const{ bool b=false; return altitude(b);}
     double accuracy() const { return m_accuracy; }
     double altitudeAccuracy(bool& isNull) const;
+    double altitudeAccuracy() const {bool b=false; return altitudeAccuracy(b);}
     double heading(bool& isNull) const;
+    double heading() const {bool b=false; return heading(b);}
     double speed(bool& isNull) const;
+    double speed() const {bool b=false; return speed(b);}
     
 private:
     Coordinates(double latitude, double longitude, bool providesAltitude, double altitude, double accuracy, bool providesAltitudeAccuracy, double altitudeAccuracy, bool providesHeading, double heading, bool providesSpeed, double speed)

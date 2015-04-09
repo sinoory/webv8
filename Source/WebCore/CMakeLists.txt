@@ -171,9 +171,9 @@ set(WebCore_IDL_INCLUDES
 )
 
 set(WebCore_NON_SVG_IDL_FILES
-    Modules/airplay/WebKitPlaybackTargetAvailabilityEvent.idl
+    #Modules/airplay/WebKitPlaybackTargetAvailabilityEvent.idl #CMP_ERROR v8 not generate #if ENABLE(ISO)
 
-    Modules/battery/BatteryManager.idl
+    #Modules/battery/BatteryManager.idl  #BATTERY_STATUS off
     Modules/battery/NavigatorBattery.idl
 
 # FIXME: These were causing name conflicts on Mac, and the Gamepad API is not finished yet.
@@ -183,8 +183,8 @@ set(WebCore_NON_SVG_IDL_FILES
 #   Modules/gamepad/GamepadEvent.idl
 #   Modules/gamepad/NavigatorGamepad.idl
 
-    Modules/gamepad/deprecated/Gamepad.idl
-    Modules/gamepad/deprecated/GamepadList.idl
+    #Modules/gamepad/deprecated/Gamepad.idl
+    #Modules/gamepad/deprecated/GamepadList.idl
     Modules/gamepad/deprecated/NavigatorGamepad.idl
 
     Modules/geolocation/Coordinates.idl
