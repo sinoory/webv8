@@ -30,8 +30,8 @@
 #include "Document.h"
 #include "Font.h"
 #include "FontCache.h"
-#include "GCController.h"
-#include "JSDOMWindow.h"
+//#include "GCController.h"
+//#include "JSDOMWindow.h"
 #include "MemoryCache.h"
 #include "Page.h"
 #include "PageCache.h"
@@ -88,7 +88,7 @@ void MemoryPressureHandler::releaseNoncriticalMemory()
 
     {
         ReliefLogger log("Clearing JS string cache");
-        JSDOMWindow::commonVM().stringCache.clear();
+        //JSDOMWindow::commonVM().stringCache.clear();
     }
 }
 
@@ -119,7 +119,7 @@ void MemoryPressureHandler::releaseCriticalMemory()
 
     {
         ReliefLogger log("Discard all JIT-compiled code");
-        gcController().discardAllCompiledCode();
+        //gcController().discardAllCompiledCode();
     }
 }
 

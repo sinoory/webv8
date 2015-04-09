@@ -54,6 +54,23 @@ namespace WebCore {
     class ResourceRequestBase {
         WTF_MAKE_FAST_ALLOCATED;
     public:
+        // The type of this ResourceRequest, based on how the resource will be used.
+        enum TargetType {
+            TargetIsMainFrame,
+            TargetIsSubframe,
+            TargetIsSubresource,  // Resource is a generic subresource.  (Generally a specific type should be specified)
+            TargetIsStyleSheet,
+            TargetIsScript,
+            TargetIsFontResource,
+            TargetIsImage,
+            TargetIsObject,
+            TargetIsMedia,
+            TargetIsWorker,
+            TargetIsSharedWorker,
+            TargetIsPrefetch,
+            TargetIsFavicon,
+        };
+
         static PassOwnPtr<ResourceRequest> adopt(PassOwnPtr<CrossThreadResourceRequestData>);
 
         // Gets a copy of the data suitable for passing to another thread.

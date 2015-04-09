@@ -37,7 +37,7 @@
 #include "Event.h"
 #include "EventException.h"
 #include "ExceptionCode.h"
-#include "InspectorConsoleInstrumentation.h"
+//#include "InspectorConsoleInstrumentation.h"
 #include "MessagePort.h"
 #include "ScheduledAction.h"
 #include "ScriptSourceCode.h"
@@ -59,7 +59,7 @@
 #include "NotificationCenter.h"
 #endif
 
-using namespace Inspector;
+//using namespace Inspector;
 
 namespace WebCore {
 
@@ -67,7 +67,7 @@ WorkerGlobalScope::WorkerGlobalScope(const URL& url, const String& userAgent, st
     : m_url(url)
     , m_userAgent(userAgent)
     , m_groupSettings(WTF::move(settings))
-    , m_script(std::make_unique<WorkerScriptController>(this))
+//    , m_script(std::make_unique<WorkerScriptController>(this)) //CMP_ERROR_UNCLEAR
     , m_thread(thread)
 #if ENABLE(INSPECTOR)
     , m_workerInspectorController(std::make_unique<WorkerInspectorController>(*this))
@@ -113,7 +113,7 @@ String WorkerGlobalScope::userAgent(const URL&) const
 
 void WorkerGlobalScope::disableEval(const String& errorMessage)
 {
-    m_script->disableEval(errorMessage);
+    //m_script->disableEval(errorMessage); //CMP_ERROR
 }
 
 WorkerLocation* WorkerGlobalScope::location() const
@@ -198,7 +198,7 @@ void WorkerGlobalScope::importScripts(const Vector<String>& urls, ExceptionCode&
             return;
         }
 
-        InspectorInstrumentation::scriptImported(scriptExecutionContext(), scriptLoader->identifier(), scriptLoader->script());
+        //InspectorInstrumentation::scriptImported(scriptExecutionContext(), scriptLoader->identifier(), scriptLoader->script());
 
         Deprecated::ScriptValue exception;
         m_script->evaluate(ScriptSourceCode(scriptLoader->script(), scriptLoader->responseURL()), &exception);
@@ -243,11 +243,13 @@ void WorkerGlobalScope::addMessage(MessageSource source, MessageLevel level, con
 
 void WorkerGlobalScope::addMessageToWorkerConsole(MessageSource source, MessageLevel level, const String& message, const String& sourceURL, unsigned lineNumber, unsigned columnNumber, PassRefPtr<ScriptCallStack> callStack,  ScriptState* state, unsigned long requestIdentifier)
 {
+#if 0
     ASSERT(isContextThread());
     if (callStack)
         InspectorInstrumentation::addMessageToConsole(this, source, MessageType::Log, level, message, callStack, requestIdentifier);
     else
         InspectorInstrumentation::addMessageToConsole(this, source, MessageType::Log, level, message, sourceURL, lineNumber, columnNumber, state, requestIdentifier);
+#endif
 }
 
 bool WorkerGlobalScope::isContextThread() const

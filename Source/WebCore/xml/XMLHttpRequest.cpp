@@ -36,8 +36,8 @@
 #include "HTTPHeaderNames.h"
 #include "HTTPParsers.h"
 #include "InspectorInstrumentation.h"
-#include "JSDOMBinding.h"
-#include "JSDOMWindow.h"
+//#include "JSDOMBinding.h"
+//#include "JSDOMWindow.h"
 #include "MemoryCache.h"
 #include "ParsedContentType.h"
 #include "ResourceError.h"
@@ -55,8 +55,8 @@
 #include <mutex>
 #include <runtime/ArrayBuffer.h>
 #include <runtime/ArrayBufferView.h>
-#include <runtime/JSCInlines.h>
-#include <runtime/JSLock.h>
+//#include <runtime/JSCInlines.h>
+//#include <runtime/JSLock.h>
 #include <wtf/NeverDestroyed.h>
 #include <wtf/Ref.h>
 #include <wtf/RefCountedLeakCounter.h>
@@ -919,9 +919,9 @@ void XMLHttpRequest::dropProtection()
     // out. But it is protected from GC while loading, so this
     // can't be recouped until the load is done, so only
     // report the extra cost at that point.
-    JSC::VM& vm = scriptExecutionContext()->vm();
-    JSC::JSLockHolder lock(vm);
-    vm.heap.reportExtraMemoryCost(m_responseBuilder.length() * 2);
+    //JSC::VM& vm = scriptExecutionContext()->vm();
+    //JSC::JSLockHolder lock(vm);
+    //vm.heap.reportExtraMemoryCost(m_responseBuilder.length() * 2);
 
     unsetPendingActivity(this);
 }

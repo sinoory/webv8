@@ -44,7 +44,7 @@
 #include "Event.h"
 #include "EventException.h"
 #include "InspectorInstrumentation.h"
-#include "KURL.h"
+#include "URL.h"
 #include "MessagePort.h"
 #include "NotImplemented.h"
 #include "ScriptCallStack.h"
@@ -88,7 +88,7 @@ class CloseWorkerContextTask : public ScriptExecutionContext::Task {
 public:
     static PassOwnPtr<CloseWorkerContextTask> create()
     {
-        return new CloseWorkerContextTask;
+        return PassOwnPtr<CloseWorkerContextTask>(new CloseWorkerContextTask());
     }
 
     virtual void performTask(ScriptExecutionContext *context)
@@ -96,7 +96,7 @@ public:
         ASSERT(context->isWorkerContext());
         WorkerContext* workerContext = static_cast<WorkerContext*>(context);
         // Notify parent that this context is closed. Parent is responsible for calling WorkerThread::stop().
-        workerContext->thread()->workerReportingProxy().workerContextClosed();
+        //workerContext->thread()->workerReportingProxy().workerContextClosed();CMP_ERROR_UNCLEAR
     }
 
     virtual bool isCleanupTask() const { return true; }
@@ -126,7 +126,7 @@ WorkerContext::~WorkerContext()
     notifyObserversOfStop();
 
     // Notify proxy that we are going away. This can free the WorkerThread object, so do not access it after this.
-    thread()->workerReportingProxy().workerContextDestroyed();
+    //thread()->workerReportingProxy().workerContextDestroyed(); //CMP_ERROR_UNCLEAR
 }
 
 ScriptExecutionContext* WorkerContext::scriptExecutionContext() const
@@ -187,6 +187,7 @@ WorkerNavigator* WorkerContext::navigator() const
 
 bool WorkerContext::hasPendingActivity() const
 {
+#if 0 //CMP_ERROR_UNCLEAR
     ActiveDOMObjectsMap& activeObjects = activeDOMObjects();
     ActiveDOMObjectsMap::const_iterator activeObjectsEnd = activeObjects.end();
     for (ActiveDOMObjectsMap::const_iterator iter = activeObjects.begin(); iter != activeObjectsEnd; ++iter) {
@@ -200,18 +201,20 @@ bool WorkerContext::hasPendingActivity() const
         if ((*iter)->hasPendingActivity() || ((*iter)->isEntangled() && !(*iter)->locallyEntangledPort()))
             return true;
     }
-
+#endif
     return false;
 }
 
 void WorkerContext::postTask(PassOwnPtr<Task> task)
 {
-    thread()->runLoop().postTask(task);
+    //Task t(*task); //CMP_ERROR_UNCLEAR compile error
+    //thread()->runLoop().postTask(std::move(t));
 }
 
 int WorkerContext::setTimeout(PassOwnPtr<ScheduledAction> action, int timeout)
 {
-    return DOMTimer::install(scriptExecutionContext(), action, timeout, true);
+    std::unique_ptr<ScheduledAction> p(action.leakPtr());//CMP_ERROR
+    return DOMTimer::install(scriptExecutionContext(), std::move(p), timeout, true);
 }
 
 void WorkerContext::clearTimeout(int timeoutId)
@@ -221,7 +224,9 @@ void WorkerContext::clearTimeout(int timeoutId)
 
 int WorkerContext::setInterval(PassOwnPtr<ScheduledAction> action, int timeout)
 {
-    return DOMTimer::install(scriptExecutionContext(), action, timeout, false);
+    ScheduledAction* pa=action.leakPtr();
+    std::unique_ptr<ScheduledAction> p(pa);
+    return DOMTimer::install(scriptExecutionContext(), std::move(p), timeout, false);
 }
 
 void WorkerContext::clearInterval(int timeoutId)
@@ -243,9 +248,9 @@ void WorkerContext::importScripts(const Vector<String>& urls, ExceptionCode& ec)
         completedURLs.append(url);
     }
     Vector<KURL>::const_iterator end = completedURLs.end();
-
+#if 0 //CMP_ERROR_UNCLEAR
     for (Vector<KURL>::const_iterator it = completedURLs.begin(); it != end; ++it) {
-        WorkerScriptLoader scriptLoader(ResourceRequestBase::TargetIsScript);
+        WorkerScriptLoader scriptLoader(/*ResourceRequestBase::TargetIsScript*/);//CMP_ERROR_UNCLEAR
         scriptLoader.loadSynchronously(scriptExecutionContext(), *it, AllowCrossOriginRequests);
 
         // If the fetching attempt failed, throw a NETWORK_ERR exception and abort all these steps.
@@ -263,6 +268,7 @@ void WorkerContext::importScripts(const Vector<String>& urls, ExceptionCode& ec)
             return;
         }
     }
+#endif
 }
 
 EventTarget* WorkerContext::errorEventTarget()
@@ -272,12 +278,12 @@ EventTarget* WorkerContext::errorEventTarget()
 
 void WorkerContext::logExceptionToConsole(const String& errorMessage, int lineNumber, const String& sourceURL, PassRefPtr<ScriptCallStack>)
 {
-    thread()->workerReportingProxy().postExceptionToWorkerObject(errorMessage, lineNumber, sourceURL);
+    //thread()->workerReportingProxy().postExceptionToWorkerObject(errorMessage, lineNumber, sourceURL);//CMP_ERROR_UNCLEAR
 }
 
 void WorkerContext::addMessage(MessageSource source, MessageType type, MessageLevel level, const String& message, unsigned lineNumber, const String& sourceURL, PassRefPtr<ScriptCallStack>)
 {
-    thread()->workerReportingProxy().postConsoleMessageToWorkerObject(source, type, level, message, lineNumber, sourceURL);
+    //thread()->workerReportingProxy().postConsoleMessageToWorkerObject(source, type, level, message, lineNumber, sourceURL);//CMP_ERROR_UNCLEAR
 }
 
 #if ENABLE(NOTIFICATIONS)

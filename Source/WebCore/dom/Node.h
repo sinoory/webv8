@@ -37,11 +37,6 @@
 #include <wtf/Forward.h>
 #include <wtf/ListHashSet.h>
 
-namespace JSC {
-class VM;
-class SlotVisitor;
-}
-
 namespace WTF {
 class AtomicString;
 }

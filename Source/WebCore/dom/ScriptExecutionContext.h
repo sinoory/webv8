@@ -103,7 +103,7 @@ public:
 
     // Called after the construction of an ActiveDOMObject to synchronize suspend state.
     void suspendActiveDOMObjectIfNeeded(ActiveDOMObject&);
-
+    typedef const HashMap<ActiveDOMObject*, void*> ActiveDOMObjectsMap;
     void didCreateDestructionObserver(ContextDestructionObserver&);
     void willDestroyDestructionObserver(ContextDestructionObserver&);
 
@@ -122,6 +122,8 @@ public:
         WTF_MAKE_FAST_ALLOCATED;
     public:
         enum CleanupTaskTag { CleanupTask };
+
+        Task() { }
 
         template<typename T, typename = typename std::enable_if<!std::is_base_of<Task, T>::value && std::is_convertible<T, std::function<void (ScriptExecutionContext&)>>::value>::type>
         Task(T task)
