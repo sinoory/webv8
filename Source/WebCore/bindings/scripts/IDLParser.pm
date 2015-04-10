@@ -100,6 +100,7 @@ sub Parse
         #readonly attribute unrestricted double? altitude ==> readonly attribute  double altitude; for android binding script
         $_=~s/unrestricted//g;
         $_=~s/\?//g;
+        $_=~s/optional//g;
         my $newParseMode = $object->DetermineParseMode($_);
 
         if ($newParseMode ne MODE_UNDEF) {

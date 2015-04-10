@@ -570,7 +570,7 @@ sub GenerateCompileTimeCheckForEnumsIfNeeded
         foreach my $constant (@{$dataNode->constants}) {
             my $name = $constant->name;
             my $value = $constant->value;
-            push(@checks, "COMPILE_ASSERT($value == ${interfaceName}::$name, ${interfaceName}Enum${name}IsWrongUseDontCheckEnums);\n");
+            #push(@checks, "COMPILE_ASSERT($value == ${interfaceName}::$name, ${interfaceName}Enum${name}IsWrongUseDontCheckEnums);\n");  #do not check forcely
         }
         push(@checks, "\n");
     }
