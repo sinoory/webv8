@@ -673,7 +673,7 @@ END
 
 END
 }
-
+use Data::Dumper;
 sub GenerateNormalAttrGetter
 {
     my $attribute = shift;
@@ -685,6 +685,7 @@ sub GenerateNormalAttrGetter
     my $attrName = $attribute->signature->name;
     my $attrType = GetTypeFromSignature($attribute->signature);
     my $nativeType = GetNativeTypeFromSignature($attribute->signature, -1);
+
 
     my $getterStringUsesImp = $implClassName ne "SVGNumber";
     my $svgNativeType = $codeGenerator->GetSVGTypeNeedingTearOff($implClassName);
@@ -759,6 +760,7 @@ END
     }
 
     my $useExceptions = 1 if @{$attribute->getterExceptions};
+    $useExceptions=$attribute->attrGetException;
     if ($useExceptions) {
         $implIncludes{"ExceptionCode.h"} = 1;
         push(@implContentDecls, "    ExceptionCode ec = 0;\n");
@@ -984,7 +986,7 @@ END
     }
 
     my $useExceptions = 1 if @{$attribute->setterExceptions};
-
+    $useExceptions=$attribute->attrSetException;
     if ($useExceptions) {
         $implIncludes{"ExceptionCode.h"} = 1;
         push(@implContentDecls, "    ExceptionCode ec = 0;\n");
@@ -2605,6 +2607,12 @@ sub GenerateFunctionCallString()
     my $returnType = GetTypeFromSignature($function->signature);
     my $nativeReturnType = GetNativeType($returnType, 0);
     my $result = "";
+    
+    #adapter webkit2 idl format: if exist RaisesException in function, pass &exc to impl->() as param
+    my $dbgexc = $function->signature->extendedAttributes->{"RaisesException"} || $function->signature->extendedAttributes->{"GetterRaisesException"};
+    if($dbgexc){
+        $result="    ExceptionCode ecx = 0;\n".$result;
+    }
 
     my $isSVGTearOffType = ($codeGenerator->IsSVGTypeNeedingTearOff($returnType) and not $implClassName =~ /List$/);
     $nativeReturnType = $codeGenerator->GetSVGWrappedTypeNeedingTearOff($returnType) if $isSVGTearOffType;
@@ -2692,6 +2700,12 @@ sub GenerateFunctionCallString()
         $functionString .= "ec";
         $index++;
     }
+
+    #adapter webkit2 idl format: if exist RaisesException in function, pass &exc to impl->() as param
+    if($dbgexc){
+        $functionString=$functionString.",ecx";
+    }
+
     $functionString .= ")";
 
     my $return = "result";

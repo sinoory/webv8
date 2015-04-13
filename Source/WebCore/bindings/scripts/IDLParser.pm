@@ -287,6 +287,13 @@ sub ParseInterface
                 $newDataNode->type($attributeType);
                 $newDataNode->signature(new domSignature());
 
+                if($line =~ /GetterRaisesException/  ){
+                    $newDataNode->attrGetException(1);
+                }
+                if($line =~ /SetterRaisesException/  ){
+                    $newDataNode->attrSetException(1);
+                }
+
                 $newDataNode->signature->name($attributeDataName);
                 $newDataNode->signature->type($attributeDataType);
                 $newDataNode->signature->extendedAttributes(parseExtendedAttributes($attributeExtendedAttributes));
@@ -295,7 +302,7 @@ sub ParseInterface
                 push(@$arrayRef, $newDataNode);
 
                 print "  |  |>  Attribute; TYPE \"$attributeType\" DATA NAME \"$attributeDataName\" DATA TYPE \"$attributeDataType\" GET EXCEPTION? \"$getterException\" SET EXCEPTION? \"$setterException\"" .
-                    dumpExtendedAttributes("\n  |                 ", $newDataNode->signature->extendedAttributes) . "\n" unless $beQuiet;
+                    dumpExtendedAttributes("\n  |                 ", $newDataNode->signature->extendedAttributes) . "\n" unless $beQuiet ;
 
                 $getterException =~ s/\s+//g;
                 $setterException =~ s/\s+//g;

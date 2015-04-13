@@ -53,6 +53,8 @@ struct( domFunction => {
 struct( domAttribute => {
     type => '$',              # Attribute type (including namespace)
     signature => '$',         # Attribute signature
+    attrGetException => '$',  #
+    attrSetException => '$',  #
     getterExceptions => '@',  # Possibly raised exceptions.
     setterExceptions => '@',  # Possibly raised exceptions.
 });
