@@ -130,7 +130,9 @@ sub AddIncludesForType
     # reorganization, we won't need these special cases.
     if (!$codeGenerator->IsPrimitiveType($type) and !$codeGenerator->IsStringType($type) and !$codeGenerator->AvoidInclusionOfType($type) and $type ne "Date") {
         # default, include the same named file
-        $implIncludes{GetV8HeaderName(${type})} = 1;
+        if($type ne ""){ #CMP_ERROR_UNCLEAR empty
+            $implIncludes{GetV8HeaderName(${type})} = 1;
+        }
 
         if ($type =~ /SVGPathSeg/) {
             $joinedName = $type;
@@ -2969,8 +2971,10 @@ sub JSValueToNative
         # return NULL.
         return "V8${type}::HasInstance($value) ? V8${type}::toNative(v8::Handle<v8::Object>::Cast($value)) : 0";
     } else {
-        $implIncludes{"V8$type.h"} = 1;
-
+        if($type eq  ""){ #CMP_ERROR_UNCLEAR why empty type
+            return "V8${type}::HasInstance($value) ? V8${type}::toNative(v8::Handle<v8::Object>::Cast($value)) : 0";
+        }
+        $implIncludes{"V8$type.h"} = 1; 
         # Perform type checks on the parameter, if it is expected Node type,
         # return NULL.
         return "V8${type}::HasInstance($value) ? V8${type}::toNative(v8::Handle<v8::Object>::Cast($value)) : 0";
@@ -3007,7 +3011,9 @@ sub CreateCustomSignature
             } else {
                 my $type = $parameter->type;
                 my $header = GetV8HeaderName($type);
-                $implIncludes{$header} = 1;
+                if($type ne ""){ #CMP_ERROR_UNCLEAR empyt
+                    $implIncludes{$header} = 1;
+                }
                 $result .= "V8${type}::GetRawTemplate()";
             }
         } else {
