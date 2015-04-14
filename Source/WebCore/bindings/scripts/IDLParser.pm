@@ -93,8 +93,26 @@ sub Parse
     my $dataAvailable = 0;
 
     # Simple IDL Parser (tm)
+    # wangcui dapte to android format: []interface xxx {} => interface [] xxx {} ,about 600 idls
+    my @tmpdoc = (@documentContent);
+    my $td=join("",@tmpdoc);
+    $td=~s/\n/SEPLINE/g;
+    $td=~/(\]\s*interface\s*)/;
+    my $isInterface=0;
+    if(defined($1)){
+        $isInterface=1;
+        $td=~s/\]\s*interface\s*/\] /;
+    }
+    $td=~s/SEPLINE/\n/g;
+    my @tmpda=split(/\n/,$td);
+    if($isInterface==1){
+        #print "correct interface\n";
+        $tmpda[0]="interface ".$tmpda[0];
+    }
+    #print "dbg td=" . join("",@tmpda) . "\n";
     # wangcui adapte to android script, wrap idl with "module Webcore{}"
-    my @tmpdoc = ("module WebCore {\n",@documentContent,"}\n");
+    @tmpdoc = ("module WebCore {\n",@tmpda,"}\n");
+
     @documentContent=@tmpdoc;
     foreach (@documentContent) {
         #readonly attribute unrestricted double? altitude ==> readonly attribute  double altitude; for android binding script
@@ -190,7 +208,6 @@ sub ParseInterface
     my $sectionName = shift;
 
     my $data = join("", @temporaryContent);
-
     # Look for end-of-interface mark
     $data =~ /};/g;
     $data = substr($data, index($data, $sectionName), pos($data) - length($data));
