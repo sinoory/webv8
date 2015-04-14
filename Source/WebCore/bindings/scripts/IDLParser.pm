@@ -107,7 +107,17 @@ sub Parse
     my @tmpda=split(/\n/,$td);
     if($isInterface==1){
         #print "correct interface\n";
-        $tmpda[0]="interface ".$tmpda[0];
+        my $loop=0;
+        foreach (@tmpda){
+            $_=~/(\[)/;
+            #print "dbg process line $_\n";
+            if(defined($1)){
+                #print "dbg ok find [\n";
+                $tmpda[$loop]="interface ".$tmpda[$loop];
+                last;
+            }
+            $loop+=1
+        }
     }
     #print "dbg td=" . join("",@tmpda) . "\n";
     # wangcui adapte to android script, wrap idl with "module Webcore{}"
