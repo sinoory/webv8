@@ -2705,7 +2705,11 @@ sub GenerateFunctionCallString()
 
     #adapter webkit2 idl format: if exist RaisesException in function, pass &exc to impl->() as param
     if($dbgexc){
-        $functionString=$functionString.",ecx";
+        if($numberOfParameters > 0){
+            $functionString=$functionString.",ecx";
+        }else{
+            $functionString=$functionString."ecx";
+        }
     }
 
     $functionString .= ")";

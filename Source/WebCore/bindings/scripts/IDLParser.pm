@@ -341,12 +341,17 @@ sub ParseInterface
                 @{$newDataNode->getterExceptions} = split(/,/, $getterException);
                 @{$newDataNode->setterExceptions} = split(/,/, $setterException);
             } elsif (($line !~ s/^\s*$//g) and ($line !~ /^\s*const/)) {
+                $line =~ s/getter//g; #CMP_ERROR_UNCLEAR rm getter from idl function
                 $line =~ /$IDLStructure::interfaceMethodSelector/ or die "Parsing error!\nSource:\n$line\n)";
 
                 my $methodExtendedAttributes = (defined($1) ? $1 : " "); chop($methodExtendedAttributes);
                 my $methodType = (defined($2) ? $2 : die("Parsing error!\nSource:\n$line\n)"));
                 my $methodName = (defined($3) ? $3 : die("Parsing error!\nSource:\n$line\n)"));
                 my $methodSignature = (defined($4) ? $4 : die("Parsing error!\nSource:\n$line\n)"));
+                if($methodName eq ""){
+                    print "empty func name,ignore $line in $interfaceName\n";
+                    next;
+                }
 
                 ('' =~ /^/); # Reset variables needed for regexp matching
 

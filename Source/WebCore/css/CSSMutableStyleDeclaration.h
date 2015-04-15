@@ -32,6 +32,7 @@
 namespace WebCore {
 
 class Node;
+class CSSMutableStyleDeclaration;
 
 class CSSMutableStyleDeclarationConstIterator {
 public:
@@ -57,6 +58,23 @@ private:
 
 class CSSMutableStyleDeclaration : public CSSStyleDeclaration {
 public:
+    //CMP_ERROR , implment base virutal func;
+    virtual void ref() override;
+    virtual void deref() override;
+    virtual PassRefPtr<CSSValue> getPropertyCSSValueInternal(CSSPropertyID) override;
+    virtual String getPropertyValueInternal(CSSPropertyID) override;
+    virtual PassRef<MutableStyleProperties> copyProperties() const override;
+    virtual CSSRule* parentRule() const override;
+    virtual PassRefPtr<CSSValue> getPropertyCSSValue(const String& propertyName) override;
+    virtual String getPropertyValue(const String& propertyName) override;
+    virtual String getPropertyPriority(const String& propertyName) override;
+    virtual String getPropertyShorthand(const String& propertyName) override;
+    virtual bool isPropertyImplicit(const String& propertyName) override;
+    virtual void setProperty(const String& propertyName, const String& value, const String& priority, ExceptionCode&) override;
+    virtual String removeProperty(const String& propertyName, ExceptionCode&) override;
+    virtual void setPropertyInternal(CSSPropertyID, const String& value, bool important, ExceptionCode&) override;
+
+
     static PassRefPtr<CSSMutableStyleDeclaration> create()
     {
         return adoptRef(new CSSMutableStyleDeclaration);
@@ -137,7 +155,7 @@ public:
 
     void addSubresourceStyleURLs(ListHashSet<KURL>&);
     
-    bool propertiesEqual(const CSSMutableStyleDeclaration* o) const { return m_properties == o->m_properties; }
+    bool propertiesEqual(const CSSMutableStyleDeclaration* o) const { return false;/* m_properties == o->m_properties; CMP_ERROR_TODO*/ }
 
     bool isInlineStyleDeclaration();
 

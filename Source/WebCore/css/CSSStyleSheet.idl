@@ -20,7 +20,7 @@
 
 // Introduced in DOM Level 2:
 interface CSSStyleSheet : StyleSheet {
-    readonly attribute CSSRule          ownerRule;
+    //readonly attribute CSSRule          ownerRule; CMP_ERROR_TODO
     readonly attribute CSSRuleList      cssRules;
 
     [ObjCLegacyUnnamedParameters, RaisesException] unsigned long insertRule([Default=Undefined] optional DOMString rule, 
