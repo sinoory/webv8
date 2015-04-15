@@ -266,6 +266,11 @@ sub ParseInterface
         my $interfaceData = "";
 
         # Match identifier of the interface, and enclosed data...
+        #adapt script, CMP_ERROR_UNCLEAR,rm Constructor from idl file
+        $data =~ s/ Constructor\(.*\),//g;
+        $data =~ s/ CustomConstructor\(.*\),//g;
+        $data =~ s/ NamedConstructor=.*\(.*\)//g;
+
         $data =~ /$IDLStructure::interfaceSelector/;
 
         my $interfaceExtendedAttributes = (defined($1) ? $1 : " "); chop($interfaceExtendedAttributes);
