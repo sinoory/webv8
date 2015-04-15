@@ -369,6 +369,7 @@ sub ParseInterface
                 foreach(@params) {
                     my $line = $_;
 
+                    $line=~ s/\[[A-Z|a-z|=|,| ]*\]//g; #CMP_ERROR_UNCLEAR adapte : close([Clamp] optional unsigned short code => close(optional unsigned short code) in WebSocket.idl
                     $line =~ /$IDLStructure::interfaceParameterSelector/;
                     my $paramDirection = $1||"in"; #wangcui adapte to android script : need in | out for function param
                     my $paramExtendedAttributes = (defined($2) ? $2 : " "); chop($paramExtendedAttributes);
