@@ -42,7 +42,7 @@ my $preservedParseMode = MODE_UNDEF;
 my $beQuiet; # Should not display anything on STDOUT?
 my $document = 0; # Will hold the resulting 'idlDocument'
 my $parentsOnly = 0; # If 1, parse only enough to populate parents list
-
+my $gdefines=""; #the define
 # Default Constructor
 sub new
 {
@@ -93,36 +93,52 @@ sub Parse
     my $dataAvailable = 0;
 
     # Simple IDL Parser (tm)
-    # wangcui dapte to android format: []interface xxx {} => interface [] xxx {} ,about 600 idls
+    #< wangcui dapte to android format: []interface xxx {} => interface [] xxx {} ,about 600 idls
+    #callback interface xxx {} => interface [ Callback,] xxx {}
     my @tmpdoc = (@documentContent);
     my $td=join("",@tmpdoc);
     $td=~s/\n/SEPLINE/g;
+
+    $td=~/(\]\s*callback interface\s*)/;
+    my $iscallbackInterface=0;
+    if(defined($1)){
+        $iscallbackInterface=1;
+        $td=~s/\]\s*callback interface\s*/\] /;
+    }
+
+
     $td=~/(\]\s*interface\s*)/;
     my $isInterface=0;
     if(defined($1)){
         $isInterface=1;
         $td=~s/\]\s*interface\s*/\] /;
     }
+
     $td=~s/SEPLINE/\n/g;
     my @tmpda=split(/\n/,$td);
-    if($isInterface==1){
-        #print "correct interface\n";
+
+    if($iscallbackInterface==1 || $isInterface==1){
         my $loop=0;
         foreach (@tmpda){
             $_=~/(\[)/;
-            #print "dbg process line $_\n";
             if(defined($1)){
-                #print "dbg ok find [\n";
-                $tmpda[$loop]="interface ".$tmpda[$loop];
+                if($iscallbackInterface==1){
+                    my $len=@tmpda;
+                    $tmpda[$loop]="interface ".$tmpda[$loop];
+                    @tmpda=(@tmpda[0...$loop],"    Callback,\n",@tmpda[$loop+1...$len-1]);
+                }else{
+                    $tmpda[$loop]="interface ".$tmpda[$loop];
+                }
                 last;
             }
             $loop+=1
         }
     }
-    #print "dbg td=" . join("",@tmpda) . "\n";
     # wangcui adapte to android script, wrap idl with "module Webcore{}"
     @tmpdoc = ("module WebCore {\n",@tmpda,"}\n");
+    #>
 
+    $gdefines=$defines; #wangcui use defines
     @documentContent=@tmpdoc;
     foreach (@documentContent) {
         #readonly attribute unrestricted double? altitude ==> readonly attribute  double altitude; for android binding script
@@ -265,11 +281,14 @@ sub ParseInterface
         my $interfaceName = "";
         my $interfaceData = "";
 
+        #<wangcui
         # Match identifier of the interface, and enclosed data...
         #adapt script, CMP_ERROR_UNCLEAR,rm Constructor from idl file
-        $data =~ s/ Constructor\(.*\),//g;
-        $data =~ s/ CustomConstructor\(.*\),//g;
-        $data =~ s/ NamedConstructor=.*\(.*\)//g;
+        $data =~ s/ Constructor\([^\)]*\),*//g;
+        $data =~ s/ Constructor,*//g;
+        $data =~ s/ CustomConstructor\([^\)]*\),*//g;
+        $data =~ s/ NamedConstructor=[a-z|A-Z]*\([^\)]*\),*//g;
+        #/>
 
         $data =~ /$IDLStructure::interfaceSelector/;
 
@@ -349,7 +368,7 @@ sub ParseInterface
                 my $methodName = (defined($3) ? $3 : die("Parsing error!\nSource:\n$line\n)"));
                 my $methodSignature = (defined($4) ? $4 : die("Parsing error!\nSource:\n$line\n)"));
                 if($methodName eq ""){
-                    print "empty func name,ignore $line in $interfaceName\n";
+                    print "empty func name,ignore $line in $interfaceName\n"; #wangcui ingore invalid func
                     next;
                 }
 
@@ -364,6 +383,22 @@ sub ParseInterface
                 $newDataNode->signature->name($methodName);
                 $newDataNode->signature->type($methodType);
                 $newDataNode->signature->extendedAttributes(parseExtendedAttributes($methodExtendedAttributes));
+
+                #<wangcui implement function Conditional and ImplementedAs extendedAttributes;
+                my $funcondition=$newDataNode->signature->extendedAttributes->{"Conditional"};
+
+                if($funcondition){
+                    if( $gdefines =~ /ENABLE_$funcondition /){
+                    }else{
+                        print "Ignore func $methodName  as condition $funcondition not in cmake define\n";
+                        next;
+                    }
+                }
+                my $implementname=$newDataNode->signature->extendedAttributes->{"ImplementedAs"};
+                if($implementname){
+                    $newDataNode->signature->name($implementname);
+                }
+                #/>
 
                 print "  |  |-  Method; TYPE \"$methodType\" NAME \"$methodName\" EXCEPTION? \"$methodException\"" .
                     dumpExtendedAttributes("\n  |              ", $newDataNode->signature->extendedAttributes) . "\n" unless $beQuiet;

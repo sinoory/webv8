@@ -50,7 +50,7 @@
     [RaisesException] AudioBuffer createBuffer(ArrayBuffer? buffer, boolean mixToMono);
 
     // Asynchronous audio file data decoding.
-    [RaisesException] void decodeAudioData(ArrayBuffer audioData, AudioBufferCallback successCallback, optional AudioBufferCallback errorCallback);
+    //[RaisesException] void decodeAudioData(ArrayBuffer audioData, AudioBufferCallback successCallback, optional AudioBufferCallback errorCallback);//CMP_ERROR
 
     // Sources
     AudioBufferSourceNode createBufferSource();

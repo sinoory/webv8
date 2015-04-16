@@ -50,7 +50,7 @@ public:
     }
     virtual ~V8CustomVoidCallback();
 
-    virtual void handleEvent();
+    virtual bool handleEvent() override;
 
 private:
     V8CustomVoidCallback(v8::Local<v8::Object>, ScriptExecutionContext* context);
