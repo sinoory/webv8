@@ -56,5 +56,5 @@
 
     void setPeriodicWave(PeriodicWave wave);
 
-    attribute EventListener onended;
+    //attribute EventListener onended; CMP_ERROR_TODO:eventListenerCacheIndex
 };

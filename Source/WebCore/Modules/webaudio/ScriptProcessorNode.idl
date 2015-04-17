@@ -29,7 +29,7 @@
     JSGenerateToNativeObject
 ] interface ScriptProcessorNode : AudioNode {
     // Rendering callback
-    attribute EventListener onaudioprocess;
+    //attribute EventListener onaudioprocess; CMP_ERROR_TODO no eventListenerCacheIndex
 
     readonly attribute long bufferSize;
 };
