@@ -2454,15 +2454,15 @@ END
 
     if (IsNodeSubType($dataNode)) {
         push(@implContent, <<END);
-    if (impl->document()) {
-        proxy = V8Proxy::retrieve(impl->document()->frame());
-        if (proxy && static_cast<Node*>(impl->document()) == static_cast<Node*>(impl)) {
+    //if (impl->document()) {//CMP_ERROR
+        proxy = V8Proxy::retrieve(impl->document().frame()); //CMP_ERROR impl->document()-> => impl->document().
+        if (proxy && static_cast<Node*>(&(impl->document())) == static_cast<Node*>(impl)) {
             if (proxy->windowShell()->initContextIfNeeded()) {
                 // initContextIfNeeded may have created a wrapper for the object, retry from the start.
                 return ${className}::wrap(impl);
             }
         }
-    }
+    //}
 
 END
     }

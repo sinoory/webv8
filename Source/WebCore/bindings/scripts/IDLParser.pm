@@ -320,12 +320,18 @@ sub ParseInterface
             if ($line =~ /\Wattribute\W/) {
                 $line =~ /$IDLStructure::interfaceAttributeSelector/;
 
-                my $attributeType = (defined($1) ? $1 : die("Parsing error!\nSource:\n$line\n)"));
-                my $attributeExtendedAttributes = (defined($2) ? $2 : " "); chop($attributeExtendedAttributes);
+                my $attributeType = (defined($2) ? $2 : die("Parsing error!\nSource:\n$line\n)"));
+                my $attributeExtendedAttributes = (defined($1) ? $1 : " "); chop($attributeExtendedAttributes);
 
                 my $attributeDataType = (defined($3) ? $3 : die("Parsing error!\nSource:\n$line\n)"));
                 my $attributeDataName = (defined($4) ? $4 : die("Parsing error!\nSource:\n$line\n)"));
-  
+
+                #<wangcui change any to DOMObject like android
+                if($attributeDataType =~  /any/){
+                    $attributeDataType="DOMObject";
+                }
+                #>
+ 
                 ('' =~ /^/); # Reset variables needed for regexp matching
 
                 $line =~ /$IDLStructure::getterRaisesSelector/;
@@ -348,6 +354,15 @@ sub ParseInterface
                 $newDataNode->signature->name($attributeDataName);
                 $newDataNode->signature->type($attributeDataType);
                 $newDataNode->signature->extendedAttributes(parseExtendedAttributes($attributeExtendedAttributes));
+                #<wangcui implement attr Conditional  extendedAttributes;
+                my $attrcondition=$newDataNode->signature->extendedAttributes->{"Conditional"};
+                if($attrcondition){
+                    if( $gdefines =~ /ENABLE_$attrcondition /){
+                    }else{
+                        print "Ignore attr $attributeDataName  as condition $attrcondition not in cmake define\n";
+                        next;
+                    }
+                }
 
                 my $arrayRef = $dataNode->attributes;
                 push(@$arrayRef, $newDataNode);
@@ -420,6 +435,11 @@ sub ParseInterface
                     my $paramExtendedAttributes = (defined($2) ? $2 : " "); chop($paramExtendedAttributes);
                     my $paramType = (defined($3) ? $3 : die("Parsing error!\nSource:\n$line\n)"));
                     my $paramName = (defined($4) ? $4 : die("Parsing error!\nSource:\n$line\n)"));
+                    #<wangcui change any to DOMObject like android
+                    if($paramType =~  /any/){
+                        $paramType="DOMObject";
+                    }
+                    #>
 
                     my $paramDataNode = new domSignature();
                     $paramDataNode->direction($paramDirection);

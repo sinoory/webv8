@@ -110,6 +110,8 @@ our $interfaceMethodSelector = '\s*((?:' . $extendedAttributeSyntax . ' )?)' . $
 #wangcui adapte to android script : need in | out for function param
 our $interfaceParameterSelector = '(in|out|)\s*((?:' . $extendedAttributeSyntax . ' )?)' . $supportedTypes . '\s*(' . $idlIdNs . '*)';
 
-our $interfaceAttributeSelector = '\s*(readonly attribute|attribute)\s*(' . $extendedAttributeSyntax . ' )?' . $supportedTypes . '\s*(' . $idlType . '*)';
+#<wangcui adapt to webkit attribute format
+#our $interfaceAttributeSelector = '\s*(readonly attribute|attribute)\s*(' . $extendedAttributeSyntax . ' )?' . $supportedTypes . '\s*(' . $idlType . '*)';
+our $interfaceAttributeSelector = '\s*(' . $extendedAttributeSyntax  . ')?\s*(readonly attribute|attribute)\s*' . $supportedTypes . '\s*(' . $idlType . '*)';
 
 1;
