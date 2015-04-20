@@ -875,7 +875,22 @@ END
             push(@implContentDecls, "    return toV8(WTF::getPtr(${tearOffType}::create($result)));\n");
         }
     } else {
-        push(@implContentDecls, "    " . ReturnNativeToJSValue($attribute->signature, $result, "    ").";\n");
+        my $retval = ReturnNativeToJSValue($attribute->signature, $result, "    ");
+        my $needchangeRefToPoint="0";
+        if($interfaceName eq "Document"){
+            if($attrName eq "styleSheets" or $attrName eq "implementation"){
+                $needchangeRefToPoint="1";
+            }
+        }elsif($interfaceName eq "Element"){
+            if($attrName eq "classList" or $attrName eq "dataset"){
+                $needchangeRefToPoint="1";
+            }
+        }
+        if($needchangeRefToPoint eq "1"){
+            $retval = "return toV8(&(imp->$attrName()))";
+            print "GenerateNormalAttrGetter $interfaceName attrName=$attrName, retval=$retval\n";
+        }
+        push(@implContentDecls, "    " . $retval  .";\n");
     }
 
     push(@implContentDecls, "}\n\n");  # end of getter
@@ -1374,7 +1389,7 @@ END
     }
 
     # Build the function call string.
-    my $callString = GenerateFunctionCallString($function, $paramIndex, "    ", $implClassName);
+    my $callString = GenerateFunctionCallString($function, $paramIndex, "    ", $implClassName ,$interfaceName);
     push(@implContentDecls, "$callString");
 
     if ($raisesExceptions) {
@@ -2604,6 +2619,7 @@ sub GenerateFunctionCallString()
     my $numberOfParameters = shift;
     my $indent = shift;
     my $implClassName = shift;
+    my $interfaceName = shift;
 
     my $name = $function->signature->name;
     my $returnType = GetTypeFromSignature($function->signature);
@@ -2703,6 +2719,13 @@ sub GenerateFunctionCallString()
         $index++;
     }
 
+    if( $interfaceName eq "Document"){ 
+        if($name eq "getElementById" ){
+            #especial for Document.idl::getElementById , as two getElementById func exist in TreeScope.h, compile ambiguous
+            print "===change $name \n";
+            $functionString=$functionString .",true";
+        }
+    }
     #adapter webkit2 idl format: if exist RaisesException in function, pass &exc to impl->() as param
     if($dbgexc){
         if($numberOfParameters > 0){

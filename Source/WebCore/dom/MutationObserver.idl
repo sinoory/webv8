@@ -33,6 +33,6 @@
     CustomIsReachable,
     ImplementationLacksVTable,
 ] interface MutationObserver {
-    [RaisesException] void observe(Node target, Dictionary options);
+    //[RaisesException] void observe(Node target, Dictionary options); CMP_ERROR_TODO Dictionary
     void disconnect();
 };

@@ -55,6 +55,7 @@ public:
 
     Element* focusedElement();
     Element* getElementById(const AtomicString&) const;
+    Element* getElementById(const AtomicString& , bool compileflag) const;
     WEBCORE_EXPORT Element* getElementById(const String&) const;
     const Vector<Element*>* getAllElementsById(const AtomicString&) const;
     bool hasElementWithId(const AtomicStringImpl&) const;

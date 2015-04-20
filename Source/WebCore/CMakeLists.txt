@@ -174,7 +174,7 @@ set(WebCore_NON_SVG_IDL_FILES
     #Modules/airplay/WebKitPlaybackTargetAvailabilityEvent.idl #CMP_ERROR v8 not generate #if ENABLE(ISO)
 
     #Modules/battery/BatteryManager.idl  #BATTERY_STATUS off
-    Modules/battery/NavigatorBattery.idl
+    #Modules/battery/NavigatorBattery.idl
 
 # FIXME: These were causing name conflicts on Mac, and the Gamepad API is not finished yet.
 # https://bugs.webkit.org/show_bug.cgi?id=135858
@@ -348,7 +348,7 @@ set(WebCore_NON_SVG_IDL_FILES
     css/FontLoader.idl
     css/MediaList.idl
     css/MediaQueryList.idl
-    css/MediaQueryListListener.idl
+    #css/MediaQueryListListener.idl  CMP_ERROR_TODO
     css/RGBColor.idl
     css/Rect.idl
     css/StyleMedia.idl
@@ -367,7 +367,7 @@ set(WebCore_NON_SVG_IDL_FILES
     dom/BeforeUnloadEvent.idl
     dom/CDATASection.idl
     dom/CharacterData.idl
-    dom/ChildNode.idl
+    dom/ChildNode.idl 
     dom/ClientRect.idl
     dom/ClientRectList.idl
     dom/Comment.idl

@@ -23,6 +23,6 @@
  ] interface DocumentFragment : Node {
     // NodeSelector - Selector API
     [RaisesException] Element querySelector(DOMString selectors);
-    [RaisesException] NodeList querySelectorAll(DOMString selectors);
+    //[RaisesException] NodeList querySelectorAll(DOMString selectors); CMP_ERROR_UNCLEAR toV8(WTF::RefPtr<WebCore::NodeList>)’ is ambiguous
 };
 

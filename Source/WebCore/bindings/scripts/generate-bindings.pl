@@ -70,7 +70,7 @@ if (!$outputHeadersDirectory) {
     $outputHeadersDirectory = $outputDirectory;
 }
 if ($verbose) {
-    print "$generator: $idlFile\n";
+    #print "$generator: $idlFile\n";
 }
 $defines =~ s/^\s+|\s+$//g; # trim whitespace
 

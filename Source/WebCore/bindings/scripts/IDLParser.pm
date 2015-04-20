@@ -353,9 +353,11 @@ sub ParseInterface
 
                 $newDataNode->signature->name($attributeDataName);
                 $newDataNode->signature->type($attributeDataType);
+                $attributeExtendedAttributes =~ s/\[//;
                 $newDataNode->signature->extendedAttributes(parseExtendedAttributes($attributeExtendedAttributes));
                 #<wangcui implement attr Conditional  extendedAttributes;
                 my $attrcondition=$newDataNode->signature->extendedAttributes->{"Conditional"};
+                #print "attrname=$attributeDataName attributeExtendedAttributes=$attributeExtendedAttributes\n";
                 if($attrcondition){
                     if( $gdefines =~ /ENABLE_$attrcondition /){
                     }else{

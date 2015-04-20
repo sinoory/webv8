@@ -118,7 +118,7 @@
 
     // NodeSelector - Selector API
     [RaisesException] Element querySelector(DOMString selectors);
-    [RaisesException] NodeList querySelectorAll(DOMString selectors);
+    //[RaisesException] NodeList querySelectorAll(DOMString selectors); //CMP_ERROR_UNCLEAR ‘toV8(WTF::RefPtr<WebCore::NodeList>)’ is ambiguous
 
     [RaisesException] boolean matches([Default=Undefined] optional DOMString selectors);
     [ImplementedAs=matches, RaisesException] boolean webkitMatchesSelector([Default=Undefined] optional DOMString selectors);

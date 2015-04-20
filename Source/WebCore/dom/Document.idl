@@ -106,10 +106,11 @@
                                                         [Default=Undefined] optional DOMString pseudoElement);
 
     // DOM Level 3 XPath (XPathEvaluator interface)
-    [ObjCLegacyUnnamedParameters, RaisesException] XPathExpression createExpression([Default=Undefined] optional DOMString expression,
+    [ObjCLegacyUnnamedParameters, RaisesException , Conditional=XPATH] XPathExpression createExpression([Default=Undefined] optional DOMString expression,
                                                     [Default=Undefined] optional XPathNSResolver resolver);
     XPathNSResolver    createNSResolver(Node nodeResolver);
-    [ObjCLegacyUnnamedParameters, RaisesException] XPathResult evaluate([Default=Undefined] optional DOMString expression,
+    //CMP_ERROR_UNCLEAR evaluate &  func need XPATH enable on android, webkit2 use JSCustomeXpath to implement
+    [ObjCLegacyUnnamedParameters, RaisesException , Conditional=XPATH] XPathResult evaluate([Default=Undefined] optional DOMString expression,
                                                   [Default=Undefined] optional Node contextNode,
                                                   [Default=Undefined] optional XPathNSResolver resolver,
                                                   [Default=Undefined] optional unsigned short type,
@@ -217,7 +218,7 @@
 
     // NodeSelector - Selector API
     [RaisesException] Element querySelector(DOMString selectors);
-    [RaisesException] NodeList querySelectorAll(DOMString selectors);
+    //[RaisesException] NodeList querySelectorAll(DOMString selectors); CMP_ERROR_TODO toV8 is ambiguous
 
 #if defined(ENABLE_FULLSCREEN_API) && ENABLE_FULLSCREEN_API
     // Mozilla version

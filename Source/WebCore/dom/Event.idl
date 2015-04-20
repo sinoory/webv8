@@ -71,7 +71,7 @@
 
     // IE Extensions
     readonly attribute EventTarget      srcElement;
-    [ImplementedAs=legacyReturnValue] attribute boolean returnValue;
+    //[ImplementedAs=legacyReturnValue] attribute boolean returnValue;
              attribute boolean          cancelBubble;
 
 #if defined(LANGUAGE_JAVASCRIPT) && LANGUAGE_JAVASCRIPT
