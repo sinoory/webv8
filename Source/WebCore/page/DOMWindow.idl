@@ -120,7 +120,7 @@
     attribute DOMString defaultStatus;
 #if defined(LANGUAGE_JAVASCRIPT) && LANGUAGE_JAVASCRIPT
     // This attribute is an alias of defaultStatus and is necessary for legacy uses.
-    [ImplementedAs=defaultStatus] attribute DOMString defaultstatus;
+    //[ImplementedAs=defaultStatus] attribute DOMString defaultstatus; //CMP_ERROR,refefinded defaultStatus
 #endif
 
     // Self referential attributes
@@ -310,7 +310,7 @@
 
 #if defined(LANGUAGE_JAVASCRIPT) && LANGUAGE_JAVASCRIPT
     // Additional constructors.
-    [CustomGetter, CustomConstructor] attribute HTMLImageElementNamedConstructor Image; // Usable with new operator
+    //[CustomGetter, CustomConstructor] attribute HTMLImageElementNamedConstructor Image; // Usable with new operator CMP_ERROR_TODO
 
     // Mozilla has a separate XMLDocument object for XML documents.
     // We just use Document for this.

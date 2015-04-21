@@ -27,6 +27,7 @@
 #define URLUtils_h
 
 #include "SecurityOrigin.h"
+#include "URL.h"
 
 namespace WebCore {
 

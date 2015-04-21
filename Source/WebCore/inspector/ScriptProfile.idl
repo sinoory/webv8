@@ -30,6 +30,6 @@
 ] interface ScriptProfile {
     readonly attribute DOMString title;
     readonly attribute unsigned long uid;
-    readonly attribute ScriptProfileNode rootNode;
+    //readonly attribute ScriptProfileNode rootNode; CMP_ERRROR not exist
 };
 

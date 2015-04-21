@@ -28,12 +28,12 @@
     NoInterfaceObject,
     ImplementationLacksVTable
 ] interface ScriptProfileNode {
-    readonly attribute unsigned long id;
+    //readonly attribute unsigned long id;
 
     readonly attribute DOMString functionName;
 
     readonly attribute DOMString url;
     readonly attribute unsigned long lineNumber;
-    readonly attribute unsigned long columnNumber;
+    //readonly attribute unsigned long columnNumber;
 
 };

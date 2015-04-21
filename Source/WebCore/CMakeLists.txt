@@ -174,28 +174,28 @@ set(WebCore_NON_SVG_IDL_FILES
     #Modules/airplay/WebKitPlaybackTargetAvailabilityEvent.idl #CMP_ERROR v8 not generate #if ENABLE(ISO)
 
     #Modules/battery/BatteryManager.idl  #BATTERY_STATUS off
-    #Modules/battery/NavigatorBattery.idl
+    ##Modules/battery/NavigatorBattery.idl CMP_ERROR_TODO partial idl
 
 # FIXME: These were causing name conflicts on Mac, and the Gamepad API is not finished yet.
 # https://bugs.webkit.org/show_bug.cgi?id=135858
 #   Modules/gamepad/Gamepad.idl
 #   Modules/gamepad/GamepadButton.idl
 #   Modules/gamepad/GamepadEvent.idl
-#   Modules/gamepad/NavigatorGamepad.idl
+#   #Modules/gamepad/NavigatorGamepad.idl CMP_ERROR_TODO partial idl
 
     #Modules/gamepad/deprecated/Gamepad.idl
     #Modules/gamepad/deprecated/GamepadList.idl
-    Modules/gamepad/deprecated/NavigatorGamepad.idl
+    #Modules/gamepad/deprecated/NavigatorGamepad.idl CMP_ERROR_TODO partial idl
 
     Modules/geolocation/Coordinates.idl
     Modules/geolocation/Geolocation.idl
     Modules/geolocation/Geoposition.idl
-    Modules/geolocation/NavigatorGeolocation.idl
+    ##Modules/geolocation/NavigatorGeolocation.idl CMP_ERROR_TODO partial idl CMP_ERROR_TODO partial
     Modules/geolocation/PositionCallback.idl
     Modules/geolocation/PositionError.idl
     Modules/geolocation/PositionErrorCallback.idl
 
-    Modules/indexeddb/DOMWindowIndexedDatabase.idl
+    #Modules/indexeddb/DOMWindowIndexedDatabase.idl CMP_ERROR_UNCLEAR  partial idl , database in DOMWindow
     Modules/indexeddb/IDBAny.idl
     Modules/indexeddb/IDBCursor.idl
     Modules/indexeddb/IDBCursorWithValue.idl
@@ -208,13 +208,13 @@ set(WebCore_NON_SVG_IDL_FILES
     Modules/indexeddb/IDBRequest.idl
     Modules/indexeddb/IDBTransaction.idl
     Modules/indexeddb/IDBVersionChangeEvent.idl
-    Modules/indexeddb/WorkerGlobalScopeIndexedDatabase.idl
+    #Modules/indexeddb/WorkerGlobalScopeIndexedDatabase.idl CMP_ERROR_TODO partial idl
 
     Modules/indieui/UIRequestEvent.idl
 
     Modules/mediacontrols/MediaControlsHost.idl
 
-    Modules/mediasource/DOMURLMediaSource.idl
+    ##Modules/mediasource/DOMURLMediaSource.idl CMP_ERROR_TODO partial idl CMP_ERROR_TODO partial idl
     Modules/mediasource/MediaSource.idl
     Modules/mediasource/SourceBuffer.idl
     Modules/mediasource/SourceBufferList.idl
@@ -224,8 +224,8 @@ set(WebCore_NON_SVG_IDL_FILES
     Modules/mediastream/AllVideoCapabilities.idl
     Modules/mediastream/AudioStreamTrack.idl
     Modules/mediastream/CapabilityRange.idl
-    Modules/mediastream/DOMURLMediaStream.idl
-    Modules/mediastream/HTMLMediaElementMediaStream.idl
+    ##Modules/mediastream/DOMURLMediaStream.idl CMP_ERROR_TODO partial idl partial
+    ##Modules/mediastream/HTMLMediaElementMediaStream.idl CMP_ERROR_TODO partial idl CMP_ERROR_TODO partial idl
     Modules/mediastream/MediaSourceStates.idl
     Modules/mediastream/MediaStream.idl
     Modules/mediastream/MediaStreamCapabilities.idl
@@ -236,7 +236,7 @@ set(WebCore_NON_SVG_IDL_FILES
     Modules/mediastream/MediaTrackConstraint.idl
     Modules/mediastream/MediaTrackConstraintSet.idl
     Modules/mediastream/MediaTrackConstraints.idl
-    Modules/mediastream/NavigatorUserMedia.idl
+    #Modules/mediastream/NavigatorUserMedia.idl CMP_ERROR_TODO partial idl
     Modules/mediastream/NavigatorUserMediaError.idl
     Modules/mediastream/NavigatorUserMediaErrorCallback.idl
     Modules/mediastream/NavigatorUserMediaSuccessCallback.idl
@@ -258,23 +258,23 @@ set(WebCore_NON_SVG_IDL_FILES
     Modules/mediastream/SourceInfo.idl
     Modules/mediastream/VideoStreamTrack.idl
 
-    Modules/navigatorcontentutils/NavigatorContentUtils.idl
+    #Modules/navigatorcontentutils/NavigatorContentUtils.idl CMP_ERROR_TODO partial idl
 
-    Modules/notifications/DOMWindowNotifications.idl
+    #Modules/notifications/DOMWindowNotifications.idl CMP_ERROR_TODO partial idl
     Modules/notifications/Notification.idl
     Modules/notifications/NotificationCenter.idl
     Modules/notifications/NotificationPermissionCallback.idl
-    Modules/notifications/WorkerGlobalScopeNotifications.idl
+    #Modules/notifications/WorkerGlobalScopeNotifications.idl CMP_ERROR_TODO partial idl
 
     Modules/proximity/DeviceProximityEvent.idl
 
-    Modules/speech/DOMWindowSpeechSynthesis.idl
+    #Modules/speech/DOMWindowSpeechSynthesis.idl CMP_ERROR_TODO partial idl
     Modules/speech/SpeechSynthesis.idl
     Modules/speech/SpeechSynthesisEvent.idl
     Modules/speech/SpeechSynthesisUtterance.idl
     Modules/speech/SpeechSynthesisVoice.idl
 
-    Modules/vibration/NavigatorVibration.idl
+    #Modules/vibration/NavigatorVibration.idl CMP_ERROR_TODO partial idl
 
     Modules/webaudio/AnalyserNode.idl
     Modules/webaudio/AudioBuffer.idl
@@ -304,7 +304,7 @@ set(WebCore_NON_SVG_IDL_FILES
     Modules/webaudio/ScriptProcessorNode.idl
     Modules/webaudio/WaveShaperNode.idl
 
-    Modules/webdatabase/DOMWindowWebDatabase.idl
+    ##Modules/webdatabase/DOMWindowWebDatabase.idl CMP_ERROR_TODO partial idl CMP_ERROR_TODO : partial idl
     Modules/webdatabase/Database.idl
     Modules/webdatabase/DatabaseCallback.idl
     Modules/webdatabase/DatabaseSync.idl
@@ -444,7 +444,7 @@ set(WebCore_NON_SVG_IDL_FILES
     html/DOMFormData.idl
     html/DOMSettableTokenList.idl
     html/DOMTokenList.idl
-    #html/DOMURL.idl  CMP_ERROR_UNCLEAR generate content is not the same with idl when build.sh, but ok manually
+    html/DOMURL.idl 
     html/HTMLAllCollection.idl
     html/HTMLAnchorElement.idl
     html/HTMLAppletElement.idl
@@ -485,7 +485,7 @@ set(WebCore_NON_SVG_IDL_FILES
     html/HTMLLinkElement.idl
     html/HTMLMapElement.idl
     html/HTMLMarqueeElement.idl
-    #html/HTMLMediaElement.idl CMP_ERROR_UNCLEAR generate content is not the same with idl when build.sh, but ok manually
+    html/HTMLMediaElement.idl
     html/HTMLMenuElement.idl
     html/HTMLMetaElement.idl
     html/HTMLMeterElement.idl
@@ -494,7 +494,7 @@ set(WebCore_NON_SVG_IDL_FILES
     html/HTMLObjectElement.idl
     html/HTMLOptGroupElement.idl
     html/HTMLOptionElement.idl
-    html/HTMLOptionsCollection.idl
+    #html/HTMLOptionsCollection.idl CMP_ERROR_UNCLEAR V8HTMLCollection::namedPropertyGetter not found
     html/HTMLOutputElement.idl
     html/HTMLParagraphElement.idl
     html/HTMLParamElement.idl
@@ -525,7 +525,7 @@ set(WebCore_NON_SVG_IDL_FILES
     html/RadioNodeList.idl
     html/TextMetrics.idl
     html/TimeRanges.idl
-    html/URLUtils.idl
+    html/URLUtils.idl 
     html/ValidityState.idl
     html/VoidCallback.idl
 
@@ -575,7 +575,7 @@ set(WebCore_NON_SVG_IDL_FILES
 
     loader/appcache/DOMApplicationCache.idl
 
-    page/AbstractView.idl
+    #page/AbstractView.idl CMP_ERROR_TODO no xx.h
     page/BarProp.idl
     page/Crypto.idl
     page/DOMSecurityPolicy.idl
@@ -2679,9 +2679,9 @@ if (ENABLE_SQL_DATABASE)
         Modules/webdatabase/WorkerGlobalScopeWebDatabase.cpp
     )
 
-    list(APPEND WebCore_IDL_FILES
-        Modules/webdatabase/WorkerGlobalScopeWebDatabase.idl
-    )
+#    list(APPEND WebCore_IDL_FILES
+#        #Modules/webdatabase/WorkerGlobalScopeWebDatabase.idl CMP_ERROR_TODO partial idl CMP_ERROR_TODO partial
+#    )
 
     list(APPEND WebCore_INSPECTOR_DOMAINS
         ${WEBCORE_DIR}/inspector/protocol/Database.json
@@ -2843,14 +2843,14 @@ if (ENABLE_QUOTA)
     )
 
     list(APPEND WebCore_IDL_FILES
-        Modules/quota/DOMWindowQuota.idl
-        Modules/quota/NavigatorStorageQuota.idl
+        #Modules/quota/DOMWindowQuota.idl CMP_ERROR_TODO partial idl
+        #Modules/quota/NavigatorStorageQuota.idl CMP_ERROR_TODO partial idl
         Modules/quota/StorageErrorCallback.idl
         Modules/quota/StorageInfo.idl
         Modules/quota/StorageQuota.idl
         Modules/quota/StorageQuotaCallback.idl
         Modules/quota/StorageUsageCallback.idl
-        Modules/quota/WorkerNavigatorStorageQuota.idl
+        #Modules/quota/WorkerNavigatorStorageQuota.idl CMP_ERROR_TODO partial idl
     )
 endif ()
 

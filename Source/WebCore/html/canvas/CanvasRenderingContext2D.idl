@@ -23,7 +23,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-enum CanvasWindingRule { "nonzero", "evenodd" };
+//enum CanvasWindingRule { "nonzero", "evenodd" };//CMP_ERROR_TODO: need generate enum.h
 
 interface CanvasRenderingContext2D : CanvasRenderingContext {
 
@@ -77,18 +77,18 @@ interface CanvasRenderingContext2D : CanvasRenderingContext {
     [RaisesException] void arc(unrestricted float x, unrestricted float y, unrestricted float radius, unrestricted float startAngle,
         unrestricted float endAngle, [Default=Undefined] optional boolean anticlockwise);
 
-    void fill(DOMPath path, optional CanvasWindingRule winding);
+    void fill(DOMPath path);//, optional CanvasWindingRule winding);
     void stroke(DOMPath path);
-    void clip(DOMPath path, optional CanvasWindingRule winding);
+    void clip(DOMPath path);//, optional CanvasWindingRule winding);
 
-    void fill(optional CanvasWindingRule winding);
+    void fill();//optional CanvasWindingRule winding);
     void stroke();
-    void clip(optional CanvasWindingRule winding);
+    void clip();//optional CanvasWindingRule winding);
 
-    boolean isPointInPath(DOMPath path, unrestricted float x, unrestricted float y, optional CanvasWindingRule winding);
+    boolean isPointInPath(DOMPath path, unrestricted float x, unrestricted float y);//, optional CanvasWindingRule winding);
     boolean isPointInStroke(DOMPath path, unrestricted float x, unrestricted float y);
 
-    boolean isPointInPath(unrestricted float x, unrestricted float y, optional CanvasWindingRule winding);
+    boolean isPointInPath(unrestricted float x, unrestricted float y);//, optional CanvasWindingRule winding);
     boolean isPointInStroke(unrestricted float x, unrestricted float y);
 
     // text

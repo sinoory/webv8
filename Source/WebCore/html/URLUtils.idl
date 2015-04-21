@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+/*CMP_ERROR  JavaScriptCore not generate it
 [NoInterfaceObject]
 interface URLUtils {
     [SetterRaisesException, URL] attribute DOMString href;
@@ -43,3 +43,4 @@ interface URLUtils {
     //    attribute URLSearchParams? searchParams;
     [TreatNullAs=NullString] attribute DOMString hash;
 };
+*/
