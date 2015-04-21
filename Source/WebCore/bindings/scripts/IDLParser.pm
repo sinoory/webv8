@@ -365,6 +365,10 @@ sub ParseInterface
                         next;
                     }
                 }
+                my $implementname=$newDataNode->signature->extendedAttributes->{"ImplementedAs"};
+                if($implementname){
+                    $newDataNode->signature->name($implementname);
+                }
 
                 my $arrayRef = $dataNode->attributes;
                 push(@$arrayRef, $newDataNode);
@@ -413,6 +417,7 @@ sub ParseInterface
                 }
                 my $implementname=$newDataNode->signature->extendedAttributes->{"ImplementedAs"};
                 if($implementname){
+                    print $newDataNode->signature->name .  " implementname=$implementname\n";
                     $newDataNode->signature->name($implementname);
                 }
                 #/>

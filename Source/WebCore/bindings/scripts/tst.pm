@@ -25,7 +25,8 @@ sub parseExtendedAttributes
     return \%attrs;
 }
 
-
+sub test1
+{
 my $at="";
 $at="[NotEnumerable, Conditional=WILL_REVEAL_EDGE_EVENTS";
 parseExtendedAttributes($at);
@@ -36,3 +37,25 @@ parseExtendedAttributes($at);
 
 $at="Conditional=POINTER_LOCK";
 parseExtendedAttributes($at);
+}
+
+sub getFuncAttr{
+    my $funs=shift;
+    #my $res="\s*((?:\[[^]]*\] )?)((?:unsigned )?(?:int|short|(?:long )?long)|(?:[a-zA-Z0-9:]*))\s*([a-zA-Z0-9:]*)\s*\(\s*([a-zA-Z0-9:\s,=\[\]]*)";
+    my $res ="\s*((?:[^\]]*)?)";
+
+    $funs =~ /$res/ or die "Parsing error!\nSource:\n$funs\n)";
+    my $methodExtendedAttributes = (defined($1) ? $1 : " "); chop($methodExtendedAttributes);
+    print "methodExtendedAttributes=$methodExtendedAttributes,\n";
+
+}
+
+sub test2{
+    #my $funs="   kCallWith=ScriptExecutionContext] static void revokeObjectURL(DOMString url);";
+    my $funs="   [CallWith=ScriptExecutionContext] static void revokeObjectURL(DOMString url);";
+    getFuncAttr($funs);
+
+}
+test2();
+
+

@@ -178,6 +178,7 @@ macro(WEBKIT_OPTION_END)
 
     message(STATUS "Enabled features:")
     set(ENABLE_INSPECTOR OFF)
+    set(ENABLE_DOM4_EVENTS_CONSTRUCTOR ON)
 
     set(_SHOULD_PRINT_POINTS OFF)
     foreach (_name ${_WEBKIT_AVAILABLE_OPTIONS})

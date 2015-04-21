@@ -692,6 +692,10 @@ sub GenerateNormalAttrGetter
     my $getterStringUsesImp = $implClassName ne "SVGNumber";
     my $svgNativeType = $codeGenerator->GetSVGTypeNeedingTearOff($implClassName);
 
+    if($attrName eq ""){
+        print "GenerateNormalAttrGetter ignore empty attr in $interfaceName\n";
+        return;
+    }
     # Getter
     my $conditionalString = GenerateConditionalString($attribute->signature);
     push(@implContentDecls, "#if ${conditionalString}\n\n") if $conditionalString;
@@ -875,6 +879,7 @@ END
             push(@implContentDecls, "    return toV8(WTF::getPtr(${tearOffType}::create($result)));\n");
         }
     } else {
+        #<wangcui special case for idl
         my $retval = ReturnNativeToJSValue($attribute->signature, $result, "    ");
         my $needchangeRefToPoint="0";
         if($interfaceName eq "Document"){
@@ -890,6 +895,7 @@ END
             $retval = "return toV8(&(imp->$attrName()))";
             print "GenerateNormalAttrGetter $interfaceName attrName=$attrName, retval=$retval\n";
         }
+        #>
         push(@implContentDecls, "    " . $retval  .";\n");
     }
 
@@ -1409,6 +1415,9 @@ sub GenerateBatchedAttributeData
     my $attributes = shift;
 
     foreach my $attribute (@$attributes) {
+        if($attribute->signature->name eq ""){
+            next;
+        }
         my $conditionalString = GenerateConditionalString($attribute->signature);
         push(@implContent, "#if ${conditionalString}\n") if $conditionalString;
         GenerateSingleBatchedAttribute($interfaceName, $attribute, ",", "");

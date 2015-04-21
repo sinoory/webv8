@@ -44,7 +44,7 @@
 
     [InitializedByEventConstructor] readonly attribute DOMString        keyIdentifier;
     [InitializedByEventConstructor] readonly attribute unsigned long    location;
-    [InitializedByEventConstructor, ImplementedAs=location] readonly attribute unsigned long keyLocation; // Deprecated.
+    //[InitializedByEventConstructor, ImplementedAs=location] readonly attribute unsigned long keyLocation; // Deprecated.
     [InitializedByEventConstructor] readonly attribute boolean          ctrlKey;
     [InitializedByEventConstructor] readonly attribute boolean          shiftKey;
     [InitializedByEventConstructor] readonly attribute boolean          altKey;

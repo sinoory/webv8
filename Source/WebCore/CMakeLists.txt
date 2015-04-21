@@ -444,7 +444,7 @@ set(WebCore_NON_SVG_IDL_FILES
     html/DOMFormData.idl
     html/DOMSettableTokenList.idl
     html/DOMTokenList.idl
-    html/DOMURL.idl
+    #html/DOMURL.idl  CMP_ERROR_UNCLEAR generate content is not the same with idl when build.sh, but ok manually
     html/HTMLAllCollection.idl
     html/HTMLAnchorElement.idl
     html/HTMLAppletElement.idl
@@ -485,7 +485,7 @@ set(WebCore_NON_SVG_IDL_FILES
     html/HTMLLinkElement.idl
     html/HTMLMapElement.idl
     html/HTMLMarqueeElement.idl
-    html/HTMLMediaElement.idl
+    #html/HTMLMediaElement.idl CMP_ERROR_UNCLEAR generate content is not the same with idl when build.sh, but ok manually
     html/HTMLMenuElement.idl
     html/HTMLMetaElement.idl
     html/HTMLMeterElement.idl
@@ -830,9 +830,9 @@ set(WebCore_SOURCES
     Modules/battery/BatteryStatus.cpp
     Modules/battery/NavigatorBattery.cpp
 
-    Modules/gamepad/deprecated/Gamepad.cpp
-    Modules/gamepad/deprecated/GamepadList.cpp
-    Modules/gamepad/deprecated/NavigatorGamepad.cpp
+    #Modules/gamepad/deprecated/Gamepad.cpp
+    #Modules/gamepad/deprecated/GamepadList.cpp
+    #Modules/gamepad/deprecated/NavigatorGamepad.cpp
 
     Modules/geolocation/Coordinates.cpp
     Modules/geolocation/Geolocation.cpp

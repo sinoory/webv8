@@ -35,7 +35,7 @@
     InterfaceName=URL,
     ImplementationLacksVTable,
 ] interface DOMURL {
-    [CallWith=ScriptExecutionContext,TreatReturnedNullStringAs=Null] static DOMString createObjectURL(Blob? blob);
+    [CallWith=ScriptExecutionContext,TreatReturnedNullStringAs=Null]  DOMString createObjectURL(Blob? blob); //CMP_ERROR static DOMSring will cause script invalid 
     [CallWith=ScriptExecutionContext] static void revokeObjectURL(DOMString url);
 };
 
