@@ -56,6 +56,10 @@ namespace WebCore {
         WTF_MAKE_NONCOPYABLE(ApplicationCacheHost); WTF_MAKE_FAST_ALLOCATED;
     public:
         // The Status numeric values are specified in the HTML5 spec.
+//CMP_ERROR
+#ifdef Status
+#undef Status
+#endif
         enum Status {
             UNCACHED = 0,
             IDLE = 1,

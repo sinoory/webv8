@@ -27,6 +27,7 @@
 
 [
     NoInterfaceObject,
+    Conditional=CMP_ERROR_GENERATE_EMPTY,
 ] interface WindowBase64 {
     [RaisesException] DOMString atob(DOMString string);
     [RaisesException] DOMString btoa(DOMString string);

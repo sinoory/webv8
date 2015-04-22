@@ -27,6 +27,7 @@
 
 [
     NoInterfaceObject,
+    Conditional=CMP_ERROR_GENERATE_EMPTY,
 ] interface WindowTimers {
     [Custom] long setTimeout(any handler, [Default=Undefined] optional long timeout);
     void clearTimeout([Default=Undefined] optional long handle);

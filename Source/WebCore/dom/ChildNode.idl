@@ -19,4 +19,16 @@
  */
 
 // DOM 4
-//CMP_ERROR_TODO webkit javascriptcore do not generate any code, but v8 generate some for empty idl
+[
+    NoInterfaceObject,
+    Conditional=CMP_ERROR_GENERATE_EMPTY,
+] interface ChildNode {
+    // readonly attribute Element? previousElementSibling;
+    // readonly attribute Element? nextElementSibling;
+
+    // void before((Node or DOMString)... nodes);
+    // void after((Node or DOMString)... nodes);
+    // void replace((Node or DOMString)... nodes);
+    [RaisesException] void remove();
+};
+

@@ -871,8 +871,9 @@ NPBool      NP_LOADDS NPN_ConvertPoint(NPP instance, double sourceX, double sour
 #if defined(__OS2__)
 #pragma pack()
 #endif
+
+//CMP_ERROR
 #ifdef None
 #undef None
 #endif
-
 #endif /* npapi_h_ */

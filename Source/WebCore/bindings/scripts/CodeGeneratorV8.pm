@@ -229,7 +229,6 @@ sub GenerateHeader
     my $interfaceName = $dataNode->name;
     my $className = "V8$interfaceName";
     my $implClassName = $interfaceName;
-
     # Copy contents of parent classes except the first parent or if it is
     # EventTarget.
     $codeGenerator->AddMethodsConstantsAndAttributesFromParentClasses($dataNode, \@allParents, 1);
@@ -445,10 +444,23 @@ sub GetInternalFields
  
     # We can't ask whether a parent type has a given extendedAttribute, so special-case Node, AbstractWorker and WorkerContext to include all sub-types.
     # FIXME: SVGElementInstance should probably have the EventTarget extended attribute, but doesn't.
+    my $isEventListenerCacheIndexed="0";
     if ($dataNode->extendedAttributes->{"EventTarget"} || IsNodeSubType($dataNode) || IsSubType($dataNode, "AbstractWorker") || IsSubType($dataNode, "WorkerContext")
         || $name eq "SVGElementInstance") {
         push(@customInternalFields, "eventListenerCacheIndex");
+        $isEventListenerCacheIndexed="1";
     }
+    #<wangcui look for parent : todo :also look parent extendedAttributes
+    if($isEventListenerCacheIndexed eq "0"){
+        foreach my $p (@{$dataNode->parents}){
+            print "dbg parent=". $p . "\n";
+            if($p eq "EventTarget"){
+                push(@customInternalFields, "eventListenerCacheIndex");
+                last;
+            }
+        }
+    }
+    #>
 
     if ($name eq "DOMWindow") {
         push(@customInternalFields, "enteredIsolatedWorldIndex");
@@ -1974,7 +1986,7 @@ static v8::Persistent<v8::ObjectTemplate> ConfigureShadowObjectTemplate(v8::Pers
     batchConfigureAttributes(templ, v8::Handle<v8::ObjectTemplate>(), shadowAttrs, WTF_ARRAY_LENGTH(shadowAttrs));
 
     // Install a security handler with V8.
-    templ->SetAccessCheckCallbacks(V8DOMWindow::namedSecurityCheck, V8DOMWindow::indexedSecurityCheck, v8::External::Wrap(&V8DOMWindow::info));
+    //templ->SetAccessCheckCallbacks(V8DOMWindow::namedSecurityCheck, V8DOMWindow::indexedSecurityCheck, v8::External::Wrap(&V8DOMWindow::info));CMP_ERROR_TODO V8DOMWindow::namedSecurityCheck in V8DOMWindowCustom.cpp
     templ->SetInternalFieldCount(V8DOMWindow::internalFieldCount);
     return templ;
 }
@@ -2158,7 +2170,7 @@ END
     // Set access check callbacks, but turned off initially.
     // When a context is detached from a frame, turn on the access check.
     // Turning on checks also invalidates inline caches of the object.
-    instance->SetAccessCheckCallbacks(V8DOMWindow::namedSecurityCheck, V8DOMWindow::indexedSecurityCheck, v8::External::Wrap(&V8DOMWindow::info), false);
+    //instance->SetAccessCheckCallbacks(V8DOMWindow::namedSecurityCheck, V8DOMWindow::indexedSecurityCheck, v8::External::Wrap(&V8DOMWindow::info), false);CMP_ERROR_TODO
 END
     }
     if ($interfaceName eq "HTMLDocument") {

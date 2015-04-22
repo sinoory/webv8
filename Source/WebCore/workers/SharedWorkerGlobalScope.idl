@@ -36,7 +36,7 @@
 ] interface SharedWorkerGlobalScope : WorkerGlobalScope {
 
     readonly attribute DOMString name;
-             attribute EventListener onconnect;
+    //         attribute EventListener onconnect; //CMP_ERROR_UNCLEAR bindings need find parent WorkerGlobalScope
 
 };
 

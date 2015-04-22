@@ -41,7 +41,7 @@
     [RaisesException] void postMessage(DOMString message, optional MessagePort messagePort);
 #endif
 
-             attribute EventListener onmessage;
+    //             attribute EventListener onmessage; CMP_ERROR_UNCLEAR bindings need find parent WorkerGlobalScope
 
 };
 

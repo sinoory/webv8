@@ -125,7 +125,7 @@
 
     // Self referential attributes
     [Replaceable, DoNotCheckSecurityOnGetter] readonly attribute DOMWindow self;
-    [DoNotCheckSecurity] readonly attribute DOMWindow window;
+    [DoNotCheckSecurity, V8DisallowShadowing] readonly attribute DOMWindow window;
     [Replaceable, DoNotCheckSecurityOnGetter] readonly attribute  DOMWindow frames;
 
     [Replaceable, DoNotCheckSecurityOnGetter] readonly attribute DOMWindow opener;
@@ -183,14 +183,14 @@
 #endif
 
 #if defined(ENABLE_REQUEST_ANIMATION_FRAME) && ENABLE_REQUEST_ANIMATION_FRAME
-    long requestAnimationFrame(RequestAnimationFrameCallback callback);
+    //long requestAnimationFrame(RequestAnimationFrameCallback callback); CMP_ERROR_TODO 
     void cancelAnimationFrame(long id);
-    long webkitRequestAnimationFrame(RequestAnimationFrameCallback callback);
+    //long webkitRequestAnimationFrame(RequestAnimationFrameCallback callback);
     [ImplementedAs=cancelAnimationFrame] void webkitCancelAnimationFrame(long id);
     [ImplementedAs=cancelAnimationFrame] void webkitCancelRequestAnimationFrame(long id); // This is a deprecated alias for webkitCancelAnimationFrame(). Remove this when removing vendor prefix.
 #endif
 
-    [Replaceable,Conditional=CSS3_CONDITIONAL_RULES] readonly attribute DOMWindowCSS CSS;
+    //[Replaceable,Conditional=CSS3_CONDITIONAL_RULES] readonly attribute DOMWindowCSS CSS;CMP_ERROR_TODO bindings gegerate error
 
     // Events
     attribute EventListener onabort;
