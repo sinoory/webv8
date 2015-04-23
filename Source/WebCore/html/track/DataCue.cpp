@@ -32,7 +32,7 @@
 #include "Logging.h"
 #include "TextTrack.h"
 #include "TextTrackCueList.h"
-#include <runtime/Protect.h>
+//#include <runtime/Protect.h>
 
 namespace WebCore {
 

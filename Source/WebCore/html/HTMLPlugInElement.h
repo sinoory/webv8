@@ -64,7 +64,7 @@ public:
     virtual void dispatchPendingMouseClick() { }
     virtual bool isRestartedPlugin() const { return false; }
 
-    JSC::JSObject* scriptObjectForPluginReplacement();
+    //JSC::JSObject* scriptObjectForPluginReplacement();
 
 #if ENABLE(NETSCAPE_PLUGIN_API)
     WEBCORE_EXPORT NPObject* getNPObject();

@@ -1071,7 +1071,7 @@ set(WebCore_SOURCES
     bindings/v8/V8NPUtils.cpp
     bindings/v8/WorkerScriptDebugServer.cpp
     bindings/v8/ChildThreadDOMData.cpp
-    bindings/v8/npruntime.cpp
+    #bindings/v8/npruntime.cpp
     bindings/v8/IsolatedWorld.cpp
     bindings/v8/V8NPObject.cpp
     bindings/v8/WorldContextHandle.cpp
@@ -1100,8 +1100,8 @@ set(WebCore_SOURCES
 
 
     bridge/IdentifierRep.cpp
-    bridge/NP_jsobject.cpp
-    bridge/npruntime.cpp
+    #bridge/NP_jsobject.cpp
+    #bridge/npruntime.cpp
 
 
 

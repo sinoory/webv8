@@ -1299,7 +1299,7 @@ sub WriteData {
 
     print HEADER @hPrefix;
     print HEADER @hPrefixGuard;
-    print HEADER "#include \"webkit/webkitdomdefines.h\"\n";
+    print HEADER "#include \"webkitdom/webkitdomdefines.h\"\n";
     print HEADER "#include <glib-object.h>\n";
     print HEADER "#include <webkit/webkitdefines.h>\n";
     print HEADER map { "#include \"$_\"\n" } sort keys(%hdrIncludes);

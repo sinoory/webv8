@@ -24,7 +24,7 @@
 #include "HTMLPlugInElement.h"
 
 #include "Attribute.h"
-#include "BridgeJSC.h"
+//#include "BridgeJSC.h"
 #include "Chrome.h"
 #include "ChromeClient.h"
 #include "CSSPropertyNames.h"
@@ -422,11 +422,12 @@ bool HTMLPlugInElement::requestObject(const String& url, const String& mimeType,
     return true;
 }
 
+/*
 JSC::JSObject* HTMLPlugInElement::scriptObjectForPluginReplacement()
 {
     if (m_pluginReplacement)
         return m_pluginReplacement->scriptObject();
     return nullptr;
 }
-
+*/
 }

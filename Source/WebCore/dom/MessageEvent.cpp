@@ -28,7 +28,7 @@
 #include "config.h"
 #include "MessageEvent.h"
 
-#include <runtime/JSCInlines.h>
+//#include <runtime/JSCInlines.h>
 
 namespace WebCore {
 

@@ -38,8 +38,8 @@
 #include "ExceptionCode.h"
 #include "ExceptionCodePlaceholder.h"
 
-#include <runtime/JSCInlines.h>
-#include <runtime/TypedArrayInlines.h>
+//#include <runtime/JSCInlines.h>
+//#include <runtime/TypedArrayInlines.h>
 
 namespace WebCore {
 
