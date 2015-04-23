@@ -34,12 +34,12 @@ enum TextTrackKind { "subtitles",  "captions",  "descriptions",  "chapters", "me
     SkipVTableValidation,
 ] interface TextTrack {
     readonly attribute DOMString id;
-    [CustomSetter] attribute TextTrackKind kind;
+    //[CustomSetter] attribute TextTrackKind kind;CMP_ERROR_TODO enum
     readonly attribute DOMString label;
     [CustomSetter] attribute DOMString language;
     readonly attribute DOMString inBandMetadataTrackDispatchType;
 
-    attribute TextTrackMode mode;
+    //attribute TextTrackMode mode; CMP_ERROR_TODO enum need generate to enum.h
 
     readonly attribute TextTrackCueList cues;
     readonly attribute TextTrackCueList activeCues;

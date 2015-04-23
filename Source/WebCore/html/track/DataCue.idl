@@ -40,6 +40,6 @@
     [CustomGetter, CustomSetter] attribute any value;
     readonly attribute DOMString type;
 #else
-    readonly attribute DOMString? text;
+    //readonly attribute DOMString? text; //CMP_ERROR_TODO ?=>bool imp->text(bool)
 #endif
 };

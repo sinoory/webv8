@@ -118,6 +118,7 @@ public:
             return true;
         return false;
     }
+    virtual SVGPropertyRole role() const { return m_role; }
 
 protected:
     SVGPropertyTearOff(SVGAnimatedProperty* animatedProperty, SVGPropertyRole role, PropertyType& value)

@@ -788,7 +788,7 @@ set(WebCore_SVG_IDL_FILES
 
 set(WebCore_IDL_FILES
     ${WebCore_NON_SVG_IDL_FILES}
-    ${WebCore_SVG_IDL_FILES}
+    #${WebCore_SVG_IDL_FILES} //CMP_ERROR_TODO disable html5 svg
 )
 
 set(WebCore_INSPECTOR_SCRIPTS_DIR "${JAVASCRIPTCORE_DIR}/inspector/scripts")

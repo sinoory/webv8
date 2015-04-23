@@ -84,7 +84,7 @@ enum XMLHttpRequestResponseType {
     [GetterRaisesException, CustomGetter] readonly attribute DOMString responseText; // The custom getter implements TreatReturnedNullStringAs=Null
     [GetterRaisesException] readonly attribute Document responseXML;
 
-    [SetterRaisesException] attribute XMLHttpRequestResponseType responseType;
+    //[SetterRaisesException] attribute XMLHttpRequestResponseType responseType; CMP_ERROR_UNCLEAR need generate enum type.h
     [GetterRaisesException, CachedAttribute, CustomGetter] readonly attribute Object response;
 
     readonly attribute unsigned short status;

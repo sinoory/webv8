@@ -704,6 +704,7 @@ sub GenerateNormalAttrGetter
     my $getterStringUsesImp = $implClassName ne "SVGNumber";
     my $svgNativeType = $codeGenerator->GetSVGTypeNeedingTearOff($implClassName);
 
+    #print "dbg GenerateNormalAttrGetter attr=$attrName\n";
     if($attrName eq ""){
         print "GenerateNormalAttrGetter ignore empty attr in $interfaceName\n";
         return;
@@ -3333,10 +3334,10 @@ sub GetRuntimeEnableFunctionName
     my $signature = shift;
 
     # If a parameter is given (e.g. "EnabledAtRuntime=FeatureName") return the RuntimeEnabledFeatures::{FeatureName}Enabled() method.
-    return "RuntimeEnabledFeatures::" . $codeGenerator->WK_lcfirst($signature->extendedAttributes->{"EnabledAtRuntime"}) . "Enabled" if ($signature->extendedAttributes->{"EnabledAtRuntime"} && $signature->extendedAttributes->{"EnabledAtRuntime"} ne "1");
+    return "RuntimeEnabledFeatures::sharedFeatures()." . $codeGenerator->WK_lcfirst($signature->extendedAttributes->{"EnabledAtRuntime"}) . "Enabled" if ($signature->extendedAttributes->{"EnabledAtRuntime"} && $signature->extendedAttributes->{"EnabledAtRuntime"} ne "1");
 
     # Otherwise return a function named RuntimeEnabledFeatures::{methodName}Enabled().
-    return "RuntimeEnabledFeatures::" . $codeGenerator->WK_lcfirst($signature->name) . "Enabled";
+    return "RuntimeEnabledFeatures::sharedFeatures()." . $codeGenerator->WK_lcfirst($signature->name) . "Enabled";
 }
 
 sub DebugPrint
