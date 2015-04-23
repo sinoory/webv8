@@ -3329,7 +3329,7 @@ GENERATE_BINDINGS(WebCoreTestSupport_SOURCES
     "${WEBCORE_DIR}"
     "${IDL_INCLUDES}"
     "${FEATURE_DEFINES_JAVASCRIPT}"
-    ${DERIVED_SOURCES_WEBCORE_DIR} JS JS cpp
+    ${DERIVED_SOURCES_WEBCORE_DIR} V8 V8 cpp
     ${IDL_ATTRIBUTES_FILE}
     ${SUPPLEMENTAL_DEPENDENCY_FILE}
     ${WINDOW_CONSTRUCTORS_FILE}
@@ -3404,7 +3404,7 @@ if (NOT PORT STREQUAL "GTK")
 endif ()
 
 WEBKIT_WRAP_SOURCELIST(${WebCore_IDL_FILES} ${WebCore_SOURCES})
-WEBKIT_WRAP_SOURCELIST(${WebCoreTestSupport_IDL_FILES} ${WebCoreTestSupport_SOURCES})
+#WEBKIT_WRAP_SOURCELIST(${WebCoreTestSupport_IDL_FILES} ${WebCoreTestSupport_SOURCES})
 
 include_directories(${WebCore_INCLUDE_DIRECTORIES} ${WebCoreTestSupport_INCLUDE_DIRECTORIES})
 
@@ -3416,9 +3416,9 @@ if (WebCore_OUTPUT_NAME)
     set_target_properties(WebCore PROPERTIES OUTPUT_NAME ${WebCore_OUTPUT_NAME})
 endif ()
 
-add_library(WebCoreTestSupport ${WebCoreTestSupport_LIBRARY_TYPE} ${WebCoreTestSupport_SOURCES})
-target_link_libraries(WebCoreTestSupport ${WebCoreTestSupport_LIBRARIES})
-set_target_properties(WebCoreTestSupport PROPERTIES FOLDER "WebCore")
+#add_library(WebCoreTestSupport ${WebCoreTestSupport_LIBRARY_TYPE} ${WebCoreTestSupport_SOURCES})
+#target_link_libraries(WebCoreTestSupport ${WebCoreTestSupport_LIBRARIES})
+#set_target_properties(WebCoreTestSupport PROPERTIES FOLDER "WebCore")
 
 if (WebCoreTestSupport_OUTPUT_NAME)
     set_target_properties(WebCoreTestSupport PROPERTIES OUTPUT_NAME ${WebCoreTestSupport_OUTPUT_NAME})

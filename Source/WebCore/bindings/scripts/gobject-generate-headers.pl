@@ -51,6 +51,8 @@ my $outType = $ARGV[0];
 my $header;
 if ($outType eq "defines") {
     $header = "webkitdomdefines_h";
+} elsif ($outType eq "defines-unstable") {
+    $header = "webkitdomdefines_unstable_h";
 } elsif ($outType eq "gdom") {
     $header = "webkitdom_h";
 } else {
@@ -62,15 +64,51 @@ print "#define ${header}\n";
 print "\n";
 
 if ($outType eq "defines") {
+    print "#include <glib.h>\n\n";
+    print "#ifdef G_OS_WIN32\n";
+    print "    #ifdef BUILDING_WEBKIT\n";
+    print "        #define WEBKIT_API __declspec(dllexport)\n";
+    print "    #else\n";
+    print "        #define WEBKIT_API __declspec(dllimport)\n";
+    print "    #endif\n";
+    print "#else\n";
+    print "    #define WEBKIT_API __attribute__((visibility(\"default\")))\n";
+    print "#endif\n\n";
+    print "#define WEBKIT_DEPRECATED WEBKIT_API G_DEPRECATED\n";
+    print "#define WEBKIT_DEPRECATED_FOR(f) WEBKIT_API G_DEPRECATED_FOR(f)\n";
+    print "\n";
+    print "#ifndef WEBKIT_API\n";
+    print "    #define WEBKIT_API\n";
+    print "#endif\n";
+
+    foreach my $class (@classes) {
+        if ($class eq "EventTarget" || $class eq "NodeFilter" || $class eq "XPathNSResolver") {
+            print "typedef struct _WebKitDOM${class} WebKitDOM${class};\n";
+            print "typedef struct _WebKitDOM${class}Iface WebKitDOM${class}Iface;\n";
+            print "\n";
+        } elsif ($class ne "Deprecated" && $class ne "Custom") {
+            print "typedef struct _WebKitDOM${class} WebKitDOM${class};\n";
+            print "typedef struct _WebKitDOM${class}Class WebKitDOM${class}Class;\n";
+            print "\n";
+        }
+    }
+} elsif ($outType eq "defines-unstable") {
+    print "#include <webkitdom/webkitdomdefines.h>\n\n";
+    print "#ifdef WEBKIT_DOM_USE_UNSTABLE_API\n\n";
+
     foreach my $class (@classes) {
         print "typedef struct _WebKitDOM${class} WebKitDOM${class};\n";
         print "typedef struct _WebKitDOM${class}Class WebKitDOM${class}Class;\n";
         print "\n";
     }
+
+    print "#endif /* WEBKIT_DOM_USE_UNSTABLE_API */\n\n";
 } elsif ($outType eq "gdom") {
+    print "#define __WEBKITDOM_H_INSIDE__\n\n";
     foreach my $class (@classes) {
-        print "#include <webkit/WebKitDOM${class}.h>\n";
+        print "#include <webkitdom/WebKitDOM${class}.h>\n";
     }
+    print "\n#undef __WEBKITDOM_H_INSIDE__\n";
 }
 
 print "\n";
