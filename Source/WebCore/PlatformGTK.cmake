@@ -768,14 +768,14 @@ GENERATE_BINDINGS(GObjectDOMBindings_SOURCES
 add_definitions(-DBUILDING_WEBKIT)
 add_definitions(-DWEBKIT_DOM_USE_UNSTABLE_API)
 
-add_library(GObjectDOMBindings STATIC ${GObjectDOMBindings_SOURCES})
+#add_library(GObjectDOMBindings STATIC ${GObjectDOMBindings_SOURCES})
 
-WEBKIT_SET_EXTRA_COMPILER_FLAGS(GObjectDOMBindings)
+#WEBKIT_SET_EXTRA_COMPILER_FLAGS(GObjectDOMBindings)
 
-add_dependencies(GObjectDOMBindings
-    WebCore
-    fake-generated-webkitdom-headers
-)
+#add_dependencies(GObjectDOMBindings
+#    WebCore
+#    fake-generated-webkitdom-headers
+#)
 
 file(WRITE ${CMAKE_BINARY_DIR}/gtkdoc-webkitdom.cfg
     "[webkitdomgtk]\n"
