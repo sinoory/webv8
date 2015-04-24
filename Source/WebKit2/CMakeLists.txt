@@ -69,7 +69,13 @@ set(WebKit2_INCLUDE_DIRECTORIES
     "${WEBCORE_DIR}/Modules/vibration"
     "${WEBCORE_DIR}/Modules/webdatabase"
     "${WEBCORE_DIR}/accessibility"
-    "${WEBCORE_DIR}/bindings/js"
+    #<wangcui use v8 instead of jsc
+    #"${WEBCORE_DIR}/bindings/js"
+    "${WEBCORE_DIR}/bindings/v8"
+    "${WEBCORE_DIR}/bindings/v8/custom"
+    "${WEBCORE_DIR}/bindings/v8/specialization"
+    #>
+
     "${WEBCORE_DIR}/bindings"
     "${WEBCORE_DIR}/bridge"
     "${WEBCORE_DIR}/bridge/jsc"
@@ -129,6 +135,7 @@ set(WebKit2_INCLUDE_DIRECTORIES
     "${JAVASCRIPTCORE_DIR}/parser"
     "${JAVASCRIPTCORE_DIR}/profiler"
     "${JAVASCRIPTCORE_DIR}/runtime"
+    "${V8_DIR}/include" #wangcui use v8
     "${WTF_DIR}"
     "${DERIVED_SOURCES_DIR}"
     "${DERIVED_SOURCES_JAVASCRIPTCORE_DIR}"
@@ -449,41 +456,42 @@ set(WebKit2_SOURCES
 
     WebProcess/IconDatabase/WebIconDatabaseProxy.cpp
 
-    WebProcess/InjectedBundle/InjectedBundle.cpp
-    WebProcess/InjectedBundle/InjectedBundleBackForwardList.cpp
-    WebProcess/InjectedBundle/InjectedBundleBackForwardListItem.cpp
-    WebProcess/InjectedBundle/InjectedBundleClient.cpp
-    WebProcess/InjectedBundle/InjectedBundleDOMWindowExtension.cpp
-    WebProcess/InjectedBundle/InjectedBundleHitTestResult.cpp
-    WebProcess/InjectedBundle/InjectedBundleNavigationAction.cpp
-    WebProcess/InjectedBundle/InjectedBundlePageContextMenuClient.cpp
-    WebProcess/InjectedBundle/InjectedBundlePageDiagnosticLoggingClient.cpp
-    WebProcess/InjectedBundle/InjectedBundlePageEditorClient.cpp
-    WebProcess/InjectedBundle/InjectedBundlePageFormClient.cpp
-    WebProcess/InjectedBundle/InjectedBundlePageFullScreenClient.cpp
-    WebProcess/InjectedBundle/InjectedBundlePageLoaderClient.cpp
-    WebProcess/InjectedBundle/InjectedBundlePagePolicyClient.cpp
-    WebProcess/InjectedBundle/InjectedBundlePageResourceLoadClient.cpp
-    WebProcess/InjectedBundle/InjectedBundlePageUIClient.cpp
-    WebProcess/InjectedBundle/InjectedBundleScriptWorld.cpp
-
-    WebProcess/InjectedBundle/API/c/WKBundle.cpp
-    WebProcess/InjectedBundle/API/c/WKBundleBackForwardList.cpp
-    WebProcess/InjectedBundle/API/c/WKBundleBackForwardListItem.cpp
-    WebProcess/InjectedBundle/API/c/WKBundleDOMWindowExtension.cpp
-    WebProcess/InjectedBundle/API/c/WKBundleFrame.cpp
-    WebProcess/InjectedBundle/API/c/WKBundleHitTestResult.cpp
-    WebProcess/InjectedBundle/API/c/WKBundleInspector.cpp
-    WebProcess/InjectedBundle/API/c/WKBundleNavigationAction.cpp
-    WebProcess/InjectedBundle/API/c/WKBundleNodeHandle.cpp
-    WebProcess/InjectedBundle/API/c/WKBundlePage.cpp
-    WebProcess/InjectedBundle/API/c/WKBundlePageGroup.cpp
-    WebProcess/InjectedBundle/API/c/WKBundlePageOverlay.cpp
-    WebProcess/InjectedBundle/API/c/WKBundleRangeHandle.cpp
-    WebProcess/InjectedBundle/API/c/WKBundleScriptWorld.cpp
-
-    WebProcess/InjectedBundle/DOM/InjectedBundleNodeHandle.cpp
-    WebProcess/InjectedBundle/DOM/InjectedBundleRangeHandle.cpp
+#CMP_ERROR_TODO remove InjectedBundle as gobject disabled
+#    WebProcess/InjectedBundle/InjectedBundle.cpp
+#    WebProcess/InjectedBundle/InjectedBundleBackForwardList.cpp
+#    WebProcess/InjectedBundle/InjectedBundleBackForwardListItem.cpp
+#    WebProcess/InjectedBundle/InjectedBundleClient.cpp
+#    WebProcess/InjectedBundle/InjectedBundleDOMWindowExtension.cpp
+#    WebProcess/InjectedBundle/InjectedBundleHitTestResult.cpp
+#    WebProcess/InjectedBundle/InjectedBundleNavigationAction.cpp
+#    WebProcess/InjectedBundle/InjectedBundlePageContextMenuClient.cpp
+#    WebProcess/InjectedBundle/InjectedBundlePageDiagnosticLoggingClient.cpp
+#    WebProcess/InjectedBundle/InjectedBundlePageEditorClient.cpp
+#    WebProcess/InjectedBundle/InjectedBundlePageFormClient.cpp
+#    WebProcess/InjectedBundle/InjectedBundlePageFullScreenClient.cpp
+#    WebProcess/InjectedBundle/InjectedBundlePageLoaderClient.cpp
+#    WebProcess/InjectedBundle/InjectedBundlePagePolicyClient.cpp
+#    WebProcess/InjectedBundle/InjectedBundlePageResourceLoadClient.cpp
+#    WebProcess/InjectedBundle/InjectedBundlePageUIClient.cpp
+#    WebProcess/InjectedBundle/InjectedBundleScriptWorld.cpp
+#
+#    WebProcess/InjectedBundle/API/c/WKBundle.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundleBackForwardList.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundleBackForwardListItem.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundleDOMWindowExtension.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundleFrame.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundleHitTestResult.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundleInspector.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundleNavigationAction.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundleNodeHandle.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundlePage.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundlePageGroup.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundlePageOverlay.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundleRangeHandle.cpp
+#    WebProcess/InjectedBundle/API/c/WKBundleScriptWorld.cpp
+#
+#    WebProcess/InjectedBundle/DOM/InjectedBundleNodeHandle.cpp
+#    WebProcess/InjectedBundle/DOM/InjectedBundleRangeHandle.cpp
 
     WebProcess/MediaCache/WebMediaCacheManager.cpp
 
@@ -660,7 +668,8 @@ set(NetworkProcess_LIBRARIES
 )
 
 set(WebKit2_LIBRARIES
-    JavaScriptCore
+    #JavaScriptCore
+    v8  #wangcui use v8 instead of JavaScriptCore
     WebCore
 
     Chromium  # ZRL add Chromium dependence lib.

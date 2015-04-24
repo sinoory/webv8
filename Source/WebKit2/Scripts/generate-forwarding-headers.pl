@@ -82,7 +82,7 @@ sub collectFrameworkHeaderPaths {
     my $file = $_;
     if ($filePath =~ '\.h$' && $filePath !~ "ForwardingHeaders" && grep{$file eq $_} keys %neededHeaders) {
         my $headerPath = substr($filePath, length(File::Spec->catfile($srcRoot, $frameworkDirectoryName)) + 1 );
-        push(@frameworkHeaders, $headerPath) unless (grep($headerPath =~ "$_/", @skippedPrefixes) || $headerPath =~ "config.h");
+        push(@frameworkHeaders, $headerPath) unless (grep($headerPath =~ "$_/", @skippedPrefixes) || $headerPath =~ "config.h" || $headerPath =~ "bindings/js/"); #CMP_ERROR wangcui ignore jsc bindings
     }
 }
 

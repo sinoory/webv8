@@ -28,7 +28,11 @@
 
 #include <WebKit/WKBase.h>
 #include <WebKit/WKBundlePageEditorClient.h>
-#include <webkitdom/webkitdom.h>
+//<CMP_ERROR_TODO disabled gobject
+//#include <webkitdom/webkitdom.h>
+#define WebKitDOMHTMLInputElement int
+#define WebKitDOMHTMLFormElement int
+//>
 
 typedef void (*WKBundlePageTextFieldDidBeginEditingCallback)(WKBundlePageRef page, WebKitDOMHTMLInputElement * inputElement, WKBundleFrameRef frame, const void* clientInfo);
 typedef void (*WKBundlePageTextFieldDidEndEditingCallback)(WKBundlePageRef page, WebKitDOMHTMLInputElement * inputElement, WKBundleFrameRef frame, const void* clientInfo);
