@@ -30,7 +30,7 @@
 #if ENABLE(VIDEO_TRACK)
 
 #include "TextTrackCue.h"
-//#include <runtime/ArrayBuffer.h>
+#include <runtime/ArrayBuffer.h>
 //#include <runtime/JSCInlines.h>
 #include <wtf/MediaTime.h>
 #include <wtf/RefCounted.h>

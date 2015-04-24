@@ -350,8 +350,10 @@ bool _NPN_SetProperty(NPP npp, NPObject* npObject, NPIdentifier propertyName, co
         ExceptionCatcher exceptionCatcher;
 
         v8::Handle<v8::Object> obj(object->v8Object);
+#if ENABLE(NETSCAPE_PLUGIN_API)
         obj->Set(npIdentifierToV8Identifier(propertyName),
                  convertNPVariantToV8Object(value, object->rootObject->frame()->script().windowScriptNPObject()));
+#endif
         return true;
     }
 

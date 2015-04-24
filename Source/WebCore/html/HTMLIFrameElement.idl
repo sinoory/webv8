@@ -39,7 +39,7 @@ interface HTMLIFrameElement : HTMLElement {
     readonly attribute DOMWindow contentWindow;
 
 #if !defined(LANGUAGE_OBJECTIVE_C) || !LANGUAGE_OBJECTIVE_C
-    [CheckSecurityForNode, RaisesException] SVGDocument getSVGDocument();
+    //[CheckSecurityForNode, RaisesException] SVGDocument getSVGDocument(); //CMP_ERROR_TODO
 #endif
 };
 

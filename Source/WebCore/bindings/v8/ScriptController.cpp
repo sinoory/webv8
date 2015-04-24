@@ -406,6 +406,7 @@ static NPObject* createScriptObject(Frame* frame)
     return npCreateV8ScriptObject(0, v8::Handle<v8::Object>::Cast(global), window);
 }
 
+#if ENABLE(NETSCAPE_PLUGIN_API)
 NPObject* ScriptController::windowScriptNPObject()
 {
     if (m_windowScriptNPObject)
@@ -444,7 +445,7 @@ NPObject* ScriptController::createScriptObjectForPluginElement(HTMLPlugInElement
 
     return npCreateV8ScriptObject(0, v8::Handle<v8::Object>::Cast(v8plugin), window);
 }
-
+#endif 
 
 void ScriptController::clearWindowShell(bool)
 {

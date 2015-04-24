@@ -31,7 +31,7 @@
 
     readonly attribute DOMString type;
 
-    readonly attribute HTMLOptionsCollection options;
+    //readonly attribute HTMLOptionsCollection options; //CMP_ERROR_TODO HTMLOptionsCollection removed
 #if defined(LANGUAGE_OBJECTIVE_C) && LANGUAGE_OBJECTIVE_C
     // DOM Level 2 changes type of length attribute to unsigned long, 
     // for compatibility we keep DOM Level 1 definition.

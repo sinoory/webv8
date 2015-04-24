@@ -28,7 +28,7 @@
 #include "config.h"
 #include "PluginView.h"
 
-#include "BridgeJSC.h"
+//#include "BridgeJSC.h"
 #include "Chrome.h"
 #include "CookieJar.h"
 #include "Document.h"
@@ -46,8 +46,8 @@
 #include "HTMLPlugInElement.h"
 #include "HTTPHeaderNames.h"
 #include "Image.h"
-#include "JSDOMBinding.h"
-#include "JSDOMWindow.h"
+//#include "JSDOMBinding.h"
+//#include "JSDOMWindow.h"
 #include "KeyboardEvent.h"
 #include "MIMETypeRegistry.h"
 #include "MouseEvent.h"
@@ -66,9 +66,9 @@
 #include "Settings.h"
 #include "UserGestureIndicator.h"
 #include "WheelEvent.h"
-#include "c_instance.h"
+//#include "c_instance.h"
 #include "npruntime_impl.h"
-#include "runtime_root.h"
+//#include "runtime_root.h"
 #include <bindings/ScriptValue.h>
 #include <runtime/JSCJSValue.h>
 #include <runtime/JSLock.h>
@@ -248,7 +248,7 @@ bool PluginView::start()
     NPError npErr;
     {
         PluginView::setCurrentPluginView(this);
-        JSC::JSLock::DropAllLocks dropAllLocks(JSDOMWindowBase::commonVM());
+        //JSC::JSLock::DropAllLocks dropAllLocks(JSDOMWindowBase::commonVM());
         setCallingPlugin(true);
         npErr = m_plugin->pluginFuncs()->newp((NPMIMEType)m_mimeType.utf8().data(), m_instance, m_mode, m_paramCount, m_paramNames, m_paramValues, NULL);
         setCallingPlugin(false);
@@ -334,7 +334,7 @@ void PluginView::stop()
 
     m_isStarted = false;
 
-    JSC::JSLock::DropAllLocks dropAllLocks(JSDOMWindowBase::commonVM());
+    //JSC::JSLock::DropAllLocks dropAllLocks(JSDOMWindowBase::commonVM());
 
 #if ENABLE(NETSCAPE_PLUGIN_API)
 #if defined(XP_WIN) && !PLATFORM(GTK)
@@ -454,7 +454,7 @@ void PluginView::performRequest(PluginRequest* request)
             // FIXME: <rdar://problem/4807469> This should be sent when the document has finished loading
             if (request->sendNotification()) {
                 PluginView::setCurrentPluginView(this);
-                JSC::JSLock::DropAllLocks dropAllLocks(JSDOMWindowBase::commonVM());
+                //JSC::JSLock::DropAllLocks dropAllLocks(JSDOMWindowBase::commonVM());
                 setCallingPlugin(true);
                 m_plugin->pluginFuncs()->urlnotify(m_instance, requestURL.string().utf8().data(), NPRES_DONE, request->notifyData());
                 setCallingPlugin(false);
@@ -475,7 +475,11 @@ void PluginView::performRequest(PluginRequest* request)
     if (targetFrameName.isNull()) {
         String resultString;
 
-        JSC::ExecState* scriptState = m_parentFrame->script().globalObject(pluginWorld())->globalExec();
+#if USE(JSC)
+        ScriptState* scriptState = m_parentFrame->script()->globalObject(pluginWorld())->globalExec();
+#else // USE(V8) 
+        ScriptState* scriptState = 0; // Not used with V8
+#endif
         CString cstr;
         if (result.getString(scriptState, resultString))
             cstr = resultString.utf8();
@@ -727,7 +731,7 @@ NPObject* PluginView::npObject()
     NPError npErr;
     {
         PluginView::setCurrentPluginView(this);
-        JSC::JSLock::DropAllLocks dropAllLocks(JSDOMWindowBase::commonVM());
+        //JSC::JSLock::DropAllLocks dropAllLocks(JSDOMWindowBase::commonVM());
         setCallingPlugin(true);
         npErr = m_plugin->pluginFuncs()->getvalue(m_instance, NPPVpluginScriptableNPObject, &object);
         setCallingPlugin(false);
@@ -740,7 +744,7 @@ NPObject* PluginView::npObject()
     return object;
 }
 #endif
-
+/*
 PassRefPtr<JSC::Bindings::Instance> PluginView::bindingInstance()
 {
 #if ENABLE(NETSCAPE_PLUGIN_API)
@@ -765,7 +769,7 @@ PassRefPtr<JSC::Bindings::Instance> PluginView::bindingInstance()
     return 0;
 #endif
 }
-
+*/
 void PluginView::disconnectStream(PluginStream* stream)
 {
     ASSERT(m_streams.contains(stream));
@@ -1322,6 +1326,7 @@ NPError PluginView::getValue(NPNVariable variable, void* value)
         if (m_isJavaScriptPaused)
             return NPERR_GENERIC_ERROR;
 
+#if ENABLE(NETSCAPE_PLUGIN_API)
         NPObject* windowScriptObject = m_parentFrame->script().windowScriptNPObject();
 
         // Return value is expected to be retained, as described here: <http://www.mozilla.org/projects/plugin/npruntime.html>
@@ -1330,8 +1335,10 @@ NPError PluginView::getValue(NPNVariable variable, void* value)
 
         void** v = (void**)value;
         *v = windowScriptObject;
-
         return NPERR_NO_ERROR;
+#else
+        return NPERR_GENERIC_ERROR;
+#endif
     }
 
     case NPNVPluginElementNPObject: {
@@ -1486,7 +1493,7 @@ void PluginView::privateBrowsingStateChanged(bool privateBrowsingEnabled)
         return;
 
     PluginView::setCurrentPluginView(this);
-    JSC::JSLock::DropAllLocks dropAllLocks(JSDOMWindowBase::commonVM());
+    //JSC::JSLock::DropAllLocks dropAllLocks(JSDOMWindowBase::commonVM());
     setCallingPlugin(true);
     NPBool value = privateBrowsingEnabled;
     setValue(m_instance, NPNVprivateModeBool, &value);
