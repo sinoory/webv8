@@ -39,7 +39,7 @@
 #include "FloatRect.h"
 #include "FocusDirection.h"
 #include "FrameLoaderClient.h"
-#include "InspectorClient.h"
+//#include "InspectorClient.h" //CMP_ERROR it will use JSC
 #include "Page.h"
 #include "ProgressTrackerClient.h"
 #include "ResourceError.h"
@@ -589,20 +589,20 @@ public:
 };
 #endif // ENABLE(DRAG_SUPPORT)
 
-class EmptyInspectorClient : public InspectorClient {
+class EmptyInspectorClient { //: public InspectorClient {
     WTF_MAKE_NONCOPYABLE(EmptyInspectorClient); WTF_MAKE_FAST_ALLOCATED;
 public:
     EmptyInspectorClient() { }
     virtual ~EmptyInspectorClient() { }
 
-    virtual void inspectorDestroyed() override { }
+    virtual void inspectorDestroyed()  { }
     
-    virtual InspectorFrontendChannel* openInspectorFrontend(InspectorController*) override { return 0; }
-    virtual void closeInspectorFrontend() override { }
-    virtual void bringFrontendToFront() override { }
+    //virtual InspectorFrontendChannel* openInspectorFrontend(InspectorController*)  { return 0; }
+    virtual void closeInspectorFrontend()  { }
+    virtual void bringFrontendToFront()  { }
 
-    virtual void highlight() override { }
-    virtual void hideHighlight() override { }
+    virtual void highlight()  { }
+    virtual void hideHighlight()  { }
 };
 
 class EmptyDeviceClient : public DeviceClient {

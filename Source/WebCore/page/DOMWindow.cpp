@@ -135,7 +135,9 @@
 #include "WKContentObservation.h"
 #endif
 
+#if ENABLE(INSPECTOR)
 using namespace Inspector;
+#endif
 
 namespace WebCore {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Apple Inc. All rights reserved.
+ * Copyright (C) 2011 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -20,31 +20,40 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef CommandLineAPIModule_h
-#define CommandLineAPIModule_h
+#include "config.h"
+#include "YarrSyntaxChecker.h"
 
+#include "YarrParser.h"
 
-#if ENABLE(INSPECTOR)
-#include <inspector/InjectedScriptModule.h>
+namespace JSC { namespace Yarr {
 
-namespace WebCore {
-
-class CommandLineAPIModule final : public Inspector::InjectedScriptModule {
+class SyntaxChecker {
 public:
-    CommandLineAPIModule();
-
-    virtual String source() const override;
-    virtual JSC::JSValue host(Inspector::InjectedScriptManager*, JSC::ExecState*) const override;
-    virtual bool returnsObject() const override { return false; }
-
-    static void injectIfNeeded(Inspector::InjectedScriptManager*, Inspector::InjectedScript);
+    void assertionBOL() {}
+    void assertionEOL() {}
+    void assertionWordBoundary(bool) {}
+    void atomPatternCharacter(UChar) {}
+    void atomBuiltInCharacterClass(BuiltInCharacterClassID, bool) {}
+    void atomCharacterClassBegin(bool = false) {}
+    void atomCharacterClassAtom(UChar) {}
+    void atomCharacterClassRange(UChar, UChar) {}
+    void atomCharacterClassBuiltIn(BuiltInCharacterClassID, bool) {}
+    void atomCharacterClassEnd() {}
+    void atomParenthesesSubpatternBegin(bool = true) {}
+    void atomParentheticalAssertionBegin(bool = false) {}
+    void atomParenthesesEnd() {}
+    void atomBackReference(unsigned) {}
+    void quantifyAtom(unsigned, unsigned, bool) {}
+    void disjunction() {}
 };
 
-} // namespace WebCore
+const char* checkSyntax(const String& pattern)
+{
+    SyntaxChecker syntaxChecker;
+    return parse(syntaxChecker, pattern);
+}
 
-#endif // ENABLE(INSPECTOR)
-
-#endif // !defined(CommandLineAPIModule_h)
+}} // JSC::YARR

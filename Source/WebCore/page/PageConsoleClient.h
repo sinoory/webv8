@@ -30,7 +30,7 @@
 #define PageConsoleClient_h
 
 #include <inspector/ScriptCallStack.h>
-#include <runtime/ConsoleClient.h>
+//#include <runtime/ConsoleClient.h>
 #include <wtf/Forward.h>
 #include "Console.h"
 

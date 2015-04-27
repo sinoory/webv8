@@ -61,8 +61,10 @@ void fillWithEmptyClients(Page::PageClients& pageClients)
     static NeverDestroyed<EmptyEditorClient> dummyEditorClient;
     pageClients.editorClient = &dummyEditorClient.get();
 
+#if ENABLE(INSPECTOR)
     static NeverDestroyed<EmptyInspectorClient> dummyInspectorClient;
     pageClients.inspectorClient = &dummyInspectorClient.get();
+#endif
 
     static NeverDestroyed<EmptyFrameLoaderClient> dummyFrameLoaderClient;
     pageClients.loaderClientForMainFrame = &dummyFrameLoaderClient.get();

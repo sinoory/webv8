@@ -27,10 +27,11 @@
 #ifndef InspectorForwarding_h
 #define InspectorForwarding_h
 
+#if ENABLE(INSPECTOR)
 #include <inspector/InspectorFrontendChannel.h>
 
 namespace WebCore {
 typedef Inspector::InspectorFrontendChannel InspectorFrontendChannel;
 }
-
+#endif
 #endif // !defined(InspectorForwarding_h)

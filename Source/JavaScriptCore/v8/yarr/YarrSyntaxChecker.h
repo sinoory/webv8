@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Apple Inc. All rights reserved.
+ * Copyright (C) 2011 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -20,31 +20,19 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef CommandLineAPIModule_h
-#define CommandLineAPIModule_h
+#ifndef YarrSyntaxChecker_h
+#define YarrSyntaxChecker_h
 
+#include <wtf/text/WTFString.h>
 
-#if ENABLE(INSPECTOR)
-#include <inspector/InjectedScriptModule.h>
+namespace JSC { namespace Yarr {
 
-namespace WebCore {
+const char* checkSyntax(const String& pattern);
 
-class CommandLineAPIModule final : public Inspector::InjectedScriptModule {
-public:
-    CommandLineAPIModule();
+}} // JSC::YARR
 
-    virtual String source() const override;
-    virtual JSC::JSValue host(Inspector::InjectedScriptManager*, JSC::ExecState*) const override;
-    virtual bool returnsObject() const override { return false; }
+#endif // YarrSyntaxChecker_h
 
-    static void injectIfNeeded(Inspector::InjectedScriptManager*, Inspector::InjectedScript);
-};
-
-} // namespace WebCore
-
-#endif // ENABLE(INSPECTOR)
-
-#endif // !defined(CommandLineAPIModule_h)

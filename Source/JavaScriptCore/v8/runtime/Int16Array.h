@@ -20,31 +20,15 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef CommandLineAPIModule_h
-#define CommandLineAPIModule_h
+#ifndef Int16Array_h
+#define Int16Array_h
 
+#include "TypedArrays.h"
 
-#if ENABLE(INSPECTOR)
-#include <inspector/InjectedScriptModule.h>
+using JSC::Int16Array;
 
-namespace WebCore {
+#endif // Int16Array_h
 
-class CommandLineAPIModule final : public Inspector::InjectedScriptModule {
-public:
-    CommandLineAPIModule();
-
-    virtual String source() const override;
-    virtual JSC::JSValue host(Inspector::InjectedScriptManager*, JSC::ExecState*) const override;
-    virtual bool returnsObject() const override { return false; }
-
-    static void injectIfNeeded(Inspector::InjectedScriptManager*, Inspector::InjectedScript);
-};
-
-} // namespace WebCore
-
-#endif // ENABLE(INSPECTOR)
-
-#endif // !defined(CommandLineAPIModule_h)

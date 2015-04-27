@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Apple Inc. All rights reserved.
+ * Copyright (C) 2011 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -20,31 +20,48 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef CommandLineAPIModule_h
-#define CommandLineAPIModule_h
+#ifndef HeapBlock_h
+#define HeapBlock_h
 
+#include <wtf/DoublyLinkedList.h>
+#include <wtf/StdLibExtras.h>
 
-#if ENABLE(INSPECTOR)
-#include <inspector/InjectedScriptModule.h>
+namespace JSC {
 
-namespace WebCore {
+enum AllocationEffort { AllocationCanFail, AllocationMustSucceed };
 
-class CommandLineAPIModule final : public Inspector::InjectedScriptModule {
+class Region;
+
+template<typename T>
+class HeapBlock : public DoublyLinkedListNode<T> {
+    friend class WTF::DoublyLinkedListNode<T>;
 public:
-    CommandLineAPIModule();
+    static HeapBlock* destroy(HeapBlock* block) WARN_UNUSED_RETURN
+    {
+        static_cast<T*>(block)->~T();
+        return block;
+    }
 
-    virtual String source() const override;
-    virtual JSC::JSValue host(Inspector::InjectedScriptManager*, JSC::ExecState*) const override;
-    virtual bool returnsObject() const override { return false; }
+    HeapBlock(Region* region)
+        : DoublyLinkedListNode<T>()
+        , m_region(region)
+        , m_prev(0)
+        , m_next(0)
+    {
+        ASSERT(m_region);
+    }
 
-    static void injectIfNeeded(Inspector::InjectedScriptManager*, Inspector::InjectedScript);
+    Region* region() const { return m_region; }
+
+private:
+    Region* m_region;
+    T* m_prev;
+    T* m_next;
 };
 
-} // namespace WebCore
+} // namespace JSC
 
-#endif // ENABLE(INSPECTOR)
-
-#endif // !defined(CommandLineAPIModule_h)
+#endif    

@@ -20,31 +20,28 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef CommandLineAPIModule_h
-#define CommandLineAPIModule_h
+#ifndef TypedArrays_h
+#define TypedArrays_h
 
+#include "GenericTypedArrayView.h"
+#include "TypedArrayAdaptors.h"
 
-#if ENABLE(INSPECTOR)
-#include <inspector/InjectedScriptModule.h>
+namespace JSC {
 
-namespace WebCore {
+typedef GenericTypedArrayView<Int8Adaptor> Int8Array;
+typedef GenericTypedArrayView<Int16Adaptor> Int16Array;
+typedef GenericTypedArrayView<Int32Adaptor> Int32Array;
+typedef GenericTypedArrayView<Uint8Adaptor> Uint8Array;
+typedef GenericTypedArrayView<Uint8ClampedAdaptor> Uint8ClampedArray;
+typedef GenericTypedArrayView<Uint16Adaptor> Uint16Array;
+typedef GenericTypedArrayView<Uint32Adaptor> Uint32Array;
+typedef GenericTypedArrayView<Float32Adaptor> Float32Array;
+typedef GenericTypedArrayView<Float64Adaptor> Float64Array;
 
-class CommandLineAPIModule final : public Inspector::InjectedScriptModule {
-public:
-    CommandLineAPIModule();
+} // namespace JSC
 
-    virtual String source() const override;
-    virtual JSC::JSValue host(Inspector::InjectedScriptManager*, JSC::ExecState*) const override;
-    virtual bool returnsObject() const override { return false; }
+#endif // TypedArrays_h
 
-    static void injectIfNeeded(Inspector::InjectedScriptManager*, Inspector::InjectedScript);
-};
-
-} // namespace WebCore
-
-#endif // ENABLE(INSPECTOR)
-
-#endif // !defined(CommandLineAPIModule_h)

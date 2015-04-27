@@ -32,6 +32,8 @@
 #ifndef InstrumentingAgents_h
 #define InstrumentingAgents_h
 
+#if ENABLE(INSPECTOR)
+
 #include <inspector/InspectorEnvironment.h>
 #include <wtf/FastMalloc.h>
 #include <wtf/Noncopyable.h>
@@ -172,5 +174,5 @@ WEBCORE_EXPORT InstrumentingAgents* instrumentationForPage(Page*);
 InstrumentingAgents* instrumentationForWorkerGlobalScope(WorkerGlobalScope*);
 
 }
-
+#endif
 #endif // !defined(InstrumentingAgents_h)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Apple Inc. All rights reserved.
+ * Copyright (C) 2003, 2008, 2009 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,28 +23,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CommandLineAPIModule_h
-#define CommandLineAPIModule_h
+#ifndef RegularExpression_h
+#define RegularExpression_h
 
+#include "runtime/JSExportMacros.h"
+#include <wtf/text/WTFString.h>
 
-#if ENABLE(INSPECTOR)
-#include <inspector/InjectedScriptModule.h>
+namespace JSC { namespace Yarr {
 
-namespace WebCore {
-
-class CommandLineAPIModule final : public Inspector::InjectedScriptModule {
-public:
-    CommandLineAPIModule();
-
-    virtual String source() const override;
-    virtual JSC::JSValue host(Inspector::InjectedScriptManager*, JSC::ExecState*) const override;
-    virtual bool returnsObject() const override { return false; }
-
-    static void injectIfNeeded(Inspector::InjectedScriptManager*, Inspector::InjectedScript);
+enum MultilineMode {
+    MultilineDisabled,
+    MultilineEnabled
 };
 
-} // namespace WebCore
+class JS_EXPORT_PRIVATE RegularExpression {
+    WTF_MAKE_FAST_ALLOCATED;
+public:
+    RegularExpression(const String&, TextCaseSensitivity, MultilineMode = MultilineDisabled);
+    ~RegularExpression();
 
-#endif // ENABLE(INSPECTOR)
+    RegularExpression(const RegularExpression&);
+    RegularExpression& operator=(const RegularExpression&);
 
-#endif // !defined(CommandLineAPIModule_h)
+    int match(const String&, int startFrom = 0, int* matchLength = 0) const;
+    int searchRev(const String&) const;
+
+    int matchedLength() const;
+    bool isValid() const;
+
+private:
+    class Private;
+    RefPtr<Private> d;
+};
+
+void JS_EXPORT_PRIVATE replace(String&, const RegularExpression&, const String&);
+
+} } // namespace JSC::Yarr
+
+#endif // RegularExpression_h

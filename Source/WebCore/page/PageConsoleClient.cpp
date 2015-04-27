@@ -43,9 +43,11 @@
 //#include <bindings/ScriptValue.h>
 #include <inspector/ScriptArguments.h>
 #include <inspector/ScriptCallStack.h>
-#include <inspector/ScriptCallStackFactory.h>
+//#include <inspector/ScriptCallStackFactory.h>
 
+#if ENABLE(INSPECTOR)
 using namespace Inspector;
+#endif
 
 namespace WebCore {
 

@@ -45,7 +45,9 @@ public:
 
     virtual void inspectorDestroyed() = 0;
 
+#if ENABLE(INSPECTOR)
     virtual InspectorFrontendChannel* openInspectorFrontend(InspectorController*) = 0;
+#endif
     virtual void closeInspectorFrontend() = 0;
     virtual void bringFrontendToFront() = 0;
     virtual void didResizeMainFrame(Frame*) { }

@@ -29,9 +29,9 @@
  */
 
 #include "config.h"
-#include "InspectorResourceAgent.h"
 
 #if ENABLE(INSPECTOR)
+#include "InspectorResourceAgent.h"
 
 #include "CachedRawResource.h"
 #include "CachedResource.h"

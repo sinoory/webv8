@@ -71,7 +71,7 @@
 #include "V8WorkerContext.h"
 #include "V8WorkerContextEventListener.h"
 #include "V8XMLHttpRequest.h"
-#include "ArrayBufferView.h"
+//#include "ArrayBufferView.h"
 #include "WebGLContextAttributes.h"
 #include "WebGLUniformLocation.h"
 #include "WorkerContextExecutionProxy.h"
