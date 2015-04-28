@@ -85,25 +85,25 @@ WebUserContentController::~WebUserContentController()
 void WebUserContentController::addUserScripts(const Vector<WebCore::UserScript>& userScripts)
 {
     for (const auto& userScript : userScripts)
-        m_userContentController->addUserScript(mainThreadNormalWorld(), std::make_unique<WebCore::UserScript>(userScript));
+        m_userContentController->addUserScript(*mainThreadNormalWorld(), std::make_unique<WebCore::UserScript>(userScript));
 }
 
 void WebUserContentController::removeAllUserScripts()
 {
-    m_userContentController->removeUserScripts(mainThreadNormalWorld());
+    m_userContentController->removeUserScripts(*mainThreadNormalWorld());
 }
 
 void WebUserContentController::addUserStyleSheets(const Vector<WebCore::UserStyleSheet>& userStyleSheets)
 {
     for (const auto& userStyleSheet : userStyleSheets) {
-        m_userContentController->addUserStyleSheet(mainThreadNormalWorld(),
+        m_userContentController->addUserStyleSheet(*mainThreadNormalWorld(),
             std::make_unique<WebCore::UserStyleSheet>(userStyleSheet), InjectInExistingDocuments);
     }
 }
 
 void WebUserContentController::removeAllUserStyleSheets()
 {
-    m_userContentController->removeUserStyleSheets(mainThreadNormalWorld());
+    m_userContentController->removeUserStyleSheets(*mainThreadNormalWorld());
 }
 
 #if ENABLE(USER_MESSAGE_HANDLERS)

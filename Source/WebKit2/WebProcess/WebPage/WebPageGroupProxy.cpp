@@ -59,22 +59,22 @@ WebPageGroupProxy::WebPageGroupProxy(const WebPageGroupData& data)
 
 void WebPageGroupProxy::addUserStyleSheet(const WebCore::UserStyleSheet& userStyleSheet)
 {
-    m_pageGroup->addUserStyleSheetToWorld(WebCore::mainThreadNormalWorld(), userStyleSheet.source(), userStyleSheet.url(), userStyleSheet.whitelist(), userStyleSheet.blacklist(), userStyleSheet.injectedFrames(), userStyleSheet.level());
+    m_pageGroup->addUserStyleSheetToWorld(*WebCore::mainThreadNormalWorld(), userStyleSheet.source(), userStyleSheet.url(), userStyleSheet.whitelist(), userStyleSheet.blacklist(), userStyleSheet.injectedFrames(), userStyleSheet.level());
 }
 
 void WebPageGroupProxy::addUserScript(const WebCore::UserScript& userScript)
 {
-    m_pageGroup->addUserScriptToWorld(WebCore::mainThreadNormalWorld(), userScript.source(), userScript.url(), userScript.whitelist(), userScript.blacklist(), userScript.injectionTime(), userScript.injectedFrames());
+    m_pageGroup->addUserScriptToWorld(*WebCore::mainThreadNormalWorld(), userScript.source(), userScript.url(), userScript.whitelist(), userScript.blacklist(), userScript.injectionTime(), userScript.injectedFrames());
 }
 
 void WebPageGroupProxy::removeAllUserStyleSheets()
 {
-    m_pageGroup->removeUserStyleSheetsFromWorld(WebCore::mainThreadNormalWorld());
+    m_pageGroup->removeUserStyleSheetsFromWorld(*WebCore::mainThreadNormalWorld());
 }
 
 void WebPageGroupProxy::removeAllUserScripts()
 {
-    m_pageGroup->removeUserScriptsFromWorld(WebCore::mainThreadNormalWorld());
+    m_pageGroup->removeUserScriptsFromWorld(*WebCore::mainThreadNormalWorld());
 }
 
 void WebPageGroupProxy::removeAllUserContent()

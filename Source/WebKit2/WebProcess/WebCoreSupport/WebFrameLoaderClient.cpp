@@ -52,8 +52,8 @@
 #include "WebPageProxyMessages.h"
 #include "WebProcess.h"
 #include "WebProcessProxyMessages.h"
-#include <JavaScriptCore/APICast.h>
-#include <JavaScriptCore/JSObject.h>
+//#include <JavaScriptCore/APICast.h>
+//#include <JavaScriptCore/JSObject.h>
 #include <WebCore/CertificateInfo.h>
 #include <WebCore/Chrome.h>
 #include <WebCore/DOMWrapperWorld.h>

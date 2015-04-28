@@ -38,6 +38,9 @@
 #include <stdlib.h>
 #include <wtf/text/CString.h>
 
+#include "NetscapePluginModule.h"
+#include <X11/Xlib.h>
+
 #if PLATFORM(GTK)
 #include <gtk/gtk.h>
 #elif PLATFORM(EFL) && HAVE_ECORE_X

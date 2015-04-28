@@ -1219,9 +1219,9 @@ void PluginView::performJavaScriptURLRequest(URLRequest* request)
     if (!request->target().isNull())
         return;
 
-    ExecState* scriptState = frame->script().globalObject(pluginWorld())->globalExec();
+    //ExecState* scriptState = frame->script().globalObject(pluginWorld())->globalExec();
     String resultString;
-    result.getString(scriptState, resultString);
+    result.getString(resultString);
   
     // Send the result back to the plug-in.
     plugin->didEvaluateJavaScript(request->requestID(), resultString);

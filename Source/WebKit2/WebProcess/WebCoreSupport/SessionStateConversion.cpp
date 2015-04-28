@@ -78,8 +78,8 @@ static FrameState toFrameState(const HistoryItem& historyItem)
     frameState.target = historyItem.target();
 
     frameState.documentState = historyItem.documentState();
-    if (RefPtr<SerializedScriptValue> stateObject = historyItem.stateObject())
-        frameState.stateObjectData = stateObject->data();
+    /*if (RefPtr<SerializedScriptValue> stateObject = historyItem.stateObject())
+        frameState.stateObjectData = stateObject->data();CMP_ERROR_TODO*/
 
     frameState.documentSequenceNumber = historyItem.documentSequenceNumber();
     frameState.itemSequenceNumber = historyItem.itemSequenceNumber();
@@ -153,7 +153,7 @@ static void applyFrameState(HistoryItem& historyItem, const FrameState& frameSta
 
     if (frameState.stateObjectData) {
         Vector<uint8_t> stateObjectData = frameState.stateObjectData.value();
-        historyItem.setStateObject(SerializedScriptValue::adopt(stateObjectData));
+        //historyItem.setStateObject(SerializedScriptValue::adopt(stateObjectData)); CMP_ERROR_TODO
     }
 
     historyItem.setDocumentSequenceNumber(frameState.documentSequenceNumber);
