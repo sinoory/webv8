@@ -56,8 +56,8 @@
 #include "WebProcessMessages.h"
 #include "WebProcessProxyMessages.h"
 #include "WebResourceCacheManager.h"
-#include <JavaScriptCore/JSLock.h>
-#include <JavaScriptCore/MemoryStatistics.h>
+//#include <JavaScriptCore/JSLock.h>
+//#include <JavaScriptCore/MemoryStatistics.h>
 #include <WebCore/AXObjectCache.h>
 #include <WebCore/ApplicationCacheStorage.h>
 #include <WebCore/AuthenticationChallenge.h>
@@ -69,7 +69,7 @@
 #include <WebCore/GCController.h>
 #include <WebCore/GlyphPageTreeNode.h>
 #include <WebCore/IconDatabase.h>
-#include <WebCore/JSDOMWindow.h>
+//#include <WebCore/JSDOMWindow.h>
 #include <WebCore/Language.h>
 #include <WebCore/MemoryCache.h>
 #include <WebCore/MemoryPressureHandler.h>
@@ -845,13 +845,14 @@ void WebProcess::plugInDidReceiveUserInteraction(const String& pageOrigin, const
     parentProcessConnection()->send(Messages::WebContext::PlugInDidReceiveUserInteraction(plugInOriginHash, sessionID), 0);
 }
 
+/*
 static void fromCountedSetToHashMap(TypeCountSet* countedSet, HashMap<String, uint64_t>& map)
 {
     TypeCountSet::const_iterator end = countedSet->end();
     for (TypeCountSet::const_iterator it = countedSet->begin(); it != end; ++it)
         map.set(it->key, it->value);
 }
-
+*/
 static void getWebCoreMemoryCacheStatistics(Vector<HashMap<String, uint64_t>>& result)
 {
     String imagesString(ASCIILiteral("Images"));
@@ -895,7 +896,7 @@ void WebProcess::getWebCoreStatistics(uint64_t callbackID)
     StatisticsData data;
     
     // Gather JavaScript statistics.
-    {
+/*  CMP_ERROR  {
         JSLockHolder lock(JSDOMWindow::commonVM());
         data.statisticsNumbers.set(ASCIILiteral("JavaScriptObjectsCount"), JSDOMWindow::commonVM().heap.objectCount());
         data.statisticsNumbers.set(ASCIILiteral("JavaScriptGlobalObjectsCount"), JSDOMWindow::commonVM().heap.globalObjectCount());
@@ -912,6 +913,7 @@ void WebProcess::getWebCoreStatistics(uint64_t callbackID)
         data.statisticsNumbers.set(ASCIILiteral("JavaScriptHeapSize"), javaScriptHeapSize);
         data.statisticsNumbers.set(ASCIILiteral("JavaScriptFreeSize"), JSDOMWindow::commonVM().heap.capacity() - javaScriptHeapSize);
     }
+*/
 
     WTF::FastMallocStatistics fastMallocStatistics = WTF::fastMallocStatistics();
     data.statisticsNumbers.set(ASCIILiteral("FastMallocReservedVMBytes"), fastMallocStatistics.reservedVMBytes);

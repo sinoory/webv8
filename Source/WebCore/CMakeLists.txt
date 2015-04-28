@@ -124,7 +124,7 @@ set(WebCore_INCLUDE_DIRECTORIES
     #"${JAVASCRIPTCORE_DIR}/llint"
     #"${JAVASCRIPTCORE_DIR}/parser"
     #"${JAVASCRIPTCORE_DIR}/profiler"
-    "${JAVASCRIPTCORE_DIR}/v8"
+    "${JAVASCRIPTCORE_DIR}/v8"           #CMP_ERROR_TODO: mv it to ForwardingHeaders/v8/
     "${JAVASCRIPTCORE_DIR}/v8/heap"
     #"${JAVASCRIPTCORE_DIR}/yarr"
 

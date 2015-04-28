@@ -65,11 +65,12 @@
 #include <WebCore/Logging.h>
 #include <WebCore/ResourceRequest.h>
 #include <WebCore/SessionID.h>
-#include <runtime/JSCInlines.h>
+//#include <runtime/JSCInlines.h>
 #include <wtf/CurrentTime.h>
 #include <wtf/MainThread.h>
 #include <wtf/NeverDestroyed.h>
 #include <wtf/RunLoop.h>
+#include <wtf/text/StringBuilder.h>
 
 #if ENABLE(BATTERY_STATUS)
 #include "WebBatteryManagerProxy.h"

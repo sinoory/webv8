@@ -43,7 +43,7 @@ public:
     
     static PassRefPtr<WebSerializedScriptValue> create(JSContextRef context, JSValueRef value, JSValueRef* exception)
     {
-        RefPtr<WebCore::SerializedScriptValue> serializedValue = WebCore::SerializedScriptValue::create(context, value, exception);
+        RefPtr<WebCore::SerializedScriptValue> serializedValue ;//= WebCore::SerializedScriptValue::create(context, value, exception);CMP_ERROR_TODO
         if (!serializedValue)
             return 0;
         return adoptRef(new WebSerializedScriptValue(serializedValue.get()));
@@ -51,15 +51,16 @@ public:
     
     static PassRefPtr<WebSerializedScriptValue> adopt(Vector<uint8_t>& buffer)
     {
-        return adoptRef(new WebSerializedScriptValue(WebCore::SerializedScriptValue::adopt(buffer)));
+        //return adoptRef(new WebSerializedScriptValue(WebCore::SerializedScriptValue::adopt(buffer)));
+        return adoptRef(new WebSerializedScriptValue(WebCore::SerializedScriptValue::create()));//CMP_ERROR_TODO
     }
     
     JSValueRef deserialize(JSContextRef context, JSValueRef* exception)
     {
-        return m_serializedScriptValue->deserialize(context, exception);
+        return 0 ;//m_serializedScriptValue->deserialize();//(context, exception);CMP_ERROR_TODO
     }
 
-    IPC::DataReference dataReference() const { return m_serializedScriptValue->data(); }
+    IPC::DataReference dataReference() const { return IPC::DataReference(0,0); /*m_serializedScriptValue->data(); CMP_ERROR_TODO*/ }
 
     void* internalRepresentation() { return m_serializedScriptValue.get(); }
 

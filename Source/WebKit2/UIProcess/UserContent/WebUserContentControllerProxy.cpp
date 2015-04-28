@@ -162,7 +162,8 @@ void WebUserContentControllerProxy::didPostMessage(IPC::Connection* connection, 
         return;
 
     auto buffer = dataReference.vector();
-    RefPtr<WebCore::SerializedScriptValue> value = WebCore::SerializedScriptValue::adopt(buffer);
+    RefPtr<WebCore::SerializedScriptValue> value = WebCore::SerializedScriptValue::create();//CMP_ERROR_TODO 1
+    //RefPtr<WebCore::SerializedScriptValue> value = WebCore::SerializedScriptValue::adopt(buffer);
 
     handler->client().didPostMessage(*page, *frame, *value);
 }
