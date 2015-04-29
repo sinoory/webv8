@@ -56,9 +56,9 @@
 #include <WebCore/HTMLInputElement.h>
 #include <WebCore/HTMLNames.h>
 #include <WebCore/HTMLTextAreaElement.h>
-#include <WebCore/JSCSSStyleDeclaration.h>
-#include <WebCore/JSElement.h>
-#include <WebCore/JSRange.h>
+//#include <WebCore/JSCSSStyleDeclaration.h>
+//#include <WebCore/JSElement.h>
+//#include <WebCore/JSRange.h>
 #include <WebCore/MainFrame.h>
 #include <WebCore/NetworkingContext.h>
 #include <WebCore/NodeTraversal.h>
@@ -72,6 +72,8 @@
 #include <WebCore/TextIterator.h>
 #include <WebCore/TextResourceDecoder.h>
 #include <wtf/text/StringBuilder.h>
+
+#include <WebCore/page/DOMWindow.h>
 
 #if PLATFORM(COCOA)
 #include <WebCore/LegacyWebArchive.h>
@@ -486,12 +488,20 @@ bool WebFrame::allowsFollowingLink(const WebCore::URL& url) const
 
 JSGlobalContextRef WebFrame::jsContext()
 {
+#if 0 //CMP_ERROR_TODO InjectedBundle
     return toGlobalRef(m_coreFrame->script().globalObject(mainThreadNormalWorld())->globalExec());
+#else
+    return 0;
+#endif
 }
 
 JSGlobalContextRef WebFrame::jsContextForWorld(InjectedBundleScriptWorld* world)
 {
+#if 0 //CMP_ERROR_TODO InjectedBundle
     return toGlobalRef(m_coreFrame->script().globalObject(world->coreWorld())->globalExec());
+#else
+    return 0;
+#endif
 }
 
 bool WebFrame::handlesPageScaleGesture() const
@@ -649,6 +659,7 @@ void WebFrame::stopLoading()
 
 WebFrame* WebFrame::frameForContext(JSContextRef context)
 {
+#if 0 //CMP_ERROR_TODO InjectedBundle
     JSObjectRef globalObjectRef = JSContextGetGlobalObject(context);
     JSC::JSObject* globalObjectObj = toJS(globalObjectRef);
     if (strcmp(globalObjectObj->classInfo()->className, "JSDOMWindowShell") != 0)
@@ -656,10 +667,14 @@ WebFrame* WebFrame::frameForContext(JSContextRef context)
 
     Frame* frame = static_cast<JSDOMWindowShell*>(globalObjectObj)->window()->impl().frame();
     return WebFrame::fromCoreFrame(*frame);
+#else
+    return 0;
+#endif
 }
 
 JSValueRef WebFrame::jsWrapperForWorld(InjectedBundleNodeHandle* nodeHandle, InjectedBundleScriptWorld* world)
 {
+#if 0 //CMP_ERROR_TODO InjectedBundle
     if (!m_coreFrame)
         return 0;
 
@@ -668,10 +683,14 @@ JSValueRef WebFrame::jsWrapperForWorld(InjectedBundleNodeHandle* nodeHandle, Inj
 
     JSLockHolder lock(exec);
     return toRef(exec, toJS(exec, globalObject, nodeHandle->coreNode()));
+#else
+    return 0;
+#endif
 }
 
 JSValueRef WebFrame::jsWrapperForWorld(InjectedBundleRangeHandle* rangeHandle, InjectedBundleScriptWorld* world)
 {
+#if 0 //CMP_ERROR_TODO InjectedBundle
     if (!m_coreFrame)
         return 0;
 
@@ -680,14 +699,22 @@ JSValueRef WebFrame::jsWrapperForWorld(InjectedBundleRangeHandle* rangeHandle, I
 
     JSLockHolder lock(exec);
     return toRef(exec, toJS(exec, globalObject, rangeHandle->coreRange()));
+#else
+    return 0;
+#endif
 }
 
 String WebFrame::counterValue(JSObjectRef element)
 {
+#if 0 //CMP_ERROR_TODO InjectedBundle
+    if (!m_coreFrame)
     if (!toJS(element)->inherits(JSElement::info()))
         return String();
 
     return counterValueForElement(&jsCast<JSElement*>(toJS(element))->impl());
+#else
+    return "";
+#endif
 }
 
 String WebFrame::provisionalURL() const

@@ -26,6 +26,13 @@
 
 #ifndef WebInspectorProxy_h
 #define WebInspectorProxy_h
+namespace WebKit {
+enum AttachmentSide {
+    AttachmentSideBottom,
+    AttachmentSideRight
+};
+}
+
 
 #if ENABLE(INSPECTOR)
 
@@ -63,11 +70,6 @@ class WebFrameProxy;
 class WebPageGroup;
 class WebPageProxy;
 struct WebPageCreationParameters;
-
-enum AttachmentSide {
-    AttachmentSideBottom,
-    AttachmentSideRight
-};
 
 class WebInspectorProxy : public API::ObjectImpl<API::Object::Type::Inspector>, public IPC::MessageReceiver {
 public:

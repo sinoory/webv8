@@ -212,9 +212,6 @@ list(APPEND WebKit2_SOURCES
     UIProcess/API/gtk/WebKitWebContext.cpp
     UIProcess/API/gtk/WebKitWebContext.h
     UIProcess/API/gtk/WebKitWebContextPrivate.h
-    UIProcess/API/gtk/WebKitWebInspector.cpp
-    UIProcess/API/gtk/WebKitWebInspector.h
-    UIProcess/API/gtk/WebKitWebInspectorPrivate.h
     UIProcess/API/gtk/WebKitWebResource.cpp
     UIProcess/API/gtk/WebKitWebResource.h
     UIProcess/API/gtk/WebKitWebResourcePrivate.h
@@ -258,8 +255,6 @@ list(APPEND WebKit2_SOURCES
     UIProcess/gtk/WebContextGtk.cpp
     UIProcess/gtk/WebContextMenuProxyGtk.cpp
     UIProcess/gtk/WebFullScreenClientGtk.cpp
-    UIProcess/gtk/WebInspectorClientGtk.cpp
-    UIProcess/gtk/WebInspectorProxyGtk.cpp
     UIProcess/gtk/WebPageProxyGtk.cpp
     UIProcess/gtk/WebPopupMenuProxyGtk.cpp
     UIProcess/gtk/WebPreferencesGtk.cpp
@@ -272,10 +267,6 @@ list(APPEND WebKit2_SOURCES
     WebProcess/Cookies/soup/WebCookieManagerSoup.cpp
     WebProcess/Cookies/soup/WebKitSoupCookieJarSqlite.cpp
 
-    WebProcess/InjectedBundle/API/gtk/WebKitFrame.cpp
-    WebProcess/InjectedBundle/API/gtk/WebKitScriptWorld.cpp
-    WebProcess/InjectedBundle/API/gtk/WebKitWebExtension.cpp
-    WebProcess/InjectedBundle/API/gtk/WebKitWebPage.cpp
 
     WebProcess/InjectedBundle/gtk/InjectedBundleGtk.cpp
 
@@ -301,7 +292,6 @@ list(APPEND WebKit2_SOURCES
     WebProcess/WebPage/gtk/WebPageGtk.cpp
     WebProcess/WebPage/gtk/WebPrintOperationGtk.cpp
 
-    WebProcess/gtk/WebGtkExtensionManager.cpp
     WebProcess/gtk/WebGtkInjectedBundleMain.cpp
     WebProcess/gtk/WebProcessMainGtk.cpp
 
@@ -309,6 +299,28 @@ list(APPEND WebKit2_SOURCES
     WebProcess/soup/WebKitSoupRequestInputStream.cpp
     WebProcess/soup/WebProcessSoup.cpp
 )
+
+if (ENABLE_INSPECTOR)  #CMP_ERROR
+list(APPEND WebKit2_SOURCES
+    UIProcess/API/gtk/WebKitWebInspector.cpp
+    UIProcess/API/gtk/WebKitWebInspector.h
+    UIProcess/API/gtk/WebKitWebInspectorPrivate.h
+
+    UIProcess/gtk/WebInspectorClientGtk.cpp
+    UIProcess/gtk/WebInspectorProxyGtk.cpp
+
+)
+endif ()
+
+if (ENABLE_INJECT_BUNDLE)
+list(APPEND WebKit2_SOURCES
+    WebProcess/InjectedBundle/API/gtk/WebKitFrame.cpp
+    WebProcess/InjectedBundle/API/gtk/WebKitScriptWorld.cpp
+    WebProcess/InjectedBundle/API/gtk/WebKitWebExtension.cpp
+    WebProcess/InjectedBundle/API/gtk/WebKitWebPage.cpp
+    WebProcess/gtk/WebGtkExtensionManager.cpp
+)
+endif()
 
 list(APPEND WebKit2_DERIVED_SOURCES
     ${DERIVED_SOURCES_WEBKIT2GTK_DIR}/InspectorGResourceBundle.c

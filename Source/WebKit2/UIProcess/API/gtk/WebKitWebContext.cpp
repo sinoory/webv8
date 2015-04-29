@@ -568,7 +568,7 @@ void webkit_web_context_set_additional_plugins_directory(WebKitWebContext* conte
     g_return_if_fail(WEBKIT_IS_WEB_CONTEXT(context));
     g_return_if_fail(directory);
 
-    context->priv->context->setAdditionalPluginsDirectory(WebCore::filenameToString(directory));
+    //context->priv->context->setAdditionalPluginsDirectory(WebCore::filenameToString(directory)); CMP_ERROR_TODO
 }
 
 static void destroyPluginList(GList* plugins)
@@ -578,11 +578,13 @@ static void destroyPluginList(GList* plugins)
 
 static void webkitWebContextGetPluginThread(GTask* task, gpointer object, gpointer /* taskData */, GCancellable*)
 {
+#if 0 //CMP_ERROR_TODO
     Vector<PluginModuleInfo> plugins = WEBKIT_WEB_CONTEXT(object)->priv->context->pluginInfoStore().plugins();
     GList* returnValue = 0;
     for (size_t i = 0; i < plugins.size(); ++i)
         returnValue = g_list_prepend(returnValue, webkitPluginCreate(plugins[i]));
     g_task_return_pointer(task, returnValue, reinterpret_cast<GDestroyNotify>(destroyPluginList));
+#endif 
 }
 
 /**

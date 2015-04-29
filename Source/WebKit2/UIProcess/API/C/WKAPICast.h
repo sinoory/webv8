@@ -82,7 +82,9 @@ class WebGeolocationPosition;
 class WebGrammarDetail;
 class WebHitTestResult;
 class WebIconDatabase;
+#if ENABLE(INSPECTOR)
 class WebInspectorProxy;
+#endif
 class WebKeyValueStorageManager;
 class WebMediaCacheManagerProxy;
 class WebNotification;
@@ -148,8 +150,9 @@ WK_ADD_API_MAPPING(WKSessionStateRef, API::SessionState)
 WK_ADD_API_MAPPING(WKTextCheckerRef, WebTextChecker)
 WK_ADD_API_MAPPING(WKVibrationRef, WebVibrationProxy)
 WK_ADD_API_MAPPING(WKViewportAttributesRef, WebViewportAttributes)
+#if ENABLE(INSPECTOR)
 WK_ADD_API_MAPPING(WKInspectorRef, WebInspectorProxy)
-
+#endif
 /* Enum conversions */
 
 inline BundleHitTestResultMediaType toBundleHitTestResultMediaType(WKBundleHitTestResultMediaType wkMediaType)

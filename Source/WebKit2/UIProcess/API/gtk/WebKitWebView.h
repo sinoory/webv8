@@ -46,7 +46,9 @@
 #include <webkit2/WebKitURIRequest.h>
 #include <webkit2/WebKitUserContentManager.h>
 #include <webkit2/WebKitWebContext.h>
+#if ENABLE(INSPECTOR)
 #include <webkit2/WebKitWebInspector.h>
+#endif
 #include <webkit2/WebKitWebResource.h>
 #include <webkit2/WebKitWebViewBase.h>
 #include <webkit2/WebKitWindowProperties.h>
@@ -458,8 +460,10 @@ webkit_web_view_run_javascript_from_gresource_finish (WebKitWebView             
 WEBKIT_API WebKitWebResource *
 webkit_web_view_get_main_resource                    (WebKitWebView             *web_view);
 
+#if ENABLE(INSPECTOR)
 WEBKIT_API WebKitWebInspector *
 webkit_web_view_get_inspector                        (WebKitWebView             *web_view);
+#endif
 
 WEBKIT_API gboolean
 webkit_web_view_can_show_mime_type                   (WebKitWebView             *web_view,

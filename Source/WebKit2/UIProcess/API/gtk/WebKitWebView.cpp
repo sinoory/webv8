@@ -52,12 +52,14 @@
 #include "WebKitURIRequestPrivate.h"
 #include "WebKitURIResponsePrivate.h"
 #include "WebKitWebContextPrivate.h"
+#if ENABLE(INSPECTOR)
 #include "WebKitWebInspectorPrivate.h"
+#endif
 #include "WebKitWebResourcePrivate.h"
 #include "WebKitWebViewBasePrivate.h"
 #include "WebKitWebViewPrivate.h"
 #include "WebKitWindowPropertiesPrivate.h"
-#include <JavaScriptCore/APICast.h>
+//#include <JavaScriptCore/APICast.h>
 #include <WebCore/CertificateInfo.h>
 #include <WebCore/DragIcon.h>
 #include <WebCore/GUniquePtrGtk.h>
@@ -190,7 +192,9 @@ struct _WebKitWebViewPrivate {
     GRefPtr<WebKitWebResource> mainResource;
     LoadingResourcesMap loadingResourcesMap;
 
+#if ENABLE(INSPECTOR)
     GRefPtr<WebKitWebInspector> inspector;
+#endif
 
     RefPtr<cairo_surface_t> favicon;
     GRefPtr<GCancellable> faviconCancellable;
@@ -3103,6 +3107,7 @@ WebKitWebResource* webkit_web_view_get_main_resource(WebKitWebView* webView)
  *
  * Returns: (transfer none): the #WebKitWebInspector of @web_view
  */
+#if ENABLE(INSPECTOR)
 WebKitWebInspector* webkit_web_view_get_inspector(WebKitWebView* webView)
 {
     g_return_val_if_fail(WEBKIT_IS_WEB_VIEW(webView), 0);
@@ -3112,6 +3117,7 @@ WebKitWebInspector* webkit_web_view_get_inspector(WebKitWebView* webView)
 
     return webView->priv->inspector.get();
 }
+#endif
 
 /**
  * webkit_web_view_can_show_mime_type:

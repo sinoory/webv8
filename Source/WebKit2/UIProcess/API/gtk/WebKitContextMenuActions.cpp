@@ -104,8 +104,10 @@ ContextMenuAction webkitContextMenuActionGetActionTag(WebKitContextMenuAction ac
         return ContextMenuItemTagUnderline;
     case WEBKIT_CONTEXT_MENU_ACTION_OUTLINE:
         return ContextMenuItemTagOutline;
+#if ENABLE(INSPECTOR)
     case WEBKIT_CONTEXT_MENU_ACTION_INSPECT_ELEMENT:
         return ContextMenuItemTagInspectElement;
+#endif
     case WEBKIT_CONTEXT_MENU_ACTION_OPEN_VIDEO_IN_NEW_WINDOW:
     case WEBKIT_CONTEXT_MENU_ACTION_OPEN_AUDIO_IN_NEW_WINDOW:
         return ContextMenuItemTagOpenMediaInNewWindow;
@@ -198,8 +200,10 @@ WebKitContextMenuAction webkitContextMenuActionGetForContextMenuItem(ContextMenu
         return WEBKIT_CONTEXT_MENU_ACTION_UNDERLINE;
     case ContextMenuItemTagOutline:
         return WEBKIT_CONTEXT_MENU_ACTION_OUTLINE;
+#if ENABLE(INSPECTOR)
     case ContextMenuItemTagInspectElement:
         return WEBKIT_CONTEXT_MENU_ACTION_INSPECT_ELEMENT;
+#endif
     case ContextMenuItemTagOpenMediaInNewWindow:
         return menuItem->title() == contextMenuItemTagOpenVideoInNewWindow() ?
             WEBKIT_CONTEXT_MENU_ACTION_OPEN_VIDEO_IN_NEW_WINDOW : WEBKIT_CONTEXT_MENU_ACTION_OPEN_AUDIO_IN_NEW_WINDOW;

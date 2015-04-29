@@ -96,7 +96,7 @@
 #include "WebProgressTrackerClient.h"
 #include "WebUndoStep.h"
 #include "WebUserContentController.h"
-#include <JavaScriptCore/APICast.h>
+//#include <JavaScriptCore/APICast.h>
 #include <WebCore/ArchiveResource.h>
 #include <WebCore/Chrome.h>
 #include <WebCore/ContextMenuController.h>
@@ -120,7 +120,7 @@
 #include <WebCore/HistoryController.h>
 #include <WebCore/HistoryItem.h>
 #include <WebCore/HitTestResult.h>
-#include <WebCore/JSDOMWindow.h>
+//#include <WebCore/JSDOMWindow.h>
 #include <WebCore/KeyboardEvent.h>
 #include <WebCore/MIMETypeRegistry.h>
 #include <WebCore/MainFrame.h>
@@ -154,10 +154,10 @@
 #include <WebCore/VisibleUnits.h>
 #include <WebCore/markup.h>
 #include <bindings/ScriptValue.h>
-#include <profiler/ProfilerDatabase.h>
-#include <runtime/JSCInlines.h>
-#include <runtime/JSCJSValue.h>
-#include <runtime/JSLock.h>
+//#include <profiler/ProfilerDatabase.h>
+//#include <runtime/JSCInlines.h>
+//#include <runtime/JSCJSValue.h>
+//#include <runtime/JSLock.h>
 #include <wtf/RunLoop.h>
 
 #if ENABLE(MHTML)
@@ -2461,12 +2461,20 @@ void WebPage::runJavaScriptInMainFrame(const String& script, uint64_t callbackID
     RefPtr<SerializedScriptValue> serializedResultValue;
     IPC::DataReference dataReference;
 
+#if 0
     JSLockHolder lock(JSDOMWindow::commonVM());
     if (JSValue resultValue = m_mainFrame->coreFrame()->script().executeScript(script, true).jsValue()) {
         if ((serializedResultValue = SerializedScriptValue::create(m_mainFrame->jsContext(), toRef(m_mainFrame->coreFrame()->script().globalObject(mainThreadNormalWorld())->globalExec(), resultValue), 0)))
             dataReference = serializedResultValue->data();
     }
-
+#else //CMP_ERROR_TODO check
+    ScriptValue result = m_mainFrame->coreFrame()->script().executeScript(script, true);
+    String scriptResult;
+    if (!result.getString(scriptResult)){
+    }else{
+        dataReference=IPC::DataReference(scriptResult.characters8(),scriptResult.length());
+    }
+#endif
     send(Messages::WebPageProxy::ScriptValueCallback(dataReference, callbackID));
 }
 
@@ -4773,12 +4781,14 @@ PassRefPtr<DocumentLoader> WebPage::createDocumentLoader(Frame& frame, const Res
 
 void WebPage::getBytecodeProfile(uint64_t callbackID)
 {
+#if 0 //CMP_ERROR
     ASSERT(JSDOMWindow::commonVM().m_perBytecodeProfiler);
     if (!JSDOMWindow::commonVM().m_perBytecodeProfiler)
         send(Messages::WebPageProxy::StringCallback(String(), callbackID));
     String result = JSDOMWindow::commonVM().m_perBytecodeProfiler->toJSON();
     ASSERT(result.length());
     send(Messages::WebPageProxy::StringCallback(result, callbackID));
+#endif
 }
 
 PassRefPtr<WebCore::Range> WebPage::rangeFromEditingRange(WebCore::Frame& frame, const EditingRange& range)
