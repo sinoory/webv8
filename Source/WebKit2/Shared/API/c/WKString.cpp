@@ -25,7 +25,7 @@
 
 #include "config.h"
 #include "WKString.h"
-#include "WKStringPrivate.h"
+//#include "WKStringPrivate.h" //CMP_ERROR
 
 #include "WKAPICast.h"
 

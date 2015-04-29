@@ -121,21 +121,28 @@ set(WebKit2_INCLUDE_DIRECTORIES
     "${WEBCORE_DIR}/svg"
     "${WEBCORE_DIR}/svg/graphics"
     "${WEBCORE_DIR}/svg/properties"
-    "${JAVASCRIPTCORE_DIR}"
-    "${JAVASCRIPTCORE_DIR}/ForwardingHeaders"
-    "${JAVASCRIPTCORE_DIR}/API"
-    "${JAVASCRIPTCORE_DIR}/assembler"
-    "${JAVASCRIPTCORE_DIR}/bytecode"
-    "${JAVASCRIPTCORE_DIR}/bytecompiler"
-    "${JAVASCRIPTCORE_DIR}/collector/handles"
-    "${JAVASCRIPTCORE_DIR}/dfg"
-    "${JAVASCRIPTCORE_DIR}/disassembler"
-    "${JAVASCRIPTCORE_DIR}/heap"
-    "${JAVASCRIPTCORE_DIR}/interpreter"
-    "${JAVASCRIPTCORE_DIR}/jit"
-    "${JAVASCRIPTCORE_DIR}/parser"
-    "${JAVASCRIPTCORE_DIR}/profiler"
-    "${JAVASCRIPTCORE_DIR}/runtime"
+    #"${JAVASCRIPTCORE_DIR}"
+    #"${JAVASCRIPTCORE_DIR}/ForwardingHeaders"
+    #"${JAVASCRIPTCORE_DIR}/API"
+    #"${JAVASCRIPTCORE_DIR}/assembler"
+    #"${JAVASCRIPTCORE_DIR}/bytecode"
+    #"${JAVASCRIPTCORE_DIR}/bytecompiler"
+    #"${JAVASCRIPTCORE_DIR}/collector/handles"
+    #"${JAVASCRIPTCORE_DIR}/dfg"
+    #"${JAVASCRIPTCORE_DIR}/disassembler"
+    #"${JAVASCRIPTCORE_DIR}/heap"
+    #"${JAVASCRIPTCORE_DIR}/interpreter"
+    #"${JAVASCRIPTCORE_DIR}/jit"
+    #"${JAVASCRIPTCORE_DIR}/parser"
+    #"${JAVASCRIPTCORE_DIR}/profiler"
+    #"${JAVASCRIPTCORE_DIR}/runtime"
+    "${JAVASCRIPTCORE_DIR}/v8"           #CMP_ERROR_TODO: mv it to ForwardingHeaders/v8/
+    "${JAVASCRIPTCORE_DIR}/v8/heap"
+    "${JAVASCRIPTCORE_DIR}/v8/ForwardingHeaders"
+
+    "${WEBCORE_DIR}/ForwardingHeaders/v8" #add v8 dir in ForwardingHeaders/
+    "${WEBCORE_DIR}/ForwardingHeaders/v8/runtime" #add v8 dir
+
     "${V8_DIR}/include" #wangcui use v8
     "${WTF_DIR}"
     "${DERIVED_SOURCES_DIR}"
@@ -272,7 +279,7 @@ set(WebKit2_SOURCES
     Shared/API/c/WKURL.cpp
     Shared/API/c/WKURLRequest.cpp
     Shared/API/c/WKURLResponse.cpp
-    Shared/API/c/WKUserContentURLPattern.cpp
+    #Shared/API/c/WKUserContentURLPattern.cpp
 
     Shared/Authentication/AuthenticationManager.cpp
 
@@ -457,42 +464,6 @@ set(WebKit2_SOURCES
 
     WebProcess/IconDatabase/WebIconDatabaseProxy.cpp
 
-#CMP_ERROR_TODO remove InjectedBundle as gobject disabled
-#    WebProcess/InjectedBundle/InjectedBundle.cpp
-#    WebProcess/InjectedBundle/InjectedBundleBackForwardList.cpp
-#    WebProcess/InjectedBundle/InjectedBundleBackForwardListItem.cpp
-#    WebProcess/InjectedBundle/InjectedBundleClient.cpp
-#    WebProcess/InjectedBundle/InjectedBundleDOMWindowExtension.cpp
-#    WebProcess/InjectedBundle/InjectedBundleHitTestResult.cpp
-#    WebProcess/InjectedBundle/InjectedBundleNavigationAction.cpp
-#    WebProcess/InjectedBundle/InjectedBundlePageContextMenuClient.cpp
-#    WebProcess/InjectedBundle/InjectedBundlePageDiagnosticLoggingClient.cpp
-#    WebProcess/InjectedBundle/InjectedBundlePageEditorClient.cpp
-#    WebProcess/InjectedBundle/InjectedBundlePageFormClient.cpp
-#    WebProcess/InjectedBundle/InjectedBundlePageFullScreenClient.cpp
-#    WebProcess/InjectedBundle/InjectedBundlePageLoaderClient.cpp
-#    WebProcess/InjectedBundle/InjectedBundlePagePolicyClient.cpp
-#    WebProcess/InjectedBundle/InjectedBundlePageResourceLoadClient.cpp
-#    WebProcess/InjectedBundle/InjectedBundlePageUIClient.cpp
-#    WebProcess/InjectedBundle/InjectedBundleScriptWorld.cpp
-#
-#    WebProcess/InjectedBundle/API/c/WKBundle.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundleBackForwardList.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundleBackForwardListItem.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundleDOMWindowExtension.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundleFrame.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundleHitTestResult.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundleInspector.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundleNavigationAction.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundleNodeHandle.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundlePage.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundlePageGroup.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundlePageOverlay.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundleRangeHandle.cpp
-#    WebProcess/InjectedBundle/API/c/WKBundleScriptWorld.cpp
-#
-#    WebProcess/InjectedBundle/DOM/InjectedBundleNodeHandle.cpp
-#    WebProcess/InjectedBundle/DOM/InjectedBundleRangeHandle.cpp
 
     WebProcess/MediaCache/WebMediaCacheManager.cpp
 
@@ -568,8 +539,50 @@ set(WebKit2_SOURCES
     WebProcess/WebPage/WebPageGroupProxy.cpp
     WebProcess/WebPage/VisitedLinkTableController.cpp
     WebProcess/WebPage/WebUndoStep.cpp
+
+    WebProcess/InjectedBundle/InjectedBundleNavigationAction.cpp
 )
 
+if (ENABLE_INSPECTOR)  #CMP_ERROR
+set(WebKit2_SOURCES
+#CMP_ERROR_TODO remove InjectedBundle as gobject disabled
+     WebProcess/InjectedBundle/InjectedBundle.cpp
+     WebProcess/InjectedBundle/InjectedBundleBackForwardList.cpp
+     WebProcess/InjectedBundle/InjectedBundleBackForwardListItem.cpp
+     WebProcess/InjectedBundle/InjectedBundleClient.cpp
+     WebProcess/InjectedBundle/InjectedBundleDOMWindowExtension.cpp
+     WebProcess/InjectedBundle/InjectedBundleHitTestResult.cpp
+     WebProcess/InjectedBundle/InjectedBundlePageContextMenuClient.cpp
+     WebProcess/InjectedBundle/InjectedBundlePageDiagnosticLoggingClient.cpp
+     WebProcess/InjectedBundle/InjectedBundlePageEditorClient.cpp
+     WebProcess/InjectedBundle/InjectedBundlePageFormClient.cpp
+     WebProcess/InjectedBundle/InjectedBundlePageFullScreenClient.cpp
+     WebProcess/InjectedBundle/InjectedBundlePageLoaderClient.cpp
+     WebProcess/InjectedBundle/InjectedBundlePagePolicyClient.cpp
+     WebProcess/InjectedBundle/InjectedBundlePageResourceLoadClient.cpp
+     WebProcess/InjectedBundle/InjectedBundlePageUIClient.cpp
+     WebProcess/InjectedBundle/InjectedBundleScriptWorld.cpp
+ 
+     WebProcess/InjectedBundle/API/c/WKBundle.cpp
+     WebProcess/InjectedBundle/API/c/WKBundleBackForwardList.cpp
+     WebProcess/InjectedBundle/API/c/WKBundleBackForwardListItem.cpp
+     WebProcess/InjectedBundle/API/c/WKBundleDOMWindowExtension.cpp
+     WebProcess/InjectedBundle/API/c/WKBundleFrame.cpp
+     WebProcess/InjectedBundle/API/c/WKBundleHitTestResult.cpp
+     WebProcess/InjectedBundle/API/c/WKBundleInspector.cpp
+     WebProcess/InjectedBundle/API/c/WKBundleNavigationAction.cpp
+     WebProcess/InjectedBundle/API/c/WKBundleNodeHandle.cpp
+     WebProcess/InjectedBundle/API/c/WKBundlePage.cpp
+     WebProcess/InjectedBundle/API/c/WKBundlePageGroup.cpp
+     WebProcess/InjectedBundle/API/c/WKBundlePageOverlay.cpp
+     WebProcess/InjectedBundle/API/c/WKBundleRangeHandle.cpp
+     WebProcess/InjectedBundle/API/c/WKBundleScriptWorld.cpp
+ 
+     WebProcess/InjectedBundle/DOM/InjectedBundleNodeHandle.cpp
+     WebProcess/InjectedBundle/DOM/InjectedBundleRangeHandle.cpp
+
+)
+endif ()
 set(WebKit2_MESSAGES_IN_FILES
     NetworkProcess/NetworkConnectionToWebProcess.messages.in
     NetworkProcess/NetworkProcess.messages.in

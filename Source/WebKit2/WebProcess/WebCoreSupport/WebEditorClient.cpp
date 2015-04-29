@@ -72,9 +72,13 @@ void WebEditorClient::pageDestroyed()
 
 bool WebEditorClient::shouldDeleteRange(Range* range)
 {
+#if ENABLE(INJECT_BUNDLE)
     bool result = m_page->injectedBundleEditorClient().shouldDeleteRange(m_page, range);
     notImplemented();
     return result;
+#else
+    return false;
+#endif
 }
 
 #if ENABLE(DELETION_UI)
@@ -123,45 +127,69 @@ int WebEditorClient::spellCheckerDocumentTag()
 
 bool WebEditorClient::shouldBeginEditing(Range* range)
 {
+#if ENABLE(INJECT_BUNDLE)
     bool result = m_page->injectedBundleEditorClient().shouldBeginEditing(m_page, range);
     notImplemented();
     return result;
+#else
+    return false;
+#endif
 }
 
 bool WebEditorClient::shouldEndEditing(Range* range)
 {
+#if ENABLE(INJECT_BUNDLE)
     bool result = m_page->injectedBundleEditorClient().shouldEndEditing(m_page, range);
     notImplemented();
     return result;
+#else
+    return true;
+#endif
 }
 
 bool WebEditorClient::shouldInsertNode(Node* node, Range* rangeToReplace, EditorInsertAction action)
 {
+#if ENABLE(INJECT_BUNDLE)
     bool result = m_page->injectedBundleEditorClient().shouldInsertNode(m_page, node, rangeToReplace, action);
     notImplemented();
     return result;
+#else
+    return false;
+#endif
 }
 
 bool WebEditorClient::shouldInsertText(const String& text, Range* rangeToReplace, EditorInsertAction action)
 {
+#if ENABLE(INJECT_BUNDLE)
     bool result = m_page->injectedBundleEditorClient().shouldInsertText(m_page, text.impl(), rangeToReplace, action);
     notImplemented();
     return result;
+#else
+    return false;
+#endif
 }
 
 bool WebEditorClient::shouldChangeSelectedRange(Range* fromRange, Range* toRange, EAffinity affinity, bool stillSelecting)
 {
+#if ENABLE(INJECT_BUNDLE)
     bool result = m_page->injectedBundleEditorClient().shouldChangeSelectedRange(m_page, fromRange, toRange, affinity, stillSelecting);
     notImplemented();
     return result;
+#else
+    return false;
+#endif
 }
     
 bool WebEditorClient::shouldApplyStyle(StyleProperties* style, Range* range)
 {
     Ref<MutableStyleProperties> mutableStyle(style->isMutable() ? static_cast<MutableStyleProperties&>(*style) : style->mutableCopy());
+#if ENABLE(INJECT_BUNDLE)
     bool result = m_page->injectedBundleEditorClient().shouldApplyStyle(m_page, mutableStyle->ensureCSSStyleDeclaration(), range);
     notImplemented();
     return result;
+#else
+    return false;
+#endif
 }
 
 bool WebEditorClient::shouldMoveRangeAfterDelete(Range*, Range*)
@@ -174,21 +202,27 @@ void WebEditorClient::didBeginEditing()
 {
     // FIXME: What good is a notification name, if it's always the same?
     static NeverDestroyed<String> WebViewDidBeginEditingNotification(ASCIILiteral("WebViewDidBeginEditingNotification"));
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleEditorClient().didBeginEditing(m_page, WebViewDidBeginEditingNotification.get().impl());
     notImplemented();
+#endif
 }
 
 void WebEditorClient::respondToChangedContents()
 {
     static NeverDestroyed<String> WebViewDidChangeNotification(ASCIILiteral("WebViewDidChangeNotification"));
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleEditorClient().didChange(m_page, WebViewDidChangeNotification.get().impl());
     notImplemented();
+#endif
 }
 
 void WebEditorClient::respondToChangedSelection(Frame* frame)
 {
     static NeverDestroyed<String> WebViewDidChangeSelectionNotification(ASCIILiteral("WebViewDidChangeSelectionNotification"));
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleEditorClient().didChangeSelection(m_page, WebViewDidChangeSelectionNotification.get().impl());
+#endif
     if (!frame)
         return;
 
@@ -207,23 +241,31 @@ void WebEditorClient::discardedComposition(Frame*)
 void WebEditorClient::didEndEditing()
 {
     static NeverDestroyed<String> WebViewDidEndEditingNotification(ASCIILiteral("WebViewDidEndEditingNotification"));
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleEditorClient().didEndEditing(m_page, WebViewDidEndEditingNotification.get().impl());
     notImplemented();
+#endif
 }
 
 void WebEditorClient::didWriteSelectionToPasteboard()
 {
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleEditorClient().didWriteToPasteboard(m_page);
+#endif
 }
 
 void WebEditorClient::willWriteSelectionToPasteboard(Range* range)
 {
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleEditorClient().willWriteToPasteboard(m_page, range);
+#endif
 }
 
 void WebEditorClient::getClientPasteboardDataForRange(Range* range, Vector<String>& pasteboardTypes, Vector<RefPtr<SharedBuffer>>& pasteboardData)
 {
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleEditorClient().getPasteboardDataForRange(m_page, range, pasteboardTypes, pasteboardData);
+#endif
 }
 
 void WebEditorClient::registerUndoStep(PassRefPtr<UndoStep> step)
@@ -306,7 +348,9 @@ void WebEditorClient::textFieldDidBeginEditing(Element* element)
     WebFrame* webFrame = WebFrame::fromCoreFrame(*element->document().frame());
     ASSERT(webFrame);
 
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFormClient().textFieldDidBeginEditing(m_page, toHTMLInputElement(element), webFrame);
+#endif
 }
 
 void WebEditorClient::textFieldDidEndEditing(Element* element)
@@ -317,7 +361,9 @@ void WebEditorClient::textFieldDidEndEditing(Element* element)
     WebFrame* webFrame = WebFrame::fromCoreFrame(*element->document().frame());
     ASSERT(webFrame);
 
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFormClient().textFieldDidEndEditing(m_page, toHTMLInputElement(element), webFrame);
+#endif
 }
 
 void WebEditorClient::textDidChangeInTextField(Element* element)
@@ -330,7 +376,9 @@ void WebEditorClient::textDidChangeInTextField(Element* element)
     WebFrame* webFrame = WebFrame::fromCoreFrame(*element->document().frame());
     ASSERT(webFrame);
 
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFormClient().textDidChangeInTextField(m_page, toHTMLInputElement(element), webFrame, initiatedByUserTyping);
+#endif
 }
 
 void WebEditorClient::textDidChangeInTextArea(Element* element)
@@ -341,7 +389,9 @@ void WebEditorClient::textDidChangeInTextArea(Element* element)
     WebFrame* webFrame = WebFrame::fromCoreFrame(*element->document().frame());
     ASSERT(webFrame);
 
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFormClient().textDidChangeInTextArea(m_page, toHTMLTextAreaElement(element), webFrame);
+#endif
 }
 
 #if !PLATFORM(IOS)
@@ -351,6 +401,7 @@ void WebEditorClient::overflowScrollPositionChanged()
 }
 #endif
 
+#if ENABLE(INJECT_BUNDLE)
 static bool getActionTypeForKeyEvent(KeyboardEvent* event, WKInputFieldActionType& type)
 {
     String key = event->keyIdentifier();
@@ -395,12 +446,14 @@ static API::InjectedBundle::FormClient::InputFieldAction toInputFieldAction(WKIn
     ASSERT_NOT_REACHED();
     return API::InjectedBundle::FormClient::InputFieldAction::Cancel;
 }
+#endif
 
 bool WebEditorClient::doTextFieldCommandFromEvent(Element* element, KeyboardEvent* event)
 {
     if (!isHTMLInputElement(element))
         return false;
 
+#if ENABLE(INJECT_BUNDLE)
     WKInputFieldActionType actionType = static_cast<WKInputFieldActionType>(0);
     if (!getActionTypeForKeyEvent(event, actionType))
         return false;
@@ -409,6 +462,9 @@ bool WebEditorClient::doTextFieldCommandFromEvent(Element* element, KeyboardEven
     ASSERT(webFrame);
 
     return m_page->injectedBundleFormClient().shouldPerformActionInTextField(m_page, toHTMLInputElement(element), toInputFieldAction(actionType), webFrame);
+#else
+    return true;
+#endif
 }
 
 void WebEditorClient::textWillBeDeletedInTextField(Element* element)
@@ -419,7 +475,9 @@ void WebEditorClient::textWillBeDeletedInTextField(Element* element)
     WebFrame* webFrame = WebFrame::fromCoreFrame(*element->document().frame());
     ASSERT(webFrame);
 
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFormClient().shouldPerformActionInTextField(m_page, toHTMLInputElement(element), toInputFieldAction(WKInputFieldActionTypeInsertDelete), webFrame);
+#endif
 }
 
 bool WebEditorClient::shouldEraseMarkersAfterChangeSelection(WebCore::TextCheckingType type) const

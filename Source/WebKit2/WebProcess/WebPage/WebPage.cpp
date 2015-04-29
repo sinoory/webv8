@@ -36,9 +36,11 @@
 #include "EditingRange.h"
 #include "EditorState.h"
 #include "EventDispatcher.h"
+#if ENABLE(INJECT_BUNDLE)
 #include "InjectedBundle.h"
 #include "InjectedBundleBackForwardList.h"
 #include "InjectedBundleUserMessageCoders.h"
+#endif
 #include "LayerTreeHost.h"
 #include "Logging.h"
 #include "NetscapePlugin.h"
@@ -233,8 +235,10 @@ PassRefPtr<WebPage> WebPage::create(uint64_t pageID, const WebPageCreationParame
 {
     RefPtr<WebPage> page = adoptRef(new WebPage(pageID, parameters));
 
+#if ENABLE(INJECT_BUNDLE)
     if (page->pageGroup()->isVisibleToInjectedBundle() && WebProcess::shared().injectedBundle())
         WebProcess::shared().injectedBundle()->didCreatePage(page.get());
+#endif
 
     return page.release();
 }
@@ -544,6 +548,7 @@ uint64_t WebPage::messageSenderDestinationID()
     return pageID();
 }
 
+#if ENABLE(INJECT_BUNDLE)
 #if ENABLE(CONTEXT_MENUS)
 void WebPage::initializeInjectedBundleContextMenuClient(WKBundlePageContextMenuClientBase* client)
 {
@@ -616,7 +621,7 @@ void WebPage::initializeInjectedBundleDiagnosticLoggingClient(WKBundlePageDiagno
 {
     m_logDiagnosticMessageClient.initialize(client);
 }
-
+#endif //INJECT_BUNDLE
 #if ENABLE(NETSCAPE_PLUGIN_API)
 PassRefPtr<Plugin> WebPage::createPlugin(WebFrame* frame, HTMLPlugInElement* pluginElement, const Plugin::Parameters& parameters, String& newMIMEType)
 {
@@ -911,8 +916,10 @@ void WebPage::close()
     if (!mainWebFrame()->url().isEmpty())
         reportUsedFeatures();
 
+#if ENABLE(INJECT_BUNDLE)
     if (pageGroup()->isVisibleToInjectedBundle() && WebProcess::shared().injectedBundle())
         WebProcess::shared().injectedBundle()->willDestroyPage(this);
+#endif
 
 #if ENABLE(INSPECTOR)
     m_inspector = 0;
@@ -1575,6 +1582,7 @@ void WebPage::setGapBetweenPages(double gap)
 
 void WebPage::postInjectedBundleMessage(const String& messageName, IPC::MessageDecoder& decoder)
 {
+#if ENABLE(INJECT_BUNDLE)
     InjectedBundle* injectedBundle = WebProcess::shared().injectedBundle();
     if (!injectedBundle)
         return;
@@ -1585,6 +1593,7 @@ void WebPage::postInjectedBundleMessage(const String& messageName, IPC::MessageD
         return;
 
     injectedBundle->didReceiveMessageToPage(this, messageName, messageBody.get());
+#endif
 }
 
 void WebPage::installPageOverlay(PassRefPtr<PageOverlay> pageOverlay, PageOverlay::FadeMode fadeMode)

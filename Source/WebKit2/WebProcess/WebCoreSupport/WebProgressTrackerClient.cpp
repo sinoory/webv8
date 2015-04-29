@@ -69,8 +69,10 @@ void WebProgressTrackerClient::progressFinished(Frame& originatingProgressFrame)
     if (!originatingProgressFrame.isMainFrame())
         return;
     
+#if ENABLE(INJECT_BUNDLE)
     // Notify the bundle client.
     m_webPage.injectedBundleLoaderClient().didFinishProgress(&m_webPage);
+#endif
     
     m_webPage.send(Messages::WebPageProxy::DidFinishProgress());
 }

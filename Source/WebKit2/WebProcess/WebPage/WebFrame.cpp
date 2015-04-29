@@ -34,7 +34,9 @@
 #include "InjectedBundleScriptWorld.h"
 #include "PluginView.h"
 #include "WKAPICast.h"
+#if ENABLE(INJECT_BUNDLE)
 #include "WKBundleAPICast.h"
+#endif
 #include "WebChromeClient.h"
 #include "WebDocumentLoader.h"
 #include "WebPage.h"

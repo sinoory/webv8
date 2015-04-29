@@ -88,8 +88,12 @@ bool WebFullScreenManager::supportsFullScreen(bool withKeyboard)
 {
     if (!m_page->corePage()->settings().fullScreenEnabled())
         return false;
-
+#if ENABLE(INJECT_BUNDLE)
     return m_page->injectedBundleFullScreenClient().supportsFullScreen(m_page.get(), withKeyboard);
+#else
+    return false;
+#endif
+
 }
 
 void WebFullScreenManager::enterFullScreenForElement(WebCore::Element* element)
@@ -97,12 +101,16 @@ void WebFullScreenManager::enterFullScreenForElement(WebCore::Element* element)
     ASSERT(element);
     m_element = element;
     m_initialFrame = screenRectOfContents(m_element.get());
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFullScreenClient().enterFullScreenForElement(m_page.get(), element);
+#endif
 }
 
 void WebFullScreenManager::exitFullScreenForElement(WebCore::Element* element)
 {
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFullScreenClient().exitFullScreenForElement(m_page.get(), element);
+#endif
 }
 
 void WebFullScreenManager::willEnterFullScreen()
@@ -113,7 +121,9 @@ void WebFullScreenManager::willEnterFullScreen()
     m_element->document().updateLayout();
     m_page->forceRepaintWithoutCallback();
     m_finalFrame = screenRectOfContents(m_element.get());
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFullScreenClient().beganEnterFullScreen(m_page.get(), m_initialFrame, m_finalFrame);
+#endif
 }
 
 void WebFullScreenManager::didEnterFullScreen()
@@ -128,7 +138,9 @@ void WebFullScreenManager::willExitFullScreen()
     m_finalFrame = screenRectOfContents(m_element.get());
     m_element->document().webkitWillExitFullScreenForElement(m_element.get());
     m_page->showPageBanners();
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFullScreenClient().beganExitFullScreen(m_page.get(), m_finalFrame, m_initialFrame);
+#endif
 }
 
 void WebFullScreenManager::didExitFullScreen()
@@ -151,7 +163,9 @@ void WebFullScreenManager::requestExitFullScreen()
 
 void WebFullScreenManager::close()
 {
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFullScreenClient().closeFullScreen(m_page.get());
+#endif
 }
 
 void WebFullScreenManager::saveScrollPosition()

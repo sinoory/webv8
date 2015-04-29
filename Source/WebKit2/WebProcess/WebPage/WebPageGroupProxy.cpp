@@ -27,7 +27,9 @@
 #include "WebPageGroupProxy.h"
 
 #include "WebProcess.h"
+#if ENABLE(INJECT_BUNDLE)
 #include "InjectedBundle.h"
+#endif
 #include <WebCore/DOMWrapperWorld.h>
 #include <WebCore/PageGroup.h>
 
@@ -37,9 +39,10 @@ PassRefPtr<WebPageGroupProxy> WebPageGroupProxy::create(const WebPageGroupData& 
 {
     RefPtr<WebPageGroupProxy> pageGroup = adoptRef(new WebPageGroupProxy(data));
     
+#if ENABLE(INJECT_BUNDLE)
     if (pageGroup->isVisibleToInjectedBundle() && WebProcess::shared().injectedBundle())
         WebProcess::shared().injectedBundle()->didInitializePageGroup(pageGroup.get());
-
+#endif
     return pageGroup.release();
 }
 
@@ -59,12 +62,16 @@ WebPageGroupProxy::WebPageGroupProxy(const WebPageGroupData& data)
 
 void WebPageGroupProxy::addUserStyleSheet(const WebCore::UserStyleSheet& userStyleSheet)
 {
+#if ENABLE(INJECT_BUNDLE)
     m_pageGroup->addUserStyleSheetToWorld(*WebCore::mainThreadNormalWorld(), userStyleSheet.source(), userStyleSheet.url(), userStyleSheet.whitelist(), userStyleSheet.blacklist(), userStyleSheet.injectedFrames(), userStyleSheet.level());
+#endif
 }
 
 void WebPageGroupProxy::addUserScript(const WebCore::UserScript& userScript)
 {
+#if ENABLE(INJECT_BUNDLE)
     m_pageGroup->addUserScriptToWorld(*WebCore::mainThreadNormalWorld(), userScript.source(), userScript.url(), userScript.whitelist(), userScript.blacklist(), userScript.injectionTime(), userScript.injectedFrames());
+#endif
 }
 
 void WebPageGroupProxy::removeAllUserStyleSheets()

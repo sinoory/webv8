@@ -292,7 +292,6 @@ list(APPEND WebKit2_SOURCES
     WebProcess/WebPage/gtk/WebPageGtk.cpp
     WebProcess/WebPage/gtk/WebPrintOperationGtk.cpp
 
-    WebProcess/gtk/WebGtkInjectedBundleMain.cpp
     WebProcess/gtk/WebProcessMainGtk.cpp
 
     WebProcess/soup/WebKitSoupRequestGeneric.cpp
@@ -319,6 +318,7 @@ list(APPEND WebKit2_SOURCES
     WebProcess/InjectedBundle/API/gtk/WebKitWebExtension.cpp
     WebProcess/InjectedBundle/API/gtk/WebKitWebPage.cpp
     WebProcess/gtk/WebGtkExtensionManager.cpp
+    WebProcess/gtk/WebGtkInjectedBundleMain.cpp
 )
 endif()
 
@@ -740,9 +740,11 @@ include_directories(
     "${FORWARDING_HEADERS_WEBKIT2GTK_DIR}"
 )
 
+if (ENABLE_INJECT_BUNDLE)
 add_library(webkit2gtkinjectedbundle MODULE "${WEBKIT2_DIR}/WebProcess/gtk/WebGtkInjectedBundleMain.cpp")
 add_dependencies(webkit2gtkinjectedbundle GObjectDOMBindings)
 add_webkit2_prefix_header(webkit2gtkinjectedbundle)
+endif ()
 
 # Add ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} to LD_LIBRARY_PATH
 string(COMPARE EQUAL "$ENV{LD_LIBRARY_PATH}" "" ld_library_path_not_exist)
@@ -865,7 +867,9 @@ ADD_TYPELIB(${CMAKE_BINARY_DIR}/WebKit2WebExtension-${WEBKITGTK_API_VERSION}.typ
 #install(TARGETS webkit2gtkinjectedbundle
 #        DESTINATION "${LIB_INSTALL_DIR}/webkit2gtk-${WEBKITGTK_API_VERSION}/injected-bundle"
 #)
+if (ENABLE_INJECT_BUNDLE)
 install(TARGETS webkit2gtkinjectedbundle DESTINATION "${BROWSER_LIB_INSTALL_DIR}")
+endif ()
 # ZRL 内部使用，不需要安装pkgconfig
 #install(FILES "${CMAKE_BINARY_DIR}/Source/WebKit2/webkit2gtk-${WEBKITGTK_API_VERSION}.pc"
 #              "${CMAKE_BINARY_DIR}/Source/WebKit2/webkit2gtk-web-extension-${WEBKITGTK_API_VERSION}.pc"

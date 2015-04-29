@@ -32,12 +32,20 @@
 #include "FindController.h"
 #include "GeolocationPermissionRequestManager.h"
 #include "ImageOptions.h"
+#include "WKEvent.h"
+
+#if ENABLE(INJECT_BUNDLE)
 #include "InjectedBundlePageDiagnosticLoggingClient.h"
 #include "InjectedBundlePageEditorClient.h"
 #include "InjectedBundlePageFullScreenClient.h"
 #include "InjectedBundlePageLoaderClient.h"
 #include "InjectedBundlePagePolicyClient.h"
 #include "InjectedBundlePageResourceLoadClient.h"
+#if ENABLE(CONTEXT_MENUS)
+#include "InjectedBundlePageContextMenuClient.h"
+#endif
+
+#endif
 #include "LayerTreeHost.h"
 #include "MessageReceiver.h"
 #include "MessageSender.h"
@@ -86,9 +94,6 @@
 #include <WebCore/PlatformTouchEvent.h>
 #endif
 
-#if ENABLE(CONTEXT_MENUS)
-#include "InjectedBundlePageContextMenuClient.h"
-#endif
 
 #if PLATFORM(COCOA)
 #include "ViewGestureGeometryCollector.h"
@@ -276,6 +281,7 @@ public:
     void didReceiveMessage(IPC::Connection*, IPC::MessageDecoder&) override;
     void didReceiveSyncMessage(IPC::Connection*, IPC::MessageDecoder&, std::unique_ptr<IPC::MessageEncoder>&) override;
 
+#if ENABLE(INJECT_BUNDLE)
     // -- InjectedBundle methods
 #if ENABLE(CONTEXT_MENUS)
     void initializeInjectedBundleContextMenuClient(WKBundlePageContextMenuClientBase*);
@@ -304,7 +310,7 @@ public:
 #if ENABLE(FULLSCREEN_API)
     InjectedBundlePageFullScreenClient& injectedBundleFullScreenClient() { return m_fullScreenClient; }
 #endif
-
+#endif
     bool findStringFromInjectedBundle(const String&, FindOptions);
 
     WebFrame* mainWebFrame() const { return m_mainFrame.get(); }
@@ -1150,7 +1156,7 @@ private:
     HashMap<uint64_t, RefPtr<WebUndoStep>> m_undoStepMap;
 
     WebCore::IntSize m_windowResizerSize;
-
+#if ENABLE(INJECT_BUNDLE)
 #if ENABLE(CONTEXT_MENUS)
     InjectedBundlePageContextMenuClient m_contextMenuClient;
 #endif
@@ -1164,7 +1170,7 @@ private:
     InjectedBundlePageFullScreenClient m_fullScreenClient;
 #endif
     InjectedBundlePageDiagnosticLoggingClient m_logDiagnosticMessageClient;
-
+#endif
     FindController m_findController;
 
 #if ENABLE(INSPECTOR)

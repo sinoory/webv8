@@ -187,7 +187,9 @@ void WebChromeClient::focusedElementChanged(Element* element)
 
     WebFrame* webFrame = WebFrame::fromCoreFrame(*element->document().frame());
     ASSERT(webFrame);
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleFormClient().didFocusTextField(m_page, inputElement, webFrame);
+#endif
 }
 
 void WebChromeClient::focusedFrameChanged(Frame* frame)
@@ -247,10 +249,11 @@ void WebChromeClient::setToolbarsVisible(bool toolbarsAreVisible)
 
 bool WebChromeClient::toolbarsVisible()
 {
+#if ENABLE(INJECT_BUNDLE)
     API::InjectedBundle::PageUIClient::UIElementVisibility toolbarsVisibility = m_page->injectedBundleUIClient().toolbarsAreVisible(m_page);
     if (toolbarsVisibility != API::InjectedBundle::PageUIClient::UIElementVisibility::Unknown)
         return toolbarsVisibility == API::InjectedBundle::PageUIClient::UIElementVisibility::Visible;
-    
+#endif    
     bool toolbarsAreVisible = true;
     if (!WebProcess::shared().parentProcessConnection()->sendSync(Messages::WebPageProxy::GetToolbarsAreVisible(), Messages::WebPageProxy::GetToolbarsAreVisible::Reply(toolbarsAreVisible), m_page->pageID()))
         return true;
@@ -265,10 +268,11 @@ void WebChromeClient::setStatusbarVisible(bool statusBarIsVisible)
 
 bool WebChromeClient::statusbarVisible()
 {
+#if ENABLE(INJECT_BUNDLE)
     API::InjectedBundle::PageUIClient::UIElementVisibility statusbarVisibility = m_page->injectedBundleUIClient().statusBarIsVisible(m_page);
     if (statusbarVisibility != API::InjectedBundle::PageUIClient::UIElementVisibility::Unknown)
         return statusbarVisibility == API::InjectedBundle::PageUIClient::UIElementVisibility::Visible;
-
+#endif
     bool statusBarIsVisible = true;
     if (!WebProcess::shared().parentProcessConnection()->sendSync(Messages::WebPageProxy::GetStatusBarIsVisible(), Messages::WebPageProxy::GetStatusBarIsVisible::Reply(statusBarIsVisible), m_page->pageID()))
         return true;
@@ -294,10 +298,11 @@ void WebChromeClient::setMenubarVisible(bool menuBarVisible)
 
 bool WebChromeClient::menubarVisible()
 {
+#if ENABLE(INJECT_BUNDLE)
     API::InjectedBundle::PageUIClient::UIElementVisibility menubarVisibility = m_page->injectedBundleUIClient().menuBarIsVisible(m_page);
     if (menubarVisibility != API::InjectedBundle::PageUIClient::UIElementVisibility::Unknown)
         return menubarVisibility == API::InjectedBundle::PageUIClient::UIElementVisibility::Visible;
-    
+#endif    
     bool menuBarIsVisible = true;
     if (!WebProcess::shared().parentProcessConnection()->sendSync(Messages::WebPageProxy::GetMenuBarIsVisible(), Messages::WebPageProxy::GetMenuBarIsVisible::Reply(menuBarIsVisible), m_page->pageID()))
         return true;
@@ -312,9 +317,10 @@ void WebChromeClient::setResizable(bool resizable)
 
 void WebChromeClient::addMessageToConsole(MessageSource, MessageLevel, const String& message, unsigned lineNumber, unsigned columnNumber, const String& sourceID)
 {
+#if ENABLE(INJECT_BUNDLE)
     // Notify the bundle client.
     m_page->injectedBundleUIClient().willAddMessageToConsole(m_page, message, lineNumber);
-
+#endif
     //ZRL Implement the function
 #if 0
     notImplemented();
@@ -371,9 +377,10 @@ void WebChromeClient::runJavaScriptAlert(Frame* frame, const String& alertText)
     WebFrame* webFrame = WebFrame::fromCoreFrame(*frame);
     ASSERT(webFrame);
 
+#if ENABLE(INJECT_BUNDLE)
     // Notify the bundle client.
     m_page->injectedBundleUIClient().willRunJavaScriptAlert(m_page, alertText, webFrame);
-
+#endif
     unsigned syncSendFlags = IPC::InformPlatformProcessWillSuspend;
     if (WebPage::synchronousMessagesShouldSpinRunLoop())
         syncSendFlags |= IPC::SpinRunLoopWhileWaitingForReply;
@@ -385,9 +392,10 @@ bool WebChromeClient::runJavaScriptConfirm(Frame* frame, const String& message)
     WebFrame* webFrame = WebFrame::fromCoreFrame(*frame);
     ASSERT(webFrame);
 
+#if ENABLE(INJECT_BUNDLE)
     // Notify the bundle client.
     m_page->injectedBundleUIClient().willRunJavaScriptConfirm(m_page, message, webFrame);
-
+#endif
     unsigned syncSendFlags = IPC::InformPlatformProcessWillSuspend;
     if (WebPage::synchronousMessagesShouldSpinRunLoop())
         syncSendFlags |= IPC::SpinRunLoopWhileWaitingForReply;
@@ -403,9 +411,10 @@ bool WebChromeClient::runJavaScriptPrompt(Frame* frame, const String& message, c
     WebFrame* webFrame = WebFrame::fromCoreFrame(*frame);
     ASSERT(webFrame);
 
+#if ENABLE(INJECT_BUNDLE)
     // Notify the bundle client.
     m_page->injectedBundleUIClient().willRunJavaScriptPrompt(m_page, message, defaultValue, webFrame);
-
+#endif
     unsigned syncSendFlags = IPC::InformPlatformProcessWillSuspend;
     if (WebPage::synchronousMessagesShouldSpinRunLoop())
         syncSendFlags |= IPC::SpinRunLoopWhileWaitingForReply;
@@ -418,9 +427,10 @@ bool WebChromeClient::runJavaScriptPrompt(Frame* frame, const String& message, c
 
 void WebChromeClient::setStatusbarText(const String& statusbarText)
 {
+#if ENABLE(INJECT_BUNDLE)
     // Notify the bundle client.
     m_page->injectedBundleUIClient().willSetStatusbarText(m_page, statusbarText);
-
+#endif
     m_page->send(Messages::WebPageProxy::SetStatusText(statusbarText));
 }
 
@@ -618,9 +628,10 @@ void WebChromeClient::mouseDidMoveOverElement(const HitTestResult& hitTestResult
 {
     RefPtr<API::Object> userData;
 
+#if ENABLE(INJECT_BUNDLE)
     // Notify the bundle client.
     m_page->injectedBundleUIClient().mouseDidMoveOverElement(m_page, hitTestResult, static_cast<WebEvent::Modifiers>(modifierFlags), userData);
-
+#endif
     // Notify the UIProcess.
     WebHitTestResult::Data webHitTestResultData(hitTestResult);
     m_page->send(Messages::WebPageProxy::MouseDidMoveOverElement(webHitTestResultData, modifierFlags, InjectedBundleUserMessageEncoder(userData.get())));
@@ -630,9 +641,10 @@ void WebChromeClient::didBeginTrackingPotentialLongMousePress(const IntPoint& mo
 {
     RefPtr<API::Object> userData;
 
+#if ENABLE(INJECT_BUNDLE)
     // Notify the bundle client.
     m_page->injectedBundleUIClient().didBeginTrackingPotentialLongMousePress(m_page, mouseDownPosition, hitTestResult, userData);
-    
+#endif    
     // Notify the UIProcess.
     WebHitTestResult::Data webHitTestResultData(hitTestResult);
     m_page->send(Messages::WebPageProxy::DidBeginTrackingPotentialLongMousePress(mouseDownPosition, webHitTestResultData, InjectedBundleUserMessageEncoder(userData.get())));
@@ -642,9 +654,10 @@ void WebChromeClient::didRecognizeLongMousePress()
 {
     RefPtr<API::Object> userData;
 
+#if ENABLE(INJECT_BUNDLE)
     // Notify the bundle client.
     m_page->injectedBundleUIClient().didRecognizeLongMousePress(m_page, userData);
-
+#endif
     // Notify the UIProcess.
     m_page->send(Messages::WebPageProxy::DidRecognizeLongMousePress(InjectedBundleUserMessageEncoder(userData.get())));
 }
@@ -653,8 +666,10 @@ void WebChromeClient::didCancelTrackingPotentialLongMousePress()
 {
     RefPtr<API::Object> userData;
 
+#if ENABLE(INJECT_BUNDLE)
     // Notify the bundle client.
     m_page->injectedBundleUIClient().didCancelTrackingPotentialLongMousePress(m_page, userData);
+#endif
 
     // Notify the UIProcess.
     m_page->send(Messages::WebPageProxy::DidCancelTrackingPotentialLongMousePress(InjectedBundleUserMessageEncoder(userData.get())));
@@ -706,8 +721,9 @@ void WebChromeClient::exceededDatabaseQuota(Frame* frame, const String& database
     uint64_t currentOriginUsage = dbManager.usageForOrigin(origin);
     uint64_t newQuota = 0;
     RefPtr<WebSecurityOrigin> webSecurityOrigin = WebSecurityOrigin::create(WebCore::SecurityOrigin::createFromDatabaseIdentifier(origin->databaseIdentifier()));
+#if ENABLE(INJECT_BUNDLE)
     newQuota = m_page->injectedBundleUIClient().didExceedDatabaseQuota(m_page, webSecurityOrigin.get(), databaseName, details.displayName(), currentQuota, currentOriginUsage, details.currentUsage(), details.expectedUsage());
-
+#endif
     if (!newQuota) {
         unsigned syncSendFlags = IPC::InformPlatformProcessWillSuspend;
         if (WebPage::synchronousMessagesShouldSpinRunLoop())
@@ -717,7 +733,6 @@ void WebChromeClient::exceededDatabaseQuota(Frame* frame, const String& database
             Messages::WebPageProxy::ExceededDatabaseQuota(webFrame->frameID(), origin->databaseIdentifier(), databaseName, details.displayName(), currentQuota, currentOriginUsage, details.currentUsage(), details.expectedUsage()),
             Messages::WebPageProxy::ExceededDatabaseQuota::Reply(newQuota), m_page->pageID(), std::chrono::milliseconds::max(), syncSendFlags);
     }
-
     dbManager.setQuota(origin, newQuota);
 }
 #endif
@@ -731,9 +746,10 @@ void WebChromeClient::reachedMaxAppCacheSize(int64_t)
 void WebChromeClient::reachedApplicationCacheOriginQuota(SecurityOrigin* origin, int64_t totalBytesNeeded)
 {
     RefPtr<WebSecurityOrigin> webSecurityOrigin = WebSecurityOrigin::createFromString(origin->toString());
+#if ENABLE(INJECT_BUNDLE)
     if (m_page->injectedBundleUIClient().didReachApplicationCacheOriginQuota(m_page, webSecurityOrigin.get(), totalBytesNeeded))
         return;
-
+#endif
     unsigned syncSendFlags = IPC::InformPlatformProcessWillSuspend;
     if (WebPage::synchronousMessagesShouldSpinRunLoop())
         syncSendFlags |= IPC::SpinRunLoopWhileWaitingForReply;
@@ -763,13 +779,21 @@ void WebChromeClient::populateVisitedLinks()
 
 bool WebChromeClient::shouldReplaceWithGeneratedFileForUpload(const String& path, String& generatedFilename)
 {
+#if ENABLE(INJECT_BUNDLE)
     generatedFilename = m_page->injectedBundleUIClient().shouldGenerateFileForUpload(m_page, path);
     return !generatedFilename.isNull();
+#else
+    return false;
+#endif
 }
 
 String WebChromeClient::generateReplacementFile(const String& path)
 {
+#if ENABLE(INJECT_BUNDLE)
     return m_page->injectedBundleUIClient().generateFileForUpload(m_page, path);
+#else
+    return path;
+#endif
 }
 
 #if ENABLE(INPUT_TYPE_COLOR)
@@ -822,12 +846,16 @@ void WebChromeClient::scheduleAnimation()
 
 void WebChromeClient::didAssociateFormControls(const Vector<RefPtr<WebCore::Element>>& elements)
 {
+#if ENABLE(INJECT_BUNDLE)
     return m_page->injectedBundleFormClient().didAssociateFormControls(m_page, elements);
+#endif
 }
 
 bool WebChromeClient::shouldNotifyOnFormChanges()
 {
+#if ENABLE(INJECT_BUNDLE)
     return m_page->injectedBundleFormClient().shouldNotifyOnFormChanges(m_page);
+#endif
 }
 
 bool WebChromeClient::selectItemWritingDirectionIsNatural()
@@ -1017,27 +1045,45 @@ void WebChromeClient::logDiagnosticMessage(const String& message, const String& 
     if (!m_page->corePage()->settings().diagnosticLoggingEnabled())
         return;
 
+#if ENABLE(INJECT_BUNDLE)
     m_page->injectedBundleDiagnosticLoggingClient().logDiagnosticMessage(m_page, message, description, success);
+#endif
 }
 
 String WebChromeClient::plugInStartLabelTitle(const String& mimeType) const
 {
+#if ENABLE(INJECT_BUNDLE)
     return m_page->injectedBundleUIClient().plugInStartLabelTitle(mimeType);
+#else
+    return mimeType;
+#endif
 }
 
 String WebChromeClient::plugInStartLabelSubtitle(const String& mimeType) const
 {
+#if ENABLE(INJECT_BUNDLE)
     return m_page->injectedBundleUIClient().plugInStartLabelSubtitle(mimeType);
+#else
+    return mimeType;
+#endif
 }
 
 String WebChromeClient::plugInExtraStyleSheet() const
 {
+#if ENABLE(INJECT_BUNDLE)
     return m_page->injectedBundleUIClient().plugInExtraStyleSheet();
+#else
+    return "";
+#endif
 }
 
 String WebChromeClient::plugInExtraScript() const
 {
+#if ENABLE(INJECT_BUNDLE)
     return m_page->injectedBundleUIClient().plugInExtraScript();
+#else //CMP_ERROR_TODO no INJECT_BUNDLE return ""
+    return "";
+#endif
 }
 
 void WebChromeClient::enableSuddenTermination()

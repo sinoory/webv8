@@ -24,7 +24,7 @@
  */
 
 #include "config.h"
-#include "WKSerializedScriptValue.h"
+//#include "WKSerializedScriptValue.h"
 #include "WKSerializedScriptValuePrivate.h"
 
 #include "WKAPICast.h"
