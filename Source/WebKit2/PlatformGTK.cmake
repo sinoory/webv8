@@ -268,7 +268,6 @@ list(APPEND WebKit2_SOURCES
     WebProcess/Cookies/soup/WebKitSoupCookieJarSqlite.cpp
 
 
-    WebProcess/InjectedBundle/gtk/InjectedBundleGtk.cpp
 
     WebProcess/Plugins/Netscape/unix/PluginProxyUnix.cpp
 
@@ -307,6 +306,7 @@ list(APPEND WebKit2_SOURCES
 
     UIProcess/gtk/WebInspectorClientGtk.cpp
     UIProcess/gtk/WebInspectorProxyGtk.cpp
+    WebProcess/InjectedBundle/gtk/InjectedBundleGtk.cpp
 
 )
 endif ()

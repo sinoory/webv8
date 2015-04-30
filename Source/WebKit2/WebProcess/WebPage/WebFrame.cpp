@@ -43,7 +43,9 @@
 #include "WebPageProxyMessages.h"
 #include "WebProcess.h"
 //#include <JavaScriptCore/APICast.h>
+#if ENABLE(INJECT_BUNDLE)
 #include <JavaScriptCore/JSContextRef.h>
+#endif
 #include <JavaScriptCore/JSLock.h>
 #include <JavaScriptCore/JSValueRef.h>
 #include <WebCore/ArchiveResource.h>
@@ -658,10 +660,9 @@ void WebFrame::stopLoading()
 
     m_coreFrame->loader().stopForUserCancel();
 }
-
+#if ENABLE(INJECT_BUNDLE)
 WebFrame* WebFrame::frameForContext(JSContextRef context)
 {
-#if 0 //CMP_ERROR_TODO InjectedBundle
     JSObjectRef globalObjectRef = JSContextGetGlobalObject(context);
     JSC::JSObject* globalObjectObj = toJS(globalObjectRef);
     if (strcmp(globalObjectObj->classInfo()->className, "JSDOMWindowShell") != 0)
@@ -669,11 +670,9 @@ WebFrame* WebFrame::frameForContext(JSContextRef context)
 
     Frame* frame = static_cast<JSDOMWindowShell*>(globalObjectObj)->window()->impl().frame();
     return WebFrame::fromCoreFrame(*frame);
-#else
     return 0;
-#endif
 }
-
+#endif
 JSValueRef WebFrame::jsWrapperForWorld(InjectedBundleNodeHandle* nodeHandle, InjectedBundleScriptWorld* world)
 {
 #if 0 //CMP_ERROR_TODO InjectedBundle

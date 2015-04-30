@@ -155,9 +155,10 @@ class PageLoadStateObserver;
 struct _WebKitWebViewPrivate {
     ~_WebKitWebViewPrivate()
     {
+#if ENABLE(WEBJSC)
         if (javascriptGlobalContext)
             JSGlobalContextRelease(javascriptGlobalContext);
-
+#endif
         // For modal dialogs, make sure the main loop is stopped when finalizing the webView.
         if (modalLoop && g_main_loop_is_running(modalLoop.get()))
             g_main_loop_quit(modalLoop.get());
@@ -187,8 +188,9 @@ struct _WebKitWebViewPrivate {
     unsigned mouseTargetModifiers;
 
     GRefPtr<WebKitFindController> findController;
+#if ENABLE(WEBJSC)
     JSGlobalContextRef javascriptGlobalContext;
-
+#endif
     GRefPtr<WebKitWebResource> mainResource;
     LoadingResourcesMap loadingResourcesMap;
 
@@ -2889,11 +2891,15 @@ WebKitFindController* webkit_web_view_get_find_controller(WebKitWebView* webView
  */
 JSGlobalContextRef webkit_web_view_get_javascript_global_context(WebKitWebView* webView)
 {
+#if ENABLE(WEBJSC)
     g_return_val_if_fail(WEBKIT_IS_WEB_VIEW(webView), 0);
 
     if (!webView->priv->javascriptGlobalContext)
         webView->priv->javascriptGlobalContext = JSGlobalContextCreate(0);
     return webView->priv->javascriptGlobalContext;
+#else
+    return 0;
+#endif
 }
 
 static void webkitWebViewRunJavaScriptCallback(WebSerializedScriptValue* wkSerializedScriptValue, GTask* task)

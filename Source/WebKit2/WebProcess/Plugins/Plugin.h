@@ -35,6 +35,7 @@
 #include <wtf/RefCounted.h>
 #include <wtf/RetainPtr.h>
 #include <wtf/Vector.h>
+#include <WebCore/SharedBuffer.h>
 
 #if PLATFORM(COCOA)
 #include "LayerHostingContext.h"

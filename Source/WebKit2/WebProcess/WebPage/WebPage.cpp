@@ -40,7 +40,10 @@
 #include "InjectedBundle.h"
 #include "InjectedBundleBackForwardList.h"
 #include "InjectedBundleUserMessageCoders.h"
+#include "WKBundleAPICast.h"
 #endif
+#include "InjectedBundleBackForwardList.h"
+#include "InjectedBundleUserMessageCoders.h"
 #include "LayerTreeHost.h"
 #include "Logging.h"
 #include "NetscapePlugin.h"
@@ -56,7 +59,6 @@
 #include "SessionTracker.h"
 #include "ShareableBitmap.h"
 #include "VisitedLinkTableController.h"
-#include "WKBundleAPICast.h"
 #include "WKRetainPtr.h"
 #include "WKSharedAPICast.h"
 #include "WebAlternativeTextClient.h"
@@ -276,8 +278,10 @@ WebPage::WebPage(uint64_t pageID, const WebPageCreationParameters& parameters)
     , m_accessibilityObject(0)
 #endif
     , m_setCanStartMediaTimer(RunLoop::main(), this, &WebPage::setCanStartMediaTimerFired)
+#if ENABLE(INJECT_BUNDLE)
     , m_formClient(std::make_unique<API::InjectedBundle::FormClient>())
     , m_uiClient(std::make_unique<API::InjectedBundle::PageUIClient>())
+#endif
     , m_findController(this)
 #if ENABLE(INPUT_TYPE_COLOR)
     , m_activeColorChooser(0)
@@ -958,6 +962,7 @@ void WebPage::close()
     m_determinePrimarySnapshottedPlugInTimer.stop();
 #endif
 
+#if ENABLE(INJECT_BUNDLE)
 #if ENABLE(CONTEXT_MENUS)
     m_contextMenuClient.initialize(0);
 #endif
@@ -971,6 +976,7 @@ void WebPage::close()
     m_fullScreenClient.initialize(0);
 #endif
     m_logDiagnosticMessageClient.initialize(0);
+#endif
 
     m_printContext = nullptr;
     m_mainFrame->coreFrame()->loader().detachFromParent();
@@ -1028,7 +1034,9 @@ void WebPage::loadRequest(uint64_t navigationID, const ResourceRequest& request,
 
     // Let the InjectedBundle know we are about to start the load, passing the user data from the UIProcess
     // to all the client to set up any needed state.
+#if ENABLE(INJECT_BUNDLE)
     m_loaderClient.willLoadURLRequest(this, request, userData.get());
+#endif
 
     // Initate the load in WebCore.
     corePage()->userInputBridge().loadRequest(FrameLoadRequest(m_mainFrame->coreFrame(), request));
@@ -1052,7 +1060,9 @@ void WebPage::loadDataImpl(uint64_t navigationID, PassRefPtr<SharedBuffer> share
 
     // Let the InjectedBundle know we are about to start the load, passing the user data from the UIProcess
     // to all the client to set up any needed state.
+#if ENABLE(INJECT_BUNDLE)
     m_loaderClient.willLoadDataRequest(this, request, const_cast<SharedBuffer*>(substituteData.content()), substituteData.mimeType(), substituteData.textEncoding(), substituteData.failingURL(), userData.get());
+#endif
 
     // Initate the load in WebCore.
     m_mainFrame->coreFrame()->loader().load(FrameLoadRequest(m_mainFrame->coreFrame(), request, substituteData));
@@ -1793,7 +1803,9 @@ void WebPage::pageDidScroll()
     if (!m_inDynamicSizeUpdate)
         m_dynamicSizeUpdateHistory.clear();
 #endif
+#if ENABLE(INJECT_BUNDLE)
     m_uiClient->pageDidScroll(this);
+#endif
 
     send(Messages::WebPageProxy::PageDidScroll());
 }
@@ -2380,6 +2392,7 @@ String WebPage::userAgent(const URL& webCoreURL) const
 
 String WebPage::userAgent(WebFrame* frame, const URL& webcoreURL) const
 {
+#if ENABLE(INJECT_BUNDLE)
     if (frame && m_loaderClient.client().userAgentForURL) {
         RefPtr<API::URL> url = API::URL::create(webcoreURL);
 
@@ -2387,7 +2400,7 @@ String WebPage::userAgent(WebFrame* frame, const URL& webcoreURL) const
         if (apiString)
             return apiString->string();
     }
-
+#endif
     String userAgent = platformUserAgent(webcoreURL);
     if (!userAgent.isEmpty())
         return userAgent;
@@ -4744,8 +4757,10 @@ PassRefPtr<Range> WebPage::currentSelectionAsRange()
 
 void WebPage::reportUsedFeatures()
 {
+#if ENABLE(INJECT_BUNDLE)
     Vector<String> namedFeatures;
     m_loaderClient.featuresUsedInPage(this, namedFeatures);
+#endif
 }
 
 unsigned WebPage::extendIncrementalRenderingSuppression()

@@ -26,18 +26,18 @@
 #ifndef WKSerializedScriptValue_h
 #define WKSerializedScriptValue_h
 
-#include <JavaScriptCore/JavaScript.h>
+//#include <JavaScriptCore/JavaScript.h>
 #include <WebKit/WKBase.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+#if 0
 WK_EXPORT WKTypeID WKSerializedScriptValueGetTypeID();
 
 WK_EXPORT WKSerializedScriptValueRef WKSerializedScriptValueCreate(JSContextRef context, JSValueRef value, JSValueRef* exception);
 WK_EXPORT JSValueRef WKSerializedScriptValueDeserialize(WKSerializedScriptValueRef scriptValue, JSContextRef context, JSValueRef* exception);
-
+#endif
 #ifdef __cplusplus
 }
 #endif

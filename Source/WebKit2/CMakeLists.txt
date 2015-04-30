@@ -541,14 +541,14 @@ set(WebKit2_SOURCES
     WebProcess/WebPage/WebUndoStep.cpp
 
     WebProcess/InjectedBundle/InjectedBundleNavigationAction.cpp
+    WebProcess/InjectedBundle/InjectedBundleBackForwardList.cpp
+    WebProcess/InjectedBundle/InjectedBundleBackForwardListItem.cpp
 )
 
 if (ENABLE_INSPECTOR)  #CMP_ERROR
 set(WebKit2_SOURCES
 #CMP_ERROR_TODO remove InjectedBundle as gobject disabled
      WebProcess/InjectedBundle/InjectedBundle.cpp
-     WebProcess/InjectedBundle/InjectedBundleBackForwardList.cpp
-     WebProcess/InjectedBundle/InjectedBundleBackForwardListItem.cpp
      WebProcess/InjectedBundle/InjectedBundleClient.cpp
      WebProcess/InjectedBundle/InjectedBundleDOMWindowExtension.cpp
      WebProcess/InjectedBundle/InjectedBundleHitTestResult.cpp
