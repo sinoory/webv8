@@ -683,7 +683,7 @@ set(NetworkProcess_LIBRARIES
 
 set(WebKit2_LIBRARIES
     #JavaScriptCore
-    v8  #wangcui use v8 instead of JavaScriptCore
+    #v8  #wangcui use v8 instead of JavaScriptCore
     WebCore
 
     Chromium  # ZRL add Chromium dependence lib.
@@ -730,6 +730,7 @@ set_target_properties(WebKit2 PROPERTIES INSTALL_RPATH "${BROWSER_LIB_INSTALL_DI
 if(USE_64BITS)
     target_link_libraries(WebKit2 "-Wl,--whole-archive ../../lib/libcrypto.so.1.0.0 -Wl,--no-whole-archive")
     target_link_libraries(WebKit2 "-Wl,--whole-archive ../../lib/libssl.so.1.0.0 -Wl,--no-whole-archive")
+    target_link_libraries(WebKit2 "-Wl,--whole-archive ../../lib/libv8.so -Wl,--no-whole-archive")
 else()
     target_link_libraries(WebKit2 "-Wl,--whole-archive ../../lib/libcrypto.a -Wl,--no-whole-archive")
     target_link_libraries(WebKit2 "-Wl,--whole-archive ../../lib/libssl.a -Wl,--no-whole-archive")

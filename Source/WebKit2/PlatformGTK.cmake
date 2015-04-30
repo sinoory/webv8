@@ -490,10 +490,11 @@ set(SharedWebKit2Libraries
 )
 
 list(APPEND WebKit2_LIBRARIES
-    GObjectDOMBindings
+    #GObjectDOMBindings CMP_ERROR 
     WebCorePlatformGTK
     ${GTK_UNIX_PRINT_LIBRARIES}
 )
+
 ADD_WHOLE_ARCHIVE_TO_LIBRARIES(WebKit2_LIBRARIES)
 
 set(WebKit2_MARSHAL_LIST ${WEBKIT2_DIR}/UIProcess/API/gtk/webkit2marshal.list)

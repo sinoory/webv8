@@ -2655,7 +2655,6 @@ set(WebCore_PLUG_INS_RESOURCES
 )
 
 set(WebCore_LIBRARIES
-    v8
     WTF
 )
 
