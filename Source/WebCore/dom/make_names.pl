@@ -811,9 +811,9 @@ sub printJSElementIncludes
         }
         $tagsSeen{$JSInterfaceName} = 1;
 
-        print F "#include \"JS${JSInterfaceName}.h\"\n";
+        print F "#include \"V8${JSInterfaceName}.h\"\n";
     }
-    print F "#include \"JS$parameters{fallbackJSInterfaceName}.h\"\n";
+    print F "#include \"V8$parameters{fallbackJSInterfaceName}.h\"\n";
 }
 
 sub printElementIncludes
@@ -866,7 +866,7 @@ sub printConditionalElementIncludes
         if ($wrapperIncludes) {
             for my $JSInterfaceName (sort keys %{$conditionals{$conditional}{JSInterfaceNames}}) {
                 next if $unconditionalJSElementIncludes{$JSInterfaceName};
-                print F "#include \"JS$JSInterfaceName.h\"\n";
+                print F "#include \"V8$JSInterfaceName.h\"\n";
             }
         }
         print F "#endif\n";
@@ -1100,36 +1100,23 @@ sub printWrapperFunctions
             print F "#if ${conditionalString}\n\n";
         }
 
-        if ($enabledTags{$tagName}{wrapperOnlyIfMediaIsAvailable}) {
-            print F <<END
-static JSDOMWrapper* create${JSInterfaceName}Wrapper(JSDOMGlobalObject* globalObject, PassRefPtr<$parameters{namespace}Element> element)
+            if ($enabledTags{$tagName}{wrapperOnlyIfMediaIsAvailable}) {
+                print F <<END
+static v8::Handle<v8::Value> create${JSInterfaceName}Wrapper($parameters{namespace}Element* element)
 {
-    if (element->isHTMLUnknownElement())
-        return CREATE_DOM_WRAPPER(globalObject, $parameters{namespace}Element, element.get());
-    return CREATE_DOM_WRAPPER(globalObject, ${JSInterfaceName}, element.get());
+    Settings* settings = element->document().settings();
+    if (!MediaPlayer::isAvailable() /* CMP_ERROR_TODO no isMediaEnabled || (settings && !settings->isMediaEnabled())*/)
+        return V8$parameters{namespace}Element::wrap(element);
+    return toV8(static_cast<${JSInterfaceName}*>(element));
 }
 
 END
             ;
-        } elsif ($enabledTags{$tagName}{runtimeConditional}) {
-            my $runtimeConditional = $enabledTags{$tagName}{runtimeConditional};
-            print F <<END
-static JSDOMWrapper* create${JSInterfaceName}Wrapper(JSDOMGlobalObject* globalObject, PassRefPtr<$parameters{namespace}Element> element)
-{
-    if (!RuntimeEnabledFeatures::sharedFeatures().${runtimeConditional}Enabled()) {
-        ASSERT(!element || element->is$parameters{fallbackInterfaceName}());
-        return CREATE_DOM_WRAPPER(globalObject, $parameters{fallbackJSInterfaceName}, element.get());
-    }
-
-    return CREATE_DOM_WRAPPER(globalObject, ${JSInterfaceName}, element.get());
-}
-END
-    ;
         } else {
             print F <<END
-static JSDOMWrapper* create${JSInterfaceName}Wrapper(JSDOMGlobalObject* globalObject, PassRefPtr<$parameters{namespace}Element> element)
+static v8::Handle<v8::Value> create${JSInterfaceName}Wrapper($parameters{namespace}Element* element)
 {
-    return CREATE_DOM_WRAPPER(globalObject, ${JSInterfaceName}, element.get());
+    return toV8(static_cast<${JSInterfaceName}*>(element));
 }
 
 END
@@ -1147,12 +1134,12 @@ sub printWrapperFactoryCppFile
     my $outputDir = shift;
     my $wrapperFactoryFileName = shift;
     my $F;
-    open F, ">" . $outputDir . "/JS" . $wrapperFactoryFileName . ".cpp";
+    open F, ">" . $outputDir . "/V8" . $wrapperFactoryFileName . ".cpp";
 
     printLicenseHeader($F);
 
     print F "#include \"config.h\"\n";
-    print F "#include \"JS$parameters{namespace}ElementWrapperFactory.h\"\n\n";
+    print F "#include \"V8$parameters{namespace}ElementWrapperFactory.h\"\n\n";
 
     print F "\n#if $parameters{guardFactoryWith}\n\n" if $parameters{guardFactoryWith};
 
@@ -1167,6 +1154,7 @@ sub printWrapperFactoryCppFile
 #include "Settings.h"
 #include <wtf/NeverDestroyed.h>
 #include <wtf/StdLibExtras.h>
+#include "V8$parameters{namespace}Element.h"
 END
 ;
 
@@ -1174,13 +1162,13 @@ END
 
     print F <<END
 
-using namespace JSC;
+//using namespace JSC;
 
 namespace WebCore {
 
 using namespace $parameters{namespace}Names;
 
-typedef JSDOMWrapper* (*Create$parameters{namespace}ElementWrapperFunction)(JSDOMGlobalObject*, PassRefPtr<$parameters{namespace}Element>);
+typedef v8::Handle<v8::Value> (*Create$parameters{namespace}ElementWrapperFunction)($parameters{namespace}Element*);
 
 END
 ;
@@ -1189,14 +1177,11 @@ END
 
 print F <<END
 
-static NEVER_INLINE void populate$parameters{namespace}WrapperMap(HashMap<AtomicStringImpl*, Create$parameters{namespace}ElementWrapperFunction>& map)
+v8::Handle<v8::Value> createV8$parameters{namespace}Wrapper($parameters{namespace}Element* element, bool forceNewObject)
 {
-    struct TableEntry {
-        const QualifiedName& name;
-        Create$parameters{namespace}ElementWrapperFunction function;
-    };
-
-    static const TableEntry table[] = {
+    typedef HashMap<WTF::AtomicStringImpl*, Create$parameters{namespace}ElementWrapperFunction> FunctionMap;
+    DEFINE_STATIC_LOCAL(FunctionMap, map, ());
+    if (map.isEmpty()) {
 END
 ;
 
@@ -1211,10 +1196,7 @@ END
         }
 
         my $ucTag = $enabledTags{$tag}{JSInterfaceName};
-
-        # FIXME Remove unnecessary '&' from the following (print) line once we switch to a non-broken Visual Studio compiler.
-        # https://bugs.webkit.org/show_bug.cgi?id=121235:
-        print F "        { ${tag}Tag, &create${ucTag}Wrapper },\n";
+        print F "       map.set(${tag}Tag.localName().impl(), create${ucTag}Wrapper);\n";
 
         if ($conditional) {
             print F "#endif\n";
@@ -1222,21 +1204,13 @@ END
     }
 
     print F <<END
-    };
+    }// if (map.isEmpty()) 
+    Create$parameters{namespace}ElementWrapperFunction createWrapperFunction = map.get(element->localName().impl());
+    if (createWrapperFunction)
+        return createWrapperFunction(element);
+    return V8$parameters{namespace}Element::wrap(element, forceNewObject);
 
-    for (unsigned i = 0; i < WTF_ARRAY_LENGTH(table); ++i)
-        map.add(table[i].name.localName().impl(), table[i].function);
-}
-
-JSDOMWrapper* createJS$parameters{namespace}Wrapper(JSDOMGlobalObject* globalObject, PassRefPtr<$parameters{namespace}Element> element)
-{
-    static NeverDestroyed<HashMap<AtomicStringImpl*, Create$parameters{namespace}ElementWrapperFunction>> functions;
-    if (functions.get().isEmpty())
-        populate$parameters{namespace}WrapperMap(functions);
-    if (auto function = functions.get().get(element->localName().impl()))
-        return function(globalObject, element);
-    return CREATE_DOM_WRAPPER(globalObject, $parameters{fallbackJSInterfaceName}, element.get());
-}
+}//v8::Handle..()
 
 }
 END
@@ -1252,26 +1226,24 @@ sub printWrapperFactoryHeaderFile
     my $outputDir = shift;
     my $wrapperFactoryFileName = shift;
     my $F;
-    open F, ">" . $outputDir . "/JS" . $wrapperFactoryFileName . ".h";
+    open F, ">" . $outputDir . "/V8" . $wrapperFactoryFileName . ".h";
 
     printLicenseHeader($F);
 
-    print F "#ifndef JS$parameters{namespace}ElementWrapperFactory_h\n";
-    print F "#define JS$parameters{namespace}ElementWrapperFactory_h\n\n";
+    print F "#ifndef V8$parameters{namespace}ElementWrapperFactory_h\n";
+    print F "#define V8$parameters{namespace}ElementWrapperFactory_h\n\n";
 
     print F "#if $parameters{guardFactoryWith}\n" if $parameters{guardFactoryWith};
 
     print F <<END
-#include <wtf/Forward.h>
+
+#include <v8.h>
 
 namespace WebCore {
 
-    class JSDOMWrapper;
-    class JSDOMGlobalObject;
     class $parameters{namespace}Element;
 
-    JSDOMWrapper* createJS$parameters{namespace}Wrapper(JSDOMGlobalObject*, PassRefPtr<$parameters{namespace}Element>);
-
+    v8::Handle<v8::Value> createV8$parameters{namespace}Wrapper($parameters{namespace}Element*, bool);
 }
  
 END
@@ -1279,7 +1251,7 @@ END
 
     print F "#endif // $parameters{guardFactoryWith}\n\n" if $parameters{guardFactoryWith};
 
-    print F "#endif // JS$parameters{namespace}ElementWrapperFactory_h\n";
+    print F "#endif // V8$parameters{namespace}ElementWrapperFactory_h\n";
 
     close F;
 }
