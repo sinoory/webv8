@@ -139,3 +139,4 @@ install_manifest.txt
 b.sh
 l
 Source/v8/out/
+Source/v8/samples/samples.Makefile
