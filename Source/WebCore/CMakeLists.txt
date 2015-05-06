@@ -1079,7 +1079,7 @@ set(WebCore_SOURCES
     bindings/v8/ChildThreadDOMData.cpp
     #bindings/v8/npruntime.cpp
     bindings/v8/IsolatedWorld.cpp
-    bindings/v8/V8NPObject.cpp
+    #bindings/v8/V8NPObject.cpp
     bindings/v8/WorldContextHandle.cpp
     bindings/v8/ScriptProfiler.cpp
     bindings/v8/ScriptObject.cpp
@@ -1709,6 +1709,7 @@ set(WebCore_SOURCES
     inspector/WorkerDebuggerAgent.cpp
     inspector/WorkerInspectorController.cpp
     inspector/WorkerRuntimeAgent.cpp
+    inspector/ScriptCallStack.cpp
 
     loader/CookieJar.cpp
     loader/CrossOriginAccessControl.cpp

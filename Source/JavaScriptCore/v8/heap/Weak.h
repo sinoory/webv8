@@ -84,7 +84,7 @@ public:
     {
         if (!m_impl)
             return;
-        weakClearSlowCase(m_impl);
+        //weakClearSlowCase(m_impl);//CMP_ERROR_TODO unmark it
     }
     
 private:

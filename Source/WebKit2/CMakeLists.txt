@@ -726,7 +726,7 @@ set_target_properties(WebKit2 PROPERTIES FOLDER "WebKit")
 set_target_properties(WebKit2 PROPERTIES LINK_FLAGS "-fPIC")
 set_target_properties(WebKit2 PROPERTIES INSTALL_RPATH "${BROWSER_LIB_INSTALL_DIR}")
 
-#target_link_libraries(WebKit2 "../../out/Release/obj.target/tools/gyp/libv8_base.a")
+#wangcui add libv8.a
 target_link_libraries(WebKit2 "-Wl,--whole-archive ../../Source/v8/out/Release/obj.target/tools/gyp/libv8_base.a -Wl,--no-whole-archive")
 # add OpenSSL libs by luyue
 if(USE_64BITS)
