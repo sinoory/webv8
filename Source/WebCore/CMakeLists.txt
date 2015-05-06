@@ -1047,6 +1047,7 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8CustomSQLStatementErrorCallback.cpp
     bindings/v8/custom/V8HTMLAudioElementConstructor.cpp
     bindings/v8/custom/V8FileReaderCustom.cpp
+    bindings/v8/custom/V8CustomVoidCallback.cpp
     bindings/v8/V8EventListener.cpp
     bindings/v8/specialization/V8BindingState.cpp
     bindings/v8/ScriptEventListener.cpp
@@ -1103,6 +1104,7 @@ set(WebCore_SOURCES
     bindings/v8/NPV8Object.cpp
     bindings/v8/V8GCForContextDispose.cpp
     bindings/v8/OptionsObject.cpp
+    bindings/v8/V8Float32Array.cpp
 
 
     bridge/IdentifierRep.cpp

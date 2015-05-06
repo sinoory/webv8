@@ -49,18 +49,19 @@ V8CustomVoidCallback::~V8CustomVoidCallback()
     m_callback.Dispose();
 }
 
-void V8CustomVoidCallback::handleEvent()
+bool V8CustomVoidCallback::handleEvent()
 {
     v8::HandleScope handleScope;
 
     v8::Handle<v8::Context> v8Context = toV8Context(m_scriptExecutionContext.get(), m_worldContext);
     if (v8Context.IsEmpty())
-        return;
+        return false;
 
     v8::Context::Scope scope(v8Context);
 
     bool callbackReturnValue = false;
     invokeCallback(m_callback, 0, 0, callbackReturnValue, m_scriptExecutionContext.get());
+    return true;
 }
 
 bool invokeCallback(v8::Persistent<v8::Object> callback, int argc, v8::Handle<v8::Value> argv[], bool& callbackReturnValue, ScriptExecutionContext* scriptExecutionContext)
