@@ -1157,10 +1157,6 @@ void HCompare::SetInputRepresentation(Representation r) {
   if (r.IsTagged()) {
     SetAllSideEffects();
     ClearFlag(kUseGVN);
-  } else if (r.IsDouble()) {
-    SetFlag(kDeoptimizeOnUndefined);
-    ClearAllSideEffects();
-    SetFlag(kUseGVN);
   } else {
     ClearAllSideEffects();
     SetFlag(kUseGVN);
@@ -1616,6 +1612,7 @@ void HSimulate::Verify() {
 
 void HBoundsCheck::Verify() {
   HInstruction::Verify();
+  ASSERT(HasNoUses());
 }
 
 

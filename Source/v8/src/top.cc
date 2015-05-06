@@ -1,4 +1,4 @@
-// Copyright 2011 the V8 project authors. All rights reserved.
+// Copyright 2006-2008 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -45,20 +45,20 @@
 namespace v8 {
 namespace internal {
 
-ThreadLocalTop::ThreadLocalTop() {
-  InitializeInternal();
-  // This flag may be set using v8::V8::IgnoreOutOfMemoryException()
-  // before an isolate is initialized. The initialize methods below do
-  // not touch it to preserve its value.
-  ignore_out_of_memory_ = false;
+v8::TryCatch* ThreadLocalTop::TryCatchHandler() {
+  return TRY_CATCH_FROM_ADDRESS(try_catch_handler_address());
 }
 
 
-void ThreadLocalTop::InitializeInternal() {
+void ThreadLocalTop::Initialize() {
   c_entry_fp_ = 0;
   handler_ = 0;
 #ifdef USE_SIMULATOR
-  simulator_ = NULL;
+#ifdef V8_TARGET_ARCH_ARM
+  simulator_ = Simulator::current(Isolate::Current());
+#elif V8_TARGET_ARCH_MIPS
+  simulator_ = Simulator::current(Isolate::Current());
+#endif
 #endif
 #ifdef ENABLE_LOGGING_AND_PROFILING
   js_entry_sp_ = NULL;
@@ -69,29 +69,11 @@ void ThreadLocalTop::InitializeInternal() {
 #endif
   try_catch_handler_address_ = NULL;
   context_ = NULL;
-  thread_id_ = ThreadId::Invalid();
+  thread_id_ = ThreadId::Current();
   external_caught_exception_ = false;
   failed_access_check_callback_ = NULL;
   save_context_ = NULL;
   catcher_ = NULL;
-}
-
-
-void ThreadLocalTop::Initialize() {
-  InitializeInternal();
-#ifdef USE_SIMULATOR
-#ifdef V8_TARGET_ARCH_ARM
-  simulator_ = Simulator::current(Isolate::Current());
-#elif V8_TARGET_ARCH_MIPS
-  simulator_ = Simulator::current(Isolate::Current());
-#endif
-#endif
-  thread_id_ = ThreadId::Current();
-}
-
-
-v8::TryCatch* ThreadLocalTop::TryCatchHandler() {
-  return TRY_CATCH_FROM_ADDRESS(try_catch_handler_address());
 }
 
 
@@ -331,7 +313,6 @@ void Isolate::PrintStack() {
     incomplete_message_ = &accumulator;
     PrintStack(&accumulator);
     accumulator.OutputToStdOut();
-    InitializeLoggingAndCounters();
     accumulator.Log();
     incomplete_message_ = NULL;
     stack_trace_nesting_level_ = 0;
@@ -577,7 +558,6 @@ Failure* Isolate::ReThrow(MaybeObject* exception, MessageLocation* location) {
 
   // Set the exception being re-thrown.
   set_pending_exception(exception);
-  if (exception->IsFailure()) return exception->ToFailureUnchecked();
   return Failure::Exception();
 }
 

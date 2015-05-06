@@ -789,8 +789,6 @@ void LCodeGen::DoModI(LModI* instr) {
     if (instr->hydrogen()->CheckFlag(HValue::kBailoutOnMinusZero)) {
       __ j(not_zero, &done);
       DeoptimizeIf(no_condition, instr->environment());
-    } else {
-      __ jmp(&done);
     }
     __ bind(&positive_dividend);
     __ andl(dividend, Immediate(divisor - 1));
@@ -1246,7 +1244,6 @@ void LCodeGen::DoArithmeticT(LArithmeticT* instr) {
 
   TypeRecordingBinaryOpStub stub(instr->op(), NO_OVERWRITE);
   CallCode(stub.GetCode(), RelocInfo::CODE_TARGET, instr);
-  __ nop();  // Signals no inlined code.
 }
 
 
@@ -2691,9 +2688,7 @@ void LCodeGen::DoMathAbs(LUnaryMathOperation* instr) {
     Register input_reg = ToRegister(instr->InputAt(0));
     // Smi check.
     __ JumpIfNotSmi(input_reg, deferred->entry());
-    __ SmiToInteger32(input_reg, input_reg);
     EmitIntegerMathAbs(instr);
-    __ Integer32ToSmi(input_reg, input_reg);
     __ bind(deferred->exit());
   }
 }
@@ -3367,9 +3362,8 @@ void LCodeGen::DoSmiUntag(LSmiUntag* instr) {
 
 void LCodeGen::EmitNumberUntagD(Register input_reg,
                                 XMMRegister result_reg,
-                                bool deoptimize_on_undefined,
                                 LEnvironment* env) {
-  NearLabel load_smi, done;
+  NearLabel load_smi, heap_number, done;
 
   // Smi check.
   __ JumpIfSmi(input_reg, &load_smi);
@@ -3377,22 +3371,18 @@ void LCodeGen::EmitNumberUntagD(Register input_reg,
   // Heap number map check.
   __ CompareRoot(FieldOperand(input_reg, HeapObject::kMapOffset),
                  Heap::kHeapNumberMapRootIndex);
-  if (deoptimize_on_undefined) {
-    DeoptimizeIf(not_equal, env);
-  } else {
-    NearLabel heap_number;
-    __ j(equal, &heap_number);
-    __ CompareRoot(input_reg, Heap::kUndefinedValueRootIndex);
-    DeoptimizeIf(not_equal, env);
+  __ j(equal, &heap_number);
 
-    // Convert undefined to NaN. Compute NaN as 0/0.
-    __ xorpd(result_reg, result_reg);
-    __ divsd(result_reg, result_reg);
-    __ jmp(&done);
+  __ CompareRoot(input_reg, Heap::kUndefinedValueRootIndex);
+  DeoptimizeIf(not_equal, env);
 
-    __ bind(&heap_number);
-  }
+  // Convert undefined to NaN. Compute NaN as 0/0.
+  __ xorpd(result_reg, result_reg);
+  __ divsd(result_reg, result_reg);
+  __ jmp(&done);
+
   // Heap number to XMM conversion.
+  __ bind(&heap_number);
   __ movsd(result_reg, FieldOperand(input_reg, HeapNumber::kValueOffset));
   __ jmp(&done);
 
@@ -3483,9 +3473,7 @@ void LCodeGen::DoNumberUntagD(LNumberUntagD* instr) {
   Register input_reg = ToRegister(input);
   XMMRegister result_reg = ToDoubleRegister(result);
 
-  EmitNumberUntagD(input_reg, result_reg,
-                   instr->hydrogen()->deoptimize_on_undefined(),
-                   instr->environment());
+  EmitNumberUntagD(input_reg, result_reg, instr->environment());
 }
 
 

@@ -703,7 +703,7 @@ void RegExpMacroAssemblerX64::Fail() {
 }
 
 
-Handle<HeapObject> RegExpMacroAssemblerX64::GetCode(Handle<String> source) {
+Handle<Object> RegExpMacroAssemblerX64::GetCode(Handle<String> source) {
   // Finalize code - write the entry point code now we know how many
   // registers we need.
   // Entry code:
@@ -972,7 +972,7 @@ Handle<HeapObject> RegExpMacroAssemblerX64::GetCode(Handle<String> source) {
       code_desc, Code::ComputeFlags(Code::REGEXP),
       masm_.CodeObject());
   PROFILE(isolate, RegExpCodeCreateEvent(*code, *source));
-  return Handle<HeapObject>::cast(code);
+  return Handle<Object>::cast(code);
 }
 
 

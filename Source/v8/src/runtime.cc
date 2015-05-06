@@ -2713,7 +2713,7 @@ MUST_USE_RESULT static MaybeObject* StringReplaceRegExpWithEmptyString(
     end = RegExpImpl::GetCapture(match_info_array, 1);
   }
 
-  int length = subject_handle->length();
+  int length = subject->length();
   int new_length = length - (end - start);
   if (new_length == 0) {
     return isolate->heap()->empty_string();
@@ -4339,10 +4339,9 @@ RUNTIME_FUNCTION(MaybeObject*, Runtime_GetLocalPropertyNames) {
   // Get the property names.
   jsproto = obj;
   int proto_with_hidden_properties = 0;
-  int next_copy_index = 0;
   for (int i = 0; i < length; i++) {
-    jsproto->GetLocalPropertyNames(*names, next_copy_index);
-    next_copy_index += local_property_count[i];
+    jsproto->GetLocalPropertyNames(*names,
+                                   i == 0 ? 0 : local_property_count[i - 1]);
     if (!GetHiddenProperties(jsproto, false)->IsUndefined()) {
       proto_with_hidden_properties++;
     }

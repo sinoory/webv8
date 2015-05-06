@@ -262,7 +262,6 @@ class LCodeGen BASE_EMBEDDED {
   void EmitCmpI(LOperand* left, LOperand* right);
   void EmitNumberUntagD(Register input,
                         DoubleRegister result,
-                        bool deoptimize_on_undefined,
                         LEnvironment* env);
 
   // Emits optimized code for typeof x == "y".  Modifies input register.

@@ -202,7 +202,6 @@ void Scope::SetDefaults(Type type,
   inner_scope_calls_eval_ = false;
   outer_scope_is_eval_scope_ = false;
   force_eager_compilation_ = false;
-  num_var_or_const_ = 0;
   num_stack_slots_ = 0;
   num_heap_slots_ = 0;
   scope_info_ = scope_info;
@@ -365,17 +364,12 @@ Variable* Scope::DeclareFunctionVar(Handle<String> name) {
 }
 
 
-Variable* Scope::DeclareLocal(Handle<String> name,
-                              Variable::Mode mode,
-                              LocalType type) {
+Variable* Scope::DeclareLocal(Handle<String> name, Variable::Mode mode) {
   // DYNAMIC variables are introduces during variable allocation,
   // INTERNAL variables are allocated explicitly, and TEMPORARY
   // variables are allocated via NewTemporary().
   ASSERT(!resolved());
   ASSERT(mode == Variable::VAR || mode == Variable::CONST);
-  if (type == VAR_OR_CONST) {
-    num_var_or_const_++;
-  }
   return variables_.Declare(this, name, mode, true, Variable::NORMAL);
 }
 

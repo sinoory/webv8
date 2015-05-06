@@ -48,14 +48,12 @@ namespace internal {
 
 class AssemblerBase: public Malloced {
  public:
-  explicit AssemblerBase(Isolate* isolate);
+  explicit AssemblerBase(Isolate* isolate) : isolate_(isolate) {}
 
   Isolate* isolate() const { return isolate_; }
-  int jit_cookie() { return jit_cookie_; }
 
  private:
   Isolate* isolate_;
-  int jit_cookie_;
 };
 
 // -----------------------------------------------------------------------------

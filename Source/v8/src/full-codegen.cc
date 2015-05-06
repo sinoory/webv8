@@ -247,10 +247,7 @@ void BreakableStatementChecker::VisitCountOperation(CountOperation* expr) {
 
 void BreakableStatementChecker::VisitBinaryOperation(BinaryOperation* expr) {
   Visit(expr->left());
-  if (expr->op() != Token::AND &&
-      expr->op() != Token::OR) {
-    Visit(expr->right());
-  }
+  Visit(expr->right());
 }
 
 

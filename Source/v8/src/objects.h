@@ -613,7 +613,6 @@ enum CompareResult {
 
 class StringStream;
 class ObjectVisitor;
-class Failure;
 
 struct ValueInfo : public Malloced {
   ValueInfo() : type(FIRST_TYPE), ptr(NULL), str(NULL), number(0) { }
@@ -640,10 +639,6 @@ class MaybeObject BASE_EMBEDDED {
     *obj = reinterpret_cast<Object*>(this);
     return true;
   }
-  inline Failure* ToFailureUnchecked() {
-    ASSERT(IsFailure());
-    return reinterpret_cast<Failure*>(this);
-  }
   inline Object* ToObjectUnchecked() {
     ASSERT(!IsFailure());
     return reinterpret_cast<Object*>(this);
@@ -651,13 +646,6 @@ class MaybeObject BASE_EMBEDDED {
   inline Object* ToObjectChecked() {
     CHECK(!IsFailure());
     return reinterpret_cast<Object*>(this);
-  }
-
-  template<typename T>
-  inline bool To(T** obj) {
-    if (IsFailure()) return false;
-    *obj = T::cast(reinterpret_cast<Object*>(this));
-    return true;
   }
 
 #ifdef OBJECT_PRINT
@@ -2554,7 +2542,7 @@ class Dictionary: public HashTable<Shape, Key> {
   // Copies keys to preallocated fixed array.
   void CopyKeysTo(FixedArray* storage, PropertyAttributes filter);
   // Fill in details for properties into storage.
-  void CopyKeysTo(FixedArray* storage, int index);
+  void CopyKeysTo(FixedArray* storage);
 
   // Accessors for next enumeration index.
   void SetNextEnumerationIndex(int index) {
@@ -3724,16 +3712,6 @@ class Map: public HeapObject {
   // [stub cache]: contains stubs compiled for this map.
   DECL_ACCESSORS(code_cache, Object)
 
-  // [prototype transitions]: cache of prototype transitions.
-  // Prototype transition is a transition that happens
-  // when we change object's prototype to a new one.
-  // Cache format:
-  //    0: finger - index of the first free cell in the cache
-  //    1 + 2 * i: prototype
-  //    2 + 2 * i: target map
-  DECL_ACCESSORS(prototype_transitions, FixedArray)
-  inline FixedArray* unchecked_prototype_transitions();
-
   // Lookup in the map's instance descriptors and fill out the result
   // with the given holder if the name is found. The holder may be
   // NULL when this function is used from the compiler.
@@ -3833,12 +3811,6 @@ class Map: public HeapObject {
 
   void TraverseTransitionTree(TraverseCallback callback, void* data);
 
-  static const int kMaxCachedPrototypeTransitions = 256;
-
-  Object* GetPrototypeTransition(Object* prototype);
-
-  MaybeObject* PutPrototypeTransition(Object* prototype, Map* map);
-
   static const int kMaxPreAllocatedPropertyFields = 255;
 
   // Layout description.
@@ -3849,16 +3821,14 @@ class Map: public HeapObject {
   static const int kInstanceDescriptorsOffset =
       kConstructorOffset + kPointerSize;
   static const int kCodeCacheOffset = kInstanceDescriptorsOffset + kPointerSize;
-  static const int kPrototypeTransitionsOffset =
-      kCodeCacheOffset + kPointerSize;
-  static const int kPadStart = kPrototypeTransitionsOffset + kPointerSize;
+  static const int kPadStart = kCodeCacheOffset + kPointerSize;
   static const int kSize = MAP_POINTER_ALIGN(kPadStart);
 
   // Layout of pointer fields. Heap iteration code relies on them
   // being continiously allocated.
   static const int kPointerFieldsBeginOffset = Map::kPrototypeOffset;
   static const int kPointerFieldsEndOffset =
-      Map::kPrototypeTransitionsOffset + kPointerSize;
+      Map::kCodeCacheOffset + kPointerSize;
 
   // Byte offsets within kInstanceSizesOffset.
   static const int kInstanceSizeOffset = kInstanceSizesOffset + 0;
@@ -4032,7 +4002,6 @@ class Script: public Struct {
 #define FUNCTIONS_WITH_ID_LIST(V)                   \
   V(Array.prototype, push, ArrayPush)               \
   V(Array.prototype, pop, ArrayPop)                 \
-  V(Function.prototype, apply, FunctionApply)       \
   V(String.prototype, charCodeAt, StringCharCodeAt) \
   V(String.prototype, charAt, StringCharAt)         \
   V(String, fromCharCode, StringFromCharCode)       \

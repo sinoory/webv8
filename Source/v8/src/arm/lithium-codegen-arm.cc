@@ -497,13 +497,6 @@ void LCodeGen::CallCodeGeneric(Handle<Code> code,
   RecordPosition(pointers->position());
   __ Call(code, mode);
   RegisterLazyDeoptimization(instr, safepoint_mode);
-
-  // Signal that we don't inline smi code before these stubs in the
-  // optimizing code generator.
-  if (code->kind() == Code::TYPE_RECORDING_BINARY_OP_IC ||
-      code->kind() == Code::COMPARE_IC) {
-    __ nop();
-  }
 }
 
 
@@ -846,8 +839,6 @@ void LCodeGen::DoModI(LModI* instr) {
     if (instr->hydrogen()->CheckFlag(HValue::kBailoutOnMinusZero)) {
       __ b(ne, &done);
       DeoptimizeIf(al, instr->environment());
-    } else {
-      __ b(&done);
     }
     __ bind(&positive_dividend);
     __ and_(dividend, dividend, Operand(divisor - 1));
@@ -1375,7 +1366,6 @@ void LCodeGen::DoArithmeticT(LArithmeticT* instr) {
 
   TypeRecordingBinaryOpStub stub(instr->op(), NO_OVERWRITE);
   CallCode(stub.GetCode(), RelocInfo::CODE_TARGET, instr);
-  __ nop();  // Signals no inlined code.
 }
 
 
@@ -1422,7 +1412,7 @@ void LCodeGen::DoBranch(LBranch* instr) {
     // Test the double value. Zero and NaN are false.
     __ VFPCompareAndLoadFlags(reg, 0.0, scratch);
     __ tst(scratch, Operand(kVFPZConditionFlagBit | kVFPVConditionFlagBit));
-    EmitBranch(true_block, false_block, eq);
+    EmitBranch(true_block, false_block, ne);
   } else {
     ASSERT(r.IsTagged());
     Register reg = ToRegister(instr->InputAt(0));
@@ -3570,7 +3560,6 @@ void LCodeGen::DoSmiUntag(LSmiUntag* instr) {
 
 void LCodeGen::EmitNumberUntagD(Register input_reg,
                                 DoubleRegister result_reg,
-                                bool deoptimize_on_undefined,
                                 LEnvironment* env) {
   Register scratch = scratch0();
   SwVfpRegister flt_scratch = s0;
@@ -3586,25 +3575,20 @@ void LCodeGen::EmitNumberUntagD(Register input_reg,
   __ ldr(scratch, FieldMemOperand(input_reg, HeapObject::kMapOffset));
   __ LoadRoot(ip, Heap::kHeapNumberMapRootIndex);
   __ cmp(scratch, Operand(ip));
-  if (deoptimize_on_undefined) {
-    DeoptimizeIf(ne, env);
-  } else {
-    Label heap_number;
-    __ b(eq, &heap_number);
+  __ b(eq, &heap_number);
 
-    __ LoadRoot(ip, Heap::kUndefinedValueRootIndex);
-    __ cmp(input_reg, Operand(ip));
-    DeoptimizeIf(ne, env);
+  __ LoadRoot(ip, Heap::kUndefinedValueRootIndex);
+  __ cmp(input_reg, Operand(ip));
+  DeoptimizeIf(ne, env);
 
-    // Convert undefined to NaN.
-    __ LoadRoot(ip, Heap::kNanValueRootIndex);
-    __ sub(ip, ip, Operand(kHeapObjectTag));
-    __ vldr(result_reg, ip, HeapNumber::kValueOffset);
-    __ jmp(&done);
+  // Convert undefined to NaN.
+  __ LoadRoot(ip, Heap::kNanValueRootIndex);
+  __ sub(ip, ip, Operand(kHeapObjectTag));
+  __ vldr(result_reg, ip, HeapNumber::kValueOffset);
+  __ jmp(&done);
 
-    __ bind(&heap_number);
-  }
   // Heap number to double register conversion.
+  __ bind(&heap_number);
   __ sub(ip, input_reg, Operand(kHeapObjectTag));
   __ vldr(result_reg, ip, HeapNumber::kValueOffset);
   __ jmp(&done);
@@ -3733,9 +3717,7 @@ void LCodeGen::DoNumberUntagD(LNumberUntagD* instr) {
   Register input_reg = ToRegister(input);
   DoubleRegister result_reg = ToDoubleRegister(result);
 
-  EmitNumberUntagD(input_reg, result_reg,
-                   instr->hydrogen()->deoptimize_on_undefined(),
-                   instr->environment());
+  EmitNumberUntagD(input_reg, result_reg, instr->environment());
 }
 
 

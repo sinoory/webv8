@@ -1308,7 +1308,7 @@ VariableProxy* Parser::Declare(Handle<String> name,
     var = top_scope_->LocalLookup(name);
     if (var == NULL) {
       // Declare the name.
-      var = top_scope_->DeclareLocal(name, mode, Scope::VAR_OR_CONST);
+      var = top_scope_->DeclareLocal(name, mode);
     } else {
       // The name was declared before; check for conflicting
       // re-declarations. If the previous declaration was a const or the
@@ -1580,12 +1580,6 @@ Block* Parser::ParseVariableDeclarations(bool accept_IN,
                        is_const /* always bound for CONST! */,
                        CHECK_OK);
     nvars++;
-    if (top_scope_->num_var_or_const() > kMaxNumFunctionLocals) {
-      ReportMessageAt(scanner().location(), "too_many_variables",
-                      Vector<const char*>::empty());
-      *ok = false;
-      return NULL;
-    }
 
     // Parse initialization expression if present and/or needed. A
     // declaration of the form:
@@ -3501,12 +3495,6 @@ ZoneList<Expression*>* Parser::ParseArguments(bool* ok) {
   while (!done) {
     Expression* argument = ParseAssignmentExpression(true, CHECK_OK);
     result->Add(argument);
-    if (result->length() > kMaxNumFunctionParameters) {
-      ReportMessageAt(scanner().location(), "too_many_arguments",
-                      Vector<const char*>::empty());
-      *ok = false;
-      return NULL;
-    }
     done = (peek() == Token::RPAREN);
     if (!done) Expect(Token::COMMA, CHECK_OK);
   }
@@ -3574,9 +3562,7 @@ FunctionLiteral* Parser::ParseFunctionLiteral(Handle<String> var_name,
         reserved_loc = scanner().location();
       }
 
-      Variable* parameter = top_scope_->DeclareLocal(param_name,
-                                                     Variable::VAR,
-                                                     Scope::PARAMETER);
+      Variable* parameter = top_scope_->DeclareLocal(param_name, Variable::VAR);
       top_scope_->AddParameter(parameter);
       num_parameters++;
       if (num_parameters > kMaxNumFunctionParameters) {
@@ -5141,14 +5127,11 @@ bool ParserApi::Parse(CompilationInfo* info) {
   FunctionLiteral* result = NULL;
   Handle<Script> script = info->script();
   if (info->is_lazy()) {
-    bool allow_natives_syntax =
-        FLAG_allow_natives_syntax ||
-        info->is_native();
-    Parser parser(script, allow_natives_syntax, NULL, NULL);
+    Parser parser(script, true, NULL, NULL);
     result = parser.ParseLazy(info);
   } else {
     bool allow_natives_syntax =
-        info->is_native() || FLAG_allow_natives_syntax;
+        info->allows_natives_syntax() || FLAG_allow_natives_syntax;
     ScriptDataImpl* pre_data = info->pre_parse_data();
     Parser parser(script, allow_natives_syntax, info->extension(), pre_data);
     if (pre_data != NULL && pre_data->has_error()) {

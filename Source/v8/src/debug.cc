@@ -1986,8 +1986,8 @@ void Debug::AfterGarbageCollection() {
 }
 
 
-Debugger::Debugger(Isolate* isolate)
-    : debugger_access_(isolate->debugger_access()),
+Debugger::Debugger()
+    : debugger_access_(OS::CreateMutex()),
       event_listener_(Handle<Object>()),
       event_listener_data_(Handle<Object>()),
       compiling_natives_(false),
@@ -2003,12 +2003,13 @@ Debugger::Debugger(Isolate* isolate)
       agent_(NULL),
       command_queue_(kQueueInitialSize),
       command_received_(OS::CreateSemaphore(0)),
-      event_command_queue_(kQueueInitialSize),
-      isolate_(isolate) {
+      event_command_queue_(kQueueInitialSize) {
 }
 
 
 Debugger::~Debugger() {
+  delete debugger_access_;
+  debugger_access_ = 0;
   delete dispatch_handler_access_;
   dispatch_handler_access_ = 0;
   delete command_received_;

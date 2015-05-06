@@ -1765,7 +1765,6 @@ void HGraph::InsertRepresentationChangeForUse(HValue* value,
   // change instructions for them.
   HInstruction* new_value = NULL;
   bool is_truncating = use->CheckFlag(HValue::kTruncatingToInt32);
-  bool deoptimize_on_undefined = use->CheckFlag(HValue::kDeoptimizeOnUndefined);
   if (value->IsConstant()) {
     HConstant* constant = HConstant::cast(value);
     // Try to create a new copy of the constant with the new representation.
@@ -1775,8 +1774,8 @@ void HGraph::InsertRepresentationChangeForUse(HValue* value,
   }
 
   if (new_value == NULL) {
-    new_value = new(zone()) HChange(value, value->representation(), to,
-                                    is_truncating, deoptimize_on_undefined);
+    new_value =
+        new(zone()) HChange(value, value->representation(), to, is_truncating);
   }
 
   new_value->InsertBefore(next);
@@ -1912,41 +1911,6 @@ void HGraph::InsertRepresentationChanges() {
     while (current != NULL) {
       InsertRepresentationChangesForValue(current, &value_list, &rep_list);
       current = current->next();
-    }
-  }
-}
-
-
-void HGraph::RecursivelyMarkPhiDeoptimizeOnUndefined(HPhi* phi) {
-  if (phi->CheckFlag(HValue::kDeoptimizeOnUndefined)) return;
-  phi->SetFlag(HValue::kDeoptimizeOnUndefined);
-  for (int i = 0; i < phi->OperandCount(); ++i) {
-    HValue* input = phi->OperandAt(i);
-    if (input->IsPhi()) {
-      RecursivelyMarkPhiDeoptimizeOnUndefined(HPhi::cast(input));
-    }
-  }
-}
-
-
-void HGraph::MarkDeoptimizeOnUndefined() {
-  HPhase phase("MarkDeoptimizeOnUndefined", this);
-  // Compute DeoptimizeOnUndefined flag for phis.
-  // Any phi that can reach a use with DeoptimizeOnUndefined set must
-  // have DeoptimizeOnUndefined set.  Currently only HCompare, with
-  // double input representation, has this flag set.
-  // The flag is used by HChange tagged->double, which must deoptimize
-  // if one of its uses has this flag set.
-  for (int i = 0; i < phi_list()->length(); i++) {
-    HPhi* phi = phi_list()->at(i);
-    if (phi->representation().IsDouble()) {
-      for (int j = 0; j < phi->uses()->length(); j++) {
-        HValue* use = phi->uses()->at(j);
-        if (use->CheckFlag(HValue::kDeoptimizeOnUndefined)) {
-          RecursivelyMarkPhiDeoptimizeOnUndefined(phi);
-          break;
-        }
-      }
     }
   }
 }
@@ -2270,7 +2234,6 @@ HGraph* HGraphBuilder::CreateGraph() {
 
   graph()->InitializeInferredTypes();
   graph()->Canonicalize();
-  graph()->MarkDeoptimizeOnUndefined();
   graph()->InsertRepresentationChanges();
   graph()->ComputeMinusZeroChecks();
 
@@ -2285,29 +2248,7 @@ HGraph* HGraphBuilder::CreateGraph() {
     gvn.Analyze();
   }
 
-  // Replace the results of check instructions with the original value, if the
-  // result is used. This is safe now, since we don't do code motion after this
-  // point. It enables better register allocation since the value produced by
-  // check instructions is really a copy of the original value.
-  graph()->ReplaceCheckedValues();
-
   return graph();
-}
-
-
-void HGraph::ReplaceCheckedValues() {
-  HPhase phase("Replace checked values", this);
-  for (int i = 0; i < blocks()->length(); ++i) {
-    HInstruction* instr = blocks()->at(i)->first();
-    while (instr != NULL) {
-      if (instr->IsBoundsCheck()) {
-        // Replace all uses of the checked value with the original input.
-        ASSERT(instr->uses()->length() > 0);
-        instr->ReplaceValue(HBoundsCheck::cast(instr)->index());
-      }
-      instr = instr->next();
-    }
-  }
 }
 
 
@@ -2617,11 +2558,9 @@ void HGraphBuilder::VisitSwitchStatement(SwitchStatement* stmt) {
       // Identify the block where normal (non-fall-through) control flow
       // goes to.
       HBasicBlock* normal_block = NULL;
-      if (clause->is_default()) {
-        if (last_block != NULL) {
-          normal_block = last_block;
-          last_block = NULL;  // Cleared to indicate we've handled it.
-        }
+      if (clause->is_default() && last_block != NULL) {
+        normal_block = last_block;
+        last_block = NULL;  // Cleared to indicate we've handled it.
       } else if (!curr_test_block->end()->IsDeoptimize()) {
         normal_block = curr_test_block->end()->FirstSuccessor();
         curr_test_block = curr_test_block->end()->SecondSuccessor();
@@ -3639,17 +3578,16 @@ HInstruction* HGraphBuilder::BuildLoadKeyedFastElement(HValue* object,
   bool is_array = (map->instance_type() == JS_ARRAY_TYPE);
   HLoadElements* elements = new(zone()) HLoadElements(object);
   HInstruction* length = NULL;
-  HInstruction* checked_key = NULL;
   if (is_array) {
     length = AddInstruction(new(zone()) HJSArrayLength(object));
-    checked_key = AddInstruction(new(zone()) HBoundsCheck(key, length));
+    AddInstruction(new(zone()) HBoundsCheck(key, length));
     AddInstruction(elements);
   } else {
     AddInstruction(elements);
     length = AddInstruction(new(zone()) HFixedArrayLength(elements));
-    checked_key = AddInstruction(new(zone()) HBoundsCheck(key, length));
+    AddInstruction(new(zone()) HBoundsCheck(key, length));
   }
-  return new(zone()) HLoadKeyedFastElement(elements, checked_key);
+  return new(zone()) HLoadKeyedFastElement(elements, key);
 }
 
 
@@ -3667,14 +3605,13 @@ HInstruction* HGraphBuilder::BuildLoadKeyedSpecializedArrayElement(
   AddInstruction(elements);
   HInstruction* length = new(zone()) HExternalArrayLength(elements);
   AddInstruction(length);
-  HInstruction* checked_key =
-      AddInstruction(new(zone()) HBoundsCheck(key, length));
+  AddInstruction(new(zone()) HBoundsCheck(key, length));
   HLoadExternalArrayPointer* external_elements =
       new(zone()) HLoadExternalArrayPointer(elements);
   AddInstruction(external_elements);
   HLoadKeyedSpecializedArrayElement* pixel_array_value =
       new(zone()) HLoadKeyedSpecializedArrayElement(
-          external_elements, checked_key, expr->external_array_type());
+          external_elements, key, expr->external_array_type());
   return pixel_array_value;
 }
 
@@ -3730,9 +3667,8 @@ HInstruction* HGraphBuilder::BuildStoreKeyedFastElement(HValue* object,
   } else {
     length = AddInstruction(new(zone()) HFixedArrayLength(elements));
   }
-  HInstruction* checked_key =
-      AddInstruction(new(zone()) HBoundsCheck(key, length));
-  return new(zone()) HStoreKeyedFastElement(elements, checked_key, val);
+  AddInstruction(new(zone()) HBoundsCheck(key, length));
+  return new(zone()) HStoreKeyedFastElement(elements, key, val);
 }
 
 
@@ -3751,14 +3687,13 @@ HInstruction* HGraphBuilder::BuildStoreKeyedSpecializedArrayElement(
   AddInstruction(elements);
   HInstruction* length = AddInstruction(
       new(zone()) HExternalArrayLength(elements));
-  HInstruction* checked_key =
-      AddInstruction(new(zone()) HBoundsCheck(key, length));
+  AddInstruction(new(zone()) HBoundsCheck(key, length));
   HLoadExternalArrayPointer* external_elements =
       new(zone()) HLoadExternalArrayPointer(elements);
   AddInstruction(external_elements);
   return new(zone()) HStoreKeyedSpecializedArrayElement(
       external_elements,
-      checked_key,
+      key,
       val,
       expr->external_array_type());
 }
@@ -3794,13 +3729,6 @@ bool HGraphBuilder::TryArgumentsAccess(Property* expr) {
     return false;
   }
 
-  // Our implementation of arguments (based on this stack frame or an
-  // adapter below it) does not work for inlined functions.
-  if (function_state()->outer() != NULL) {
-    Bailout("arguments access in inlined function");
-    return true;
-  }
-
   HInstruction* result = NULL;
   if (expr->key()->IsPropertyName()) {
     Handle<String> name = expr->key()->AsLiteral()->AsPropertyName();
@@ -3816,9 +3744,8 @@ bool HGraphBuilder::TryArgumentsAccess(Property* expr) {
     HInstruction* elements = AddInstruction(new(zone()) HArgumentsElements);
     HInstruction* length = AddInstruction(
         new(zone()) HArgumentsLength(elements));
-    HInstruction* checked_key =
-        AddInstruction(new(zone()) HBoundsCheck(key, length));
-    result = new(zone()) HAccessArgumentsAt(elements, length, checked_key);
+    AddInstruction(new(zone()) HBoundsCheck(key, length));
+    result = new(zone()) HAccessArgumentsAt(elements, length, key);
   }
   ast_context()->ReturnInstruction(result, expr->id());
   return true;
@@ -4322,17 +4249,10 @@ bool HGraphBuilder::TryCallApply(Call* expr) {
   Property* prop = callee->AsProperty();
   ASSERT(prop != NULL);
 
-  if (!expr->IsMonomorphic() || expr->check_type() != RECEIVER_MAP_CHECK) {
-    return false;
-  }
-  Handle<Map> function_map = expr->GetReceiverTypes()->first();
-  if (function_map->instance_type() != JS_FUNCTION_TYPE ||
-      !expr->target()->shared()->HasBuiltinFunctionId() ||
-      expr->target()->shared()->builtin_function_id() != kFunctionApply) {
-    return false;
-  }
-
   if (info()->scope()->arguments() == NULL) return false;
+
+  Handle<String> name = prop->key()->AsLiteral()->AsPropertyName();
+  if (!name->IsEqualTo(CStrVector("apply"))) return false;
 
   ZoneList<Expression*>* args = expr->arguments();
   if (args->length() != 2) return false;
@@ -4342,12 +4262,8 @@ bool HGraphBuilder::TryCallApply(Call* expr) {
   HValue* arg_two_value = environment()->Lookup(arg_two->var());
   if (!arg_two_value->CheckFlag(HValue::kIsArguments)) return false;
 
-  // Our implementation of arguments (based on this stack frame or an
-  // adapter below it) does not work for inlined functions.
-  if (function_state()->outer() != NULL) {
-    Bailout("Function.prototype.apply optimization in inlined function");
-    return true;
-  }
+  if (!expr->IsMonomorphic() ||
+      expr->check_type() != RECEIVER_MAP_CHECK) return false;
 
   // Found pattern f.apply(receiver, arguments).
   VisitForValue(prop->obj());
@@ -4358,7 +4274,10 @@ bool HGraphBuilder::TryCallApply(Call* expr) {
   HValue* receiver = Pop();
   HInstruction* elements = AddInstruction(new(zone()) HArgumentsElements);
   HInstruction* length = AddInstruction(new(zone()) HArgumentsLength(elements));
-  AddCheckConstantFunction(expr, function, function_map, true);
+  AddCheckConstantFunction(expr,
+                           function,
+                           expr->GetReceiverTypes()->first(),
+                           true);
   HInstruction* result =
       new(zone()) HApplyArguments(function, receiver, length, elements);
   result->set_position(expr->position());
@@ -4857,9 +4776,8 @@ HStringCharCodeAt* HGraphBuilder::BuildStringCharCodeAt(HValue* string,
       string, FIRST_STRING_TYPE, LAST_STRING_TYPE));
   HStringLength* length = new(zone()) HStringLength(string);
   AddInstruction(length);
-  HInstruction* checked_index =
-      AddInstruction(new(zone()) HBoundsCheck(index, length));
-  return new(zone()) HStringCharCodeAt(string, checked_index);
+  AddInstruction(new(zone()) HBoundsCheck(index, length));
+  return new(zone()) HStringCharCodeAt(string, index);
 }
 
 
@@ -5289,10 +5207,6 @@ void HGraphBuilder::GenerateIsConstructCall(CallRuntime* call) {
 
 // Support for arguments.length and arguments[?].
 void HGraphBuilder::GenerateArgumentsLength(CallRuntime* call) {
-  // Our implementation of arguments (based on this stack frame or an
-  // adapter below it) does not work for inlined functions.  This runtime
-  // function is blacklisted by AstNode::IsInlineable.
-  ASSERT(function_state()->outer() == NULL);
   ASSERT(call->arguments()->length() == 0);
   HInstruction* elements = AddInstruction(new(zone()) HArgumentsElements);
   HArgumentsLength* result = new(zone()) HArgumentsLength(elements);
@@ -5301,10 +5215,6 @@ void HGraphBuilder::GenerateArgumentsLength(CallRuntime* call) {
 
 
 void HGraphBuilder::GenerateArguments(CallRuntime* call) {
-  // Our implementation of arguments (based on this stack frame or an
-  // adapter below it) does not work for inlined functions.  This runtime
-  // function is blacklisted by AstNode::IsInlineable.
-  ASSERT(function_state()->outer() == NULL);
   ASSERT(call->arguments()->length() == 1);
   VISIT_FOR_VALUE(call->arguments()->at(0));
   HValue* index = Pop();

@@ -74,6 +74,13 @@ case $1 in
 	;;
 "release" )
 
+    cd Source/v8 ;
+    GYP_DEFINES=target_arch=x64 build/gyp_v8;
+    make -j${CPU_NUM};
+    #cp ./out/Release/lib.host/libv8_base.so ../../lib/libv8.so ;
+    cp out/Release/obj.target/tools/gyp/libv8_base.a ../../lib/libv8.a
+    cd ../../
+
 	#add by luyue
 if [ ${USE_32BITS} -eq 1 ]; then
 	echo "------------build 32 bits"
@@ -97,7 +104,7 @@ else
 	cp -rf $ThirdParty_DIR/openssl-1.0.0d/lib*.so* ./lib
     fi
 	echo "build release version start..." && sleep 3
-	cmake -DUSE_64BITS=1 -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=OFF -DENABLE_MIDORI=$BUILD_MIDORI && make VERBOSE=1 -j${CPU_NUM} && echo ******build release SUCCESS********
+	cmake -DUSE_64BITS=1 -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=OFF -DENABLE_MIDORI=$BUILD_MIDORI && make   -j${CPU_NUM} && echo ******build release SUCCESS********
 fi
 	;;
 "deb_package" )

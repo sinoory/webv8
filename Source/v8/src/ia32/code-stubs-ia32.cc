@@ -4047,12 +4047,7 @@ void JSEntryStub::GenerateBody(MacroAssembler* masm, bool is_construct) {
   __ cmp(Operand::StaticVariable(js_entry_sp), Immediate(0));
   __ j(not_equal, &not_outermost_js);
   __ mov(Operand::StaticVariable(js_entry_sp), ebp);
-  __ push(Immediate(Smi::FromInt(StackFrame::OUTERMOST_JSENTRY_FRAME)));
-  Label cont;
-  __ jmp(&cont);
   __ bind(&not_outermost_js);
-  __ push(Immediate(Smi::FromInt(StackFrame::INNER_JSENTRY_FRAME)));
-  __ bind(&cont);
 #endif
 
   // Call a faked try-block that does the invoke.
@@ -4098,20 +4093,23 @@ void JSEntryStub::GenerateBody(MacroAssembler* masm, bool is_construct) {
   __ call(Operand(edx));
 
   // Unlink this frame from the handler chain.
-  __ PopTryHandler();
+  __ pop(Operand::StaticVariable(ExternalReference(
+      Isolate::k_handler_address,
+      masm->isolate())));
+  // Pop next_sp.
+  __ add(Operand(esp), Immediate(StackHandlerConstants::kSize - kPointerSize));
 
-  __ bind(&exit);
 #ifdef ENABLE_LOGGING_AND_PROFILING
-  // Check if the current stack frame is marked as the outermost JS frame.
-  __ pop(ebx);
-  __ cmp(Operand(ebx),
-         Immediate(Smi::FromInt(StackFrame::OUTERMOST_JSENTRY_FRAME)));
+  // If current EBP value is the same as js_entry_sp value, it means that
+  // the current function is the outermost.
+  __ cmp(ebp, Operand::StaticVariable(js_entry_sp));
   __ j(not_equal, &not_outermost_js_2);
   __ mov(Operand::StaticVariable(js_entry_sp), Immediate(0));
   __ bind(&not_outermost_js_2);
 #endif
 
   // Restore the top frame descriptor from the stack.
+  __ bind(&exit);
   __ pop(Operand::StaticVariable(ExternalReference(
       Isolate::k_c_entry_fp_address,
       masm->isolate())));

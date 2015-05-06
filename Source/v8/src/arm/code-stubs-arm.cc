@@ -308,8 +308,8 @@ class ConvertToDoubleStub : public CodeStub {
 
 
 void ConvertToDoubleStub::Generate(MacroAssembler* masm) {
-  Register exponent = result1_;
-  Register mantissa = result2_;
+  Register exponent = result2_;
+  Register mantissa = result1_;
 
   Label not_special;
   // Convert from Smi to integer.
@@ -517,7 +517,7 @@ void FloatingPointHelper::LoadSmis(MacroAssembler* masm,
     ConvertToDoubleStub stub1(r3, r2, scratch1, scratch2);
     __ push(lr);
     __ Call(stub1.GetCode(), RelocInfo::CODE_TARGET);
-    // Write Smi from r1 to r1 and r0 in double format.
+    // Write Smi from r1 to r1 and r0 in double format.  r9 is scratch.
     __ mov(scratch1, Operand(r1));
     ConvertToDoubleStub stub2(r1, r0, scratch1, scratch2);
     __ Call(stub2.GetCode(), RelocInfo::CODE_TARGET);
@@ -682,51 +682,51 @@ void FloatingPointHelper::LoadNumberAsInt32Double(MacroAssembler* masm,
   } else {
     Label fewer_than_20_useful_bits;
     // Expected output:
-    // |         dst2            |         dst1            |
+    // |         dst1            |         dst2            |
     // | s |   exp   |              mantissa               |
 
     // Check for zero.
     __ cmp(scratch1, Operand(0));
-    __ mov(dst2, scratch1);
     __ mov(dst1, scratch1);
+    __ mov(dst2, scratch1);
     __ b(eq, &done);
 
     // Preload the sign of the value.
-    __ and_(dst2, scratch1, Operand(HeapNumber::kSignMask), SetCC);
+    __ and_(dst1, scratch1, Operand(HeapNumber::kSignMask), SetCC);
     // Get the absolute value of the object (as an unsigned integer).
     __ rsb(scratch1, scratch1, Operand(0), SetCC, mi);
 
     // Get mantisssa[51:20].
 
     // Get the position of the first set bit.
-    __ CountLeadingZeros(dst1, scratch1, scratch2);
-    __ rsb(dst1, dst1, Operand(31));
+    __ CountLeadingZeros(dst2, scratch1, scratch2);
+    __ rsb(dst2, dst2, Operand(31));
 
     // Set the exponent.
-    __ add(scratch2, dst1, Operand(HeapNumber::kExponentBias));
-    __ Bfi(dst2, scratch2, scratch2,
+    __ add(scratch2, dst2, Operand(HeapNumber::kExponentBias));
+    __ Bfi(dst1, scratch2, scratch2,
         HeapNumber::kExponentShift, HeapNumber::kExponentBits);
 
     // Clear the first non null bit.
     __ mov(scratch2, Operand(1));
-    __ bic(scratch1, scratch1, Operand(scratch2, LSL, dst1));
+    __ bic(scratch1, scratch1, Operand(scratch2, LSL, dst2));
 
-    __ cmp(dst1, Operand(HeapNumber::kMantissaBitsInTopWord));
+    __ cmp(dst2, Operand(HeapNumber::kMantissaBitsInTopWord));
     // Get the number of bits to set in the lower part of the mantissa.
-    __ sub(scratch2, dst1, Operand(HeapNumber::kMantissaBitsInTopWord), SetCC);
+    __ sub(scratch2, dst2, Operand(HeapNumber::kMantissaBitsInTopWord), SetCC);
     __ b(mi, &fewer_than_20_useful_bits);
     // Set the higher 20 bits of the mantissa.
-    __ orr(dst2, dst2, Operand(scratch1, LSR, scratch2));
+    __ orr(dst1, dst1, Operand(scratch1, LSR, scratch2));
     __ rsb(scratch2, scratch2, Operand(32));
-    __ mov(dst1, Operand(scratch1, LSL, scratch2));
+    __ mov(dst2, Operand(scratch1, LSL, scratch2));
     __ b(&done);
 
     __ bind(&fewer_than_20_useful_bits);
-    __ rsb(scratch2, dst1, Operand(HeapNumber::kMantissaBitsInTopWord));
+    __ rsb(scratch2, dst2, Operand(HeapNumber::kMantissaBitsInTopWord));
     __ mov(scratch2, Operand(scratch1, LSL, scratch2));
-    __ orr(dst2, dst2, scratch2);
-    // Set dst1 to 0.
-    __ mov(dst1, Operand(0));
+    __ orr(dst1, dst1, scratch2);
+    // Set dst2 to 0.
+    __ mov(dst2, Operand(0));
   }
 
   __ b(&done);
@@ -2062,9 +2062,6 @@ void TypeRecordingBinaryOpStub::GenerateFPOperation(MacroAssembler* masm,
                                                          op_,
                                                          result,
                                                          scratch1);
-        if (FLAG_debug_code) {
-          __ stop("Unreachable code.");
-        }
       }
       break;
     }
@@ -2194,7 +2191,6 @@ void TypeRecordingBinaryOpStub::GenerateFPOperation(MacroAssembler* masm,
 // requested the code falls through. If number allocation is requested but a
 // heap number cannot be allocated the code jumps to the lable gc_required.
 void TypeRecordingBinaryOpStub::GenerateSmiCode(MacroAssembler* masm,
-    Label* use_runtime,
     Label* gc_required,
     SmiCodeGenerateHeapNumberResults allow_heapnumber_results) {
   Label not_smis;
@@ -2216,7 +2212,7 @@ void TypeRecordingBinaryOpStub::GenerateSmiCode(MacroAssembler* masm,
   // If heap number results are possible generate the result in an allocated
   // heap number.
   if (allow_heapnumber_results == ALLOW_HEAPNUMBER_RESULTS) {
-    GenerateFPOperation(masm, true, use_runtime, gc_required);
+    GenerateFPOperation(masm, true, NULL, gc_required);
   }
   __ bind(&not_smis);
 }
@@ -2228,14 +2224,11 @@ void TypeRecordingBinaryOpStub::GenerateSmiStub(MacroAssembler* masm) {
   if (result_type_ == TRBinaryOpIC::UNINITIALIZED ||
       result_type_ == TRBinaryOpIC::SMI) {
     // Only allow smi results.
-    GenerateSmiCode(masm, &call_runtime, NULL, NO_HEAPNUMBER_RESULTS);
+    GenerateSmiCode(masm, NULL, NO_HEAPNUMBER_RESULTS);
   } else {
     // Allow heap number result and don't make a transition if a heap number
     // cannot be allocated.
-    GenerateSmiCode(masm,
-                    &call_runtime,
-                    &call_runtime,
-                    ALLOW_HEAPNUMBER_RESULTS);
+    GenerateSmiCode(masm, &call_runtime, ALLOW_HEAPNUMBER_RESULTS);
   }
 
   // Code falls through if the result is not returned as either a smi or heap
@@ -2407,8 +2400,6 @@ void TypeRecordingBinaryOpStub::GenerateInt32Stub(MacroAssembler* masm) {
         // Save the left value on the stack.
         __ Push(r5, r4);
 
-        Label pop_and_call_runtime;
-
         // Allocate a heap number to store the result.
         heap_number_result = r5;
         GenerateHeapResultAllocation(masm,
@@ -2416,7 +2407,7 @@ void TypeRecordingBinaryOpStub::GenerateInt32Stub(MacroAssembler* masm) {
                                      heap_number_map,
                                      scratch1,
                                      scratch2,
-                                     &pop_and_call_runtime);
+                                     &call_runtime);
 
         // Load the left value from the value saved on the stack.
         __ Pop(r1, r0);
@@ -2424,13 +2415,6 @@ void TypeRecordingBinaryOpStub::GenerateInt32Stub(MacroAssembler* masm) {
         // Call the C function to handle the double operation.
         FloatingPointHelper::CallCCodeForDoubleOperation(
             masm, op_, heap_number_result, scratch1);
-        if (FLAG_debug_code) {
-          __ stop("Unreachable code.");
-        }
-
-        __ bind(&pop_and_call_runtime);
-        __ Drop(2);
-        __ b(&call_runtime);
       }
 
       break;
@@ -2517,16 +2501,16 @@ void TypeRecordingBinaryOpStub::GenerateInt32Stub(MacroAssembler* masm) {
       __ Ret();
 
       __ bind(&return_heap_number);
-      heap_number_result = r5;
-      GenerateHeapResultAllocation(masm,
-                                   heap_number_result,
-                                   heap_number_map,
-                                   scratch1,
-                                   scratch2,
-                                   &call_runtime);
-
       if (CpuFeatures::IsSupported(VFP3)) {
         CpuFeatures::Scope scope(VFP3);
+        heap_number_result = r5;
+        GenerateHeapResultAllocation(masm,
+                                     heap_number_result,
+                                     heap_number_map,
+                                     scratch1,
+                                     scratch2,
+                                     &call_runtime);
+
         if (op_ != Token::SHR) {
           // Convert the result to a floating point value.
           __ vmov(double_scratch.low(), r2);
@@ -2545,7 +2529,6 @@ void TypeRecordingBinaryOpStub::GenerateInt32Stub(MacroAssembler* masm) {
       } else {
         // Tail call that writes the int32 in r2 to the heap number in r0, using
         // r3 as scratch. r0 is preserved and returned.
-        __ mov(r0, r5);
         WriteInt32ToHeapNumberStub stub(r2, r0, r3);
         __ TailCallStub(&stub);
       }
@@ -2612,7 +2595,7 @@ void TypeRecordingBinaryOpStub::GenerateHeapNumberStub(MacroAssembler* masm) {
 void TypeRecordingBinaryOpStub::GenerateGeneric(MacroAssembler* masm) {
   Label call_runtime, call_string_add_or_runtime;
 
-  GenerateSmiCode(masm, &call_runtime, &call_runtime, ALLOW_HEAPNUMBER_RESULTS);
+  GenerateSmiCode(masm, &call_runtime, ALLOW_HEAPNUMBER_RESULTS);
 
   GenerateFPOperation(masm, false, &call_string_add_or_runtime, &call_runtime);
 
@@ -3413,24 +3396,12 @@ void JSEntryStub::GenerateBody(MacroAssembler* masm, bool is_construct) {
   // Save callee-saved registers (incl. cp and fp), sp, and lr
   __ stm(db_w, sp, kCalleeSaved | lr.bit());
 
-  if (CpuFeatures::IsSupported(VFP3)) {
-    CpuFeatures::Scope scope(VFP3);
-    // Save callee-saved vfp registers.
-    __ vstm(db_w, sp, kFirstCalleeSavedDoubleReg, kLastCalleeSavedDoubleReg);
-  }
-
   // Get address of argv, see stm above.
   // r0: code entry
   // r1: function
   // r2: receiver
   // r3: argc
-
-  // Setup argv in r4.
-  int offset_to_argv = (kNumCalleeSaved + 1) * kPointerSize;
-  if (CpuFeatures::IsSupported(VFP3)) {
-    offset_to_argv += kNumDoubleCalleeSaved * kDoubleSize;
-  }
-  __ ldr(r4, MemOperand(sp, offset_to_argv));
+  __ ldr(r4, MemOperand(sp, (kNumCalleeSaved + 1) * kPointerSize));  // argv
 
   // Push a frame with special values setup to mark it as an entry frame.
   // r0: code entry
@@ -3453,20 +3424,11 @@ void JSEntryStub::GenerateBody(MacroAssembler* masm, bool is_construct) {
 
 #ifdef ENABLE_LOGGING_AND_PROFILING
   // If this is the outermost JS call, set js_entry_sp value.
-  Label non_outermost_js;
   ExternalReference js_entry_sp(Isolate::k_js_entry_sp_address, isolate);
   __ mov(r5, Operand(ExternalReference(js_entry_sp)));
   __ ldr(r6, MemOperand(r5));
-  __ cmp(r6, Operand(0));
-  __ b(ne, &non_outermost_js);
-  __ str(fp, MemOperand(r5));
-  __ mov(ip, Operand(Smi::FromInt(StackFrame::OUTERMOST_JSENTRY_FRAME)));
-  Label cont;
-  __ b(&cont);
-  __ bind(&non_outermost_js);
-  __ mov(ip, Operand(Smi::FromInt(StackFrame::INNER_JSENTRY_FRAME)));
-  __ bind(&cont);
-  __ push(ip);
+  __ cmp(r6, Operand(0, RelocInfo::NONE));
+  __ str(fp, MemOperand(r5), eq);
 #endif
 
   // Call a faked try-block that does the invoke.
@@ -3524,22 +3486,27 @@ void JSEntryStub::GenerateBody(MacroAssembler* masm, bool is_construct) {
   __ mov(lr, Operand(pc));
   masm->add(pc, ip, Operand(Code::kHeaderSize - kHeapObjectTag));
 
-  // Unlink this frame from the handler chain.
-  __ PopTryHandler();
+  // Unlink this frame from the handler chain. When reading the
+  // address of the next handler, there is no need to use the address
+  // displacement since the current stack pointer (sp) points directly
+  // to the stack handler.
+  __ ldr(r3, MemOperand(sp, StackHandlerConstants::kNextOffset));
+  __ mov(ip, Operand(ExternalReference(Isolate::k_handler_address, isolate)));
+  __ str(r3, MemOperand(ip));
+  // No need to restore registers
+  __ add(sp, sp, Operand(StackHandlerConstants::kSize));
 
-  __ bind(&exit);  // r0 holds result
 #ifdef ENABLE_LOGGING_AND_PROFILING
-  // Check if the current stack frame is marked as the outermost JS frame.
-  Label non_outermost_js_2;
-  __ pop(r5);
-  __ cmp(r5, Operand(Smi::FromInt(StackFrame::OUTERMOST_JSENTRY_FRAME)));
-  __ b(ne, &non_outermost_js_2);
-  __ mov(r6, Operand(0));
+  // If current FP value is the same as js_entry_sp value, it means that
+  // the current function is the outermost.
   __ mov(r5, Operand(ExternalReference(js_entry_sp)));
-  __ str(r6, MemOperand(r5));
-  __ bind(&non_outermost_js_2);
+  __ ldr(r6, MemOperand(r5));
+  __ cmp(fp, Operand(r6));
+  __ mov(r6, Operand(0, RelocInfo::NONE), LeaveCC, eq);
+  __ str(r6, MemOperand(r5), eq);
 #endif
 
+  __ bind(&exit);  // r0 holds result
   // Restore the top frame descriptors from the stack.
   __ pop(r3);
   __ mov(ip,
@@ -3555,13 +3522,6 @@ void JSEntryStub::GenerateBody(MacroAssembler* masm, bool is_construct) {
     __ mov(lr, Operand(pc));
   }
 #endif
-
-  if (CpuFeatures::IsSupported(VFP3)) {
-    CpuFeatures::Scope scope(VFP3);
-    // Restore callee-saved vfp registers.
-    __ vldm(ia_w, sp, kFirstCalleeSavedDoubleReg, kLastCalleeSavedDoubleReg);
-  }
-
   __ ldm(ia_w, sp, kCalleeSaved | pc.bit());
 }
 

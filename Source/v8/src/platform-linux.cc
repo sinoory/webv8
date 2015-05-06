@@ -853,11 +853,6 @@ static void ProfilerSignalHandler(int signal, siginfo_t* info, void* context) {
     // We require a fully initialized and entered isolate.
     return;
   }
-  if (v8::Locker::IsActive() &&
-      !isolate->thread_manager()->IsLockedByCurrentThread()) {
-    return;
-  }
-
   Sampler* sampler = isolate->logger()->sampler();
   if (sampler == NULL || !sampler->IsActive()) return;
 
@@ -922,28 +917,19 @@ class SignalSender : public Thread {
         vm_tgid_(getpid()),
         interval_(interval) {}
 
-  static void InstallSignalHandler() {
-    struct sigaction sa;
-    sa.sa_sigaction = ProfilerSignalHandler;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART | SA_SIGINFO;
-    signal_handler_installed_ =
-        (sigaction(SIGPROF, &sa, &old_signal_handler_) == 0);
-  }
-
-  static void RestoreSignalHandler() {
-    if (signal_handler_installed_) {
-      sigaction(SIGPROF, &old_signal_handler_, 0);
-      signal_handler_installed_ = false;
-    }
-  }
-
   static void AddActiveSampler(Sampler* sampler) {
     ScopedLock lock(mutex_);
     SamplerRegistry::AddActiveSampler(sampler);
     if (instance_ == NULL) {
-      // Start a thread that will send SIGPROF signal to VM threads,
-      // when CPU profiling will be enabled.
+      // Install a signal handler.
+      struct sigaction sa;
+      sa.sa_sigaction = ProfilerSignalHandler;
+      sigemptyset(&sa.sa_mask);
+      sa.sa_flags = SA_RESTART | SA_SIGINFO;
+      signal_handler_installed_ =
+          (sigaction(SIGPROF, &sa, &old_signal_handler_) == 0);
+
+      // Start a thread that sends SIGPROF signal to VM threads.
       instance_ = new SignalSender(sampler->interval());
       instance_->Start();
     } else {
@@ -959,7 +945,12 @@ class SignalSender : public Thread {
       instance_->Join();
       delete instance_;
       instance_ = NULL;
-      RestoreSignalHandler();
+
+      // Restore the old signal handler.
+      if (signal_handler_installed_) {
+        sigaction(SIGPROF, &old_signal_handler_, 0);
+        signal_handler_installed_ = false;
+      }
     }
   }
 
@@ -971,10 +962,6 @@ class SignalSender : public Thread {
       bool cpu_profiling_enabled =
           (state == SamplerRegistry::HAS_CPU_PROFILING_SAMPLERS);
       bool runtime_profiler_enabled = RuntimeProfiler::IsEnabled();
-      if (cpu_profiling_enabled && !signal_handler_installed_)
-        InstallSignalHandler();
-      else if (!cpu_profiling_enabled && signal_handler_installed_)
-        RestoreSignalHandler();
       // When CPU profiling is enabled both JavaScript and C++ code is
       // profiled. We must not suspend.
       if (!cpu_profiling_enabled) {

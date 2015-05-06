@@ -259,9 +259,9 @@ void RegExpMacroAssemblerMIPS::Fail() {
 }
 
 
-Handle<HeapObject> RegExpMacroAssemblerMIPS::GetCode(Handle<String> source) {
+Handle<Object> RegExpMacroAssemblerMIPS::GetCode(Handle<String> source) {
   UNIMPLEMENTED_MIPS();
-  return Handle<HeapObject>::null();
+  return Handle<Object>::null();
 }
 
 

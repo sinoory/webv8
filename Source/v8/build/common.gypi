@@ -48,14 +48,14 @@
     'v8_target_arch%': '<(target_arch)',
   },
   'target_defaults': {
-    'default_configuration': 'Debug',
+    'default_configuration': 'Release',
     'configurations': {
       'Debug': {
-        'cflags': [ '-g', '-O0' ],
+        'cflags': [ '-g', '-O0','-fPIC' ],
         'defines': [ 'ENABLE_DISASSEMBLER', 'DEBUG' ],
       },
       'Release': {
-        'cflags': [ '-O3', '-fomit-frame-pointer', '-fdata-sections', '-ffunction-sections' ],
+        'cflags': [ '-O3', '-fomit-frame-pointer', '-fdata-sections', '-ffunction-sections','-fPIC' ],
       },
     },
   },
