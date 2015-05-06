@@ -1106,6 +1106,7 @@ set(WebCore_SOURCES
     bindings/v8/V8GCForContextDispose.cpp
     bindings/v8/OptionsObject.cpp
     bindings/v8/V8Float32Array.cpp
+    bindings/V8ArrayBuffer.cpp
 
 
     bridge/IdentifierRep.cpp
@@ -1713,6 +1714,7 @@ set(WebCore_SOURCES
     inspector/WorkerInspectorController.cpp
     inspector/WorkerRuntimeAgent.cpp
     inspector/ScriptCallStack.cpp
+    inspector/ScriptCallFrame.cpp
 
     loader/CookieJar.cpp
     loader/CrossOriginAccessControl.cpp
