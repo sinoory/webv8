@@ -42,7 +42,7 @@
 #include <wtf/RefPtr.h>
 
 namespace WebCore {
-
+/*
 v8::Handle<v8::Value> V8NamedNodeMap::indexedPropertyGetter(uint32_t index, const v8::AccessorInfo& info)
 {
     INC_STATS("DOM.NamedNodeMap.IndexedPropertyGetter");
@@ -74,7 +74,7 @@ v8::Handle<v8::Value> V8NamedNodeMap::namedPropertyGetter(v8::Local<v8::String> 
 
     return toV8(result.release());
 }
-
+*/
 v8::Handle<v8::Value> toV8(NamedNodeMap* impl)
 {
     if (!impl)
