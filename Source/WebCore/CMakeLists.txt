@@ -1048,6 +1048,7 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8HTMLAudioElementConstructor.cpp
     bindings/v8/custom/V8FileReaderCustom.cpp
     bindings/v8/custom/V8CustomVoidCallback.cpp
+    bindings/v8/custom/V8DOMWindowCustom.cpp
     bindings/v8/V8EventListener.cpp
     bindings/v8/specialization/V8BindingState.cpp
     bindings/v8/ScriptEventListener.cpp

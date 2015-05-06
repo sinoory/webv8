@@ -70,7 +70,7 @@
 #include "WindowFeatures.h"
 
 namespace WebCore {
-
+/*
 v8::Handle<v8::Value> WindowSetTimeoutImpl(const v8::Arguments& args, bool singleShot)
 {
     int argumentCount = args.Length();
@@ -146,7 +146,7 @@ v8::Handle<v8::Value> WindowSetTimeoutImpl(const v8::Arguments& args, bool singl
 
     return v8::Integer::New(id);
 }
-
+*/
 v8::Handle<v8::Value> V8DOMWindow::eventAccessorGetter(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     v8::Handle<v8::Object> holder = V8DOMWrapper::lookupDOMWrapper(V8DOMWindow::GetTemplate(), info.This());
@@ -167,7 +167,7 @@ v8::Handle<v8::Value> V8DOMWindow::eventAccessorGetter(v8::Local<v8::String> nam
         return v8::Undefined();
     return jsEvent;
 }
-
+/*
 void V8DOMWindow::eventAccessorSetter(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
     v8::Handle<v8::Object> holder = V8DOMWrapper::lookupDOMWrapper(V8DOMWindow::GetTemplate(), info.This());
@@ -185,6 +185,7 @@ void V8DOMWindow::eventAccessorSetter(v8::Local<v8::String> name, v8::Local<v8::
     v8::Handle<v8::String> eventSymbol = V8HiddenPropertyName::event();
     context->Global()->SetHiddenValue(eventSymbol, value);
 }
+*/
 
 void V8DOMWindow::locationAccessorSetter(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
@@ -199,9 +200,9 @@ void V8DOMWindow::locationAccessorSetter(v8::Local<v8::String> name, v8::Local<v
     if (!firstWindow)
       return;
 
-    imp->setLocation(toWebCoreString(value), activeWindow, firstWindow);
+    imp->setLocation(toWebCoreString(value), *activeWindow, *firstWindow);
 }
-
+/*
 void V8DOMWindow::openerAccessorSetter(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
     DOMWindow* imp = V8DOMWindow::toNative(info.Holder());
@@ -247,7 +248,7 @@ v8::Handle<v8::Value> V8DOMWindow::OptionAccessorGetter(v8::Local<v8::String> na
     DOMWindow* window = V8DOMWindow::toNative(info.Holder());
     return V8DOMWrapper::getConstructor(&V8HTMLOptionElementConstructor::info, window);
 }
-
+*/
 v8::Handle<v8::Value> V8DOMWindow::addEventListenerCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.DOMWindow.addEventListener()");
@@ -345,10 +346,10 @@ v8::Handle<v8::Value> V8DOMWindow::postMessageCallback(const v8::Arguments& args
         return v8::Undefined();
 
     ExceptionCode ec = 0;
-    window->postMessage(message.release(), &portArray, targetOrigin, source, ec);
+    window->postMessage(message.release(), &portArray, targetOrigin, *source, ec);
     return throwError(ec);
 }
-
+/*
 // FIXME(fqian): returning string is cheating, and we should
 // fix this by calling toString function on the receiver.
 // However, V8 implements toString in JavaScript, which requires
@@ -373,7 +374,7 @@ v8::Handle<v8::Value> V8DOMWindow::captureEventsCallback(const v8::Arguments& ar
     INC_STATS("DOM.DOMWindow.nop()");
     return v8::Undefined();
 }
-
+*/
 class DialogHandler {
 public:
     explicit DialogHandler(v8::Handle<v8::Value> dialogArguments)
@@ -432,7 +433,10 @@ v8::Handle<v8::Value> V8DOMWindow::showModalDialogCallback(const v8::Arguments& 
 
     DialogHandler handler(args[1]);
 
-    impl->showModalDialog(urlString, dialogFeaturesString, activeWindow, firstWindow, setUpDialog, &handler);
+    //impl->showModalDialog(urlString, dialogFeaturesString, *activeWindow, *firstWindow,std::bind(setUpDialog));
+    impl->showModalDialog(urlString, dialogFeaturesString, *activeWindow, *firstWindow, [&handler](DOMWindow& dialog) {
+        handler.dialogCreated(&dialog);
+    });
 
     return handler.returnValue();
 }
@@ -452,7 +456,7 @@ v8::Handle<v8::Value> V8DOMWindow::openCallback(const v8::Arguments& args)
     AtomicString frameName = (args[1]->IsUndefined() || args[1]->IsNull()) ? "_blank" : AtomicString(toWebCoreString(args[1]));
     String windowFeaturesString = toWebCoreStringWithNullOrUndefinedCheck(args[2]);
 
-    RefPtr<DOMWindow> openedWindow = impl->open(urlString, frameName, windowFeaturesString, activeWindow, firstWindow);
+    RefPtr<DOMWindow> openedWindow = impl->open(urlString, frameName, windowFeaturesString, *activeWindow, *firstWindow);
     if (!openedWindow)
         return v8::Undefined();
     return toV8(openedWindow.release());
@@ -470,7 +474,7 @@ v8::Handle<v8::Value> V8DOMWindow::indexedPropertyGetter(uint32_t index, const v
     if (!frame)
         return notHandledByInterceptor();
 
-    Frame* child = frame->tree()->child(index);
+    Frame* child = frame->tree().child(index);
     if (child)
         return toV8(child->domWindow());
 
@@ -493,7 +497,7 @@ v8::Handle<v8::Value> V8DOMWindow::namedPropertyGetter(v8::Local<v8::String> nam
 
     // Search sub-frames.
     AtomicString propName = v8StringToAtomicWebCoreString(name);
-    Frame* child = frame->tree()->child(propName);
+    Frame* child = frame->tree().child(propName);
     if (child)
         return toV8(child->domWindow());
 
@@ -506,11 +510,11 @@ v8::Handle<v8::Value> V8DOMWindow::namedPropertyGetter(v8::Local<v8::String> nam
     Document* doc = frame->document();
 
     if (doc && doc->isHTMLDocument()) {
-        if (static_cast<HTMLDocument*>(doc)->hasNamedItem(propName.impl()) || doc->hasElementWithId(propName.impl())) {
+        if (static_cast<HTMLDocument*>(doc)->hasDocumentNamedItem(*(propName.impl())) || doc->hasElementWithId(*(propName.impl()))) {
             RefPtr<HTMLCollection> items = doc->windowNamedItems(propName);
             if (items->length() >= 1) {
-                if (items->length() == 1)
-                    return toV8(items->firstItem());
+                //if (items->length() == 1)
+                //    return toV8(items->firstItem());
                 return toV8(items.release());
             }
         }
@@ -519,7 +523,7 @@ v8::Handle<v8::Value> V8DOMWindow::namedPropertyGetter(v8::Local<v8::String> nam
     return notHandledByInterceptor();
 }
 
-
+/* CMP_ERROR setTimeout not in DOMWindow.idl but in WindowTimers.idl, so mark it here
 v8::Handle<v8::Value> V8DOMWindow::setTimeoutCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.DOMWindow.setTimeout()");
@@ -532,7 +536,6 @@ v8::Handle<v8::Value> V8DOMWindow::setIntervalCallback(const v8::Arguments& args
     INC_STATS("DOM.DOMWindow.setInterval()");
     return WindowSetTimeoutImpl(args, false);
 }
-
 bool V8DOMWindow::namedSecurityCheck(v8::Local<v8::Object> host, v8::Local<v8::Value> key, v8::AccessType type, v8::Local<v8::Value>)
 {
     v8::Handle<v8::Object> window = V8DOMWrapper::lookupDOMWrapper(V8DOMWindow::GetTemplate(), host);
@@ -583,7 +586,7 @@ bool V8DOMWindow::indexedSecurityCheck(v8::Local<v8::Object> host, uint32_t inde
 
     return V8BindingSecurity::canAccessFrame(V8BindingState::Only(), target, false);
 }
-
+*/
 v8::Handle<v8::Value> toV8(DOMWindow* window)
 {
     if (!window)
