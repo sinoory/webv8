@@ -1052,6 +1052,7 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8NamedNodeMapCustom.cpp
     bindings/v8/custom/V8CSSStyleSheetCustom.cpp
     bindings/v8/custom/V8WorkerContextCustom.cpp
+    bindings/v8/custom/V8DOMTokenListCustom.cpp
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/V8EventListener.cpp
     bindings/v8/specialization/V8BindingState.cpp
