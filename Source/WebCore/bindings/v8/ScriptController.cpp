@@ -126,6 +126,7 @@ ScriptController::~ScriptController()
 
 void ScriptController::clearScriptObjects()
 {
+#if ENABLE(NETSCAPE_PLUGIN_API)
     PluginObjectMap::iterator it = m_pluginObjects.begin();
     for (; it != m_pluginObjects.end(); ++it) {
         _NPN_UnregisterObject(it->second);
@@ -133,7 +134,6 @@ void ScriptController::clearScriptObjects()
     }
     m_pluginObjects.clear();
 
-#if ENABLE(NETSCAPE_PLUGIN_API)
     if (m_windowScriptNPObject) {
         // Call _NPN_DeallocateObject() instead of _NPN_ReleaseObject() so that we don't leak if a plugin fails to release the window
         // script object properly.
@@ -343,6 +343,7 @@ PassScriptInstance ScriptController::createScriptInstanceForWidget(Widget* widge
 
     v8::Local<v8::Object> wrapper = createV8ObjectForNPObject(npObject, 0);
 
+#if ENABLE(NETSCAPE_PLUGIN_API)
 #ifdef ANDROID_FIX
     // TODO: this should be up streamed.
     // HTMLEmbedElement::getInstance() will call this function with its closest
@@ -355,6 +356,7 @@ PassScriptInstance ScriptController::createScriptInstanceForWidget(Widget* widge
         _NPN_ReleaseObject(it->second);
     }
 #endif
+#endif
 
     // Track the plugin object. We've been given a reference to the object.
     m_pluginObjects.set(widget, npObject);
@@ -364,12 +366,14 @@ PassScriptInstance ScriptController::createScriptInstanceForWidget(Widget* widge
 
 void ScriptController::cleanupScriptObjectsForPlugin(Widget* nativeHandle)
 {
+#if ENABLE(NETSCAPE_PLUGIN_API)
     PluginObjectMap::iterator it = m_pluginObjects.find(nativeHandle);
     if (it == m_pluginObjects.end())
         return;
     _NPN_UnregisterObject(it->second);
     _NPN_ReleaseObject(it->second);
     m_pluginObjects.remove(it);
+#endif
 }
 
 void ScriptController::getAllWorlds(Vector<DOMWrapperWorld*>& worlds)

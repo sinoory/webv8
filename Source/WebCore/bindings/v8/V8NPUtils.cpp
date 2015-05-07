@@ -70,9 +70,11 @@ void convertV8ObjectToNPVariant(v8::Local<v8::Value> object, NPObject* owner, NP
     } else if (object->IsObject()) {
         DOMWindow* window = V8Proxy::retrieveWindow(V8Proxy::currentContext());
         NPObject* npobject = npCreateV8ScriptObject(0, v8::Handle<v8::Object>::Cast(object), window);
+#if ENABLE(NETSCAPE_PLUGIN_API)
         if (npobject)
             _NPN_RegisterObject(npobject, owner);
         OBJECT_TO_NPVARIANT(npobject, *result);
+#endif
     }
 }
 
@@ -96,10 +98,14 @@ v8::Handle<v8::Value> convertNPVariantToV8Object(const NPVariant* variant, NPObj
         return v8::String::New(src.UTF8Characters, src.UTF8Length);
     }
     case NPVariantType_Object: {
+#if ENABLE(NETSCAPE_PLUGIN_API)
         NPObject* obj = NPVARIANT_TO_OBJECT(*variant);
         if (obj->_class == npScriptObjectClass)
             return reinterpret_cast<V8NPObject*>(obj)->v8Object;
         return createV8ObjectForNPObject(obj, npobject);
+#else
+        return v8::Null();
+#endif
     }
     default:
         return v8::Undefined();
@@ -109,6 +115,7 @@ v8::Handle<v8::Value> convertNPVariantToV8Object(const NPVariant* variant, NPObj
 // Helper function to create an NPN String Identifier from a v8 string.
 NPIdentifier getStringIdentifier(v8::Handle<v8::String> str)
 {
+#if ENABLE(NETSCAPE_PLUGIN_API)
     const int kStackBufferSize = 100;
 
     int bufferLength = str->Utf8Length() + 1;
@@ -125,6 +132,9 @@ NPIdentifier getStringIdentifier(v8::Handle<v8::String> str)
 
     v8::String::Utf8Value utf8(str);
     return _NPN_GetStringIdentifier(*utf8);
+#else
+    return 0;
+#endif;
 }
 
 struct ExceptionHandlerInfo {

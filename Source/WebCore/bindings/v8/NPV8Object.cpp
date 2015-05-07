@@ -115,6 +115,7 @@ NPClass* npScriptObjectClass = &V8NPObjectClass;
 
 NPObject* npCreateV8ScriptObject(NPP npp, v8::Handle<v8::Object> object, DOMWindow* root)
 {
+#if ENABLE(NETSCAPE_PLUGIN_API)
     // Check to see if this object is already wrapped.
     if (object->InternalFieldCount() == npObjectInternalFieldCount) {
         WrapperTypeInfo* typeInfo = static_cast<WrapperTypeInfo*>(object->GetPointerFromInternalField(v8DOMWrapperTypeIndex));
@@ -133,6 +134,9 @@ NPObject* npCreateV8ScriptObject(NPP npp, v8::Handle<v8::Object> object, DOMWind
 #endif
     v8npObject->rootObject = root;
     return reinterpret_cast<NPObject*>(v8npObject);
+#else
+    return 0;
+#endif
 }
 
 } // namespace WebCore
@@ -251,8 +255,12 @@ bool _NPN_InvokeDefault(NPP npp, NPObject* npObject, const NPVariant* arguments,
 
 bool _NPN_Evaluate(NPP npp, NPObject* npObject, NPString* npScript, NPVariant* result)
 {
+#if ENABLE(NETSCAPE_PLUGIN_API)
     bool popupsAllowed = PlatformBridge::popupsAllowed(npp);
     return _NPN_EvaluateHelper(npp, popupsAllowed, npObject, npScript, result);
+#else
+    return false;
+#endif
 }
 
 bool _NPN_EvaluateHelper(NPP npp, bool popupsAllowed, NPObject* npObject, NPString* npScript, NPVariant* result)

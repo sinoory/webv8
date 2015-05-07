@@ -37,7 +37,7 @@
 #include "V8Element.h"
 
 namespace WebCore {
-
+/*
 v8::Handle<v8::Integer> V8DOMStringMap::namedPropertyQuery(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     INC_STATS("DOM.DOMStringMap.NamedPropertyQuery");
@@ -62,23 +62,23 @@ v8::Handle<v8::Array> V8DOMStringMap::namedPropertyEnumerator(const v8::Accessor
         properties->Set(v8::Integer::New(i), v8String(names[i]));
     return properties;
 }
-
+*/
 v8::Handle<v8::Boolean> V8DOMStringMap::namedPropertyDeleter(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
-    INC_STATS("DOM.DOMStringMap.NamedPropertyDeleter");
+//    INC_STATS("DOM.DOMStringMap.NamedPropertyDeleter");
     v8::Handle<v8::Value> value = info.Holder()->GetRealNamedPropertyInPrototypeChain(name);
     if (!value.IsEmpty())
         return v8::False();
     if (info.Holder()->HasRealNamedCallbackProperty(name))
         return v8::False();
 
-    ExceptionCode ec = 0;
-    V8DOMStringMap::toNative(info.Holder())->deleteItem(toWebCoreString(name), ec);
-    if (ec)
-        throwError(ec);
-    return v8::True();
+    if(V8DOMStringMap::toNative(info.Holder())->deleteItem(toWebCoreString(name))){
+        return v8::True();
+    }else{
+        return v8::False();
+    }
 }
-
+/*
 v8::Handle<v8::Value> V8DOMStringMap::namedPropertySetter(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
     INC_STATS("DOM.DOMStringMap.NamedPropertySetter");
@@ -94,7 +94,7 @@ v8::Handle<v8::Value> V8DOMStringMap::namedPropertySetter(v8::Local<v8::String> 
         return throwError(ec);
     return value;
 }
-
+*/
 v8::Handle<v8::Value> toV8(DOMStringMap* impl)
 {
     if (!impl)

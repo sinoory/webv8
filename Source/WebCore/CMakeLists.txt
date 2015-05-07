@@ -1053,7 +1053,9 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8CSSStyleSheetCustom.cpp
     bindings/v8/custom/V8WorkerContextCustom.cpp
     bindings/v8/custom/V8DOMTokenListCustom.cpp
+    bindings/v8/custom/V8DOMStringMapCustom.cpp
     bindings/v8/V8Uint8Array.cpp
+    bindings/v8/V8ArrayBufferView.cpp
     bindings/v8/V8EventListener.cpp
     bindings/v8/specialization/V8BindingState.cpp
     bindings/v8/ScriptEventListener.cpp
@@ -2704,7 +2706,7 @@ if (ENABLE_SQL_DATABASE)
     )
 endif ()
 
-if (NOT ENABLE_NETSCAPE_PLUGIN_API)
+if (NOT NETSCAPE_PLUGIN_API)
     list(APPEND WebCore_SOURCES
         plugins/PluginPackageNone.cpp
         plugins/PluginViewNone.cpp

@@ -94,8 +94,8 @@ void WebContextMenu::menuItemsWithUserData(Vector<WebContextMenuItemData> &menuI
 
     Vector<WebContextMenuItemData> proposedMenu = kitItems(coreItems);
     Vector<WebContextMenuItemData> newMenu;
-    RefPtr<InjectedBundleHitTestResult> hitTestResult = InjectedBundleHitTestResult::create(controller.hitTestResult());
 #if ENABLE(INJECT_BUNDLE)
+    RefPtr<InjectedBundleHitTestResult> hitTestResult = InjectedBundleHitTestResult::create(controller.hitTestResult());
     if (m_page->injectedBundleContextMenuClient().getCustomMenuFromDefaultItems(m_page, hitTestResult.get(), proposedMenu, newMenu, userData))
         proposedMenu = newMenu;
 #endif

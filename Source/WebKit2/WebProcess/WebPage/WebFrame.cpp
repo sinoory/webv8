@@ -594,10 +594,14 @@ bool WebFrame::hasVerticalScrollbar() const
 
 PassRefPtr<InjectedBundleHitTestResult> WebFrame::hitTest(const IntPoint point) const
 {
+#if ENABLE(INJECT_BUNDLE)
     if (!m_coreFrame)
         return 0;
 
     return InjectedBundleHitTestResult::create(m_coreFrame->eventHandler().hitTestResultAtPoint(point, HitTestRequest::ReadOnly | HitTestRequest::Active | HitTestRequest::IgnoreClipping | HitTestRequest::DisallowShadowContent));
+#else
+    return 0;
+#endif
 }
 
 bool WebFrame::getDocumentBackgroundColor(double* red, double* green, double* blue, double* alpha)
