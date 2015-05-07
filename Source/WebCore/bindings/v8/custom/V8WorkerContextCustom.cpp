@@ -66,7 +66,8 @@ v8::Handle<v8::Value> SetTimeoutOrInterval(const v8::Arguments& args, bool singl
     v8::Handle<v8::Context> v8Context = proxy->context();
     if (function->IsString()) {
         WTF::String stringFunction = toWebCoreString(function);
-        timerId = DOMTimer::install(workerContext, new ScheduledAction(v8Context, stringFunction, workerContext->url()), timeout, singleShot);
+        std::unique_ptr<ScheduledAction> up(new ScheduledAction(v8Context, stringFunction, workerContext->url()));
+        timerId = DOMTimer::install(workerContext, std::move(up), timeout, singleShot);
     } else if (function->IsFunction()) {
         size_t paramCount = argumentCount >= 2 ? argumentCount - 2 : 0;
         v8::Local<v8::Value>* params = 0;
@@ -77,8 +78,9 @@ v8::Handle<v8::Value> SetTimeoutOrInterval(const v8::Arguments& args, bool singl
         }
         // ScheduledAction takes ownership of actual params and releases them in its destructor.
         ScheduledAction* action = new ScheduledAction(v8Context, v8::Handle<v8::Function>::Cast(function), paramCount, params);
+        std::unique_ptr<ScheduledAction> up(action);
         delete [] params;
-        timerId = DOMTimer::install(workerContext, action, timeout, singleShot);
+        timerId = DOMTimer::install(workerContext, std::move(up), timeout, singleShot);
     } else
         return v8::Undefined();
 
