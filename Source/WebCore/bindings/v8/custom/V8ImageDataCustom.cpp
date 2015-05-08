@@ -31,7 +31,7 @@
 #include "config.h"
 #include "V8ImageData.h"
 
-#include "V8CanvasPixelArray.h"
+//#include "V8CanvasPixelArray.h"
 
 namespace WebCore {
 
@@ -40,6 +40,7 @@ v8::Handle<v8::Value> toV8(ImageData* impl)
     if (!impl)
         return v8::Null();
     v8::Handle<v8::Object> wrapper = V8ImageData::wrap(impl);
+#if 0 // CMP_ERROR_TODO JSC data
     if (!wrapper.IsEmpty()) {
         // Create a V8 CanvasPixelArray object.
         v8::Handle<v8::Value> pixelArray = toV8(impl->data());
@@ -52,7 +53,7 @@ v8::Handle<v8::Value> toV8(ImageData* impl)
                          v8::ReadOnly);
         }
     }
-
+#endif
     return wrapper;
 }
 

@@ -31,7 +31,7 @@
     EventTarget,
     JSCustomMarkFunction,
     CustomIsReachable,
-    CustomToJSObject,
+    //CustomToJSObject,//CMP_ERROR_TODO  jsc and nw use custom toV8
     SkipVTableValidation,
 ] interface TextTrackCue {
     readonly attribute TextTrack track;
