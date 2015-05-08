@@ -1,0 +1,471 @@
+logcmd ./build-browser.sh release
+2015年 05月 08日 星期五 10:10:23 CST
+Using 64 bit Linux
+4
+
+~/work/webkit/4and/Webkit2Browser ~/work/webkit/4and/Webkit2Browser
+g++ v8
+Updating projects from gyp files...
+make: 没有什么可以做的为 `all'。
+build release version start...
+-- Found ICU header files in /usr/include/x86_64-linux-gnu
+-- Found ICU libraries: /usr/lib/x86_64-linux-gnu/libicuuc.so
+-- Could NOT find GEOCLUE2 (missing:  VERSION_OK) 
+-- checking for module 'cairo-gl'
+--   package 'cairo-gl' not found
+-- checking for module 'cairo-glx'
+--   package 'cairo-glx' not found
+-- checking for module 'cairo-egl'
+--   package 'cairo-egl' not found
+-- Enabled features:
+--  ENABLE_3D_RENDERING ..................... ON
+--  ENABLE_ACCELERATED_2D_CANVAS              OFF
+--  ENABLE_ACCELERATED_OVERFLOW_SCROLLING ... OFF
+--  ENABLE_ACCESSIBILITY                      ON
+--  ENABLE_API_TESTS ........................ ON
+--  ENABLE_AVF_CAPTIONS                       OFF
+--  ENABLE_ASSEMBLER_WX_EXCLUSIVE ........... OFF
+--  ENABLE_BATTERY_STATUS                     OFF
+--  ENABLE_CACHE_PARTITIONING ............... OFF
+--  ENABLE_CANVAS_PATH                        OFF
+--  ENABLE_CANVAS_PROXY ..................... OFF
+--  ENABLE_CHANNEL_MESSAGING                  ON
+--  ENABLE_CONTENT_FILTERING ................ OFF
+--  ENABLE_CONTEXT_MENUS                      ON
+--  ENABLE_CSP_NEXT ......................... OFF
+--  ENABLE_CSS3_CONDITIONAL_RULES             ON
+--  ENABLE_CSS3_TEXT ........................ OFF
+--  ENABLE_CSS3_TEXT_LINE_BREAK               OFF
+--  ENABLE_CSS_BOX_DECORATION_BREAK ......... ON
+--  ENABLE_CSS_COMPOSITING                    OFF
+--  ENABLE_CSS_DEVICE_ADAPTATION ............ OFF
+--  ENABLE_CSS_GRID_LAYOUT                    OFF
+--  ENABLE_CSS_IMAGE_ORIENTATION ............ OFF
+--  ENABLE_CSS_IMAGE_RESOLUTION               OFF
+--  ENABLE_CSS_IMAGE_SET .................... ON
+--  ENABLE_CSS_REGIONS                        ON
+--  ENABLE_CSS_SELECTORS_LEVEL4 ............. ON
+--  ENABLE_CSS_SHAPES                         OFF
+--  ENABLE_CURSOR_VISIBILITY ................ OFF
+--  ENABLE_CUSTOM_SCHEME_HANDLER              OFF
+--  ENABLE_DASHBOARD_SUPPORT ................ OFF
+--  ENABLE_DATACUE_VALUE                      OFF
+--  ENABLE_DATALIST_ELEMENT ................. OFF
+--  ENABLE_DATA_TRANSFER_ITEMS                OFF
+--  ENABLE_DETAILS_ELEMENT .................. ON
+--  ENABLE_DEVICE_ORIENTATION                 OFF
+--  ENABLE_DOM4_EVENTS_CONSTRUCTOR .......... ON
+--  ENABLE_DOWNLOAD_ATTRIBUTE                 OFF
+--  ENABLE_DRAG_SUPPORT ..................... ON
+--  ENABLE_ENCRYPTED_MEDIA                    OFF
+--  ENABLE_ENCRYPTED_MEDIA_V2 ............... OFF
+--  ENABLE_FONT_LOAD_EVENTS                   OFF
+--  ENABLE_FTL_JIT .......................... OFF
+--  ENABLE_FTPDIR                             OFF
+--  ENABLE_FULLSCREEN_API ................... ON
+--  ENABLE_GAMEPAD                            OFF
+--  ENABLE_GAMEPAD_DEPRECATED ............... OFF
+--  ENABLE_GEOLOCATION                        ON
+--  ENABLE_HIDDEN_PAGE_DOM_TIMER_THROTTLING . OFF
+--  ENABLE_ICONDATABASE                       ON
+--  ENABLE_IMAGE_DECODER_DOWN_SAMPLING ...... OFF
+--  ENABLE_INDEXED_DATABASE                   OFF
+--  ENABLE_INDIE_UI ......................... OFF
+--  ENABLE_INPUT_TYPE_COLOR                   OFF
+--  ENABLE_INPUT_TYPE_COLOR_POPOVER ......... OFF
+--  ENABLE_INPUT_TYPE_DATE                    OFF
+--  ENABLE_INPUT_TYPE_DATETIME_INCOMPLETE ... OFF
+--  ENABLE_INPUT_TYPE_DATETIMELOCAL           OFF
+--  ENABLE_INPUT_TYPE_MONTH ................. OFF
+--  ENABLE_INPUT_TYPE_TIME                    OFF
+--  ENABLE_INPUT_TYPE_WEEK .................. OFF
+--  ENABLE_INSPECTOR                          OFF
+--  ENABLE_IOS_AIRPLAY ...................... OFF
+--  ENABLE_IOS_TEXT_AUTOSIZING                OFF
+--  ENABLE_JIT .............................. ON
+--  ENABLE_LEGACY_CSS_VENDOR_PREFIXES         OFF
+--  ENABLE_LEGACY_NOTIFICATIONS ............. OFF
+--  ENABLE_LEGACY_VENDOR_PREFIXES             ON
+--  ENABLE_LEGACY_WEB_AUDIO ................. OFF
+--  ENABLE_LETTERPRESS                        OFF
+--  ENABLE_LINK_PREFETCH .................... OFF
+--  ENABLE_LLINT_C_LOOP                       OFF
+--  ENABLE_MAC_LONG_PRESS ................... OFF
+--  ENABLE_MATHML                             OFF
+--  ENABLE_MEDIA_CAPTURE .................... OFF
+--  ENABLE_MEDIA_CONTROLS_SCRIPT              OFF
+--  ENABLE_MEDIA_SOURCE ..................... OFF
+--  ENABLE_MEDIA_STATISTICS                   OFF
+--  ENABLE_MEDIA_STREAM ..................... OFF
+--  ENABLE_MEMORY_SAMPLER                     OFF
+--  ENABLE_METER_ELEMENT .................... ON
+--  ENABLE_MHTML                              ON
+--  ENABLE_MOUSE_CURSOR_SCALE ............... OFF
+--  ENABLE_NAVIGATOR_CONTENT_UTILS            OFF
+--  ENABLE_NAVIGATOR_HWCONCURRENCY .......... ON
+--  ENABLE_NOSNIFF                            OFF
+--  ENABLE_NETSCAPE_PLUGIN_API .............. OFF
+--  ENABLE_NETWORK_PROCESS                    ON
+--  ENABLE_NOTIFICATIONS .................... OFF
+--  ENABLE_ORIENTATION_EVENTS                 OFF
+--  ENABLE_PDFKIT_PLUGIN .................... OFF
+--  ENABLE_PERFORMANCE_TIMELINE               OFF
+--  ENABLE_PICTURE_SIZES .................... ON
+--  ENABLE_POINTER_LOCK                       OFF
+--  ENABLE_PROMISES ......................... ON
+--  ENABLE_PROXIMITY_EVENTS                   OFF
+--  ENABLE_PUBLIC_SUFFIX_LIST ............... OFF
+--  ENABLE_QUOTA                              OFF
+--  ENABLE_REMOTE_INSPECTOR ................. OFF
+--  ENABLE_REQUEST_ANIMATION_FRAME            ON
+--  ENABLE_RESOLUTION_MEDIA_QUERY ........... OFF
+--  ENABLE_RESOURCE_TIMING                    OFF
+--  ENABLE_SATURATED_LAYOUT_ARITHMETIC ...... ON
+--  ENABLE_SECCOMP_FILTERS                    OFF
+--  ENABLE_SERVICE_CONTROLS ................. OFF
+--  ENABLE_SHARED_WORKERS                     ON
+--  ENABLE_SPEECH_SYNTHESIS ................. OFF
+--  ENABLE_SPELLCHECK                         ON
+--  ENABLE_SQL_DATABASE ..................... ON
+--  ENABLE_SUBTLE_CRYPTO                      OFF
+--  ENABLE_SVG_FONTS ........................ ON
+--  ENABLE_TELEPHONE_NUMBER_DETECTION         OFF
+--  ENABLE_TEMPLATE_ELEMENT ................. ON
+--  ENABLE_TEXT_AUTOSIZING                    OFF
+--  ENABLE_TOUCH_EVENTS ..................... ON
+--  ENABLE_TOUCH_SLIDER                       OFF
+--  ENABLE_TOUCH_ICON_LOADING ............... OFF
+--  ENABLE_USERSELECT_ALL                     ON
+--  ENABLE_USER_TIMING ...................... OFF
+--  ENABLE_VIBRATION                          OFF
+--  ENABLE_VIDEO ............................ ON
+--  ENABLE_VIDEO_TRACK                        ON
+--  ENABLE_VIEW_MODE_CSS_MEDIA .............. ON
+--  ENABLE_WEB_AUDIO                          ON
+--  ENABLE_WEB_REPLAY ....................... OFF
+--  ENABLE_WEB_SOCKETS                        ON
+--  ENABLE_WEB_TIMING ....................... ON
+--  ENABLE_WEBGL                              OFF
+--  ENABLE_WEBVTT_REGIONS ................... OFF
+--  ENABLE_XHR_TIMEOUT                        ON
+--  ENABLE_XSLT ............................. ON
+--  ENABLE_WORKERS                            ON
+--  USE_SYSTEM_MALLOC ....................... OFF
+--  WTF_USE_TILED_BACKING_STORE               OFF
+--  ENABLE_PLUGIN_PROCESS_GTK2 .............. ON
+-- checking for module 'gstreamer-mpegts-1.0>=1.4.0'
+--   package 'gstreamer-mpegts-1.0>=1.4.0' not found
+-- Using platform-specific CMakeLists: /home/sin/work/webkit/4and/Webkit2Browser/Source/WTF/wtf/PlatformGTK.cmake
+-- Using platform-specific CMakeLists: /home/sin/work/webkit/4and/Webkit2Browser/Source/WebCore/PlatformGTK.cmake
+-- Using platform-specific CMakeLists: /home/sin/work/webkit/4and/Webkit2Browser/Source/WebKit2/PlatformGTK.cmake
+-- valac 0.20.1 found
+-- ZRL Install_Mode
+-- gettext found: zh_CN en_GB 
+-- Using platform-specific CMakeLists: /home/sin/work/webkit/4and/Webkit2Browser/Source/PlatformGTK.cmake
+-- ZRL Not build any gtkdoc.................
+-- Configuring done
+CMake Warning (dev) in Source/WebKit2/CMakeLists.txt:
+  Policy CMP0022 is not set: INTERFACE_LINK_LIBRARIES defines the link
+  interface.  Run "cmake --help-policy CMP0022" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  Target "WebKit2" has an INTERFACE_LINK_LIBRARIES property which differs
+  from its LINK_INTERFACE_LIBRARIES properties.
+
+  INTERFACE_LINK_LIBRARIES:
+
+    -Wl,--whole-archive;WebCore;-Wl,--no-whole-archive;-Wl,--whole-archive;Chromium;-Wl,--no-whole-archive;-Wl,--whole-archive;/usr/lib/x86_64-linux-gnu/librt.so;-Wl,--no-whole-archive;-Wl,--whole-archive;WebCorePlatformGTK;-Wl,--no-whole-archive;-Wl,--whole-archive;gtk-3;-Wl,--no-whole-archive;-Wl,--whole-archive;gdk-3;-Wl,--no-whole-archive;-Wl,--whole-archive;atk-1.0;-Wl,--no-whole-archive;-Wl,--whole-archive;gio-2.0;-Wl,--no-whole-archive;-Wl,--whole-archive;pangocairo-1.0;-Wl,--no-whole-archive;-Wl,--whole-archive;gdk_pixbuf-2.0;-Wl,--no-whole-archive;-Wl,--whole-archive;cairo-gobject;-Wl,--no-whole-archive;-Wl,--whole-archive;pango-1.0;-Wl,--no-whole-archive;-Wl,--whole-archive;cairo;-Wl,--no-whole-archive;-Wl,--whole-archive;gobject-2.0;-Wl,--no-whole-archive;-Wl,--whole-archive;glib-2.0;-Wl,--no-whole-archive;-Wl,--whole-archive ../../Source/v8/out/Release/obj.target/tools/gyp/libv8_base.a -Wl,--no-whole-archive;-Wl,--whole-archive ../../Source/v8/out/Release/obj.target/tools/gyp/libv8_snapshot.a -Wl,--no-whole-archive;-Wl,--whole-archive ../../lib/libcrypto.so.1.0.0 -Wl,--no-whole-archive;-Wl,--whole-archive ../../lib/libssl.so.1.0.0 -Wl,--no-whole-archive
+
+  LINK_INTERFACE_LIBRARIES:
+
+    
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) in Source/BrowserApp/midori/CMakeLists.txt:
+  Policy CMP0022 is not set: INTERFACE_LINK_LIBRARIES defines the link
+  interface.  Run "cmake --help-policy CMP0022" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  Target "cdosbrowser-core" has an INTERFACE_LINK_LIBRARIES property which
+  differs from its LINK_INTERFACE_LIBRARIES properties.
+
+  INTERFACE_LINK_LIBRARIES:
+
+    -Wl,--whole-archive ../../../lib/libcrypto.so.1.0.0 -Wl,--no-whole-archive;-Wl,--whole-archive ../../../lib/libssl.so.1.0.0 -Wl,--no-whole-archive;cdosbrowser-core-vala;JavaScriptCore;WebKit2;/usr/lib/x86_64-linux-gnu/libgtk-3.so;/usr/lib/x86_64-linux-gnu/libgdk-3.so;/usr/lib/x86_64-linux-gnu/libglib-2.0.so;/usr/lib/x86_64-linux-gnu/libgio-2.0.so;/usr/lib/x86_64-linux-gnu/libgobject-2.0.so;atk-1.0;pangocairo-1.0;gdk_pixbuf-2.0;cairo-gobject;pango-1.0;/usr/lib/x86_64-linux-gnu/libcairo.so;xml2;secret-1;/usr/lib/x86_64-linux-gnu/libsoup-2.4.so;xslt;sqlite3;m;X11
+
+  LINK_INTERFACE_LIBRARIES:
+
+    
+
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Generating done
+-- Build files have been written to: /home/sin/work/webkit/4and/Webkit2Browser
+[  0%] Scanning dependencies of target adblock_blocked.png
+Built target WebKit2-fake-api-headers
+[  0%] [  0%] [  1%] [  1%] Built target pofiles_1
+[  3%] Built target pofiles_2
+Built target Chromium
+Built target WebKit2-forwarding-headers
+Built target WTF
+[  4%] [  4%] Built target ANGLESupport
+Scanning dependencies of target adblock_enabled.png
+Scanning dependencies of target cdosbrowser.desktop
+Built target adblock_blocked.png
+Scanning dependencies of target adblock_disabled.png
+Merging translations into cdosbrowser.desktop.
+[  5%] [  5%] [  5%] Built target translations_1
+[  5%] Built target adblock_enabled.png
+Built target cdosbrowser.desktop
+Built target adblock_disabled.png
+[  5%] Built target gtest
+Scanning dependencies of target WebCore
+Linking CXX static library ../../lib/libWebCoreGTK.a
+[ 76%] Built target WebCore
+[ 77%] Built target WebCorePlatformGTK2
+[ 78%] Built target WebCorePlatformGTK
+[ 78%] Generating ../../DerivedSources/webkit2gtk/WebKit2ResourcesGResourceBundle.c
+Scanning dependencies of target WebKit2
+[ 78%] Building C object Source/WebKit2/CMakeFiles/WebKit2.dir/__/__/DerivedSources/webkit2gtk/WebKit2ResourcesGResourceBundle.c.o
+Linking CXX shared library ../../lib/libwebkit2gtk-4.0.so
+CMakeFiles/WebKit2.dir/__/JavaScriptCore/v8/yarr/RegularExpression.cpp.o：在函数‘JSC::Yarr::RegularExpression::match(WTF::String const&, int, int*) const’中：
+RegularExpression.cpp:(.text+0x533)：对‘JSC::Yarr::interpret(JSC::Yarr::BytecodePattern*, WTF::String const&, unsigned int, unsigned int*)’未定义的引用
+CMakeFiles/WebKit2.dir/__/JavaScriptCore/v8/yarr/RegularExpression.cpp.o：在函数‘JSC::Yarr::RegularExpression::RegularExpression(WTF::String const&, WTF::TextCaseSensitivity, JSC::Yarr::MultilineMode)’中：
+RegularExpression.cpp:(.text+0x790)：对‘JSC::Yarr::YarrPattern::YarrPattern(WTF::String const&, bool, bool, char const**)’未定义的引用
+RegularExpression.cpp:(.text+0x9a3)：对‘JSC::Yarr::byteCompile(JSC::Yarr::YarrPattern&, WTF::BumpPointerAllocator*)’未定义的引用
+CMakeFiles/WebKit2.dir/Shared/WebKit2Initialize.cpp.o：在函数‘WebKit::InitializeWebKit2()’中：
+WebKit2Initialize.cpp:(.text+0x5)：对‘JSC::initializeThreading()’未定义的引用
+CMakeFiles/WebKit2.dir/Shared/API/c/WKString.cpp.o：在函数‘WKStringCopyJSString(OpaqueWKString const*)’中：
+WKString.cpp:(.text+0x55d)：对‘JSC::initializeThreading()’未定义的引用
+WKString.cpp:(.text+0x56a)：对‘OpaqueJSString::create(WTF::String const&)’未定义的引用
+CMakeFiles/WebKit2.dir/Shared/API/c/WKString.cpp.o：在函数‘WKStringCreateWithJSString(OpaqueJSString*)’中：
+WKString.cpp:(.text+0x626)：对‘OpaqueJSString::string() const’未定义的引用
+CMakeFiles/WebKit2.dir/WebProcess/InjectedBundle/InjectedBundleNavigationAction.cpp.o：在函数‘WebKit::InjectedBundleNavigationAction::InjectedBundleNavigationAction(WebKit::WebFrame*, WebCore::NavigationAction const&, WTF::PassRefPtr<WebCore::FormState>)’中：
+InjectedBundleNavigationAction.cpp:(.text+0x16e)：对‘WebKit::InjectedBundleNodeHandle::getOrCreate(WebCore::Node*)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/Modules/webaudio/AudioBuffer.cpp.o：在函数‘WebCore::AudioBuffer::getChannelData(unsigned int, int&)’中：
+AudioBuffer.cpp:(.text+0x130)：对‘JSC::GenericTypedArrayView<JSC::Float32Adaptor>::create(WTF::PassRefPtr<JSC::ArrayBuffer>, unsigned int, unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/Modules/webaudio/AudioBuffer.cpp.o：在函数‘WebCore::AudioBuffer::AudioBuffer(unsigned int, unsigned long, float)’中：
+AudioBuffer.cpp:(.text+0x493)：对‘JSC::GenericTypedArrayView<JSC::Float32Adaptor>::create(unsigned int)’未定义的引用
+AudioBuffer.cpp:(.text+0x4a2)：对‘JSC::ArrayBufferView::setNeuterable(bool)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/Modules/webaudio/AudioBuffer.cpp.o：在函数‘WebCore::AudioBuffer::AudioBuffer(WebCore::AudioBus*)’中：
+AudioBuffer.cpp:(.text+0x679)：对‘JSC::GenericTypedArrayView<JSC::Float32Adaptor>::create(unsigned int)’未定义的引用
+AudioBuffer.cpp:(.text+0x688)：对‘JSC::ArrayBufferView::setNeuterable(bool)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/custom/V8DOMWindowCustom.cpp.o：在函数‘WebCore::V8DOMWindow::postMessageCallback(v8::Arguments const&)’中：
+V8DOMWindowCustom.cpp:(.text+0xf86)：对‘WebCore::getMessagePortArray(v8::Local<v8::Value>, WTF::Vector<WTF::RefPtr<WebCore::MessagePort>, 1ul, WTF::CrashOnOverflow>&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8Uint8Array.cpp.o：在函数‘WebCore::Uint8ArrayInternal::subarrayCallback(v8::Arguments const&)’中：
+V8Uint8Array.cpp:(.text+0x194)：对‘JSC::GenericTypedArrayView<JSC::Uint8Adaptor>::subarray(int, int) const’未定义的引用
+V8Uint8Array.cpp:(.text+0x19d)：对‘WebCore::toV8(JSC::GenericTypedArrayView<JSC::Uint8Adaptor>*)’未定义的引用
+V8Uint8Array.cpp:(.text+0x242)：对‘JSC::GenericTypedArrayView<JSC::Uint8Adaptor>::subarray(int) const’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8Uint8Array.cpp.o：在函数‘WebCore::V8Uint8Array::GetTemplate()’中：
+V8Uint8Array.cpp:(.text+0x321)：对‘WebCore::V8Uint8Array::constructorCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8Uint8Array.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8Uint8Array::setCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8DOMWrapper.cpp.o：在函数‘WebCore::V8DOMWrapper::instantiateV8Object(WebCore::V8Proxy*, WebCore::WrapperTypeInfo*, void*)’中：
+V8DOMWrapper.cpp:(.text+0x557)：对‘WebCore::V8HTMLDocument::WrapInShadowObject(v8::Local<v8::Object>, WebCore::Node*)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/ScriptController.cpp.o：在函数‘WebCore::ScriptController::createScriptInstanceForWidget(WebCore::Widget*)’中：
+ScriptController.cpp:(.text+0x770)：对‘WebCore::PlatformBridge::pluginScriptableObject(WebCore::Widget*)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8DOMWindowShell.cpp.o：在函数‘WebCore::getter(v8::Local<v8::String>, v8::AccessorInfo const&)’中：
+V8DOMWindowShell.cpp:(.text+0x7a)：对‘WebCore::V8HTMLDocument::GetNamedProperty(WebCore::HTMLDocument*, WTF::AtomicString const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8LazyEventListener.cpp.o：在函数‘WebCore::V8LazyEventListener::prepareListenerObject(WebCore::ScriptExecutionContext*)’中：
+V8LazyEventListener.cpp:(.text+0x403)：对‘unsigned short* const* WTF::String::characters<unsigned short*>() const’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8Proxy.cpp.o：在函数‘WebCore::logInfo(WebCore::Frame*, WTF::String const&, WTF::String const&)’中：
+V8Proxy.cpp:(.text+0x248)：对‘WebCore::Console::addMessage(WebCore::MessageSource, WebCore::MessageType, WebCore::MessageLevel, WTF::String const&, unsigned int, WTF::String const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8Proxy.cpp.o：在函数‘WebCore::V8Proxy::compileScript(v8::Handle<v8::String>, WTF::String const&, WTF::TextPosition const&, v8::ScriptData*)’中：
+V8Proxy.cpp:(.text+0x2e1)：对‘unsigned short* const* WTF::String::characters<unsigned short*>() const’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8Proxy.cpp.o：在函数‘WebCore::V8Proxy::reportUnsafeAccessTo(WebCore::Frame*)’中：
+V8Proxy.cpp:(.text+0x1f12)：对‘WebCore::Console::addMessage(WebCore::MessageSource, WebCore::MessageType, WebCore::MessageLevel, WTF::String const&, unsigned int, WTF::String const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/ScriptCallStackFactory.cpp.o：在函数‘WebCore::createScriptArguments(v8::Arguments const&, unsigned int)’中：
+ScriptCallStackFactory.cpp:(.text+0x856)：对‘WebCore::ScriptArguments::create(WebCore::ScriptState*, WTF::Vector<WebCore::ScriptValue, 0ul, WTF::CrashOnOverflow>&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/WorkerContextExecutionProxy.cpp.o：在函数‘WebCore::WorkerContextExecutionProxy::initContextIfNeeded()’中：
+WorkerContextExecutionProxy.cpp:(.text+0x8bd)：对‘WebCore::V8DedicatedWorkerContext::info’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8Binding.cpp.o：在函数‘WebCore::v8UndetectableString(WTF::String const&)’中：
+V8Binding.cpp:(.text+0x2f5)：对‘unsigned short* const* WTF::String::characters<unsigned short*>() const’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8Float32Array.cpp.o：在函数‘WebCore::Float32ArrayInternal::subarrayCallback(v8::Arguments const&)’中：
+V8Float32Array.cpp:(.text+0x194)：对‘JSC::GenericTypedArrayView<JSC::Float32Adaptor>::subarray(int, int) const’未定义的引用
+V8Float32Array.cpp:(.text+0x19d)：对‘WebCore::toV8(JSC::GenericTypedArrayView<JSC::Float32Adaptor>*)’未定义的引用
+V8Float32Array.cpp:(.text+0x242)：对‘JSC::GenericTypedArrayView<JSC::Float32Adaptor>::subarray(int) const’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8Float32Array.cpp.o：在函数‘WebCore::V8Float32Array::GetTemplate()’中：
+V8Float32Array.cpp:(.text+0x321)：对‘WebCore::V8Float32Array::constructorCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/v8/V8Float32Array.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8Float32Array::setCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/bindings/V8ArrayBuffer.cpp.o：在函数‘WebCore::V8ArrayBuffer::GetTemplate()’中：
+V8ArrayBuffer.cpp:(.text+0x1b1)：对‘WebCore::V8ArrayBuffer::constructorCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/css/CSSStyleSheet.cpp.o:(.data.rel.ro._ZTVN7WebCore13CSSStyleSheetE[_ZTVN7WebCore13CSSStyleSheetE]+0x88)：对‘WebCore::StyleBase::cssText() const’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/css/CSSStyleSheet.cpp.o:(.data.rel.ro._ZTVN7WebCore13CSSStyleSheetE[_ZTVN7WebCore13CSSStyleSheetE]+0x90)：对‘WebCore::StyleBase::checkLoaded()’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/css/StyleSheet.cpp.o:(.data.rel.ro._ZTVN7WebCore10StyleSheetE[_ZTVN7WebCore10StyleSheetE]+0x88)：对‘WebCore::StyleBase::cssText() const’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/css/StyleSheet.cpp.o:(.data.rel.ro._ZTVN7WebCore10StyleSheetE[_ZTVN7WebCore10StyleSheetE]+0x90)：对‘WebCore::StyleBase::checkLoaded()’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/dom/Document.cpp.o：在函数‘WebCore::Document::createElement(WebCore::QualifiedName const&, bool)’中：
+Document.cpp:(.text+0x7ccd)：对‘WebCore::SVGElementFactory::createElement(WebCore::QualifiedName const&, WebCore::Document&, bool)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/history/CachedFrame.cpp.o：在函数‘WebCore::CachedFrameBase::restore()’中：
+CachedFrame.cpp:(.text+0x371)：对‘WebCore::ScriptCachedFrameData::restore(WebCore::Frame*)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/history/CachedFrame.cpp.o：在函数‘WebCore::CachedFrame::CachedFrame(WebCore::Frame&)’中：
+CachedFrame.cpp:(.text+0xc23)：对‘WebCore::ScriptCachedFrameData::ScriptCachedFrameData(WebCore::Frame*)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/html/HTMLMediaElement.cpp.o：在函数‘WebCore::HTMLMediaElement::createMediaControls()’中：
+HTMLMediaElement.cpp:(.text+0x4883)：对‘WebCore::MediaControls::create(WebCore::Document&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/html/ImageData.cpp.o：在函数‘WebCore::ImageData::ImageData(WebCore::IntSize const&)’中：
+ImageData.cpp:(.text+0x29)：对‘JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>::createUninitialized(unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/page/PageConsoleClient.cpp.o：在函数‘WebCore::PageConsoleClient::PageConsoleClient(WebCore::Page&)’中：
+PageConsoleClient.cpp:(.text+0x76)：对‘WebCore::Console::Console(WebCore::Frame*)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/platform/graphics/ISOVTTCue.cpp.o：在函数‘WebCore::ISOBox::peekType(JSC::ArrayBuffer*)’中：
+ISOVTTCue.cpp:(.text+0x6b)：对‘JSC::GenericTypedArrayView<JSC::Int8Adaptor>::create(WTF::PassRefPtr<JSC::ArrayBuffer>, unsigned int, unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/platform/graphics/ISOVTTCue.cpp.o：在函数‘WebCore::ISOBox::peekLength(JSC::ArrayBuffer*)’中：
+ISOVTTCue.cpp:(.text+0x390)：对‘JSC::DataView::create(WTF::PassRefPtr<JSC::ArrayBuffer>, unsigned int, unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/platform/graphics/ISOVTTCue.cpp.o：在函数‘WebCore::ISOBox::peekString(JSC::ArrayBuffer*, unsigned int, unsigned int)’中：
+ISOVTTCue.cpp:(.text+0x542)：对‘JSC::GenericTypedArrayView<JSC::Uint8Adaptor>::create(WTF::PassRefPtr<JSC::ArrayBuffer>, unsigned int, unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/platform/graphics/filters/FEGaussianBlur.cpp.o：在函数‘WebCore::FEGaussianBlur::platformApplySoftware()’中：
+FEGaussianBlur.cpp:(.text+0x1322)：对‘JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>::createUninitialized(unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/platform/graphics/filters/FEGaussianBlur.cpp.o：在函数‘WebCore::FEGaussianBlur::platformApply(JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>*, JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>*, unsigned int, unsigned int, WebCore::IntSize&)’中：
+FEGaussianBlur.cpp:(.text._ZN7WebCore14FEGaussianBlur13platformApplyEPN3JSC21GenericTypedArrayViewINS1_19Uint8ClampedAdaptorEEES5_jjRNS_7IntSizeE[_ZN7WebCore14FEGaussianBlur13platformApplyEPN3JSC21GenericTypedArrayViewINS1_19Uint8ClampedAdaptorEEES5_jjRNS_7IntSizeE]+0x9eb)：对‘JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>::createUninitialized(unsigned int)’未定义的引用
+FEGaussianBlur.cpp:(.text._ZN7WebCore14FEGaussianBlur13platformApplyEPN3JSC21GenericTypedArrayViewINS1_19Uint8ClampedAdaptorEEES5_jjRNS_7IntSizeE[_ZN7WebCore14FEGaussianBlur13platformApplyEPN3JSC21GenericTypedArrayViewINS1_19Uint8ClampedAdaptorEEES5_jjRNS_7IntSizeE]+0xb5b)：对‘JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>::createUninitialized(unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/platform/graphics/filters/FilterEffect.cpp.o：在函数‘WebCore::FilterEffect::copyUnmultipliedImage(JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>*, WebCore::IntRect const&)’中：
+FilterEffect.cpp:(.text+0xab2)：对‘JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>::createUninitialized(unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/platform/graphics/filters/FilterEffect.cpp.o：在函数‘WebCore::FilterEffect::copyPremultipliedImage(JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>*, WebCore::IntRect const&)’中：
+FilterEffect.cpp:(.text+0xed2)：对‘JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>::createUninitialized(unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/platform/graphics/filters/FilterEffect.cpp.o:FilterEffect.cpp:(.text+0x1ed8): more undefined references to `JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>::createUninitialized(unsigned int)' follow
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/xml/XSLStyleSheetLibxslt.cpp.o:(.data.rel.ro._ZTVN7WebCore13XSLStyleSheetE[_ZTVN7WebCore13XSLStyleSheetE]+0x88)：对‘WebCore::StyleBase::cssText() const’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/platform/graphics/cairo/ImageBufferCairo.cpp.o：在函数‘WTF::PassRefPtr<JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor> > WebCore::getImageData<(WebCore::Multiply)1>(WebCore::IntRect const&, WebCore::ImageBufferData const&, WebCore::IntSize const&)’中：
+ImageBufferCairo.cpp:(.text._ZN7WebCore12getImageDataILNS_8MultiplyE1EEEN3WTF10PassRefPtrIN3JSC21GenericTypedArrayViewINS4_19Uint8ClampedAdaptorEEEEERKNS_7IntRectERKNS_15ImageBufferDataERKNS_7IntSizeE[_ZN7WebCore12getImageDataILNS_8MultiplyE1EEEN3WTF10PassRefPtrIN3JSC21GenericTypedArrayViewINS4_19Uint8ClampedAdaptorEEEEERKNS_7IntRectERKNS_15ImageBufferDataERKNS_7IntSizeE]+0x3e)：对‘JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>::createUninitialized(unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/platform/graphics/cairo/ImageBufferCairo.cpp.o：在函数‘WTF::PassRefPtr<JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor> > WebCore::getImageData<(WebCore::Multiply)0>(WebCore::IntRect const&, WebCore::ImageBufferData const&, WebCore::IntSize const&)’中：
+ImageBufferCairo.cpp:(.text._ZN7WebCore12getImageDataILNS_8MultiplyE0EEEN3WTF10PassRefPtrIN3JSC21GenericTypedArrayViewINS4_19Uint8ClampedAdaptorEEEEERKNS_7IntRectERKNS_15ImageBufferDataERKNS_7IntSizeE[_ZN7WebCore12getImageDataILNS_8MultiplyE0EEEN3WTF10PassRefPtrIN3JSC21GenericTypedArrayViewINS4_19Uint8ClampedAdaptorEEEEERKNS_7IntRectERKNS_15ImageBufferDataERKNS_7IntSizeE]+0x38)：对‘JSC::GenericTypedArrayView<JSC::Uint8ClampedAdaptor>::createUninitialized(unsigned int)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Geolocation.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8Geolocation::getCurrentPositionCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Geolocation.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8Geolocation::watchPositionCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8AudioBuffer.cpp.o：在函数‘WebCore::AudioBufferInternal::getChannelDataCallback(v8::Arguments const&)’中：
+V8AudioBuffer.cpp:(.text+0x9a)：对‘WebCore::toV8(JSC::GenericTypedArrayView<JSC::Float32Adaptor>*)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8AudioContext.cpp.o：在函数‘WebCore::V8AudioContext::GetTemplate()’中：
+V8AudioContext.cpp:(.text+0x3581)：对‘WebCore::V8AudioContext::constructorCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8BiquadFilterNode.cpp.o:(.data.rel.ro+0x10)：对‘WebCore::V8BiquadFilterNode::typeAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8OscillatorNode.cpp.o:(.data.rel.ro+0x10)：对‘WebCore::V8OscillatorNode::typeAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8PannerNode.cpp.o:(.data.rel.ro+0x10)：对‘WebCore::V8PannerNode::panningModelAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8PannerNode.cpp.o:(.data.rel.ro+0x40)：对‘WebCore::V8PannerNode::distanceModelAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8WaveShaperNode.cpp.o：在函数‘WebCore::WaveShaperNodeInternal::curveAttrGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’中：
+V8WaveShaperNode.cpp:(.text+0x3f)：对‘WebCore::toV8(JSC::GenericTypedArrayView<JSC::Float32Adaptor>*)’未定义的引用
+V8WaveShaperNode.cpp:(.text+0x60)：对‘WebCore::toV8(JSC::GenericTypedArrayView<JSC::Float32Adaptor>*)’未定义的引用
+V8WaveShaperNode.cpp:(.text+0x89)：对‘WebCore::toV8(JSC::GenericTypedArrayView<JSC::Float32Adaptor>*)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8SQLResultSetRowList.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8SQLResultSetRowList::itemCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8SQLStatementErrorCallback.cpp.o:(.data.rel.ro._ZTVN7WebCore27V8SQLStatementErrorCallbackE[_ZTVN7WebCore27V8SQLStatementErrorCallbackE]+0x20)：对‘WebCore::V8SQLStatementErrorCallback::handleEvent(WebCore::SQLTransaction*, WebCore::SQLError*)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8SQLTransaction.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8SQLTransaction::executeSqlCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8SQLTransactionSync.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8SQLTransactionSync::executeSqlCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8CSSStyleDeclaration.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8CSSStyleDeclaration::getPropertyCSSValueCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8DOMImplementation.cpp.o：在函数‘WebCore::DOMImplementationInternal::createHTMLDocumentCallback(v8::Arguments const&)’中：
+V8DOMImplementation.cpp:(.text+0x163)：对‘WebCore::toV8(WebCore::HTMLDocument*, bool)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8DataTransfer.cpp.o:(.data.rel.ro+0x68)：对‘WebCore::V8DataTransfer::typesAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Document.cpp.o：在函数‘WebCore::DocumentInternal::getElementByIdCallback(v8::Arguments const&)’中：
+V8Document.cpp:(.text+0x6c86)：对‘WebCore::TreeScope::getElementById(WTF::AtomicString const&, bool) const’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Document.cpp.o:(.data.rel.ro+0x208)：对‘WebCore::V8Document::createTouchListCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Document.cpp.o:(.data.rel.ro+0x698)：对‘WebCore::V8Document::locationAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Document.cpp.o:(.data.rel.ro+0x6a0)：对‘WebCore::V8Document::locationAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Event.cpp.o:(.data.rel.ro+0x1e8)：对‘WebCore::V8Event::clipboardDataAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8MessageEvent.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8MessageEvent::initMessageEventCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8MessageEvent.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8MessageEvent::webkitInitMessageEventCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8MessageEvent.cpp.o:(.data.rel.ro+0xd8)：对‘WebCore::V8MessageEvent::dataAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8MessagePort.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8MessagePort::postMessageCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Node.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8Node::insertBeforeCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Node.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8Node::replaceChildCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Node.cpp.o:(.data.rel.ro+0x28)：对‘WebCore::V8Node::removeChildCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Node.cpp.o:(.data.rel.ro+0x38)：对‘WebCore::V8Node::appendChildCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8PopStateEvent.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8PopStateEvent::stateAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8RequestAnimationFrameCallback.cpp.o:(.data.rel.ro._ZTVN7WebCore31V8RequestAnimationFrameCallbackE[_ZTVN7WebCore31V8RequestAnimationFrameCallbackE]+0x20)：对‘WebCore::V8RequestAnimationFrameCallback::handleEvent(double)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Blob.cpp.o：在函数‘WebCore::V8Blob::GetTemplate()’中：
+V8Blob.cpp:(.text+0x22b)：对‘WebCore::V8Blob::constructorCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8FileReader.cpp.o:(.data.rel.ro+0x38)：对‘WebCore::V8FileReader::resultAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8DOMFormData.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8DOMFormData::appendCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLAllCollection.cpp.o：在函数‘WebCore::V8HTMLAllCollection::GetTemplate()’中：
+V8HTMLAllCollection.cpp:(.text+0x543)：对‘WebCore::V8HTMLAllCollection::callAsFunctionCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLAllCollection.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8HTMLAllCollection::itemCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLAllCollection.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8HTMLAllCollection::namedItemCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLAppletElement.cpp.o：在函数‘WebCore::V8HTMLAppletElement::GetTemplate()’中：
+V8HTMLAppletElement.cpp:(.text+0x3b3)：对‘WebCore::V8HTMLAppletElement::indexedPropertyGetter(unsigned int, v8::AccessorInfo const&)’未定义的引用
+V8HTMLAppletElement.cpp:(.text+0x3dc)：对‘WebCore::V8HTMLAppletElement::namedPropertyGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+V8HTMLAppletElement.cpp:(.text+0x405)：对‘WebCore::V8HTMLAppletElement::callAsFunctionCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLCanvasElement.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8HTMLCanvasElement::toDataURLCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLCanvasElement.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8HTMLCanvasElement::getContextCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLCanvasElement.cpp.o:(.data.rel.ro+0x28)：对‘WebCore::V8HTMLCanvasElement::probablySupportsContextCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLDocument.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8HTMLDocument::openCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLDocument.cpp.o:(.data.rel.ro+0x28)：对‘WebCore::V8HTMLDocument::writeCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLDocument.cpp.o:(.data.rel.ro+0x38)：对‘WebCore::V8HTMLDocument::writelnCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLDocument.cpp.o:(.data.rel.ro+0x118)：对‘WebCore::V8HTMLDocument::allAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLEmbedElement.cpp.o：在函数‘WebCore::V8HTMLEmbedElement::GetTemplate()’中：
+V8HTMLEmbedElement.cpp:(.text+0x353)：对‘WebCore::V8HTMLEmbedElement::indexedPropertyGetter(unsigned int, v8::AccessorInfo const&)’未定义的引用
+V8HTMLEmbedElement.cpp:(.text+0x37c)：对‘WebCore::V8HTMLEmbedElement::namedPropertyGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+V8HTMLEmbedElement.cpp:(.text+0x3a5)：对‘WebCore::V8HTMLEmbedElement::callAsFunctionCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLFormControlsCollection.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8HTMLFormControlsCollection::namedItemCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLFrameElement.cpp.o:(.data.rel.ro+0x1f0)：对‘WebCore::V8HTMLFrameElement::locationAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLInputElement.cpp.o:(.data.rel.ro+0x68)：对‘WebCore::V8HTMLInputElement::setSelectionRangeCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLInputElement.cpp.o:(.data.rel.ro+0x7d8)：对‘WebCore::V8HTMLInputElement::selectionStartAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLInputElement.cpp.o:(.data.rel.ro+0x7e0)：对‘WebCore::V8HTMLInputElement::selectionStartAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLInputElement.cpp.o:(.data.rel.ro+0x808)：对‘WebCore::V8HTMLInputElement::selectionEndAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLInputElement.cpp.o:(.data.rel.ro+0x810)：对‘WebCore::V8HTMLInputElement::selectionEndAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLInputElement.cpp.o:(.data.rel.ro+0x838)：对‘WebCore::V8HTMLInputElement::selectionDirectionAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLInputElement.cpp.o:(.data.rel.ro+0x840)：对‘WebCore::V8HTMLInputElement::selectionDirectionAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLLinkElement.cpp.o:(.data.rel.ro+0x158)：对‘WebCore::V8HTMLLinkElement::sizesAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLLinkElement.cpp.o:(.data.rel.ro+0x160)：对‘WebCore::V8HTMLLinkElement::sizesAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLMediaElement.cpp.o:(.data.rel.ro+0x820)：对‘WebCore::V8HTMLMediaElement::controllerAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLObjectElement.cpp.o：在函数‘WebCore::V8HTMLObjectElement::GetTemplate()’中：
+V8HTMLObjectElement.cpp:(.text+0xe09)：对‘WebCore::V8HTMLObjectElement::indexedPropertyGetter(unsigned int, v8::AccessorInfo const&)’未定义的引用
+V8HTMLObjectElement.cpp:(.text+0xe32)：对‘WebCore::V8HTMLObjectElement::namedPropertyGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+V8HTMLObjectElement.cpp:(.text+0xe5b)：对‘WebCore::V8HTMLObjectElement::callAsFunctionCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLSelectElement.cpp.o:(.data.rel.ro+0x28)：对‘WebCore::V8HTMLSelectElement::removeCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8HTMLTemplateElement.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8HTMLTemplateElement::contentAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8CanvasRenderingContext2D.cpp.o:(.data.rel.ro+0x218)：对‘WebCore::V8CanvasRenderingContext2D::webkitLineDashAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8CanvasRenderingContext2D.cpp.o:(.data.rel.ro+0x220)：对‘WebCore::V8CanvasRenderingContext2D::webkitLineDashAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8CanvasRenderingContext2D.cpp.o:(.data.rel.ro+0x338)：对‘WebCore::V8CanvasRenderingContext2D::strokeStyleAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8CanvasRenderingContext2D.cpp.o:(.data.rel.ro+0x340)：对‘WebCore::V8CanvasRenderingContext2D::strokeStyleAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8CanvasRenderingContext2D.cpp.o:(.data.rel.ro+0x368)：对‘WebCore::V8CanvasRenderingContext2D::fillStyleAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8CanvasRenderingContext2D.cpp.o:(.data.rel.ro+0x370)：对‘WebCore::V8CanvasRenderingContext2D::fillStyleAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8ScriptProfile.cpp.o：在函数‘WebCore::ScriptProfileInternal::titleAttrGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’中：
+V8ScriptProfile.cpp:(.text+0x5f)：对‘WebCore::ScriptProfile::title() const’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Crypto.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8Crypto::getRandomValuesCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8DOMWindow.cpp.o：在函数‘WebCore::DOMWindowInternal::locationAttrGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’中：
+V8DOMWindow.cpp:(.text+0xcc)：对‘WebCore::toV8(WebCore::Location*)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8History.cpp.o:(.data.rel.ro+0x38)：对‘WebCore::V8History::pushStateCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8History.cpp.o:(.data.rel.ro+0x48)：对‘WebCore::V8History::replaceStateCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o：在函数‘WebCore::V8Location::GetTemplate()’中：
+V8Location.cpp:(.text+0x97f)：对‘WebCore::V8Location::reloadAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+V8Location.cpp:(.text+0x9b4)：对‘WebCore::V8Location::replaceAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+V8Location.cpp:(.text+0x9e9)：对‘WebCore::V8Location::assignAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8Location::assignCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8Location::replaceCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0x28)：对‘WebCore::V8Location::reloadCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0x38)：对‘WebCore::V8Location::toStringFunctionCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0x50)：对‘WebCore::V8Location::hrefAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0x80)：对‘WebCore::V8Location::protocolAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0xb0)：对‘WebCore::V8Location::hostAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0xe0)：对‘WebCore::V8Location::hostnameAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0x110)：对‘WebCore::V8Location::portAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0x140)：对‘WebCore::V8Location::pathnameAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0x170)：对‘WebCore::V8Location::searchAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Location.cpp.o:(.data.rel.ro+0x1a0)：对‘WebCore::V8Location::hashAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8WebKitPoint.cpp.o：在函数‘WebCore::V8WebKitPoint::GetTemplate()’中：
+V8WebKitPoint.cpp:(.text+0x311)：对‘WebCore::V8WebKitPoint::constructorCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Storage.cpp.o：在函数‘WebCore::V8Storage::GetTemplate()’中：
+V8Storage.cpp:(.text+0xd83)：对‘WebCore::V8Storage::indexedPropertyDeleter(unsigned int, v8::AccessorInfo const&)’未定义的引用
+V8Storage.cpp:(.text+0xd8a)：对‘WebCore::V8Storage::indexedPropertyGetter(unsigned int, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8DedicatedWorkerGlobalScope.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8DedicatedWorkerGlobalScope::postMessageCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8Worker.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8Worker::postMessageCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8WorkerGlobalScope.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8WorkerGlobalScope::importScriptsCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8WorkerContext.cpp.o:(.data.rel.ro+0x248)：对‘WebCore::V8Int8Array::info’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8WorkerContext.cpp.o:(.data.rel.ro+0x2a8)：对‘WebCore::V8Int16Array::info’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8WorkerContext.cpp.o:(.data.rel.ro+0x2d8)：对‘WebCore::V8Uint16Array::info’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8WorkerContext.cpp.o:(.data.rel.ro+0x308)：对‘WebCore::V8Int32Array::info’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8WorkerContext.cpp.o:(.data.rel.ro+0x338)：对‘WebCore::V8Uint32Array::info’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8XMLHttpRequest.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8XMLHttpRequest::openCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8XMLHttpRequest.cpp.o:(.data.rel.ro+0x28)：对‘WebCore::V8XMLHttpRequest::sendCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8XMLHttpRequest.cpp.o:(.data.rel.ro+0x308)：对‘WebCore::V8XMLHttpRequest::responseTextAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8XMLHttpRequest.cpp.o:(.data.rel.ro+0x368)：对‘WebCore::V8XMLHttpRequest::responseAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8XSLTProcessor.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8XSLTProcessor::setParameterCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8XSLTProcessor.cpp.o:(.data.rel.ro+0x18)：对‘WebCore::V8XSLTProcessor::getParameterCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8XSLTProcessor.cpp.o:(.data.rel.ro+0x28)：对‘WebCore::V8XSLTProcessor::removeParameterCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8AudioTrack.cpp.o:(.data.rel.ro+0x40)：对‘WebCore::V8AudioTrack::kindAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8AudioTrack.cpp.o:(.data.rel.ro+0xa0)：对‘WebCore::V8AudioTrack::languageAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8DataCue.cpp.o：在函数‘WebCore::V8DataCue::GetTemplate()’中：
+V8DataCue.cpp:(.text+0x447)：对‘WebCore::V8DataCue::constructorCallback(v8::Arguments const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8TextTrack.cpp.o:(.data.rel.ro+0x70)：对‘WebCore::V8TextTrack::languageAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8TrackEvent.cpp.o:(.data.rel.ro+0x8)：对‘WebCore::V8TrackEvent::trackAccessorGetter(v8::Local<v8::String>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8VideoTrack.cpp.o:(.data.rel.ro+0x40)：对‘WebCore::V8VideoTrack::kindAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+../../lib/../Source/WebCore/CMakeFiles/WebCore.dir/__/__/DerivedSources/WebCore/V8VideoTrack.cpp.o:(.data.rel.ro+0xa0)：对‘WebCore::V8VideoTrack::languageAccessorSetter(v8::Local<v8::String>, v8::Local<v8::Value>, v8::AccessorInfo const&)’未定义的引用
+collect2: error: ld returned 1 exit status
+make[2]: *** [lib/libwebkit2gtk-4.0.so.37.2.6] 错误 1
+make[1]: *** [Source/WebKit2/CMakeFiles/WebKit2.dir/all] 错误 2
+make: *** [all] 错误 2
+~/work/webkit/4and/Webkit2Browser
+2015年 05月 08日 星期五 10:10:23 CST
+2015年 05月 08日 星期五 10:10:58 CST

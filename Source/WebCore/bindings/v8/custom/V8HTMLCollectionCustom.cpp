@@ -40,10 +40,10 @@
 #include "V8Proxy.h"
 
 namespace WebCore {
-
+/*
 static v8::Handle<v8::Value> getNamedItems(HTMLCollection* collection, AtomicString name)
 {
-    Vector<RefPtr<Node> > namedItems;
+    Vector<Ref<Element> > namedItems;
     collection->namedItems(name, namedItems);
 
     if (!namedItems.size())
@@ -141,7 +141,7 @@ v8::Handle<v8::Value> V8HTMLCollection::callAsFunctionCallback(const v8::Argumen
 
     return v8::Undefined();
 }
-
+*/
 v8::Handle<v8::Value> toV8(HTMLCollection* impl)
 {
     if (impl->type() == DocAll)

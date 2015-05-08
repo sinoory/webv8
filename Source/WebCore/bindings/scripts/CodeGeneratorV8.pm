@@ -2596,7 +2596,7 @@ sub HasCustomToV8Implementation {
     return 0 if $interfaceName eq "NodeList";
 
     # For everything else, do what JSC does.
-    return $dataNode->extendedAttributes->{"CustomToJS"};
+    return $dataNode->extendedAttributes->{"CustomToJSObject"}; #CMP_ERROR for toV8: android is CustomToJS , webkit2 is CustomToJSObject
 }
 
 sub GetDomMapFunction

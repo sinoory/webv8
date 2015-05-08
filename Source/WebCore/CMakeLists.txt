@@ -1054,8 +1054,18 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8WorkerContextCustom.cpp
     bindings/v8/custom/V8DOMTokenListCustom.cpp
     bindings/v8/custom/V8DOMStringMapCustom.cpp
+    bindings/v8/custom/V8DocumentLocationCustom.cpp
+    bindings/v8/custom/V8DocumentCustom.cpp
+    bindings/v8/custom/V8HTMLCollectionCustom.cpp
+    bindings/v8/custom/V8NodeCustom.cpp
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/V8ArrayBufferView.cpp
+    #bindings/v8/V8Int16Array.cpp
+    #bindings/v8/V8Int32Array.cpp
+    #bindings/v8/V8Int8Array.cpp
+    #bindings/v8/V8Uint16Array.cpp
+    #bindings/v8/V8Uint32Array.cpp
+    #bindings/v8/V8DedicatedWorkerContext.cpp
     bindings/v8/V8EventListener.cpp
     bindings/v8/specialization/V8BindingState.cpp
     bindings/v8/ScriptEventListener.cpp

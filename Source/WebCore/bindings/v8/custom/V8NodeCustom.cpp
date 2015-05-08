@@ -66,7 +66,7 @@ v8::Handle<v8::Value> V8Node::insertBeforeCallback(const v8::Arguments& args)
     ExceptionCode ec = 0;
     Node* newChild = V8Node::HasInstance(args[0]) ? V8Node::toNative(v8::Handle<v8::Object>::Cast(args[0])) : 0;
     Node* refChild = V8Node::HasInstance(args[1]) ? V8Node::toNative(v8::Handle<v8::Object>::Cast(args[1])) : 0;
-    bool success = imp->insertBefore(newChild, refChild, ec, true);
+    bool success = imp->insertBefore(newChild, refChild, ec);
     if (ec) {
         V8Proxy::setDOMException(ec);
         return v8::Handle<v8::Value>();
@@ -85,7 +85,7 @@ v8::Handle<v8::Value> V8Node::replaceChildCallback(const v8::Arguments& args)
     ExceptionCode ec = 0;
     Node* newChild = V8Node::HasInstance(args[0]) ? V8Node::toNative(v8::Handle<v8::Object>::Cast(args[0])) : 0;
     Node* oldChild = V8Node::HasInstance(args[1]) ? V8Node::toNative(v8::Handle<v8::Object>::Cast(args[1])) : 0;
-    bool success = imp->replaceChild(newChild, oldChild, ec, true);
+    bool success = imp->replaceChild(newChild, oldChild, ec);
     if (ec) {
         V8Proxy::setDOMException(ec);
         return v8::Handle<v8::Value>();
@@ -120,7 +120,7 @@ v8::Handle<v8::Value> V8Node::appendChildCallback(const v8::Arguments& args)
     Node* imp = V8Node::toNative(holder);
     ExceptionCode ec = 0;
     Node* newChild = V8Node::HasInstance(args[0]) ? V8Node::toNative(v8::Handle<v8::Object>::Cast(args[0])) : 0;
-    bool success = imp->appendChild(newChild, ec, true );
+    bool success = imp->appendChild(newChild, ec);
     if (ec) {
         V8Proxy::setDOMException(ec);
         return v8::Handle<v8::Value>();

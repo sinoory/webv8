@@ -49,6 +49,7 @@ namespace WebCore {
         virtual unsigned length() const { return m_nodes.size(); }
         virtual Node* item(unsigned) const;
         virtual Node* itemWithName(const AtomicString&) const;
+        virtual Node* namedItem(const AtomicString&) const {return 0;} //CMP_ERROR_TODO
 
     private:
         explicit V8NamedNodesCollection(const Vector<RefPtr<Node> >& nodes)
