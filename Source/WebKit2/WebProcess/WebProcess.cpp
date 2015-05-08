@@ -944,12 +944,12 @@ void WebProcess::getWebCoreStatistics(uint64_t callbackID)
 
 void WebProcess::garbageCollectJavaScriptObjects()
 {
-    gcController().garbageCollectNow();
+    //gcController().garbageCollectNow();//CMP_ERROR link gcController in JSC
 }
 
 void WebProcess::setJavaScriptGarbageCollectorTimerEnabled(bool flag)
 {
-    gcController().setJavaScriptGarbageCollectorTimerEnabled(flag);
+    //gcController().setJavaScriptGarbageCollectorTimerEnabled(flag);//CMP_ERROR
 }
 
 void WebProcess::postInjectedBundleMessage(const IPC::DataReference& messageData)

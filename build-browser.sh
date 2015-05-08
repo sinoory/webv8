@@ -75,6 +75,7 @@ case $1 in
 "release" )
 
     cd Source/v8 ;
+    echo "g++ v8"
     GYP_DEFINES=target_arch=x64 build/gyp_v8;
     make -j${CPU_NUM};
     #cp ./out/Release/lib.host/libv8_base.so ../../lib/libv8.so ;

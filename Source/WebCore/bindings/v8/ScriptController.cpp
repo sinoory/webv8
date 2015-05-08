@@ -270,11 +270,13 @@ void ScriptController::bindToWindowObject(Frame* frame, const String& key, NPObj
 
     v8::Context::Scope scope(v8Context);
 
+#if ENABLE(NETSCAPE_PLUGIN_API)
     v8::Handle<v8::Object> value = createV8ObjectForNPObject(object, 0);
 
     // Attach to the global object.
     v8::Handle<v8::Object> global = v8Context->Global();
     global->Set(v8String(key), value);
+#endif
 }
 
 void ScriptController::collectGarbage()
@@ -341,9 +343,9 @@ PassScriptInstance ScriptController::createScriptInstanceForWidget(Widget* widge
     // NPObject as part of its wrapper. However, before accessing the object
     // it must consult the _NPN_Registry.
 
+#if ENABLE(NETSCAPE_PLUGIN_API)
     v8::Local<v8::Object> wrapper = createV8ObjectForNPObject(npObject, 0);
 
-#if ENABLE(NETSCAPE_PLUGIN_API)
 #ifdef ANDROID_FIX
     // TODO: this should be up streamed.
     // HTMLEmbedElement::getInstance() will call this function with its closest
@@ -356,12 +358,14 @@ PassScriptInstance ScriptController::createScriptInstanceForWidget(Widget* widge
         _NPN_ReleaseObject(it->second);
     }
 #endif
-#endif
 
     // Track the plugin object. We've been given a reference to the object.
     m_pluginObjects.set(widget, npObject);
 
     return V8ScriptInstance::create(wrapper);
+#else
+    return 0;
+#endif
 }
 
 void ScriptController::cleanupScriptObjectsForPlugin(Widget* nativeHandle)
