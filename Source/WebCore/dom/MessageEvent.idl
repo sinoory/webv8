@@ -33,7 +33,7 @@
     [InitializedByEventConstructor] readonly attribute DOMString lastEventId;
     [InitializedByEventConstructor] readonly attribute EventTarget source; // May be a DOMWindow or a MessagePort.
 #if defined(LANGUAGE_JAVASCRIPT) && LANGUAGE_JAVASCRIPT
-    [InitializedByEventConstructor, CachedAttribute, CustomGetter] readonly attribute any data;
+    //[InitializedByEventConstructor, CachedAttribute, CustomGetter] readonly attribute any data;//CMP_ERROR_TODO ref JSC custom
     [InitializedByEventConstructor] readonly attribute MessagePort[] ports;
 
     [Custom] void initMessageEvent([Default=Undefined] optional DOMString typeArg, 

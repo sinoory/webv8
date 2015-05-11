@@ -41,7 +41,7 @@
 #include "V8Proxy.h"
 
 namespace WebCore {
-
+/*
 v8::Handle<v8::Value> V8MessageEvent::portsAccessorGetter(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     INC_STATS("DOM.MessageEvent.ports");
@@ -57,8 +57,14 @@ v8::Handle<v8::Value> V8MessageEvent::portsAccessorGetter(v8::Local<v8::String> 
 
     return portArray;
 }
+*/
+
 
 v8::Handle<v8::Value> V8MessageEvent::initMessageEventCallback(const v8::Arguments& args)
+{
+    return webkitInitMessageEventCallback(args);
+}
+v8::Handle<v8::Value> V8MessageEvent::webkitInitMessageEventCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.MessageEvent.initMessageEvent");
     MessageEvent* event = V8MessageEvent::toNative(args.Holder());
@@ -76,14 +82,15 @@ v8::Handle<v8::Value> V8MessageEvent::initMessageEventCallback(const v8::Argumen
         if (!window.IsEmpty())
             sourceArg = V8DOMWindow::toNative(window);
     }
-    OwnPtr<MessagePortArray> portArray;
+    MessagePortArray* portArray;
 
     if (!isUndefinedOrNull(args[7])) {
         portArray = new MessagePortArray();
         if (!getMessagePortArray(args[7], *portArray))
             return v8::Undefined();
     }
-    event->initMessageEvent(typeArg, canBubbleArg, cancelableArg, dataArg.release(), originArg, lastEventIdArg, sourceArg, portArray.release());
+    std::unique_ptr<MessagePortArray> pma(portArray);
+    event->initMessageEvent(typeArg, canBubbleArg, cancelableArg, dataArg.release(), originArg, lastEventIdArg, sourceArg, std::move(pma));
     v8::PropertyAttribute dataAttr = static_cast<v8::PropertyAttribute>(v8::DontDelete | v8::ReadOnly);
     SerializedScriptValue::deserializeAndSetProperty(args.Holder(), "data", dataAttr, event->data());
     return v8::Undefined();

@@ -45,7 +45,7 @@
 #include <wtf/RefPtr.h>
 
 namespace WebCore {
-
+/*
 v8::Handle<v8::Value> V8XSLTProcessor::constructorCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.XSLTProcessor.Constructor");
@@ -101,7 +101,7 @@ v8::Handle<v8::Value> V8XSLTProcessor::transformToDocumentCallback(const v8::Arg
 
     return toV8(result.release());
 }
-
+*/
 
 v8::Handle<v8::Value> V8XSLTProcessor::setParameterCallback(const v8::Arguments& args)
 {

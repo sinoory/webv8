@@ -101,7 +101,9 @@ InjectedBundleNavigationAction::InjectedBundleNavigationAction(WebFrame* frame, 
     RefPtr<FormState> formState = prpFormState;
     if (formState) {
         ASSERT(formState->form());
+#if ENABLE(INJECT_BUNDLE)
         m_formElement   = InjectedBundleNodeHandle::getOrCreate(formState->form());
+#endif
     }
 }
 
