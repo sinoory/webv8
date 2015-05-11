@@ -75,7 +75,7 @@ v8::Local<v8::Object> V8HTMLDocument::WrapInShadowObject(v8::Local<v8::Object> w
 
 v8::Handle<v8::Value> V8HTMLDocument::GetNamedProperty(HTMLDocument* htmlDocument, const AtomicString& key)
 {
-    if (!htmlDocument->hasNamedItem(key.impl()) && !htmlDocument->hasExtraNamedItem(key.impl()))
+    if (!htmlDocument->hasDocumentNamedItem(*(key.impl())) && !htmlDocument->hasWindowNamedItem(*(key.impl())))
         return v8::Handle<v8::Value>();
 
     RefPtr<HTMLCollection> items = htmlDocument->documentNamedItems(key);
@@ -83,7 +83,7 @@ v8::Handle<v8::Value> V8HTMLDocument::GetNamedProperty(HTMLDocument* htmlDocumen
         return v8::Handle<v8::Value>();
 
     if (items->length() == 1) {
-        Node* node = items->firstItem();
+        Node* node = items->item(0);
         Frame* frame = 0;
         if (node->hasTagName(HTMLNames::iframeTag) && (frame = static_cast<HTMLIFrameElement*>(node)->contentFrame()))
             return toV8(frame->domWindow());
@@ -104,7 +104,7 @@ static String writeHelperGetString(const v8::Arguments& args)
 {
     String str = "";
     for (int i = 0; i < args.Length(); ++i)
-        str += toWebCoreString(args[i]);
+        str.append( toWebCoreString(args[i]));
     return str;
 }
 

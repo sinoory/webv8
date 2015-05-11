@@ -31,13 +31,13 @@
 #include "config.h"
 #include "V8Event.h"
 
-#include "Clipboard.h"
+//#include "Clipboard.h"
 #include "ClipboardEvent.h"
 #include "CustomEvent.h"
 #include "Event.h"
 #include "V8BeforeLoadEvent.h"
 #include "V8Binding.h"
-#include "V8Clipboard.h"
+//#include "V8Clipboard.h"
 #include "V8CompositionEvent.h"
 #include "V8CustomEvent.h"
 #include "V8DeviceMotionEvent.h"
@@ -54,7 +54,7 @@
 #include "V8PopStateEvent.h"
 #include "V8ProgressEvent.h"
 #include "V8Proxy.h"
-#include "V8SpeechInputEvent.h"
+//#include "V8SpeechInputEvent.h"
 #include "V8StorageEvent.h"
 #include "V8TextEvent.h"
 #include "V8TouchEvent.h"
@@ -63,6 +63,7 @@
 #include "V8WebKitTransitionEvent.h"
 #include "V8WheelEvent.h"
 #include "V8XMLHttpRequestProgressEvent.h"
+#include "V8DataTransfer.h"
 
 #if ENABLE(SVG)
 #include "V8SVGZoomEvent.h"
@@ -80,7 +81,7 @@ void V8Event::valueAccessorSetter(v8::Local<v8::String> name, v8::Local<v8::Valu
     Event* event = V8Event::toNative(info.Holder());
     event->setDefaultPrevented(!value->BooleanValue());
 }
-
+/*
 v8::Handle<v8::Value> V8Event::dataTransferAccessorGetter(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     Event* event = V8Event::toNative(info.Holder());
@@ -90,13 +91,13 @@ v8::Handle<v8::Value> V8Event::dataTransferAccessorGetter(v8::Local<v8::String> 
 
     return v8::Undefined();
 }
-
+*/
 v8::Handle<v8::Value> V8Event::clipboardDataAccessorGetter(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     Event* event = V8Event::toNative(info.Holder());
 
     if (event->isClipboardEvent())
-        return toV8(static_cast<ClipboardEvent*>(event)->clipboard());
+        return toV8(static_cast<ClipboardEvent*>(event)->clipboardData());
 
     return v8::Undefined();
 }
@@ -118,7 +119,7 @@ v8::Handle<v8::Value> toV8(Event* impl)
         if (impl->isSVGZoomEvent())
             return toV8(static_cast<SVGZoomEvent*>(impl));
 #endif
-        if (impl->isCompositionEvent())
+        if (impl->eventInterface()==CompositionEventInterfaceType)
             return toV8(static_cast<CompositionEvent*>(impl));
 #if ENABLE(TOUCH_EVENTS)
         if (impl->isTouchEvent())
@@ -126,26 +127,25 @@ v8::Handle<v8::Value> toV8(Event* impl)
 #endif
         return toV8(static_cast<UIEvent*>(impl));
     }
-    if (impl->isHashChangeEvent())
+    if (impl->eventInterface()==HashChangeEventInterfaceType)
         return toV8(static_cast<HashChangeEvent*>(impl));
-    if (impl->isMutationEvent())
+    if (impl->eventInterface()==MutationEventInterfaceType)
         return toV8(static_cast<MutationEvent*>(impl));
-    if (impl->isOverflowEvent())
+    if (impl->eventInterface()==OverflowEventInterfaceType)
         return toV8(static_cast<OverflowEvent*>(impl));
-    if (impl->isMessageEvent())
+    if (impl->eventInterface()==MessageEventInterfaceType)
         return toV8(static_cast<MessageEvent*>(impl));
-    if (impl->isPageTransitionEvent())
+    if (impl->eventInterface()==PageTransitionEventInterfaceType)
         return toV8(static_cast<PageTransitionEvent*>(impl));
-    if (impl->isPopStateEvent())
+    if (impl->eventInterface()==PopStateEventInterfaceType)
         return toV8(static_cast<PopStateEvent*>(impl));
-    if (impl->isProgressEvent()) {
-        if (impl->isXMLHttpRequestProgressEvent())
-            return toV8(static_cast<XMLHttpRequestProgressEvent*>(impl));
+    if (impl->eventInterface()==XMLHttpRequestProgressEventInterfaceType)
+        return toV8(static_cast<XMLHttpRequestProgressEvent*>(impl));
+    if (impl->eventInterface()==ProgressEventInterfaceType )
         return toV8(static_cast<ProgressEvent*>(impl));
-    }
-    if (impl->isWebKitAnimationEvent())
+    if (impl->eventInterface()==WebKitAnimationEventInterfaceType)
         return toV8(static_cast<WebKitAnimationEvent*>(impl));
-    if (impl->isWebKitTransitionEvent())
+    if (impl->eventInterface()==WebKitTransitionEventInterfaceType)
         return toV8(static_cast<WebKitTransitionEvent*>(impl));
 #if ENABLE(WORKERS)
     if (impl->isErrorEvent())
@@ -159,7 +159,7 @@ v8::Handle<v8::Value> toV8(Event* impl)
     if (impl->isIDBVersionChangeEvent())
         return toV8(static_cast<IDBVersionChangeEvent*>(impl));
 #endif
-    if (impl->isBeforeLoadEvent())
+    if (impl->eventInterface()==BeforeLoadEventInterfaceType)
         return toV8(static_cast<BeforeLoadEvent*>(impl));
 #if ENABLE(DEVICE_ORIENTATION)
     if (impl->isDeviceMotionEvent())
@@ -168,16 +168,16 @@ v8::Handle<v8::Value> toV8(Event* impl)
         return toV8(static_cast<DeviceOrientationEvent*>(impl));
 #endif
 #if ENABLE(WEB_AUDIO)
-    if (impl->isAudioProcessingEvent())
+    if (impl->eventInterface()==AudioProcessingEventInterfaceType)
         return toV8(static_cast<AudioProcessingEvent*>(impl));
-    if (impl->isOfflineAudioCompletionEvent())
+    if (impl->eventInterface()==OfflineAudioCompletionEventInterfaceType)
         return toV8(static_cast<OfflineAudioCompletionEvent*>(impl));
 #endif
 #if ENABLE(INPUT_SPEECH)
     if (impl->isSpeechInputEvent())
         return toV8(static_cast<SpeechInputEvent*>(impl));
 #endif
-    if (impl->isCustomEvent())
+    if (impl->eventInterface()==CustomEventInterfaceType)
         return toV8(static_cast<CustomEvent*>(impl));
     return V8Event::wrap(impl);
 }
