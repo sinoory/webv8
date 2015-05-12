@@ -478,7 +478,24 @@ void HTMLCollection::namedItems(const AtomicString& name, Vector<Ref<Element>>& 
     for (unsigned i = 0; nameResults && i < nameResults->size(); ++i)
         result.append(*nameResults->at(i));
 }
+void HTMLCollection::namedItems(const AtomicString& name, Vector<RefPtr<Node>>& result) const
+{
+    ASSERT(result.isEmpty());
+    if (name.isEmpty())
+        return;
 
+    updateNamedElementCache();
+    ASSERT(m_namedElementCache);
+
+    const Vector<Element*>* idResults = m_namedElementCache->findElementsWithId(name);
+    const Vector<Element*>* nameResults = m_namedElementCache->findElementsWithName(name);
+
+    for (unsigned i = 0; idResults && i < idResults->size(); ++i)
+        result.append(idResults->at(i));
+
+    for (unsigned i = 0; nameResults && i < nameResults->size(); ++i)
+        result.append(nameResults->at(i));
+}
 PassRefPtr<NodeList> HTMLCollection::tags(const String& name)
 {
     return ownerNode().getElementsByTagName(name);

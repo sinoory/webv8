@@ -40,7 +40,7 @@ namespace WebCore {
     class GraphicsContext;
     class HTMLCanvasElement;
 
-    class CanvasStyle {
+    class CanvasStyle : public RefCounted<CanvasStyle>{
     public:
         CanvasStyle();
         explicit CanvasStyle(RGBA32);

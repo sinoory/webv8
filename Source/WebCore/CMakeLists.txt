@@ -1068,6 +1068,11 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8MessagePortCustom.cpp
     bindings/v8/custom/V8XMLHttpRequestCustom.cpp
     bindings/v8/custom/V8XSLTProcessorCustom.cpp
+    bindings/v8/custom/V8HTMLInputElementCustom.cpp
+    bindings/v8/custom/V8CanvasRenderingContext2DCustom.cpp
+    bindings/v8/custom/V8HTMLAllCollectionCustom.cpp
+    bindings/v8/custom/V8HTMLCanvasElementCustom.cpp
+    bindings/v8/custom/V8StorageCustom.cpp
 
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/V8ArrayBufferView.cpp

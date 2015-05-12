@@ -62,14 +62,17 @@ static v8::Handle<v8::Value> toV8Object(CanvasStyle* style)
 
 static PassRefPtr<CanvasStyle> toCanvasStyle(v8::Handle<v8::Value> value)
 {
-    if (value->IsString())
-        return CanvasStyle::createFromString(toWebCoreString(value));
+    if (value->IsString()){
+        CanvasStyle c=CanvasStyle::createFromString(toWebCoreString(value));
+        CanvasStyle* p=new CanvasStyle(c);
+        return p;
+    }
 
     if (V8CanvasGradient::HasInstance(value))
-        return CanvasStyle::createFromGradient(V8CanvasGradient::toNative(v8::Handle<v8::Object>::Cast(value)));
+        return new CanvasStyle(V8CanvasGradient::toNative(v8::Handle<v8::Object>::Cast(value)));
 
     if (V8CanvasPattern::HasInstance(value))
-        return CanvasStyle::createFromPattern(V8CanvasPattern::toNative(v8::Handle<v8::Object>::Cast(value)));
+        return new CanvasStyle(V8CanvasPattern::toNative(v8::Handle<v8::Object>::Cast(value)));
 
     return 0;
 }
@@ -77,25 +80,25 @@ static PassRefPtr<CanvasStyle> toCanvasStyle(v8::Handle<v8::Value> value)
 v8::Handle<v8::Value> V8CanvasRenderingContext2D::strokeStyleAccessorGetter(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     CanvasRenderingContext2D* impl = V8CanvasRenderingContext2D::toNative(info.Holder());
-    return toV8Object(impl->strokeStyle());
+    return toV8Object(const_cast<CanvasStyle*>(&impl->strokeStyle()));
 }
 
 void V8CanvasRenderingContext2D::strokeStyleAccessorSetter(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
     CanvasRenderingContext2D* impl = V8CanvasRenderingContext2D::toNative(info.Holder());
-    impl->setStrokeStyle(toCanvasStyle(value));
+    impl->setStrokeStyle(*toCanvasStyle(value));
 }
 
 v8::Handle<v8::Value> V8CanvasRenderingContext2D::fillStyleAccessorGetter(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     CanvasRenderingContext2D* impl = V8CanvasRenderingContext2D::toNative(info.Holder());
-    return toV8Object(impl->fillStyle());
+    return toV8Object(const_cast<CanvasStyle*>(&impl->fillStyle()));
 }
 
 void V8CanvasRenderingContext2D::fillStyleAccessorSetter(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
     CanvasRenderingContext2D* impl = V8CanvasRenderingContext2D::toNative(info.Holder());
-    impl->setFillStyle(toCanvasStyle(value));
+    impl->setFillStyle(*toCanvasStyle(value));
 }
 
 } // namespace WebCore

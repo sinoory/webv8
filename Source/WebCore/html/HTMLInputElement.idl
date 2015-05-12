@@ -80,7 +80,7 @@ interface HTMLInputElement : HTMLElement {
     void select();
     [Custom] attribute long selectionStart;
     [Custom] attribute long selectionEnd;
-    [Custom] attribute DOMString selectionDirection;
+    //[Custom] attribute DOMString selectionDirection; CMP_ERROR_TODO
 
     [RaisesException] void setRangeText(DOMString replacement);
     [RaisesException] void setRangeText(DOMString replacement,

@@ -99,6 +99,7 @@ public:
     // Non-DOM API
     bool hasNamedItem(const AtomicString& name) const;
     void namedItems(const AtomicString& name, Vector<Ref<Element>>&) const;
+    void namedItems(const AtomicString& name, Vector<RefPtr<Node>>&) const;
     size_t memoryCost() const { return m_indexCache.memoryCost() + (m_namedElementCache ? m_namedElementCache->memoryCost() : 0); }
 
     enum RootType {

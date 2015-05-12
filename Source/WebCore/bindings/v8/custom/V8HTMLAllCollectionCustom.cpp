@@ -70,7 +70,7 @@ static v8::Handle<v8::Value> getItem(HTMLAllCollection* collection, v8::Handle<v
     RefPtr<Node> result = collection->item(index->Uint32Value());
     return toV8(result.release());
 }
-
+/*
 v8::Handle<v8::Value> V8HTMLAllCollection::namedPropertyGetter(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     INC_STATS("DOM.HTMLAllCollection.NamedPropertyGetter");
@@ -89,7 +89,7 @@ v8::Handle<v8::Value> V8HTMLAllCollection::namedPropertyGetter(v8::Local<v8::Str
     HTMLAllCollection* imp = V8HTMLAllCollection::toNative(info.Holder());
     return getNamedItems(imp, v8StringToAtomicWebCoreString(name));
 }
-
+*/
 v8::Handle<v8::Value> V8HTMLAllCollection::itemCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.HTMLAllCollection.item()");
@@ -125,7 +125,7 @@ v8::Handle<v8::Value> V8HTMLAllCollection::callAsFunctionCallback(const v8::Argu
     v8::Local<v8::Uint32> index = args[1]->ToArrayIndex();
     if (index.IsEmpty())
         return v8::Undefined();
-
+#if 0
     unsigned current = index->Uint32Value();
     Node* node = imp->namedItem(name);
     while (node) {
@@ -135,7 +135,12 @@ v8::Handle<v8::Value> V8HTMLAllCollection::callAsFunctionCallback(const v8::Argu
         node = imp->nextNamedItem(name);
         current--;
     }
-
+#else //CMP_ERROR
+    Node* node = imp->collectionLast();
+    if(node){
+        return toV8(node);
+    }
+#endif
     return v8::Undefined();
 }
 
