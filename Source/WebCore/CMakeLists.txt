@@ -1075,7 +1075,16 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8StorageCustom.cpp
     bindings/v8/custom/V8HTMLPlugInElementCustom.cpp
     bindings/v8/custom/V8DOMFormDataCustom.cpp
-    #bindings/v8/custom/V8GeolocationCustom.cpp
+    bindings/v8/custom/V8GeolocationCustom.cpp
+    bindings/v8/custom/V8HistoryCustom.cpp
+    bindings/v8/custom/V8HTMLFrameElementCustom.cpp
+    bindings/v8/custom/V8HTMLSelectElementCustom.cpp
+    #bindings/v8/custom/V8PopStateEventCustom.cpp
+    bindings/v8/custom/V8SQLResultSetRowListCustom.cpp
+    bindings/v8/custom/V8CustomSQLStatementErrorCallback.cpp
+    bindings/v8/custom/V8SQLTransactionCustom.cpp
+    bindings/v8/custom/V8SQLTransactionSyncCustom.cpp
+    bindings/v8/custom/V8WebKitPointConstructor.cpp
 
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/V8ArrayBufferView.cpp

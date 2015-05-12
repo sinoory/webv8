@@ -45,7 +45,7 @@
 #include "V8Proxy.h"
 
 namespace WebCore {
-
+/*
 v8::Handle<v8::Value> V8HTMLSelectElement::indexedPropertyGetter(uint32_t index, const v8::AccessorInfo& info)
 {
     ASSERT(V8DOMWrapper::maybeDOMWrapper(info.Holder()));
@@ -62,7 +62,7 @@ v8::Handle<v8::Value> V8HTMLSelectElement::indexedPropertySetter(uint32_t index,
     HTMLSelectElement* select = V8HTMLSelectElement::toNative(info.Holder());
     return toOptionsCollectionSetter(index, value, select);
 }
-
+*/
 v8::Handle<v8::Value> V8HTMLSelectElement::removeCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.HTMLSelectElement.remove");
@@ -74,11 +74,11 @@ v8::Handle<v8::Value> removeElement(HTMLSelectElement* imp, const v8::Arguments&
 {
     if (V8HTMLOptionElement::HasInstance(args[0])) {
         HTMLOptionElement* element = V8HTMLOptionElement::toNative(v8::Handle<v8::Object>::Cast(args[0]));
-        imp->remove(element->index());
+        imp->removeByIndex(element->index());
         return v8::Undefined();
     }
 
-    imp->remove(toInt32(args[0]));
+    imp->removeByIndex(toInt32(args[0]));
     return v8::Undefined();
 }
 

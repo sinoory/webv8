@@ -61,7 +61,7 @@ v8::Handle<v8::Value> V8History::pushStateCallback(const v8::Arguments& args)
 
     ExceptionCode ec = 0;
     History* history = V8History::toNative(args.Holder());
-    history->stateObjectAdded(historyState.release(), title, url, History::StateObjectPush, ec);
+    history->stateObjectAdded(historyState.release(), title, url, History::StateObjectType::Push, ec);
     return throwError(ec);
 }
 
@@ -85,10 +85,10 @@ v8::Handle<v8::Value> V8History::replaceStateCallback(const v8::Arguments& args)
 
     ExceptionCode ec = 0;
     History* history = V8History::toNative(args.Holder());
-    history->stateObjectAdded(historyState.release(), title, url, History::StateObjectReplace, ec);
+    history->stateObjectAdded(historyState.release(), title, url, History::StateObjectType::Replace, ec);
     return throwError(ec);
 }
-
+/*
 bool V8History::indexedSecurityCheck(v8::Local<v8::Object> host, uint32_t index, v8::AccessType type, v8::Local<v8::Value>)
 {
     // Only allow same origin access.
@@ -102,5 +102,5 @@ bool V8History::namedSecurityCheck(v8::Local<v8::Object> host, v8::Local<v8::Val
     History* history = V8History::toNative(host);
     return V8BindingSecurity::canAccessFrame(V8BindingState::Only(), history->frame(), false);
 }
-
+*/
 } // namespace WebCore
