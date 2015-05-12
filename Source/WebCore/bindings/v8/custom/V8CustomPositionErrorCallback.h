@@ -47,7 +47,7 @@ public:
     }
     virtual ~V8CustomPositionErrorCallback();
 
-    virtual void handleEvent(PositionError*);
+    virtual bool handleEvent(PositionError*);
 
 private:
     V8CustomPositionErrorCallback(v8::Local<v8::Object>, ScriptExecutionContext*);

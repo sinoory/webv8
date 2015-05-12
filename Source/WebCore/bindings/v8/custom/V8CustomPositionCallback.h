@@ -47,7 +47,7 @@ public:
     }
     virtual ~V8CustomPositionCallback();
 
-    virtual void handleEvent(Geoposition*);
+    virtual bool handleEvent(Geoposition*);
 
 private:
     V8CustomPositionCallback(v8::Local<v8::Object>, ScriptExecutionContext*);

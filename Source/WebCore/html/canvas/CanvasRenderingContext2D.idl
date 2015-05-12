@@ -56,7 +56,7 @@ interface CanvasRenderingContext2D : CanvasRenderingContext {
 
     attribute unrestricted float lineDashOffset;
 
-    [Custom] attribute Array webkitLineDash;
+    //[Custom] attribute Array webkitLineDash; CMP_ERROR_TODO
     attribute unrestricted float webkitLineDashOffset;
 
     void clearRect(unrestricted float x, unrestricted float y, unrestricted float width, unrestricted float height);

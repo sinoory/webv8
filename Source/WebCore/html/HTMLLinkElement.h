@@ -66,6 +66,7 @@ public:
     bool isDisabled() const { return m_disabledState == Disabled; }
     bool isEnabledViaScript() const { return m_disabledState == EnabledViaScript; }
     void setSizes(const String&);
+    void setSizes(WebCore::DOMSettableTokenList*){}//CMP_ERROR_TODO implement it for idl
     DOMSettableTokenList* sizes() const;
 
     void dispatchPendingEvent(LinkEventSender*);

@@ -39,7 +39,7 @@
 #include "V8Utilities.h"
 
 namespace WebCore {
-
+/*
 v8::Handle<v8::Value> V8DOMFormData::constructorCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.FormData.Constructor");
@@ -55,7 +55,7 @@ v8::Handle<v8::Value> V8DOMFormData::constructorCallback(const v8::Arguments& ar
     V8DOMWrapper::setDOMWrapper(args.Holder(), &info, domFormData.get());
     return toV8(domFormData.release(), args.Holder());
 }
-
+*/
 v8::Handle<v8::Value> V8DOMFormData::appendCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.FormData.append()");

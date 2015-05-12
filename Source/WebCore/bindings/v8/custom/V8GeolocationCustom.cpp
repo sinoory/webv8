@@ -87,7 +87,7 @@ static PassRefPtr<PositionOptions> createPositionOptions(v8::Local<v8::Value> va
         }
         double timeoutDouble = timeoutNumber->Value();
         // If the value is positive infinity, there's nothing to do.
-        if (!(isinf(timeoutDouble) && timeoutDouble > 0)) {
+        if (!(std::isinf(timeoutDouble) && timeoutDouble > 0)) {
             v8::Local<v8::Int32> timeoutInt32 = timeoutValue->ToInt32();
             if (timeoutInt32.IsEmpty()) {
                 succeeded = false;
@@ -110,7 +110,7 @@ static PassRefPtr<PositionOptions> createPositionOptions(v8::Local<v8::Value> va
             return 0;
         }
         double maximumAgeDouble = maximumAgeNumber->Value();
-        if (isinf(maximumAgeDouble) && maximumAgeDouble > 0) {
+        if (std::isinf(maximumAgeDouble) && maximumAgeDouble > 0) {
             // If the value is positive infinity, clear maximumAge.
             options->clearMaximumAge();
         } else {
@@ -129,7 +129,7 @@ static PassRefPtr<PositionOptions> createPositionOptions(v8::Local<v8::Value> va
 
 v8::Handle<v8::Value> V8Geolocation::getCurrentPositionCallback(const v8::Arguments& args)
 {
-    INC_STATS("DOM.Geolocation.getCurrentPosition()");
+    //INC_STATS("DOM.Geolocation.getCurrentPosition()");
 
     bool succeeded = false;
 
@@ -155,7 +155,7 @@ v8::Handle<v8::Value> V8Geolocation::getCurrentPositionCallback(const v8::Argume
 
 v8::Handle<v8::Value> V8Geolocation::watchPositionCallback(const v8::Arguments& args)
 {
-    INC_STATS("DOM.Geolocation.watchPosition()");
+    //INC_STATS("DOM.Geolocation.watchPosition()");
 
     bool succeeded = false;
 

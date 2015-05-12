@@ -56,7 +56,11 @@ static v8::Handle<v8::Value> npObjectNamedGetter(v8::Local<v8::String> name, con
     if (instance.IsEmpty())
         return notHandledByInterceptor();
 
+#if ENABLE(NETSCAPE_PLUGIN_API)
     return npObjectGetNamedProperty(instance, name);
+#else
+        return notHandledByInterceptor();
+#endif
 }
 
 template <class C>
@@ -91,7 +95,7 @@ v8::Handle<v8::Value> V8HTMLObjectElement::namedPropertyGetter(v8::Local<v8::Str
     INC_STATS("DOM.HTMLObjectElement.NamedPropertyGetter");
     return npObjectNamedGetter<V8HTMLObjectElement>(name, info);
 }
-
+/*
 v8::Handle<v8::Value> V8HTMLAppletElement::namedPropertySetter(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::AccessorInfo& info)
 {
     INC_STATS("DOM.HTMLAppletElement.NamedPropertySetter");
@@ -109,23 +113,37 @@ v8::Handle<v8::Value> V8HTMLObjectElement::namedPropertySetter(v8::Local<v8::Str
     INC_STATS("DOM.HTMLObjectElement.NamedPropertySetter");
     return npObjectNamedSetter<V8HTMLObjectElement>(name, value, info);
 }
-
+*/
 v8::Handle<v8::Value> V8HTMLAppletElement::callAsFunctionCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.HTMLAppletElement()");
+#if ENABLE(NETSCAPE_PLUGIN_API)
     return npObjectInvokeDefaultHandler(args);
+#else
+    return notHandledByInterceptor();
+#endif
+
 }
 
 v8::Handle<v8::Value> V8HTMLEmbedElement::callAsFunctionCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.HTMLEmbedElement()");
+#if ENABLE(NETSCAPE_PLUGIN_API)
     return npObjectInvokeDefaultHandler(args);
+#else
+    return notHandledByInterceptor();
+#endif
 }
 
 v8::Handle<v8::Value> V8HTMLObjectElement::callAsFunctionCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.HTMLObjectElement()");
+#if ENABLE(NETSCAPE_PLUGIN_API)
     return npObjectInvokeDefaultHandler(args);
+#else
+    return notHandledByInterceptor();
+#endif
+
 }
 
 template <class C>
@@ -140,8 +158,11 @@ v8::Handle<v8::Value> npObjectIndexedGetter(uint32_t index, const v8::AccessorIn
     v8::Local<v8::Object> instance = v8::Local<v8::Object>::New(scriptInstance->instance());
     if (instance.IsEmpty())
         return notHandledByInterceptor();
-
+#if ENABLE(NETSCAPE_PLUGIN_API)
     return npObjectGetIndexedProperty(instance, index);
+#else
+    return notHandledByInterceptor();
+#endif
 }
 
 template <class C>
@@ -157,7 +178,11 @@ v8::Handle<v8::Value> npObjectIndexedSetter(uint32_t index, v8::Local<v8::Value>
     if (instance.IsEmpty())
         return notHandledByInterceptor();
 
+#if ENABLE(NETSCAPE_PLUGIN_API)
     return npObjectSetIndexedProperty(instance, index, value);
+#else
+        return notHandledByInterceptor();
+#endif
 }
 
 v8::Handle<v8::Value> V8HTMLAppletElement::indexedPropertyGetter(uint32_t index, const v8::AccessorInfo& info)

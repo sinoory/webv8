@@ -1073,6 +1073,9 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8HTMLAllCollectionCustom.cpp
     bindings/v8/custom/V8HTMLCanvasElementCustom.cpp
     bindings/v8/custom/V8StorageCustom.cpp
+    bindings/v8/custom/V8HTMLPlugInElementCustom.cpp
+    bindings/v8/custom/V8DOMFormDataCustom.cpp
+    #bindings/v8/custom/V8GeolocationCustom.cpp
 
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/V8ArrayBufferView.cpp
