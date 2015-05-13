@@ -36,8 +36,7 @@
 namespace WebCore {
 
 V8CustomPositionErrorCallback::V8CustomPositionErrorCallback(v8::Local<v8::Object> callback, ScriptExecutionContext* context)
-    : PositionErrorCallback(context)
-    , m_callback(v8::Persistent<v8::Object>::New(callback))
+    : m_callback(v8::Persistent<v8::Object>::New(callback))
 {
 }
 
@@ -46,8 +45,9 @@ V8CustomPositionErrorCallback::~V8CustomPositionErrorCallback()
     m_callback.Dispose();
 }
 
-void V8CustomPositionErrorCallback::handleEvent(PositionError* error)
+bool V8CustomPositionErrorCallback::handleEvent(PositionError* error)
 {
+#if 0 //CMP_ERROR_TODO: scriptExecutionContext() not found
     v8::HandleScope handleScope;
 
     // ActiveDOMObject will null our pointer to the ScriptExecutionContext when it goes away.
@@ -75,6 +75,9 @@ void V8CustomPositionErrorCallback::handleEvent(PositionError* error)
 
     bool callbackReturnValue = false;
     invokeCallback(m_callback, 1, argv, callbackReturnValue, scriptContext);
+#else
+    return false;
+#endif
 }
 
 } // namespace WebCore

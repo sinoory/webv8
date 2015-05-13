@@ -36,7 +36,7 @@ enum TextTrackKind { "subtitles",  "captions",  "descriptions",  "chapters", "me
     readonly attribute DOMString id;
     //[CustomSetter] attribute TextTrackKind kind;CMP_ERROR_TODO enum
     readonly attribute DOMString label;
-    [CustomSetter] attribute DOMString language;
+    attribute DOMString language;
     readonly attribute DOMString inBandMetadataTrackDispatchType;
 
     //attribute TextTrackMode mode; CMP_ERROR_TODO enum need generate to enum.h

@@ -36,7 +36,7 @@
 #if !defined(LANGUAGE_OBJECTIVE_C) || !LANGUAGE_OBJECTIVE_C
     // The custom binding is needed to handle context creation attributes.
     [Custom] any getContext([Default=Undefined] optional DOMString contextId);
-    [Custom] any probablySupportsContext([Default=Undefined] optional DOMString contextId);
+    //[Custom] any probablySupportsContext([Default=Undefined] optional DOMString contextId); CMP_ERROR_TODO
 #endif
 
 };

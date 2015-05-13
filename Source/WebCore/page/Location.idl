@@ -57,7 +57,7 @@
     readonly attribute DOMStringList ancestorOrigins;
 
 #if defined(LANGUAGE_JAVASCRIPT) && LANGUAGE_JAVASCRIPT
-    [NotEnumerable, Custom, ImplementedAs=toStringFunction] DOMString toString();
+    //[NotEnumerable, Custom, ImplementedAs=toStringFunction] DOMString toString(); CMP_ERROR_TODO
 #endif
 };
 

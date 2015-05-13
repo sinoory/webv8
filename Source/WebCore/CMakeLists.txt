@@ -1088,6 +1088,7 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8CustomPositionCallback.cpp
     bindings/v8/custom/V8AudioContextCustom.cpp
     bindings/v8/custom/V8FileReaderCustom.cpp
+    bindings/v8/custom/V8CustomPositionErrorCallback.cpp
 
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/V8ArrayBufferView.cpp
