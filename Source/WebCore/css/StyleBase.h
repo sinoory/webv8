@@ -25,6 +25,7 @@
 
 #include <wtf/Forward.h>
 #include <wtf/RefCounted.h>
+#include "URL.h"
 
 namespace WebCore {
 
@@ -44,7 +45,7 @@ namespace WebCore {
         void setParent(StyleBase* parent) { m_parent = parent; }
 
         // returns the url of the style sheet this object belongs to
-        KURL baseURL() const;
+        //URL baseURL() const;
 
         virtual bool isCSSStyleSheet() const { return false; }
         virtual bool isCharsetRule() { return false; }

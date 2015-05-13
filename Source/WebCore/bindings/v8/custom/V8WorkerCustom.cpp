@@ -46,7 +46,7 @@
 #include "WorkerContextExecutionProxy.h"
 
 namespace WebCore {
-
+/*
 v8::Handle<v8::Value> V8Worker::constructorCallback(const v8::Arguments& args)
 {
     INC_STATS(L"DOM.Worker.Constructor");
@@ -86,7 +86,7 @@ v8::Handle<v8::Value> V8Worker::constructorCallback(const v8::Arguments& args)
 
     return wrapperObject;
 }
-
+*/
 v8::Handle<v8::Value> V8Worker::postMessageCallback(const v8::Arguments& args)
 {
     INC_STATS("DOM.Worker.postMessage");

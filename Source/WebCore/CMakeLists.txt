@@ -1089,6 +1089,7 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8AudioContextCustom.cpp
     bindings/v8/custom/V8FileReaderCustom.cpp
     bindings/v8/custom/V8CustomPositionErrorCallback.cpp
+    bindings/v8/custom/V8WorkerCustom.cpp
 
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/V8ArrayBufferView.cpp
@@ -1165,6 +1166,7 @@ set(WebCore_SOURCES
 
 
 
+    css/StyleBase.cpp
     css/BasicShapeFunctions.cpp
     css/CSSAspectRatioValue.cpp
     css/CSSBasicShapes.cpp

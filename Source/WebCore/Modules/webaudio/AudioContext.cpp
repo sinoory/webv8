@@ -123,6 +123,7 @@ PassRefPtr<AudioContext> AudioContext::create(Document& document, ExceptionCode&
     return audioContext.release();
 }
 
+
 // Constructor for rendering to the audio hardware.
 AudioContext::AudioContext(Document& document)
     : ActiveDOMObject(&document)

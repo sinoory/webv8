@@ -32,7 +32,7 @@
     attribute DOMString dropEffect;
     attribute DOMString effectAllowed;
 
-    [CustomGetter] readonly attribute Array types;
+    //[CustomGetter] readonly attribute Array types; CMP_ERROR_TODO ref to JSC
     readonly attribute FileList files;
 
     void clearData(optional DOMString type);

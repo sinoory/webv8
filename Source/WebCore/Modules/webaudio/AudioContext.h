@@ -79,7 +79,9 @@ public:
     static PassRefPtr<AudioContext> create(Document&, ExceptionCode&);
 
     // Create an AudioContext for offline (non-realtime) rendering.
-    static PassRefPtr<AudioContext> createOfflineContext(Document*, unsigned numberOfChannels, size_t numberOfFrames, float sampleRate, ExceptionCode&);
+    static PassRefPtr<AudioContext> createOfflineContext(Document* document, unsigned numberOfChannels, size_t numberOfFrames, float sampleRate, ExceptionCode& ec){
+        return adoptRef(new AudioContext(*document, numberOfChannels, numberOfFrames, sampleRate));
+    }
 
     virtual ~AudioContext();
 
@@ -257,9 +259,9 @@ public:
     void addBehaviorRestriction(BehaviorRestrictions restriction) { m_restrictions |= restriction; }
     void removeBehaviorRestriction(BehaviorRestrictions restriction) { m_restrictions &= ~restriction; }
 
+    AudioContext(Document&, unsigned numberOfChannels, size_t numberOfFrames, float sampleRate);
 protected:
     explicit AudioContext(Document&);
-    AudioContext(Document&, unsigned numberOfChannels, size_t numberOfFrames, float sampleRate);
     
     static bool isSampleRateRangeGood(float sampleRate);
     
