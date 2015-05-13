@@ -35,6 +35,7 @@
     Constructor,
     ConstructorCallWith=ScriptExecutionContext,
     EventTarget,
+    V8CustomConstructor
 ] interface FileReader {
     // ready states
     const unsigned short EMPTY = 0;

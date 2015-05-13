@@ -109,8 +109,8 @@ class MediaControls : public HTMLDivElement {
     virtual void textTrackPreferencesChanged();
 #endif
 
-protected:
     explicit MediaControls(Document&);
+protected:
 
     virtual void defaultEventHandler(Event*) override;
 

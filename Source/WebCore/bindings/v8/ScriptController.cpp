@@ -314,6 +314,7 @@ PassScriptInstance ScriptController::createScriptInstanceForWidget(Widget* widge
     if (widget->isFrameView())
         return 0;
 
+#if ENABLE(NETSCAPE_PLUGIN_API)
     NPObject* npObject = PlatformBridge::pluginScriptableObject(widget);
 
     if (!npObject)
@@ -343,7 +344,6 @@ PassScriptInstance ScriptController::createScriptInstanceForWidget(Widget* widge
     // NPObject as part of its wrapper. However, before accessing the object
     // it must consult the _NPN_Registry.
 
-#if ENABLE(NETSCAPE_PLUGIN_API)
     v8::Local<v8::Object> wrapper = createV8ObjectForNPObject(npObject, 0);
 
 #ifdef ANDROID_FIX

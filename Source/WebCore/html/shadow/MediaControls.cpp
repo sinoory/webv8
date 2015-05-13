@@ -34,6 +34,9 @@
 
 namespace WebCore {
 
+static PassRefPtr<MediaControls> create(Document& doc){
+    return new MediaControls(doc);
+}
 MediaControls::MediaControls(Document& document)
     : HTMLDivElement(HTMLNames::divTag, document)
     , m_mediaController(0)

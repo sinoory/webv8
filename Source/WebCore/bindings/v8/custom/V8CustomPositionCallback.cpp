@@ -36,8 +36,7 @@
 namespace WebCore {
 
 V8CustomPositionCallback::V8CustomPositionCallback(v8::Local<v8::Object> callback, ScriptExecutionContext* context)
-    : PositionCallback(context)
-    , m_callback(v8::Persistent<v8::Object>::New(callback))
+    : m_callback(v8::Persistent<v8::Object>::New(callback))
 {
 }
 
@@ -46,23 +45,23 @@ V8CustomPositionCallback::~V8CustomPositionCallback()
     m_callback.Dispose();
 }
 
-void V8CustomPositionCallback::handleEvent(Geoposition* position)
+bool V8CustomPositionCallback::handleEvent(Geoposition* position)
 {
     v8::HandleScope handleScope;
-
+/*  CMP_ERROR_TODO scriptExecutionContext() not found
     // ActiveDOMObject will null our pointer to the ScriptExecutionContext when it goes away.
     ScriptExecutionContext* scriptContext = scriptExecutionContext();
     if (!scriptContext)
-        return;
+        return false;
 
     // The lookup of the proxy will fail if the Frame has been detached.
     V8Proxy* proxy = V8Proxy::retrieve(scriptContext);
     if (!proxy)
-        return;
+        return false;
 
     v8::Handle<v8::Context> context = proxy->context();
     if (context.IsEmpty())
-        return;
+        return false;
 
     v8::Context::Scope scope(context);
 
@@ -75,6 +74,8 @@ void V8CustomPositionCallback::handleEvent(Geoposition* position)
 
     bool callbackReturnValue = false;
     invokeCallback(m_callback, 1, argv, callbackReturnValue, scriptContext);
+*/
+    return true;
 }
 
 } // namespace WebCore

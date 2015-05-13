@@ -1085,6 +1085,9 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8SQLTransactionCustom.cpp
     bindings/v8/custom/V8SQLTransactionSyncCustom.cpp
     bindings/v8/custom/V8WebKitPointConstructor.cpp
+    bindings/v8/custom/V8CustomPositionCallback.cpp
+    bindings/v8/custom/V8AudioContextCustom.cpp
+    bindings/v8/custom/V8FileReaderCustom.cpp
 
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/V8ArrayBufferView.cpp
@@ -1152,6 +1155,7 @@ set(WebCore_SOURCES
     bindings/v8/OptionsObject.cpp
     bindings/v8/V8Float32Array.cpp
     bindings/V8ArrayBuffer.cpp
+    bindings/v8/ScriptCachedFrameData.cpp
 
 
     bridge/IdentifierRep.cpp
@@ -1760,6 +1764,7 @@ set(WebCore_SOURCES
     inspector/WorkerRuntimeAgent.cpp
     inspector/ScriptCallStack.cpp
     inspector/ScriptCallFrame.cpp
+    inspector/ScriptArguments.cpp
 
     loader/CookieJar.cpp
     loader/CrossOriginAccessControl.cpp
@@ -3436,7 +3441,7 @@ endif ()
 GENERATE_DOM_NAMES(SVG ${WEBCORE_DIR}/svg/svgattrs.in ${WEBCORE_DIR}/svg/svgtags.in "${SVG_EXTRA_DEFINES}")
 list(APPEND WebCore_SOURCES ${DERIVED_SOURCES_WEBCORE_DIR}/SVGNames.cpp)
 
-#list(APPEND WebCore_SOURCES ${DERIVED_SOURCES_WEBCORE_DIR}/SVGElementFactory.cpp ${DERIVED_SOURCES_WEBCORE_DIR}/JSSVGElementWrapperFactory.cpp)
+#list(APPEND WebCore_SOURCES ${DERIVED_SOURCES_WEBCORE_DIR}/SVGElementFactory.cpp ${DERIVED_SOURCES_WEBCORE_DIR}/V8SVGElementWrapperFactory.cpp)
 
 GENERATE_DOM_NAMES(XLink ${WEBCORE_DIR}/svg/xlinkattrs.in)
 list(APPEND WebCore_SOURCES ${DERIVED_SOURCES_WEBCORE_DIR}/XLinkNames.cpp)

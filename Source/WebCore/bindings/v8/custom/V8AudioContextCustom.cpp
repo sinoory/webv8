@@ -53,9 +53,10 @@ v8::Handle<v8::Value> V8AudioContext::constructorCallback(const v8::Arguments& a
 
     RefPtr<AudioContext> audioContext;
     
+    ExceptionCode ec;
     if (!args.Length()) {
         // Constructor for default AudioContext which talks to audio hardware.
-        audioContext = AudioContext::create(document);
+        audioContext = AudioContext::create(*document,ec);
     } else {
         // Constructor for offline (render-target) AudioContext which renders into an AudioBuffer.
         // new AudioContext(in unsigned long numberOfChannels, in unsigned long numberOfFrames, in float sampleRate);
@@ -74,7 +75,7 @@ v8::Handle<v8::Value> V8AudioContext::constructorCallback(const v8::Arguments& a
 
         float sampleRate = toFloat(args[2]);
 
-        audioContext = AudioContext::createOfflineContext(document, numberOfChannels, numberOfFrames, sampleRate);
+        audioContext = AudioContext::createOfflineContext(document, numberOfChannels, numberOfFrames, sampleRate,ec);
     }
 
     if (!audioContext.get())
@@ -86,7 +87,7 @@ v8::Handle<v8::Value> V8AudioContext::constructorCallback(const v8::Arguments& a
     
     return args.Holder();
 }
-
+/*
 v8::Handle<v8::Value> V8AudioContext::createBufferCallback(const v8::Arguments& args)
 {
     if (args.Length() < 2)
@@ -138,7 +139,7 @@ v8::Handle<v8::Value> V8AudioContext::createBufferCallback(const v8::Arguments& 
 
     return toV8(audioBuffer.get());
 }
-
+*/
 } // namespace WebCore
 
 #endif // ENABLE(WEB_AUDIO)

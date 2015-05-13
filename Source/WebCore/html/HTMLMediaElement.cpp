@@ -5172,7 +5172,8 @@ bool HTMLMediaElement::createMediaControls()
     if (hasMediaControls())
         return true;
 
-    RefPtr<MediaControls> mediaControls = MediaControls::create(document());
+    //RefPtr<MediaControls> mediaControls = MediaControls::create(document());
+    RefPtr<MediaControls> mediaControls = new MediaControls(document());
     if (!mediaControls)
         return false;
 

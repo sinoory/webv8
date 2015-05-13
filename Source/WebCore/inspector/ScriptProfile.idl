@@ -25,11 +25,12 @@
  */
 
 [
+    Conditional=INSPECTOR,
     NoInterfaceObject,
     SkipVTableValidation
 ] interface ScriptProfile {
     readonly attribute DOMString title;
-    //readonly attribute unsigned long uid; CMP_ERROR link error
-    //readonly attribute ScriptProfileNode rootNode; CMP_ERRROR not exist
+    readonly attribute unsigned long uid;
+    readonly attribute ScriptProfileNode rootNode;
 };
 

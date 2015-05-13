@@ -107,6 +107,10 @@ Element* TreeScope::getElementById(const AtomicString& elementId) const
     return m_elementsById->getElementById(*elementId.impl(), *this);
 }
 
+Element* TreeScope::getElementById(const AtomicString& elementId , bool compileflag) const{
+    return getElementById(elementId);
+}
+
 Element* TreeScope::getElementById(const String& elementId) const
 {
     if (!m_elementsById)
