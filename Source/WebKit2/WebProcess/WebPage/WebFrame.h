@@ -29,7 +29,7 @@
 #include "APIObject.h"
 #include "WKBase.h"
 #include "WebFrameLoaderClient.h"
-#include <JavaScriptCore/JSBase.h>
+#include <API/JSBase.h> //JSC/v8/API
 #include <WebCore/FrameLoaderClient.h>
 #include <WebCore/FrameLoaderTypes.h>
 #include <WebCore/PolicyChecker.h>

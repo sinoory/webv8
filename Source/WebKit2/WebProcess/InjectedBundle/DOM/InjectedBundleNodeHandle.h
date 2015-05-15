@@ -28,7 +28,7 @@
 
 #include "APIObject.h"
 #include "ImageOptions.h"
-#include <JavaScriptCore/JSBase.h>
+#include <API/JSBase.h>
 #include <wtf/Forward.h>
 #include <wtf/PassRefPtr.h>
 #include <wtf/RefPtr.h>

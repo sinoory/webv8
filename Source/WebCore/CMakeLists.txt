@@ -638,6 +638,11 @@ set(WebCore_NON_SVG_IDL_FILES
     xml/XPathNSResolver.idl
     xml/XPathResult.idl
     xml/XSLTProcessor.idl
+    
+    svg/SVGZoomEvent.idl
+    svg/SVGPoint.idl
+    svg/SVGMatrix.idl
+    svg/SVGRect.idl
 )
 
 set(WebCore_SVG_IDL_FILES
@@ -726,7 +731,6 @@ set(WebCore_SVG_IDL_FILES
     svg/SVGMPathElement.idl
     svg/SVGMarkerElement.idl
     svg/SVGMaskElement.idl
-    svg/SVGMatrix.idl
     svg/SVGMetadataElement.idl
     svg/SVGMissingGlyphElement.idl
     svg/SVGNumber.idl
@@ -755,13 +759,11 @@ set(WebCore_SVG_IDL_FILES
     svg/SVGPathSegMovetoAbs.idl
     svg/SVGPathSegMovetoRel.idl
     svg/SVGPatternElement.idl
-    svg/SVGPoint.idl
     svg/SVGPointList.idl
     svg/SVGPolygonElement.idl
     svg/SVGPolylineElement.idl
     svg/SVGPreserveAspectRatio.idl
     svg/SVGRadialGradientElement.idl
-    svg/SVGRect.idl
     svg/SVGRectElement.idl
     svg/SVGRenderingIntent.idl
     svg/SVGSVGElement.idl
@@ -789,7 +791,6 @@ set(WebCore_SVG_IDL_FILES
     svg/SVGViewElement.idl
     svg/SVGViewSpec.idl
     svg/SVGZoomAndPan.idl
-    svg/SVGZoomEvent.idl
 )
 
 set(WebCore_IDL_FILES

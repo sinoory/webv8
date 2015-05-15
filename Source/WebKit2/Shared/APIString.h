@@ -27,9 +27,9 @@
 #define APIString_h
 
 #include "APIObject.h"
-#include <JavaScriptCore/InitializeThreading.h>
-#include <JavaScriptCore/JSStringRef.h>
-#include <JavaScriptCore/OpaqueJSString.h>
+//#include <JavaScriptCore/InitializeThreading.h> 
+#include <API/JSStringRef.h> // JSC/v8/API
+#include <API/OpaqueJSString.h>
 #include <wtf/PassRefPtr.h>
 #include <wtf/text/StringView.h>
 #include <wtf/text/WTFString.h>
@@ -103,8 +103,11 @@ public:
 
     JSStringRef createJSString() const
     {
+        /*
         JSC::initializeThreading();
         return OpaqueJSString::create(m_string).leakRef();
+        */
+        return 0; //CMP_ERROR not used, and as implment with JSC,so return 0
     }
 
 private:

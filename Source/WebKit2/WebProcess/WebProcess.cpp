@@ -68,7 +68,7 @@
 #include <WebCore/FontCache.h>
 #include <WebCore/Frame.h>
 #include <WebCore/FrameLoader.h>
-#include <WebCore/GCController.h>
+//#include <WebCore/GCController.h>
 #include <WebCore/GlyphPageTreeNode.h>
 #include <WebCore/IconDatabase.h>
 //#include <WebCore/JSDOMWindow.h>
