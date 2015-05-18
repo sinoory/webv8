@@ -45,9 +45,9 @@
 //#include <JavaScriptCore/APICast.h>
 #if ENABLE(INJECT_BUNDLE)
 #include <JavaScriptCore/JSContextRef.h>
-#endif
 #include <JavaScriptCore/JSLock.h>
-#include <JavaScriptCore/JSValueRef.h>
+#endif
+#include <API/JSValueRef.h>
 #include <WebCore/ArchiveResource.h>
 #include <WebCore/CertificateInfo.h>
 #include <WebCore/Chrome.h>

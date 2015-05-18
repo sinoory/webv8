@@ -24,7 +24,7 @@
 #ifndef WebKitJavascriptResult_h
 #define WebKitJavascriptResult_h
 
-#include <JavaScriptCore/JSBase.h>
+#include <API/JSBase.h>
 #include <glib-object.h>
 #include <webkit2/WebKitDefines.h>
 

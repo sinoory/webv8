@@ -82,6 +82,9 @@ case $1 in
     cp out/Release/obj.target/tools/gyp/libv8_base.a ../../lib/libv8.a
     cd ../../
 
+    if [ ! -f "DerivedSources/WebCore/HTMLElementFactory.h" ] ; then
+        cd Source/WebCore ; /usr/bin/perl -Ibindings/scripts dom/make_names.pl --preprocessor "/usr/bin/c++ -E -x c++" --outputDir ../../DerivedSources/WebCore --attrs html/HTMLAttributeNames.in --tags html/HTMLTagNames.in --factory --wrapperFactory ; cd ../../
+    fi
 	#add by luyue
 if [ ${USE_32BITS} -eq 1 ]; then
 	echo "------------build 32 bits"
@@ -96,14 +99,15 @@ if [ ${USE_32BITS} -eq 1 ]; then
 #	cp -rf $(CURDIR)/bin/resources $(CURDIR)/debian/tmp/usr/local/cuprumtest/bin/
 else
 #compile project on 64bits Linux machine
-    if [ ! -d "${ThirdParty_DIR}/openssl-1.0.0d/" ];then
-	echo "-----------build 64 bits"
+    #if [ ! -d "${ThirdParty_DIR}/openssl-1.0.0d/" ];then
+	#echo "-----------build 64 bits"
 	cd $ThirdParty_DIR
-	tar -zxvf openssl-1.0.0d.tar.gz && cd openssl-1.0.0d
+	#tar -zxvf openssl-1.0.0d.tar.gz  
+    cd openssl-1.0.0d
 	./config shared && make && cd ../../../
 	mkdir lib 
 	cp -rf $ThirdParty_DIR/openssl-1.0.0d/lib*.so* ./lib
-    fi
+    #fi
 	echo "build release version start..." && sleep 3
 	cmake -DUSE_64BITS=1 -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=OFF -DENABLE_MIDORI=$BUILD_MIDORI && make   -j${CPU_NUM} && echo ******build release SUCCESS********
 fi
