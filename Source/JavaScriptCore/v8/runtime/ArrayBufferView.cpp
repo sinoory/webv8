@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Apple Inc. All rights reserved.
+ * Copyright (C) 2009 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,26 +23,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef TypedArrays_h
-#define TypedArrays_h
+#include "config.h"
+#include "ArrayBufferView.h"
 
-#include "GenericTypedArrayView.h"
-#include "TypedArrayAdaptors.h"
-#include "GenericTypedArrayViewInlines.h"
+#include "ArrayBuffer.h"
 
 namespace JSC {
 
-typedef GenericTypedArrayView<Int8Adaptor> Int8Array;
-typedef GenericTypedArrayView<Int16Adaptor> Int16Array;
-typedef GenericTypedArrayView<Int32Adaptor> Int32Array;
-typedef GenericTypedArrayView<Uint8Adaptor> Uint8Array;
-typedef GenericTypedArrayView<Uint8ClampedAdaptor> Uint8ClampedArray;
-typedef GenericTypedArrayView<Uint16Adaptor> Uint16Array;
-typedef GenericTypedArrayView<Uint32Adaptor> Uint32Array;
-typedef GenericTypedArrayView<Float32Adaptor> Float32Array;
-typedef GenericTypedArrayView<Float64Adaptor> Float64Array;
+ArrayBufferView::ArrayBufferView(
+    PassRefPtr<ArrayBuffer> buffer,
+    unsigned byteOffset)
+        : m_byteOffset(byteOffset)
+        , m_isNeuterable(true)
+        , m_buffer(buffer)
+{
+    m_baseAddress = m_buffer ? (static_cast<char*>(m_buffer->data()) + m_byteOffset) : 0;
+}
+
+ArrayBufferView::~ArrayBufferView()
+{
+    if (!m_isNeuterable)
+        m_buffer->unpin();
+}
+
+void ArrayBufferView::setNeuterable(bool flag)
+{
+    if (flag == m_isNeuterable)
+        return;
+    
+    m_isNeuterable = flag;
+    
+    if (!m_buffer)
+        return;
+    
+    if (flag)
+        m_buffer->unpin();
+    else
+        m_buffer->pin();
+}
 
 } // namespace JSC
-
-#endif // TypedArrays_h
-

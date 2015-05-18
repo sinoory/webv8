@@ -99,7 +99,7 @@ if [ ${USE_32BITS} -eq 1 ]; then
 #	cp -rf $(CURDIR)/bin/resources $(CURDIR)/debian/tmp/usr/local/cuprumtest/bin/
 else
 #compile project on 64bits Linux machine
-    #if [ ! -d "${ThirdParty_DIR}/openssl-1.0.0d/" ];then
+    if [ ! -f "lib/libssl.so.1.0.0" ];then
 	#echo "-----------build 64 bits"
 	cd $ThirdParty_DIR
 	#tar -zxvf openssl-1.0.0d.tar.gz  
@@ -107,7 +107,7 @@ else
 	./config shared && make && cd ../../../
 	mkdir lib 
 	cp -rf $ThirdParty_DIR/openssl-1.0.0d/lib*.so* ./lib
-    #fi
+    fi
 	echo "build release version start..." && sleep 3
 	cmake -DUSE_64BITS=1 -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=OFF -DENABLE_MIDORI=$BUILD_MIDORI && make   -j${CPU_NUM} && echo ******build release SUCCESS********
 fi

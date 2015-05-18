@@ -164,6 +164,7 @@ endif ()
 set(WebKit2_SOURCES
 
     ${JAVASCRIPTCORE_DIR}/v8/yarr/RegularExpression.cpp
+    ${JAVASCRIPTCORE_DIR}/v8/runtime/ArrayBufferView.cpp
     NetworkProcess/NetworkConnectionToWebProcess.cpp
     NetworkProcess/NetworkProcess.cpp
     NetworkProcess/NetworkProcessPlatformStrategies.cpp
