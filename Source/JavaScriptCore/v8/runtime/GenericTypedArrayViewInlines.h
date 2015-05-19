@@ -94,18 +94,17 @@ GenericTypedArrayView<Adaptor>::subarray(int start, int end) const
 {
     unsigned offset, length;
     calculateOffsetAndLength(start, end, this->length(), &offset, &length);
-    clampOffsetAndNumElements<Adaptor::Type>(buffer(), byteOffset(), &offset, &length);
+    clampOffsetAndNumElements<typename Adaptor::Type>(buffer(), byteOffset(), &offset, &length);
     return create(buffer(), offset, length);
 }
-/*
 template<typename Adaptor>
 JSArrayBufferView* GenericTypedArrayView<Adaptor>::wrap(
     ExecState* exec, JSGlobalObject* globalObject)
 {
-    return Adaptor::JSViewType::create(
-        exec->vm(), globalObject->typedArrayStructure(Adaptor::typeValue), this);
+    return 0; //CMP_ERROR_UNCLEAR
+    //return Adaptor::JSViewType::create(
+    //    exec->vm(), globalObject->typedArrayStructure(Adaptor::typeValue), this);
 }
-*/
 } // namespace JSC
 
 #endif // GenericTypedArrayViewInlines_h

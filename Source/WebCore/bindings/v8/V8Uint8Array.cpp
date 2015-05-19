@@ -33,6 +33,7 @@
 #include <wtf/GetPtr.h>
 #include <wtf/RefCounted.h>
 #include <wtf/RefPtr.h>
+#include <runtime/GenericTypedArrayView.h>
 
 namespace WebCore {
 
