@@ -1094,6 +1094,9 @@ set(WebCore_SOURCES
 
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/V8ArrayBufferView.cpp
+    bindings/v8/V8Float32Array.cpp
+    bindings/v8/custom/V8Float32ArrayCustom.cpp
+    bindings/V8ArrayBuffer.cpp
     #bindings/v8/V8Int16Array.cpp
     #bindings/v8/V8Int32Array.cpp
     #bindings/v8/V8Int8Array.cpp
@@ -1156,8 +1159,6 @@ set(WebCore_SOURCES
     bindings/v8/NPV8Object.cpp
     bindings/v8/V8GCForContextDispose.cpp
     bindings/v8/OptionsObject.cpp
-    bindings/v8/V8Float32Array.cpp
-    bindings/V8ArrayBuffer.cpp
     bindings/v8/ScriptCachedFrameData.cpp
 
 

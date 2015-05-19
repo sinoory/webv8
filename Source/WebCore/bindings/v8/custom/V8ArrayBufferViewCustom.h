@@ -177,7 +177,7 @@ v8::Handle<v8::Value> setWebGLArrayHelper(const v8::Arguments& args)
         if (args.Length() == 2)
             offset = toUInt32(args[1]);
         ExceptionCode ec = 0;
-        impl->set(src, offset, ec);
+        impl->set(src, offset);
         V8Proxy::setDOMException(ec);
         return v8::Undefined();
     }
