@@ -151,7 +151,7 @@ static CSSPropertyInfo* cssPropertyInfo(v8::Handle<v8::String>v8PropertyName)
     }
     return propInfo;
 }
-
+#if 0 //CMP_ERROR_TODO need add more custom func , like jsc custom
 v8::Handle<v8::Value> V8CSSStyleDeclaration::namedPropertyGetter(v8::Local<v8::String> name, const v8::AccessorInfo& info)
 {
     INC_STATS("DOM.CSSStyleDeclaration.NamedPropertyGetter");
@@ -216,5 +216,5 @@ v8::Handle<v8::Value> V8CSSStyleDeclaration::namedPropertySetter(v8::Local<v8::S
 
     return value;
 }
-
+#endif
 } // namespace WebCore

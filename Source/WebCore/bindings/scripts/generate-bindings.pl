@@ -74,7 +74,6 @@ if ($verbose) {
 }
 $defines =~ s/^\s+|\s+$//g; # trim whitespace
 
-print "$generator: $idlFile\n";
 # Parse the given IDL file.
 my $parser = IDLParser->new(!$verbose);
 my $document = $parser->Parse($idlFile, $defines, $preprocessor);

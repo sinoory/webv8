@@ -1094,6 +1094,8 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8WorkerCustom.cpp
     bindings/v8/custom/V8ArrayBufferCustom.cpp
     bindings/v8/custom/V8DedicatedWorkerContextCustom.cpp
+    bindings/v8/custom/V8CSSStyleDeclarationCustom.cpp
+    bindings/v8/custom/V8CSSValueCustom.cpp
 
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/custom/V8Uint8ArrayCustom.cpp

@@ -453,7 +453,7 @@ sub GetInternalFields
     #<wangcui look for parent : todo :also look parent extendedAttributes
     if($isEventListenerCacheIndexed eq "0"){
         foreach my $p (@{$dataNode->parents}){
-            print "dbg parent=". $p . "\n";
+            #print "dbg parent=". $p . "\n";
             if($p eq "EventTarget"){
                 push(@customInternalFields, "eventListenerCacheIndex");
                 last;
