@@ -617,7 +617,8 @@ set(WebCore_NON_SVG_IDL_FILES
     storage/StorageEvent.idl
 
     workers/AbstractWorker.idl
-    workers/DedicatedWorkerGlobalScope.idl
+    #workers/DedicatedWorkerGlobalScope.idl
+    workers/DedicatedWorkerContext.idl #CMP_ERROR use this from android,instead of DedicatedWorkerGlobalScope.idl
     workers/SharedWorker.idl
     workers/SharedWorkerGlobalScope.idl
     workers/Worker.idl
@@ -1091,6 +1092,8 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8FileReaderCustom.cpp
     bindings/v8/custom/V8CustomPositionErrorCallback.cpp
     bindings/v8/custom/V8WorkerCustom.cpp
+    bindings/v8/custom/V8ArrayBufferCustom.cpp
+    bindings/v8/custom/V8DedicatedWorkerContextCustom.cpp
 
     bindings/v8/V8Uint8Array.cpp
     bindings/v8/custom/V8Uint8ArrayCustom.cpp
@@ -1108,7 +1111,7 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8Uint16ArrayCustom.cpp
     bindings/v8/V8Uint32Array.cpp
     bindings/v8/custom/V8Uint32ArrayCustom.cpp
-    #bindings/v8/V8DedicatedWorkerContext.cpp
+    bindings/v8/V8DedicatedWorkerContext.cpp
     bindings/v8/V8EventListener.cpp
     bindings/v8/specialization/V8BindingState.cpp
     bindings/v8/ScriptEventListener.cpp
@@ -2662,6 +2665,7 @@ set(WebCore_SOURCES
     workers/WorkerScriptLoader.cpp
     workers/WorkerThread.cpp
     workers/WorkerContext.cpp
+    workers/DedicatedWorkerContext.cpp
 
     xml/DOMParser.cpp
     xml/NativeXPathNSResolver.cpp
