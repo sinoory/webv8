@@ -29,10 +29,7 @@
  */
 
 [
-    GlobalContext=DOMWindow&WorkerGlobalScope,
-    GenerateIsReachable=Impl,
-    CustomToJSObject,
-    CustomConstructor,
+        NoStaticTables
 ] interface Blob {
     readonly attribute unsigned long long size;
     readonly attribute DOMString type;

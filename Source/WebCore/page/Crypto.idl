@@ -31,7 +31,7 @@
     NoInterfaceObject,
     GenerateIsReachable=ImplDocument,
 ] interface Crypto {
-    [Custom, RaisesException] ArrayBufferView getRandomValues(ArrayBufferView array);
+    void getRandomValues(in ArrayBufferView array) raises(DOMException); //rm Custom like android
 
     [Conditional=SUBTLE_CRYPTO, ImplementedAs=subtle] readonly attribute SubtleCrypto webkitSubtle;
 };
