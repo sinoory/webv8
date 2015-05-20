@@ -1098,11 +1098,16 @@ set(WebCore_SOURCES
     bindings/v8/V8Float32Array.cpp
     bindings/v8/custom/V8Float32ArrayCustom.cpp
     bindings/V8ArrayBuffer.cpp
-    #bindings/v8/V8Int16Array.cpp
-    #bindings/v8/V8Int32Array.cpp
-    #bindings/v8/V8Int8Array.cpp
-    #bindings/v8/V8Uint16Array.cpp
-    #bindings/v8/V8Uint32Array.cpp
+    bindings/v8/V8Int16Array.cpp
+    bindings/v8/custom/V8Int16ArrayCustom.cpp
+    bindings/v8/V8Int32Array.cpp
+    bindings/v8/custom/V8Int32ArrayCustom.cpp
+    bindings/v8/V8Int8Array.cpp
+    bindings/v8/custom/V8Int8ArrayCustom.cpp
+    bindings/v8/V8Uint16Array.cpp
+    bindings/v8/custom/V8Uint16ArrayCustom.cpp
+    bindings/v8/V8Uint32Array.cpp
+    bindings/v8/custom/V8Uint32ArrayCustom.cpp
     #bindings/v8/V8DedicatedWorkerContext.cpp
     bindings/v8/V8EventListener.cpp
     bindings/v8/specialization/V8BindingState.cpp
