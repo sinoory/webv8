@@ -1093,6 +1093,7 @@ set(WebCore_SOURCES
     bindings/v8/custom/V8WorkerCustom.cpp
 
     bindings/v8/V8Uint8Array.cpp
+    bindings/v8/custom/V8Uint8ArrayCustom.cpp
     bindings/v8/V8ArrayBufferView.cpp
     bindings/v8/V8Float32Array.cpp
     bindings/v8/custom/V8Float32ArrayCustom.cpp

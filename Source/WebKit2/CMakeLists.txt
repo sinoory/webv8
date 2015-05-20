@@ -171,6 +171,7 @@ set(WebKit2_SOURCES
     #${JAVASCRIPTCORE_DIR}/v8/yarr/yarr/YarrJIT.cpp
 
     ${JAVASCRIPTCORE_DIR}/v8/runtime/ArrayBufferView.cpp
+    ${JAVASCRIPTCORE_DIR}/v8/runtime/JSCJSValue.cpp
     NetworkProcess/NetworkConnectionToWebProcess.cpp
     NetworkProcess/NetworkProcess.cpp
     NetworkProcess/NetworkProcessPlatformStrategies.cpp
