@@ -27,6 +27,6 @@
 [
     ConstructorTemplate=Event
 ] interface PopStateEvent : Event {
-    [InitializedByEventConstructor, CachedAttribute, CustomGetter] readonly attribute any state;
+    //[InitializedByEventConstructor, CachedAttribute, CustomGetter] readonly attribute any state; //CMP_ERROR_TODO
 };
 

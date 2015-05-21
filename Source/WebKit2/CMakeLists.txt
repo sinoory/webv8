@@ -172,6 +172,8 @@ set(WebKit2_SOURCES
 
     ${JAVASCRIPTCORE_DIR}/v8/runtime/ArrayBufferView.cpp
     ${JAVASCRIPTCORE_DIR}/v8/runtime/JSCJSValue.cpp
+    ${JAVASCRIPTCORE_DIR}/v8/API/OpaqueJSString.cpp
+    ${JAVASCRIPTCORE_DIR}/v8/runtime/DataView.cpp
     NetworkProcess/NetworkConnectionToWebProcess.cpp
     NetworkProcess/NetworkProcess.cpp
     NetworkProcess/NetworkProcessPlatformStrategies.cpp

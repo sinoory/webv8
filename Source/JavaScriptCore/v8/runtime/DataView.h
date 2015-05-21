@@ -35,6 +35,7 @@ namespace JSC {
 class DataView : public ArrayBufferView {
 protected:
     DataView(PassRefPtr<ArrayBuffer>, unsigned byteOffset, unsigned byteLength);
+    virtual ~DataView(){};
     
 public:
     JS_EXPORT_PRIVATE static PassRefPtr<DataView> create(PassRefPtr<ArrayBuffer>, unsigned byteOffset, unsigned length);
