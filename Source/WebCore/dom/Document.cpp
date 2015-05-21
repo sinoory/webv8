@@ -1087,8 +1087,10 @@ PassRefPtr<Element> Document::createElement(const QualifiedName& name, bool crea
     // FIXME: Use registered namespaces and look up in a hash to find the right factory.
     if (name.namespaceURI() == xhtmlNamespaceURI)
         element = HTMLElementFactory::createElement(name, *this, nullptr, createdByParser);
+#if ENABLE(SVG)  //wangcui add svg macro
     else if (name.namespaceURI() == SVGNames::svgNamespaceURI)
         element = SVGElementFactory::createElement(name, *this, createdByParser);
+#endif
 #if ENABLE(MATHML)
     else if (name.namespaceURI() == MathMLNames::mathmlNamespaceURI)
         element = MathMLElementFactory::createElement(name, *this, createdByParser);

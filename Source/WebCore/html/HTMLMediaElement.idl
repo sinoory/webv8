@@ -131,7 +131,7 @@
 #endif
 
     [Reflect, TreatNullAs=NullString] attribute DOMString mediaGroup;
-    [CustomSetter] attribute MediaController controller;
+    //[CustomSetter] attribute MediaController controller; CMP_ERROR_TODO
 
 #if !defined(LANGUAGE_GOBJECT) || !LANGUAGE_GOBJECT
     [Conditional=MEDIA_SOURCE] VideoPlaybackQuality getVideoPlaybackQuality();

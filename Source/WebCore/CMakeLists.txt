@@ -423,7 +423,7 @@ set(WebCore_NON_SVG_IDL_FILES
     dom/ProgressEvent.idl
     dom/Range.idl
     dom/RangeException.idl
-    dom/RequestAnimationFrameCallback.idl
+    #dom/RequestAnimationFrameCallback.idl  //CMP_ERROR_TODO
     dom/SecurityPolicyViolationEvent.idl
     dom/StringCallback.idl
     dom/Text.idl
@@ -2867,7 +2867,7 @@ if (ENABLE_VIDEO_TRACK)
     list(APPEND WebCore_IDL_FILES
         html/track/AudioTrack.idl
         html/track/AudioTrackList.idl
-        html/track/DataCue.idl
+        #html/track/DataCue.idl CMP_ERROR_TODO
         html/track/TextTrack.idl
         html/track/TextTrackCue.idl
         html/track/TextTrackCueList.idl

@@ -45,7 +45,7 @@
 
     // WorkerUtils
 
-    [Custom] void importScripts(/*[Variadic] DOMString urls */);
+    //[Custom] void importScripts(/*[Variadic] DOMString urls */); //CMP_ERROR_TODO
     [Replaceable] readonly attribute WorkerNavigator navigator;
 
     // EventTarget interface

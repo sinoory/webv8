@@ -50,7 +50,7 @@ void InitializeWebKit2()
     InitWebCoreThreadSystemInterface();
 #endif
 
-    JSC::initializeThreading();
+    //JSC::initializeThreading(); CMP_ERROR_TODO rm jsc,use v8
     WTF::initializeMainThread();
     RunLoop::initializeMainRunLoop();
 
