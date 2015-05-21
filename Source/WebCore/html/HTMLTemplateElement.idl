@@ -31,6 +31,6 @@
 [
     Conditional=TEMPLATE_ELEMENT
 ] interface HTMLTemplateElement : HTMLElement {
-    [Custom] readonly attribute DocumentFragment content;
+    readonly attribute DocumentFragment content; //CMP_ERROR_TODO use custom like jsc
 };
 

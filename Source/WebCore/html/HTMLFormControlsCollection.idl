@@ -22,5 +22,5 @@
     GenerateIsReachable=ImplOwnerNodeRoot,
 ] interface HTMLFormControlsCollection : HTMLCollection {
     getter Node ([Default=Undefined] optional unsigned long index);
-    [Custom] getter Node namedItem([Default=Undefined] optional DOMString name);
+    getter Node namedItem([Default=Undefined] optional DOMString name);//CMP_ERROR_TODO use custom like jsc
 };
