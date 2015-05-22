@@ -1865,6 +1865,7 @@ set(WebCore_SOURCES
     mathml/MathMLSelectElement.cpp
     mathml/MathMLTextElement.cpp
 
+    page/Console.cpp   #wangcui add from android4.0
     page/AutoscrollController.cpp
     page/BarProp.cpp
     page/CaptionUserPreferences.cpp
