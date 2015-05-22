@@ -48,11 +48,11 @@ static v8::Handle<v8::Value> getNamedItems(HTMLAllCollection* collection, Atomic
 
     if (!namedItems.size())
         return v8::Handle<v8::Value>();
-
     if (namedItems.size() == 1)
         return toV8(namedItems.at(0).release());
 
-    return toV8(V8NamedNodesCollection::create(namedItems));
+    //return toV8(V8NamedNodesCollection::create(namedItems));
+    return v8::Handle<v8::Value>(); //CMP_ERROR_TODO
 }
 
 static v8::Handle<v8::Value> getItem(HTMLAllCollection* collection, v8::Handle<v8::Value> argument)
