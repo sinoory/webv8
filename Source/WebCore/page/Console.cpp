@@ -364,7 +364,7 @@ void Console::warn(PassRefPtr<ScriptArguments> arguments, PassRefPtr<ScriptCallS
 
 MemoryInfo* Console::memory() const
 {
-    m_memory = MemoryInfo::create(m_frame);
+    //m_memory = MemoryInfo::create(m_frame); CMP_ERROR_TODO
     return m_memory.get();
 }
 
