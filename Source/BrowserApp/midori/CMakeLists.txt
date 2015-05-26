@@ -92,7 +92,7 @@ include_directories(
                     )
 target_link_libraries(${LIBMIDORI}
                       "${LIBMIDORI}-vala"
-                      JavaScriptCore
+                      #JavaScriptCore
                       WebKit2
                       ${GTK3_LIBRARY}
                       ${GDK3_LIBRARY}
@@ -135,7 +135,7 @@ endif()
 add_dependencies(${MIDORI_PROJECT_NAME} ${LIBMIDORI})
 target_link_libraries(${MIDORI_PROJECT_NAME}
                       ${LIBMIDORI}
-                      JavaScriptCore
+                      #JavaScriptCore
                       WebKit2
                       ${GTK3_LIBRARY}
                       ${GDK3_LIBRARY}

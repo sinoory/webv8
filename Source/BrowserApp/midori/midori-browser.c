@@ -5314,8 +5314,10 @@ _action_inspect_page_activate (GtkAction*     action,
 {
     GtkWidget* view = midori_browser_get_current_tab (browser);
     WebKitWebView* web_view = WEBKIT_WEB_VIEW (midori_view_get_web_view (MIDORI_VIEW (view)));
+#if 0 //CMP_ERROR_TODO ENABLE_INSPECTOR
     WebKitWebInspector* inspector = webkit_web_view_get_inspector (web_view);
     webkit_web_inspector_show (inspector);
+#endif
 }
 
 static gchar* midori_get_pageinfo_time (gchar* year, gchar* month, gchar* day)

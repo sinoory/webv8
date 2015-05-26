@@ -13,11 +13,12 @@
 #ifndef __SOKOKE_H__
 #define __SOKOKE_H__ 1
 
-#include <JavaScriptCore/JavaScript.h>
+//#include <JavaScriptCore/JavaScript.h>
 #include "katze/katze.h"
 #include <midori/midori-websettings.h>
 #include <katze/gtk3-compat.h>
 
+#define JSContextRef int* //CMP_ERROR_TODO should use v8 context?
 gchar*
 sokoke_js_script_eval                   (JSContextRef    js_context,
                                          const gchar*    script,

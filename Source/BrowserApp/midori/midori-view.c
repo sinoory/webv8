@@ -2970,6 +2970,7 @@ midori_view_inspect_element_activate_cb (GtkAction* action,
                                          gpointer   user_data)
 {
     MidoriView* view = user_data;
+#if 0 //CMP_ERROR_TODO ENABLE(INSPECTOR)
     WebKitWebInspector* inspector = webkit_web_view_get_inspector (WEBKIT_WEB_VIEW (view->web_view));
     #ifndef HAVE_WEBKIT2
     WebKitHitTestResult* hit_test_result = view->hit_test;
@@ -2978,6 +2979,7 @@ midori_view_inspect_element_activate_cb (GtkAction* action,
     webkit_web_inspector_inspect_coordinates (inspector, x, y);
     #endif
     webkit_web_inspector_show (inspector);
+#endif
 }
 
 // ZRL 暂时屏蔽搜索框功能
