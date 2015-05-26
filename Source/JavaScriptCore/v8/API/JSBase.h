@@ -45,7 +45,6 @@ extern "C" {
 #endif
 #endif // defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 #endif // __OBJC__
-#include "OpaqueJSString.h"
 
 /* JavaScript engine interface */
 

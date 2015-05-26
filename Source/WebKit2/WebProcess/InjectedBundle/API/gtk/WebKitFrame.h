@@ -24,7 +24,7 @@
 #ifndef WebKitFrame_h
 #define WebKitFrame_h
 
-#include <JavaScriptCore/JSBase.h>
+#include <API/JSBase.h>
 #include <glib-object.h>
 #include <webkit2/WebKitDefines.h>
 #include <webkit2/WebKitScriptWorld.h>

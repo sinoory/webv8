@@ -296,7 +296,7 @@ add_definitions("-DBROWSER_WEB_EXTENSION_PATH=\"${BROWSER_EXTENSION_INSTALL_DIR}
 
 add_subdirectory (midori)
 add_subdirectory (extensions)
-add_subdirectory (web-extension)
+#add_subdirectory (web-extension) #rm extension as jobject disabled
 add_subdirectory (po)
 add_subdirectory (icons)
 add_subdirectory (data)

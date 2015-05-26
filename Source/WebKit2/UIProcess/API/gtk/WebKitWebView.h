@@ -28,6 +28,7 @@
 #ifndef WebKitWebView_h
 #define WebKitWebView_h
 
+#include <WTF/wtf/Platform.h>
 #include <API/JSBase.h>
 #include <webkit2/WebKitAuthenticationRequest.h>
 #include <webkit2/WebKitBackForwardList.h>
