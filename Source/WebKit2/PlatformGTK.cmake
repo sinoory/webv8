@@ -800,7 +800,8 @@ add_custom_command(
         -DWEBKIT2_COMPILATION
         -I${CMAKE_SOURCE_DIR}/Source
         -I${WEBKIT2_DIR}
-        -I${JAVASCRIPTCORE_DIR}/ForwardingHeaders
+        -I${JAVASCRIPTCORE_DIR}/v8
+        -I${WTF_DIR}
         -I${DERIVED_SOURCES_DIR}
         -I${DERIVED_SOURCES_WEBKIT2GTK_DIR}
         -I${FORWARDING_HEADERS_WEBKIT2GTK_DIR}
@@ -840,7 +841,8 @@ add_custom_command(
         -DWEBKIT2_COMPILATION
         -I${CMAKE_SOURCE_DIR}/Source
         -I${WEBKIT2_DIR}
-        -I${JAVASCRIPTCORE_DIR}/ForwardingHeaders
+        -I${WTF_DIR}
+        -I${JAVASCRIPTCORE_DIR}/v8
         -I${DERIVED_SOURCES_DIR}
         -I${DERIVED_SOURCES_WEBKIT2GTK_DIR}
         -I${FORWARDING_HEADERS_DIR}
