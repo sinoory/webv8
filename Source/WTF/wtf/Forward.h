@@ -22,7 +22,7 @@
 #define WTF_Forward_h
 
 #include <stddef.h>
-
+#include <wtf/text/CString.h>
 namespace WTF {
 
 template<typename T> class Function;

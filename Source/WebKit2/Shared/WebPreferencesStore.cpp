@@ -56,10 +56,10 @@ void WebPreferencesStore::Value::encode(IPC::ArgumentEncoder& encoder) const
     switch (m_type) {
     case Type::None:
         break;
-    case Type::String:
+    case Type::VString:
         encoder << m_string;
         break;
-    case Type::Bool:
+    case Type::VBool:
         encoder << m_bool;
         break;
     case Type::UInt32:
@@ -80,14 +80,14 @@ bool WebPreferencesStore::Value::decode(IPC::ArgumentDecoder& decoder, Value& re
     switch (type) {
     case Type::None:
         break;
-    case Type::String: {
+    case Type::VString: {
         String value;
         if (!decoder.decode(value))
             return false;
         result = Value(value);
         break;
     }
-    case Type::Bool: {
+    case Type::VBool: {
         bool value;
         if (!decoder.decode(value))
             return false;
@@ -146,8 +146,8 @@ void WebPreferencesStore::removeTestRunnerOverrides()
 
 template <typename T> struct ToType { };
 
-template<> struct ToType<String> { static const auto value = WebPreferencesStore::Value::Type::String; };
-template<> struct ToType<bool> { static const auto value = WebPreferencesStore::Value::Type::Bool; };
+template<> struct ToType<String> { static const auto value = WebPreferencesStore::Value::Type::VString; };
+template<> struct ToType<bool> { static const auto value = WebPreferencesStore::Value::Type::VBool; };
 template<> struct ToType<uint32_t> { static const auto value = WebPreferencesStore::Value::Type::UInt32; };
 template<> struct ToType<double> { static const auto value = WebPreferencesStore::Value::Type::Double; };
 

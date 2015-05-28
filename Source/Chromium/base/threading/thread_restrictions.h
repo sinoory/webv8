@@ -138,7 +138,7 @@ class BASE_EXPORT ThreadRestrictions {
     DISALLOW_COPY_AND_ASSIGN(ScopedAllowSingleton);
   };
 
-#if ENABLE_THREAD_RESTRICTIONS
+#if 0 //ENABLE_THREAD_RESTRICTIONS
   // Set whether the current thread to make IO calls.
   // Threads start out in the *allowed* state.
   // Returns the previous value.

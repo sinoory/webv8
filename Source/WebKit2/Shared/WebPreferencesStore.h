@@ -66,8 +66,8 @@ struct WebPreferencesStore {
     struct Value {
         enum class Type {
             None,
-            String,
-            Bool,
+            VString,
+            VBool,
             UInt32,
             Double,
         };
@@ -76,8 +76,8 @@ struct WebPreferencesStore {
         static bool decode(IPC::ArgumentDecoder&, Value&);
 
         explicit Value() : m_type(Type::None) { }
-        explicit Value(const String& value) : m_type(Type::String), m_string(value) { }
-        explicit Value(bool value) : m_type(Type::Bool), m_bool(value) { }
+        explicit Value(const String& value) : m_type(Type::VString), m_string(value) { }
+        explicit Value(bool value) : m_type(Type::VBool), m_bool(value) { }
         explicit Value(uint32_t value) : m_type(Type::UInt32), m_uint32(value) { }
         explicit Value(double value) : m_type(Type::Double), m_double(value) { }
 
@@ -87,10 +87,10 @@ struct WebPreferencesStore {
             switch (m_type) {
             case Type::None:
                 break;
-            case Type::String:
+            case Type::VString:
                 new (&m_string) String(WTF::move(value.m_string));
                 break;
-            case Type::Bool:
+            case Type::VBool:
                 m_bool = value.m_bool;
                 break;
             case Type::UInt32:
@@ -113,10 +113,10 @@ struct WebPreferencesStore {
             switch (m_type) {
             case Type::None:
                 break;
-            case Type::String:
+            case Type::VString:
                 new (&m_string) String(other.m_string);
                 break;
-            case Type::Bool:
+            case Type::VBool:
                 m_bool = other.m_bool;
                 break;
             case Type::UInt32:
@@ -139,13 +139,13 @@ struct WebPreferencesStore {
 
         String asString() const
         {
-            ASSERT(m_type == Type::String);
+            ASSERT(m_type == Type::VString);
             return m_string;
         }
 
         bool asBool() const
         {
-            ASSERT(m_type == Type::Bool);
+            ASSERT(m_type == Type::VBool);
             return m_bool;
         }
 
@@ -164,7 +164,7 @@ struct WebPreferencesStore {
     private:
         void destroy()
         {
-            if (m_type == Type::String)
+            if (m_type == Type::VString)
                 m_string.~String();
         }
 

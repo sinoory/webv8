@@ -66,6 +66,7 @@
 #include <wtf/Noncopyable.h>
 #include <wtf/ThreadSafeRefCounted.h>
 #include <wtf/ThreadingPrimitives.h>
+#include <wtf/MainThread.h>
 
 namespace WTF {
 

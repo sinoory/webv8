@@ -578,7 +578,7 @@ bool WebProcess::shouldTerminate()
 
 void WebProcess::terminate()
 {
-#ifndef NDEBUG
+#if 0 //ndef NDEBUG
     gcController().garbageCollectNow();
     fontCache().invalidate();
     memoryCache()->setDisabled(true);
@@ -622,7 +622,7 @@ void WebProcess::didReceiveMessage(IPC::Connection* connection, IPC::MessageDeco
 
 void WebProcess::didClose(IPC::Connection*)
 {
-#ifndef NDEBUG
+#if 0 //ndef NDEBUG
     m_inDidClose = true;
 
     // Close all the live pages.

@@ -72,6 +72,9 @@ public:
     static void scheduleAfterDelayAndDeleteOnDestroy(const char* name, std::function<bool()>, std::chrono::microseconds, int priority = G_PRIORITY_DEFAULT, std::function<void()> destroyFunction = nullptr, GMainContext* = nullptr);
 
 protected:
+#ifdef Status
+#undef Status
+#endif
     enum Status { Ready, Scheduled, Dispatching };
 
     struct Context {

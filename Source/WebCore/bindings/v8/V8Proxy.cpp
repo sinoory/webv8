@@ -255,7 +255,7 @@ bool V8Proxy::handleOutOfMemory()
 
     // Disable JS.
     Settings& settings = frame->settings();
-    ASSERT(settings);
+    //ASSERT(settings);
     //settings->setJavaScriptEnabled(false);
 
     return true;
