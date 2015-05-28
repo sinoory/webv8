@@ -768,6 +768,7 @@ endif ()
 string(REGEX MATCHALL "-L[^ ]*"
     INTROSPECTION_ADDITIONAL_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS})
 
+if (ENABLE_GIR_GEN)
 add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/WebKit2-${WEBKITGTK_API_VERSION}.gir
     DEPENDS WebKit2
@@ -870,6 +871,7 @@ add_custom_command(
 
 ADD_TYPELIB(${CMAKE_BINARY_DIR}/WebKit2-${WEBKITGTK_API_VERSION}.typelib)
 ADD_TYPELIB(${CMAKE_BINARY_DIR}/WebKit2WebExtension-${WEBKITGTK_API_VERSION}.typelib)
+endif ()
 
 # ZRL 修改webkit2gtkinjectedbundle的安装路径，与其他动态库位于一个路径下 若修改了webkit2gtkinjectedbundle安装路径，则相应修改BrowserApp中的WEBKIT_INJECTED_BUNDLE_PATH
 #install(TARGETS webkit2gtkinjectedbundle

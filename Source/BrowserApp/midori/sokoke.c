@@ -38,10 +38,11 @@ sokoke_js_string_utf8 (JSStringRef js_string)
     gchar* string_utf8;
 
     g_return_val_if_fail (js_string, NULL);
-
+#if 0
     size_utf8 = JSStringGetMaximumUTF8CStringSize (js_string);
     string_utf8 = g_new (gchar, size_utf8);
     JSStringGetUTF8CString (js_string, string_utf8, size_utf8);
+#endif
     return string_utf8;
 }
 
