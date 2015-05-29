@@ -51,6 +51,7 @@ void InitializeWebKit2()
 #endif
 
     //JSC::initializeThreading(); CMP_ERROR_TODO rm jsc,use v8
+    WTF::initializeThreading(); //wangcui add for resolve crash
     WTF::initializeMainThread();
     RunLoop::initializeMainRunLoop();
 

@@ -4765,9 +4765,10 @@ _action_search_notify_current_item (GtkAction*     action,
     MidoriSearchAction* search_action;
     KatzeItem* item;
     guint idx;
-
+#if 0
     search_action = MIDORI_SEARCH_ACTION (action);
     item = midori_search_action_get_current_item (search_action);
+#endif
     if (item)
         idx = katze_array_get_item_index (browser->search_engines, item);
     else
@@ -4785,8 +4786,10 @@ _action_search_notify_default_item (GtkAction*     action,
     MidoriSearchAction* search_action;
     KatzeItem* item;
 
+#if 0
     search_action = MIDORI_SEARCH_ACTION (action);
     item = midori_search_action_get_default_item (search_action);
+#endif
     if (item)
         g_object_set (browser->settings, "location-entry-search",
                       katze_item_get_uri (item), NULL);

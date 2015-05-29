@@ -85,7 +85,8 @@ void WebSoupCustomProtocolRequestManager::registerSchemeForCustomProtocol(const 
 
     context()->registerSchemeForCustomProtocol(scheme);
 
-    ASSERT(!m_registeredSchemes.contains(scheme));
+    //ASSERT(!m_registeredSchemes.contains(scheme)); //crash_in_debug
+    if(!m_registeredSchemes.contains(scheme))
     m_registeredSchemes.append(scheme);
 }
 
@@ -96,7 +97,8 @@ void WebSoupCustomProtocolRequestManager::unregisterSchemeForCustomProtocol(cons
 
     context()->unregisterSchemeForCustomProtocol(scheme);
 
-    ASSERT(m_registeredSchemes.contains(scheme));
+    //ASSERT(m_registeredSchemes.contains(scheme));
+    if(m_registeredSchemes.contains(scheme))
     m_registeredSchemes.remove(m_registeredSchemes.find(scheme));
 }
 

@@ -62,7 +62,7 @@ void ThreadIdentifierData::initializeOnce()
 
 ThreadIdentifier ThreadIdentifierData::identifier()
 {
-    //ASSERT(m_key != PTHREAD_KEYS_MAX); //crash in debug
+    ASSERT(m_key != PTHREAD_KEYS_MAX);
     ThreadIdentifierData* threadIdentifierData = static_cast<ThreadIdentifierData*>(pthread_getspecific(m_key));
 
     return threadIdentifierData ? threadIdentifierData->m_identifier : 0;
