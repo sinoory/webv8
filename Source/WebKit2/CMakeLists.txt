@@ -573,7 +573,6 @@ set(WebKit2_SOURCES
      WebProcess/InjectedBundle/InjectedBundlePagePolicyClient.cpp
      WebProcess/InjectedBundle/InjectedBundlePageResourceLoadClient.cpp
      WebProcess/InjectedBundle/InjectedBundlePageUIClient.cpp
-     WebProcess/InjectedBundle/InjectedBundleScriptWorld.cpp
  
      WebProcess/InjectedBundle/API/c/WKBundle.cpp
      WebProcess/InjectedBundle/API/c/WKBundleBackForwardList.cpp
@@ -588,6 +587,7 @@ set(WebKit2_SOURCES
      WebProcess/InjectedBundle/API/c/WKBundlePageOverlay.cpp
      WebProcess/InjectedBundle/API/c/WKBundleRangeHandle.cpp
      WebProcess/InjectedBundle/API/c/WKBundleScriptWorld.cpp
+     WebProcess/InjectedBundle/InjectedBundleScriptWorld.cpp
  
      WebProcess/InjectedBundle/DOM/InjectedBundleNodeHandle.cpp
      WebProcess/InjectedBundle/DOM/InjectedBundleRangeHandle.cpp

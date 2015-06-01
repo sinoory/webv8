@@ -23,7 +23,7 @@
 #include "WebKitFramePrivate.h"
 #include "WebKitPrivate.h"
 #include "WebKitScriptWorldPrivate.h"
-#include "WebKitDOMDocumentPrivate.h"
+//#include "WebKitDOMDocumentPrivate.h"
 #include <WebCore/Document.h>
 #include <WebCore/Frame.h>
 #include <wtf/text/CString.h>
@@ -107,6 +107,7 @@ JSGlobalContextRef webkit_frame_get_javascript_global_context(WebKitFrame* frame
     return frame->priv->webFrame->jsContext();
 }
 
+#if 0 //CMP_ERROR WebKitDOMDocument.h not generate
 /**
  * webkit_frame_get_javascript_context_for_script_world:
  * @frame: a #WebKitFrame
@@ -125,7 +126,6 @@ JSGlobalContextRef webkit_frame_get_javascript_context_for_script_world(WebKitFr
 
     return frame->priv->webFrame->jsContextForWorld(webkitScriptWorldGetInjectedBundleScriptWorld(world));
 }
-
 /**
  *
  */
@@ -145,3 +145,4 @@ WebKitDOMDocument* webkit_frame_get_frame_document(WebKitFrame* frame)
 
     return kit(frame->priv->webFrame->coreFrame()->document());
 }
+#endif

@@ -109,7 +109,7 @@ static WebKitScriptWorld* webkitScriptWorldCreate(PassRefPtr<InjectedBundleScrip
 
     return world;
 }
-
+#if 0 //CMP_ERROR
 static gpointer createDefaultScriptWorld(gpointer)
 {
     return webkitScriptWorldCreate(InjectedBundleScriptWorld::normalWorld());
@@ -150,3 +150,4 @@ WebKitScriptWorld* webkit_script_world_new(void)
 {
     return webkitScriptWorldCreate(InjectedBundleScriptWorld::create());
 }
+#endif
