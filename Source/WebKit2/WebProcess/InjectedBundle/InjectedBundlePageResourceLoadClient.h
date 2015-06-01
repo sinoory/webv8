@@ -29,7 +29,7 @@
 #include "APIClient.h"
 #include "SameDocumentNavigationType.h"
 #include "WKBundlePage.h"
-#include <JavaScriptCore/JSBase.h>
+#include <API/JSBase.h>
 #include <wtf/Forward.h>
 
 namespace API {

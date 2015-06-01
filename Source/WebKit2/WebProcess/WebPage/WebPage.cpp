@@ -552,6 +552,30 @@ uint64_t WebPage::messageSenderDestinationID()
     return pageID();
 }
 
+void WebPage::initializeInjectedBundleLoaderClient(WKBundlePageLoaderClientBase* client)
+{
+    m_loaderClient.initialize(client);
+
+    // It would be nice to get rid of this code and transition all clients to using didLayout instead of
+    // didFirstLayoutInFrame and didFirstVisuallyNonEmptyLayoutInFrame. In the meantime, this is required
+    // for backwards compatibility.
+    LayoutMilestones milestones = 0;
+    if (client) {
+        if (m_loaderClient.client().didFirstLayoutForFrame)
+            milestones |= WebCore::DidFirstLayout;
+        if (m_loaderClient.client().didFirstVisuallyNonEmptyLayoutForFrame)
+            milestones |= WebCore::DidFirstVisuallyNonEmptyLayout;
+    }
+
+    if (milestones)
+        listenForLayoutMilestones(milestones);
+}
+
+void WebPage::initializeInjectedBundleResourceLoadClient(WKBundlePageResourceLoadClientBase* client)
+{
+    m_resourceLoadClient.initialize(client);
+}
+
 #if ENABLE(INJECT_BUNDLE)
 #if ENABLE(CONTEXT_MENUS)
 void WebPage::initializeInjectedBundleContextMenuClient(WKBundlePageContextMenuClientBase* client)
@@ -575,34 +599,14 @@ void WebPage::setInjectedBundleFormClient(std::unique_ptr<API::InjectedBundle::F
     m_formClient = WTF::move(formClient);
 }
 
-void WebPage::initializeInjectedBundleLoaderClient(WKBundlePageLoaderClientBase* client)
-{
-    m_loaderClient.initialize(client);
 
-    // It would be nice to get rid of this code and transition all clients to using didLayout instead of
-    // didFirstLayoutInFrame and didFirstVisuallyNonEmptyLayoutInFrame. In the meantime, this is required
-    // for backwards compatibility.
-    LayoutMilestones milestones = 0;
-    if (client) {
-        if (m_loaderClient.client().didFirstLayoutForFrame)
-            milestones |= WebCore::DidFirstLayout;
-        if (m_loaderClient.client().didFirstVisuallyNonEmptyLayoutForFrame)
-            milestones |= WebCore::DidFirstVisuallyNonEmptyLayout;
-    }
-
-    if (milestones)
-        listenForLayoutMilestones(milestones);
-}
 
 void WebPage::initializeInjectedBundlePolicyClient(WKBundlePagePolicyClientBase* client)
 {
     m_policyClient.initialize(client);
 }
 
-void WebPage::initializeInjectedBundleResourceLoadClient(WKBundlePageResourceLoadClientBase* client)
-{
-    m_resourceLoadClient.initialize(client);
-}
+
 
 void WebPage::setInjectedBundleUIClient(std::unique_ptr<API::InjectedBundle::PageUIClient> uiClient)
 {

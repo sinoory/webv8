@@ -351,7 +351,8 @@ WebKitWebPage* webkitWebPageCreate(WebPage* webPage)
         0, // willLoadDataRequest
         willDestroyFrame
     };
-    WKBundlePageSetPageLoaderClient(toAPI(webPage), &loaderClient.base);
+    //WKBundlePageSetPageLoaderClient(toAPI(webPage), &loaderClient.base);
+    toImpl(toAPI(webPage))->initializeInjectedBundleLoaderClient(&loaderClient.base);
 
     WKBundlePageResourceLoadClientV1 resourceLoadClient = {
         {
@@ -367,7 +368,8 @@ WebKitWebPage* webkitWebPageCreate(WebPage* webPage)
         0, // shouldCacheResponse
         0 // shouldUseCredentialStorage
     };
-    WKBundlePageSetResourceLoadClient(toAPI(webPage), &resourceLoadClient.base);
+    //WKBundlePageSetResourceLoadClient(toAPI(webPage), &resourceLoadClient.base);
+    toImpl(toAPI(webPage))->initializeInjectedBundleResourceLoadClient(&resourceLoadClient.base);
 
     return page;
 }

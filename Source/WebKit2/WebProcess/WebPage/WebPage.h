@@ -34,13 +34,13 @@
 #include "ImageOptions.h"
 #include "WKEvent.h"
 
+#include "InjectedBundlePageLoaderClient.h"
+#include "InjectedBundlePageResourceLoadClient.h"
 #if ENABLE(INJECT_BUNDLE)
 #include "InjectedBundlePageDiagnosticLoggingClient.h"
 #include "InjectedBundlePageEditorClient.h"
 #include "InjectedBundlePageFullScreenClient.h"
-#include "InjectedBundlePageLoaderClient.h"
 #include "InjectedBundlePagePolicyClient.h"
-#include "InjectedBundlePageResourceLoadClient.h"
 #if ENABLE(CONTEXT_MENUS)
 #include "InjectedBundlePageContextMenuClient.h"
 #endif
@@ -281,6 +281,8 @@ public:
     void didReceiveMessage(IPC::Connection*, IPC::MessageDecoder&) override;
     void didReceiveSyncMessage(IPC::Connection*, IPC::MessageDecoder&, std::unique_ptr<IPC::MessageEncoder>&) override;
 
+    void initializeInjectedBundleLoaderClient(WKBundlePageLoaderClientBase*);
+    void initializeInjectedBundleResourceLoadClient(WKBundlePageResourceLoadClientBase*);
 #if ENABLE(INJECT_BUNDLE)
     // -- InjectedBundle methods
 #if ENABLE(CONTEXT_MENUS)
@@ -288,9 +290,7 @@ public:
 #endif
     void initializeInjectedBundleEditorClient(WKBundlePageEditorClientBase*);
     void setInjectedBundleFormClient(std::unique_ptr<API::InjectedBundle::FormClient>);
-    void initializeInjectedBundleLoaderClient(WKBundlePageLoaderClientBase*);
     void initializeInjectedBundlePolicyClient(WKBundlePagePolicyClientBase*);
-    void initializeInjectedBundleResourceLoadClient(WKBundlePageResourceLoadClientBase*);
     void setInjectedBundleUIClient(std::unique_ptr<API::InjectedBundle::PageUIClient>);
 #if ENABLE(FULLSCREEN_API)
     void initializeInjectedBundleFullScreenClient(WKBundlePageFullScreenClientBase*);
@@ -1156,15 +1156,15 @@ private:
     HashMap<uint64_t, RefPtr<WebUndoStep>> m_undoStepMap;
 
     WebCore::IntSize m_windowResizerSize;
+    InjectedBundlePageLoaderClient m_loaderClient;
+    InjectedBundlePageResourceLoadClient m_resourceLoadClient;
 #if ENABLE(INJECT_BUNDLE)
 #if ENABLE(CONTEXT_MENUS)
     InjectedBundlePageContextMenuClient m_contextMenuClient;
 #endif
     InjectedBundlePageEditorClient m_editorClient;
     std::unique_ptr<API::InjectedBundle::FormClient> m_formClient;
-    InjectedBundlePageLoaderClient m_loaderClient;
     InjectedBundlePagePolicyClient m_policyClient;
-    InjectedBundlePageResourceLoadClient m_resourceLoadClient;
     std::unique_ptr<API::InjectedBundle::PageUIClient> m_uiClient;
 #if ENABLE(FULLSCREEN_API)
     InjectedBundlePageFullScreenClient m_fullScreenClient;

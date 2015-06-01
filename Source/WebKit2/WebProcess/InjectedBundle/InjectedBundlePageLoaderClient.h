@@ -31,7 +31,7 @@
 #include "APIURL.h"
 #include "SameDocumentNavigationType.h"
 #include "WKBundlePage.h"
-#include <JavaScriptCore/JSBase.h>
+#include <API/JSBase.h>
 #include <WebCore/LayoutMilestones.h>
 #include <wtf/Forward.h>
 #include <wtf/Vector.h>
