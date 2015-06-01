@@ -36,6 +36,7 @@
 
 #include "InjectedBundlePageLoaderClient.h"
 #include "InjectedBundlePageResourceLoadClient.h"
+#include "InjectedBundlePageFormClient.h"
 #if ENABLE(INJECT_BUNDLE)
 #include "InjectedBundlePageDiagnosticLoggingClient.h"
 #include "InjectedBundlePageEditorClient.h"
@@ -283,13 +284,13 @@ public:
 
     void initializeInjectedBundleLoaderClient(WKBundlePageLoaderClientBase*);
     void initializeInjectedBundleResourceLoadClient(WKBundlePageResourceLoadClientBase*);
+    void setInjectedBundleFormClient(std::unique_ptr<API::InjectedBundle::FormClient>);
 #if ENABLE(INJECT_BUNDLE)
     // -- InjectedBundle methods
 #if ENABLE(CONTEXT_MENUS)
     void initializeInjectedBundleContextMenuClient(WKBundlePageContextMenuClientBase*);
 #endif
     void initializeInjectedBundleEditorClient(WKBundlePageEditorClientBase*);
-    void setInjectedBundleFormClient(std::unique_ptr<API::InjectedBundle::FormClient>);
     void initializeInjectedBundlePolicyClient(WKBundlePagePolicyClientBase*);
     void setInjectedBundleUIClient(std::unique_ptr<API::InjectedBundle::PageUIClient>);
 #if ENABLE(FULLSCREEN_API)
@@ -1158,12 +1159,12 @@ private:
     WebCore::IntSize m_windowResizerSize;
     InjectedBundlePageLoaderClient m_loaderClient;
     InjectedBundlePageResourceLoadClient m_resourceLoadClient;
+    std::unique_ptr<API::InjectedBundle::FormClient> m_formClient;
 #if ENABLE(INJECT_BUNDLE)
 #if ENABLE(CONTEXT_MENUS)
     InjectedBundlePageContextMenuClient m_contextMenuClient;
 #endif
     InjectedBundlePageEditorClient m_editorClient;
-    std::unique_ptr<API::InjectedBundle::FormClient> m_formClient;
     InjectedBundlePagePolicyClient m_policyClient;
     std::unique_ptr<API::InjectedBundle::PageUIClient> m_uiClient;
 #if ENABLE(FULLSCREEN_API)

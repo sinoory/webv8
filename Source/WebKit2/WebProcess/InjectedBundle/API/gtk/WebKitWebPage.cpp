@@ -485,6 +485,7 @@ gboolean webkit_web_page_set_form_client(WebKitWebPage *webPage, WKBundlePageFor
 
     WebPage * page = webPage->priv->webPage;
     formClient->base.clientInfo = webPage;
-    WKBundlePageSetFormClient(toAPI(page), &formClient->base);
+    //WKBundlePageSetFormClient(toAPI(page), &formClient->base);
+    toImpl(toAPI(page))->setInjectedBundleFormClient(std::make_unique<InjectedBundlePageFormClient>(&formClient->base));
     return true;
 }

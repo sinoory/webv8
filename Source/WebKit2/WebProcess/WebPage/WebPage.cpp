@@ -576,6 +576,15 @@ void WebPage::initializeInjectedBundleResourceLoadClient(WKBundlePageResourceLoa
     m_resourceLoadClient.initialize(client);
 }
 
+void WebPage::setInjectedBundleFormClient(std::unique_ptr<API::InjectedBundle::FormClient> formClient)
+{
+    if (!formClient) {
+        m_formClient = std::make_unique<API::InjectedBundle::FormClient>();
+        return;
+    }
+
+    m_formClient = WTF::move(formClient);
+}
 #if ENABLE(INJECT_BUNDLE)
 #if ENABLE(CONTEXT_MENUS)
 void WebPage::initializeInjectedBundleContextMenuClient(WKBundlePageContextMenuClientBase* client)
@@ -589,15 +598,7 @@ void WebPage::initializeInjectedBundleEditorClient(WKBundlePageEditorClientBase*
     m_editorClient.initialize(client);
 }
 
-void WebPage::setInjectedBundleFormClient(std::unique_ptr<API::InjectedBundle::FormClient> formClient)
-{
-    if (!formClient) {
-        m_formClient = std::make_unique<API::InjectedBundle::FormClient>();
-        return;
-    }
 
-    m_formClient = WTF::move(formClient);
-}
 
 
 
