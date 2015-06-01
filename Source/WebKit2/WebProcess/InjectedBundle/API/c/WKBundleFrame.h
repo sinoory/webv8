@@ -26,7 +26,7 @@
 #ifndef WKBundleFrame_h
 #define WKBundleFrame_h
 
-#include <JavaScriptCore/JavaScript.h>
+//#include <JavaScriptCore/JavaScript.h>
 #include <WebKit/WKBase.h>
 #include <WebKit/WKFrame.h>
 #include <WebKit/WKGeometry.h>
@@ -47,7 +47,7 @@ WK_EXPORT WKURLRef WKBundleFrameCopyProvisionalURL(WKBundleFrameRef frame);
 WK_EXPORT WKSecurityOriginRef WKBundleFrameCopySecurityOrigin(WKBundleFrameRef frame);
 
 WK_EXPORT WKFrameLoadState WKBundleFrameGetFrameLoadState(WKBundleFrameRef frame); 
-
+#if USE_JSC_ENG
 WK_EXPORT JSGlobalContextRef WKBundleFrameGetJavaScriptContext(WKBundleFrameRef frame);
 WK_EXPORT JSGlobalContextRef WKBundleFrameGetJavaScriptContextForWorld(WKBundleFrameRef frame, WKBundleScriptWorldRef world);
 
@@ -55,7 +55,7 @@ WK_EXPORT WKBundleFrameRef WKBundleFrameForJavaScriptContext(JSContextRef contex
 
 WK_EXPORT JSValueRef WKBundleFrameGetJavaScriptWrapperForNodeForWorld(WKBundleFrameRef frame, WKBundleNodeHandleRef nodeHandle, WKBundleScriptWorldRef world);
 WK_EXPORT JSValueRef WKBundleFrameGetJavaScriptWrapperForRangeForWorld(WKBundleFrameRef frame, WKBundleRangeHandleRef rangeHandle, WKBundleScriptWorldRef world);
-
+#endif
 WK_EXPORT WKBundlePageRef WKBundleFrameGetPage(WKBundleFrameRef frame);
 
 WK_EXPORT bool WKBundleFrameAllowsFollowingLink(WKBundleFrameRef frame, WKURLRef url);

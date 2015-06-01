@@ -26,7 +26,7 @@
 #ifndef WKBundlePage_h
 #define WKBundlePage_h
 
-#include <JavaScriptCore/JavaScript.h>
+//#include <JavaScriptCore/JavaScript.h>
 #include <WebKit/WKBase.h>
 #include <WebKit/WKBundlePageContextMenuClient.h>
 #include <WebKit/WKBundlePageDiagnosticLoggingClient.h>

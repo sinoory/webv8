@@ -28,7 +28,7 @@
 #include <webkit2/WebKitDefines.h>
 #include <WebKit/WKBundlePageFormClient.h>
 #include <webkit2/WebKitFrame.h>
-#include <webkitdom/webkitdom.h>
+//#include <webkitdom/webkitdom.h>
 
 G_BEGIN_DECLS
 
@@ -55,10 +55,10 @@ struct _WebKitWebPageClass {
 
 WEBKIT_API GType
 webkit_web_page_get_type         (void);
-
+/*
 WEBKIT_API WebKitDOMDocument *
 webkit_web_page_get_dom_document (WebKitWebPage *web_page);
-
+*/
 WEBKIT_API guint64
 webkit_web_page_get_id           (WebKitWebPage *web_page);
 

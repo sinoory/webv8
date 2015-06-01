@@ -26,7 +26,7 @@
 #ifndef WKBundleFramePrivate_h
 #define WKBundleFramePrivate_h
 
-#include <JavaScriptCore/JavaScript.h>
+//#include <JavaScriptCore/JavaScript.h>
 #include <WebKit/WKBase.h>
 #include <WebKit/WKGeometry.h>
 
@@ -39,7 +39,9 @@ extern "C" {
 #endif
 
 WK_EXPORT WKStringRef WKBundleFrameCopyInnerText(WKBundleFrameRef frame);
+#if USE_JSC_ENG
 WK_EXPORT WKStringRef WKBundleFrameCopyCounterValue(WKBundleFrameRef frame, JSObjectRef element);
+#endif
 WK_EXPORT unsigned WKBundleFrameGetPendingUnloadCount(WKBundleFrameRef frame);
 WK_EXPORT WKStringRef WKBundleFrameCopyLayerTreeAsText(WKBundleFrameRef frame);
 WK_EXPORT void WKBundleFrameClearOpener(WKBundleFrameRef frame);

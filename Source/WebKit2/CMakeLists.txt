@@ -579,7 +579,6 @@ set(WebKit2_SOURCES
      WebProcess/InjectedBundle/API/c/WKBundleBackForwardList.cpp
      WebProcess/InjectedBundle/API/c/WKBundleBackForwardListItem.cpp
      WebProcess/InjectedBundle/API/c/WKBundleDOMWindowExtension.cpp
-     WebProcess/InjectedBundle/API/c/WKBundleFrame.cpp
      WebProcess/InjectedBundle/API/c/WKBundleHitTestResult.cpp
      WebProcess/InjectedBundle/API/c/WKBundleInspector.cpp
      WebProcess/InjectedBundle/API/c/WKBundleNavigationAction.cpp
@@ -595,6 +594,11 @@ set(WebKit2_SOURCES
 
 )
 endif ()
+
+list(APPEND WebKit2_SOURCES
+     WebProcess/InjectedBundle/API/c/WKBundleFrame.cpp
+)
+
 set(WebKit2_MESSAGES_IN_FILES
     NetworkProcess/NetworkConnectionToWebProcess.messages.in
     NetworkProcess/NetworkProcess.messages.in

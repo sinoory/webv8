@@ -28,7 +28,7 @@
 #include <glib-object.h>
 #include <webkit2/WebKitDefines.h>
 #include <webkit2/WebKitScriptWorld.h>
-#include <webkitdom/webkitdom.h>
+//#include <webkitdom/webkitdom.h>
 #include <WebKit/WKBase.h>
 
 G_BEGIN_DECLS
@@ -69,13 +69,13 @@ webkit_frame_get_javascript_global_context           (WebKitFrame       *frame);
 WEBKIT_API JSGlobalContextRef
 webkit_frame_get_javascript_context_for_script_world (WebKitFrame       *frame,
                                                       WebKitScriptWorld *world);
-
+/*
 WEBKIT_API WebKitDOMDocument*
 webkit_frame_get_current_document                    (WKBundleFrameRef   frame);
 
 WEBKIT_API WebKitDOMDocument*
 webkit_frame_get_frame_document                      (WebKitFrame*       frame);
-
+*/
 G_END_DECLS
 
 #endif

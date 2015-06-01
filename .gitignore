@@ -140,3 +140,4 @@ b.sh
 l
 Source/v8/out/
 Source/v8/samples/samples.Makefile
+Source/v8/tools/gyp/v8.Makefile

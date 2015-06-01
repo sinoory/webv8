@@ -26,7 +26,7 @@
 #ifndef WKBundle_h
 #define WKBundle_h
 
-#include <JavaScriptCore/JavaScript.h>
+//#include <JavaScriptCore/JavaScript.h>
 #include <WebKit/WKBase.h>
 
 #ifdef __cplusplus

@@ -316,11 +316,15 @@ list(APPEND WebKit2_SOURCES
     WebProcess/InjectedBundle/API/gtk/WebKitFrame.cpp
     WebProcess/InjectedBundle/API/gtk/WebKitScriptWorld.cpp
     WebProcess/InjectedBundle/API/gtk/WebKitWebExtension.cpp
-    WebProcess/InjectedBundle/API/gtk/WebKitWebPage.cpp
     WebProcess/gtk/WebGtkExtensionManager.cpp
     WebProcess/gtk/WebGtkInjectedBundleMain.cpp
 )
 endif()
+
+
+list(APPEND WebKit2_SOURCES
+    WebProcess/InjectedBundle/API/gtk/WebKitWebPage.cpp
+)
 
 list(APPEND WebKit2_DERIVED_SOURCES
     ${DERIVED_SOURCES_WEBKIT2GTK_DIR}/InspectorGResourceBundle.c
