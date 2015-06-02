@@ -157,7 +157,11 @@ namespace WebCore {
     inline const uint16_t* fromWebCoreString(const String& str)
     {
         //return reinterpret_cast<const uint16_t*>(str.characters<uint16_t*>());
-        return str.characters16();//wangcui link error
+        //wangcui link error
+        if(str.is8Bit()){
+            return reinterpret_cast<const uint16_t*>(str.characters8());
+        }
+        return str.characters16();
     }
 
     bool isUndefinedOrNull(v8::Handle<v8::Value> value);

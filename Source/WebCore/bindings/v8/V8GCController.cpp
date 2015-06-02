@@ -440,7 +440,7 @@ void V8GCController::gcPrologue()
 {
     v8::HandleScope scope;
 
-#ifndef NDEBUG
+#if 0 //crash_in_debug ndef NDEBUG
     DOMObjectVisitor domObjectVisitor;
     visitDOMObjectsInCurrentThread(&domObjectVisitor);
 #endif

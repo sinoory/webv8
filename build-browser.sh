@@ -109,7 +109,7 @@ else
 	cp -rf $ThirdParty_DIR/openssl-1.0.0d/lib*.so* ./lib
     fi
 	echo "build release version start..." && sleep 3
-	cmake -DUSE_64BITS=1 -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=OFF -DENABLE_MIDORI=$BUILD_MIDORI && make  -j${CPU_NUM} && echo ******build release SUCCESS********
+	cmake -DUSE_64BITS=1 -DPORT=GTK -DDEVELOPER_MODE=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_SKIP_BUILD_RPATH=FALSE -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE -DCOMPILE_MODE=OFF -DENABLE_MIDORI=$BUILD_MIDORI && make -j${CPU_NUM} && echo ******build release SUCCESS********
 fi
 	;;
 "deb_package" )

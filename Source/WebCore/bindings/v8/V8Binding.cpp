@@ -85,6 +85,9 @@ public:
 
     virtual const uint16_t* data() const
     {
+        if(m_plainString.impl()->is8Bit()){//avoid crash in debug
+            return reinterpret_cast<const uint16_t*>(m_plainString.impl()->characters8());
+        }
         return reinterpret_cast<const uint16_t*>(m_plainString.impl()->characters16());
     }
 

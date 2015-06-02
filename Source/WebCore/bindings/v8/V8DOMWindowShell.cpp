@@ -351,9 +351,7 @@ bool V8DOMWindowShell::initContextIfNeeded()
 
     // FIXME: This is wrong. We should actually do this for the proper world once
     // we do isolated worlds the WebCore way.
-    V8IsolatedContext* isolatedContext = V8IsolatedContext::getEntered();
-    DOMWrapperWorld& domword=*(isolatedContext->world());//CMP_ERROR,api dismatch
-    m_frame->loader().dispatchDidClearWindowObjectInWorld(domword);
+    //m_frame->loader().dispatchDidClearWindowObjectInWorld(0);//wangcui CMP_ERROR_TODO, markup as api dismatch
 
 #ifdef ANDROID_INSTRUMENT
     android::TimeCounter::record(android::TimeCounter::JavaScriptInitTimeCounter, __FUNCTION__);
