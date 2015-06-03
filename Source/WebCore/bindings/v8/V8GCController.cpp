@@ -453,7 +453,7 @@ void V8GCController::gcPrologue()
     // Create object groups.
     GrouperVisitor grouperVisitor;
     visitDOMNodesInCurrentThread(&grouperVisitor);
-    visitDOMObjectsInCurrentThread(&grouperVisitor);
+    //visitDOMObjectsInCurrentThread(&grouperVisitor); //crash
     grouperVisitor.applyGrouping();
 
     // Clean single element cache for string conversions.
@@ -523,7 +523,7 @@ void V8GCController::gcEpilogue()
 
     workingSetEstimateMB = getActualMemoryUsageInMB();
 
-#ifndef NDEBUG
+#if 0 //ndef NDEBUG
     // Check all survivals are weak.
     DOMObjectVisitor domObjectVisitor;
     visitDOMObjectsInCurrentThread(&domObjectVisitor);
