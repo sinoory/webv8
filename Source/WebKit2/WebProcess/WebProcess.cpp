@@ -30,7 +30,7 @@
 #include "AuthenticationManager.h"
 #include "DrawingArea.h"
 #include "EventDispatcher.h"
-#if ENABLE(INJECT_BUNDLE)
+#if 1 //ENABLE(INJECT_BUNDLE)
 #include "InjectedBundle.h"
 #include "InjectedBundleUserMessageCoders.h"
 #endif
@@ -283,7 +283,7 @@ void WebProcess::initializeWebProcess(const WebProcessCreationParameters& parame
 
     memoryPressureHandler().install();
 
-#if ENABLE(INJECT_BUNDLE)
+#if 1 //ENABLE(INJECT_BUNDLE)
     RefPtr<API::Object> injectedBundleInitializationUserData;
     InjectedBundleUserMessageDecoder messageDecoder(injectedBundleInitializationUserData);
     if (!decoder.decode(messageDecoder))
@@ -954,7 +954,7 @@ void WebProcess::setJavaScriptGarbageCollectorTimerEnabled(bool flag)
 
 void WebProcess::postInjectedBundleMessage(const IPC::DataReference& messageData)
 {
-#if ENABLE(INJECT_BUNDLE)
+#if 1 //ENABLE(INJECT_BUNDLE)
     InjectedBundle* injectedBundle = WebProcess::shared().injectedBundle();
     if (!injectedBundle)
         return;
@@ -976,7 +976,7 @@ void WebProcess::postInjectedBundleMessage(const IPC::DataReference& messageData
 
 void WebProcess::setInjectedBundleParameter(const String& key, const IPC::DataReference& value)
 {
-#if ENABLE(INJECT_BUNDLE)
+#if 1 //ENABLE(INJECT_BUNDLE)
     InjectedBundle* injectedBundle = WebProcess::shared().injectedBundle();
     if (!injectedBundle)
         return;

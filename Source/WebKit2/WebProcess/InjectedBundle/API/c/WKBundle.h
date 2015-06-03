@@ -92,7 +92,7 @@ WK_EXPORT void WKBundlePostSynchronousMessage(WKBundleRef bundle, WKStringRef me
 
 WK_EXPORT WKConnectionRef WKBundleGetApplicationConnection(WKBundleRef bundle);
 
-WK_EXPORT void WKBundleReportException(JSContextRef, JSValueRef exception);
+//WK_EXPORT void WKBundleReportException(JSContextRef, JSValueRef exception);
 
 #ifdef __cplusplus
 }

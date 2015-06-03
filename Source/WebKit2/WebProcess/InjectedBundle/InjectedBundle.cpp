@@ -47,18 +47,20 @@
 #include "WebPreferencesStore.h"
 #include "WebProcess.h"
 #include "WebProcessCreationParameters.h"
+#if ENABLE_JS_ENG
 #include <JavaScriptCore/APICast.h>
 #include <JavaScriptCore/JSLock.h>
+#include <WebCore/JSDOMWindow.h>
+#include <WebCore/JSNotification.h>
+#include <WebCore/GCController.h>
+#endif
 #include <WebCore/ApplicationCache.h>
 #include <WebCore/ApplicationCacheStorage.h>
 #include <WebCore/FrameLoader.h>
 #include <WebCore/FrameView.h>
-#include <WebCore/GCController.h>
 #include <WebCore/GeolocationClient.h>
 #include <WebCore/GeolocationController.h>
 #include <WebCore/GeolocationPosition.h>
-#include <WebCore/JSDOMWindow.h>
-#include <WebCore/JSNotification.h>
 #include <WebCore/MainFrame.h>
 #include <WebCore/Page.h>
 #include <WebCore/PageGroup.h>
@@ -511,6 +513,7 @@ void InjectedBundle::removeAllUserContent(WebPageGroupProxy* pageGroup)
     PageGroup::pageGroup(pageGroup->identifier())->removeAllUserContent();
 }
 
+#if ENABLE_JS_ENG
 void InjectedBundle::garbageCollectJavaScriptObjects()
 {
     gcController().garbageCollectNow();
@@ -541,6 +544,7 @@ void InjectedBundle::reportException(JSContextRef context, JSValueRef exception)
 
     WebCore::reportException(execState, toJS(execState, exception));
 }
+#endif
 
 void InjectedBundle::didCreatePage(WebPage* page)
 {
@@ -594,6 +598,7 @@ void InjectedBundle::removeAllWebNotificationPermissions(WebPage* page)
 #endif
 }
 
+#if ENABLE_JS_ENG
 uint64_t InjectedBundle::webNotificationID(JSContextRef jsContext, JSValueRef jsNotification)
 {
 #if ENABLE(NOTIFICATIONS) || ENABLE(LEGACY_NOTIFICATIONS)
@@ -615,6 +620,7 @@ PassRefPtr<API::Data> InjectedBundle::createWebDataFromUint8Array(JSContextRef c
     RefPtr<Uint8Array> arrayData = WebCore::toUint8Array(toJS(execState, data));
     return API::Data::create(static_cast<unsigned char*>(arrayData->baseAddress()), arrayData->byteLength());
 }
+#endif
 
 void InjectedBundle::setTabKeyCyclesThroughElements(WebPage* page, bool enabled)
 {

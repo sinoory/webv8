@@ -110,7 +110,7 @@ public:
     void createWebPage(uint64_t pageID, const WebPageCreationParameters&);
     void removeWebPage(uint64_t pageID);
     WebPage* focusedWebPage() const;
-#if ENABLE(INJECT_BUNDLE)
+#if 1 // ENABLE(INJECT_BUNDLE)
     InjectedBundle* injectedBundle() const { return m_injectedBundle.get(); }
 #endif
 
@@ -289,7 +289,7 @@ private:
 
     HashMap<uint64_t, RefPtr<WebPage>> m_pageMap;
     HashMap<uint64_t, RefPtr<WebPageGroupProxy>> m_pageGroupMap;
-#if ENABLE(INJECT_BUNDLE)
+#if 1 //ENABLE(INJECT_BUNDLE)
     RefPtr<InjectedBundle> m_injectedBundle;
 #endif
 

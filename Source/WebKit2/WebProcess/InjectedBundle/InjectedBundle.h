@@ -123,8 +123,8 @@ public:
     void setUserStyleSheetLocation(WebPageGroupProxy*, const String&);
     void setWebNotificationPermission(WebPage*, const String& originString, bool allowed);
     void removeAllWebNotificationPermissions(WebPage*);
-    uint64_t webNotificationID(JSContextRef, JSValueRef);
-    PassRefPtr<API::Data> createWebDataFromUint8Array(JSContextRef, JSValueRef);
+    //uint64_t webNotificationID(JSContextRef, JSValueRef);
+    //PassRefPtr<API::Data> createWebDataFromUint8Array(JSContextRef, JSValueRef);
 
     // UserContent API
     void addUserScript(WebPageGroupProxy*, InjectedBundleScriptWorld*, const String& source, const String& url, API::Array* whitelist, API::Array* blacklist, WebCore::UserScriptInjectionTime, WebCore::UserContentInjectedFrames);
@@ -160,7 +160,7 @@ public:
     void didReceiveMessage(const String&, API::Object*);
     void didReceiveMessageToPage(WebPage*, const String&, API::Object*);
 
-    static void reportException(JSContextRef, JSValueRef exception);
+    //static void reportException(JSContextRef, JSValueRef exception);
 
     static bool isProcessingUserGesture();
 

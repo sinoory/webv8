@@ -42,15 +42,15 @@ static WorldMap& allWorlds()
     static NeverDestroyed<WorldMap> map;
     return map;
 }
-
+#if ENABLE(INJECT_BUNDLE)
 PassRefPtr<InjectedBundleScriptWorld> InjectedBundleScriptWorld::create()
 {
     return adoptRef(new InjectedBundleScriptWorld(ScriptController::createWorld()));
 }
-
+#endif
 PassRefPtr<InjectedBundleScriptWorld> InjectedBundleScriptWorld::getOrCreate(DOMWrapperWorld& world)
 {
-    if (&world == &mainThreadNormalWorld())
+    if (&world == mainThreadNormalWorld())
         return normalWorld();
 
     if (InjectedBundleScriptWorld* existingWorld = allWorlds().get(&world))
@@ -61,7 +61,7 @@ PassRefPtr<InjectedBundleScriptWorld> InjectedBundleScriptWorld::getOrCreate(DOM
 
 InjectedBundleScriptWorld* InjectedBundleScriptWorld::normalWorld()
 {
-    static InjectedBundleScriptWorld* world = adoptRef(new InjectedBundleScriptWorld(&mainThreadNormalWorld())).leakRef();
+    static InjectedBundleScriptWorld* world = adoptRef(new InjectedBundleScriptWorld(mainThreadNormalWorld())).leakRef();
     return world;
 }
 
@@ -85,7 +85,7 @@ DOMWrapperWorld& InjectedBundleScriptWorld::coreWorld() const
     
 void InjectedBundleScriptWorld::clearWrappers()
 {
-    m_world->clearWrappers();
+    //m_world->clearWrappers(); //CMP_ERROR no such method in v8
 }
 
 } // namespace WebKit

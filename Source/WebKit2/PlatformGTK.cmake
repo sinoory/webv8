@@ -306,7 +306,6 @@ list(APPEND WebKit2_SOURCES
 
     UIProcess/gtk/WebInspectorClientGtk.cpp
     UIProcess/gtk/WebInspectorProxyGtk.cpp
-    WebProcess/InjectedBundle/gtk/InjectedBundleGtk.cpp
 
 )
 endif ()
@@ -324,6 +323,7 @@ list(APPEND WebKit2_SOURCES
     WebProcess/InjectedBundle/API/gtk/WebKitWebPage.cpp
     WebProcess/InjectedBundle/API/gtk/WebKitFrame.cpp
     WebProcess/InjectedBundle/API/gtk/WebKitScriptWorld.cpp
+    WebProcess/InjectedBundle/gtk/InjectedBundleGtk.cpp
 )
 
 list(APPEND WebKit2_DERIVED_SOURCES

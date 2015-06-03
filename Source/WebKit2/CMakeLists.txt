@@ -560,8 +560,6 @@ set(WebKit2_SOURCES
 if (ENABLE_INSPECTOR)  #CMP_ERROR
 set(WebKit2_SOURCES
 #CMP_ERROR_TODO remove InjectedBundle as gobject disabled
-     WebProcess/InjectedBundle/InjectedBundle.cpp
-     WebProcess/InjectedBundle/InjectedBundleClient.cpp
      WebProcess/InjectedBundle/InjectedBundleDOMWindowExtension.cpp
      WebProcess/InjectedBundle/InjectedBundleHitTestResult.cpp
      WebProcess/InjectedBundle/InjectedBundlePageContextMenuClient.cpp
@@ -587,7 +585,6 @@ set(WebKit2_SOURCES
      WebProcess/InjectedBundle/API/c/WKBundlePageOverlay.cpp
      WebProcess/InjectedBundle/API/c/WKBundleRangeHandle.cpp
      WebProcess/InjectedBundle/API/c/WKBundleScriptWorld.cpp
-     WebProcess/InjectedBundle/InjectedBundleScriptWorld.cpp
  
      WebProcess/InjectedBundle/DOM/InjectedBundleNodeHandle.cpp
      WebProcess/InjectedBundle/DOM/InjectedBundleRangeHandle.cpp
@@ -596,6 +593,9 @@ set(WebKit2_SOURCES
 endif ()
 
 list(APPEND WebKit2_SOURCES
+     WebProcess/InjectedBundle/InjectedBundle.cpp
+     WebProcess/InjectedBundle/InjectedBundleClient.cpp
+     WebProcess/InjectedBundle/InjectedBundleScriptWorld.cpp
      WebProcess/InjectedBundle/API/c/WKBundleFrame.cpp
 )
 
