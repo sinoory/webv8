@@ -942,6 +942,10 @@ static void readCallback(GObject* object, GAsyncResult* asyncResult, gpointer da
    if (!bytesRead) {
        g_input_stream_close(view->inputStream, 0, 0);
        char *tmp_str = strstr(view->total_read_buffer,"</html>");
+       if(!tmp_str){
+           printf("warning : midori-view.c readCallback tmp_str=0\n");
+           return;
+       }
        char *tmp_str1 = (char *) malloc(strlen(view->total_read_buffer)-strlen(tmp_str)+1);
        memset(tmp_str1,0,strlen(view->total_read_buffer)-strlen(tmp_str)+1);
        memcpy(tmp_str1,view->total_read_buffer,strlen(view->total_read_buffer)-strlen(tmp_str));
