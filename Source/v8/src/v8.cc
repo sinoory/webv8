@@ -199,10 +199,14 @@ void V8::InitializeOncePerProcess() {
     use_crankshaft_ = false;
   }
 
+#ifndef DEBUG
   CPU::Setup();
   if (!CPU::SupportsCrankshaft()) {
     use_crankshaft_ = false;
   }
+#else  //crash in debug,disable
+    use_crankshaft_ = false;
+#endif
 
   RuntimeProfiler::GlobalSetup();
 

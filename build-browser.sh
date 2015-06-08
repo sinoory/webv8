@@ -78,8 +78,8 @@ case $1 in
     echo "g++ v8"
     GYP_DEFINES=target_arch=x64 build/gyp_v8;
     make -j${CPU_NUM};
-    #cp ./out/Release/lib.host/libv8_base.so ../../lib/libv8.so ;
-    cp out/Release/obj.target/tools/gyp/libv8_base.a ../../lib/libv8.a
+    cp out/Debug/obj.target/tools/gyp/libv8_base.a ../../lib/
+    cp out/Debug/obj.target/tools/gyp/libv8_snapshot.a ../../lib/
     cd ../../
 
     if [ ! -f "DerivedSources/WebCore/HTMLElementFactory.h" ] ; then

@@ -461,8 +461,9 @@ class CpuFeatures : public AllStatic {
       // release mode.
       return IsSupported(f);
     }
-    uint64_t enabled = isolate->enabled_cpu_features();
-    return (enabled & (V8_UINT64_C(1) << f)) != 0;
+    //uint64_t enabled = isolate->enabled_cpu_features();
+    //return (enabled & (V8_UINT64_C(1) << f)) != 0;
+    return false;
   }
 #endif
 
@@ -478,14 +479,14 @@ class CpuFeatures : public AllStatic {
       isolate_ = Isolate::UncheckedCurrent();
       old_enabled_ = 0;
       if (isolate_ != NULL) {
-        old_enabled_ = isolate_->enabled_cpu_features();
-        isolate_->set_enabled_cpu_features(old_enabled_ | mask);
+        //old_enabled_ = isolate_->enabled_cpu_features();
+        //isolate_->set_enabled_cpu_features(old_enabled_ | mask);
       }
     }
     ~Scope() {
       ASSERT_EQ(Isolate::UncheckedCurrent(), isolate_);
       if (isolate_ != NULL) {
-        isolate_->set_enabled_cpu_features(old_enabled_);
+        //isolate_->set_enabled_cpu_features(old_enabled_);
       }
     }
    private:

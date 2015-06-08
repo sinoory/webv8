@@ -48,7 +48,7 @@
     'v8_target_arch%': '<(target_arch)',
   },
   'target_defaults': {
-    'default_configuration': 'Release',
+    'default_configuration': 'Debug',
     'configurations': {
       'Debug': {
         'cflags': [ '-g', '-O0','-fPIC' ],
