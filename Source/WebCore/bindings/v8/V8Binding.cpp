@@ -85,9 +85,13 @@ public:
 
     virtual const uint16_t* data() const
     {
+        //printf("V8Binding.cpp WebCoreStringResource is8bit=%d data(): utf8 string=%s\n",m_plainString.impl()->is8Bit(),m_plainString.utf8().data());
         if(m_plainString.impl()->is8Bit()){//avoid crash in debug
-            return reinterpret_cast<const uint16_t*>(m_plainString.impl()->characters8());
+            String s16=String::make16BitFrom8BitSource(m_plainString.characters8(),m_plainString.length());
+            printf("V8Binding.cpp WebCoreStringResource data() to s16=%s\n",s16.characters16());
+            return reinterpret_cast<const uint16_t*>(s16.characters16());
         }
+        printf("V8Binding.cpp WebCoreStringResource data() s16=%s\n",m_plainString.characters16());
         return reinterpret_cast<const uint16_t*>(m_plainString.impl()->characters16());
     }
 
