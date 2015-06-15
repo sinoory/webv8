@@ -52,23 +52,35 @@ namespace WebCore {
 class WebCoreStringResource : public v8::String::ExternalStringResource {
 public:
     explicit WebCoreStringResource(const String& string)
-        : m_plainString(string)
     {
 #ifndef NDEBUG
         m_threadId = WTF::currentThread();
 #endif
         ASSERT(!string.isNull());
+        //wangcui convert 8bit to 16bit for js
+        if(string.is8Bit()){
+            m_plainString=String::make16BitFrom8BitSource(string.characters8(),
+                    string.length());
+        }else{
+            m_plainString=string;
+        }
         v8::V8::AdjustAmountOfExternalAllocatedMemory(2 * string.length());
     }
 
     explicit WebCoreStringResource(const AtomicString& string)
-        : m_plainString(string.string())
-        , m_atomicString(string)
+        : m_atomicString(string)
     {
 #ifndef NDEBUG
         m_threadId = WTF::currentThread();
 #endif
         ASSERT(!string.isNull());
+        //wangcui convert 8bit to 16bit for js
+        if(string.string().is8Bit()){
+            m_plainString=String::make16BitFrom8BitSource(string.string().characters8(),
+                    string.string().length());
+        }else{
+            m_plainString=string.string();
+        }
         v8::V8::AdjustAmountOfExternalAllocatedMemory(2 * string.length());
     }
 
@@ -86,12 +98,14 @@ public:
     virtual const uint16_t* data() const
     {
         //printf("V8Binding.cpp WebCoreStringResource is8bit=%d data(): utf8 string=%s\n",m_plainString.impl()->is8Bit(),m_plainString.utf8().data());
-        if(m_plainString.impl()->is8Bit()){//avoid crash in debug
+        //wangcui convert 8bit to 16,so js in v8 work
+        //TODO:move to member string to avoid muiltip convert
+        /*
+        if(m_plainString.impl()->is8Bit()){
             String s16=String::make16BitFrom8BitSource(m_plainString.characters8(),m_plainString.length());
-            printf("V8Binding.cpp WebCoreStringResource data() to s16=%s\n",s16.characters16());
             return reinterpret_cast<const uint16_t*>(s16.characters16());
         }
-        printf("V8Binding.cpp WebCoreStringResource data() s16=%s\n",m_plainString.characters16());
+        */
         return reinterpret_cast<const uint16_t*>(m_plainString.impl()->characters16());
     }
 

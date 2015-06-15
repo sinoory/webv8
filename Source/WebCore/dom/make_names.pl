@@ -1206,6 +1206,11 @@ END
     print F <<END
     }// if (map.isEmpty()) 
     Create$parameters{namespace}ElementWrapperFunction createWrapperFunction = map.get(element->localName().impl());
+    //<wangcui avoid crash by some special tag like "em" ...
+    if (createWrapperFunction == createHTMLElementWrapper){
+        printf("createWrapperFunction element=%s\\n",element->localName().impl()->characters8());
+        return V8$parameters{namespace}Element::wrap(element, forceNewObject);
+    }//>
     if (createWrapperFunction)
         return createWrapperFunction(element);
     return V8$parameters{namespace}Element::wrap(element, forceNewObject);

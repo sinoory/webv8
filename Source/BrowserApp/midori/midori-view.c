@@ -1308,8 +1308,8 @@ midori_view_load_committed (MidoriView* view)
         GTlsCertificate* tls_cert;
         GTlsCertificateFlags tls_flags;
         gchar* hostname=0; /* FIXME leak */
-        //CMP_ERROR_TODO crash
-        if (false /*midori_view_get_tls_info (view, request, &tls_cert, &tls_flags, &hostname)*/) 
+#if 0 //CMP_ERROR_TODO crash
+        if (midori_view_get_tls_info (view, request, &tls_cert, &tls_flags, &hostname)) 
             midori_tab_set_security (MIDORI_TAB (view), MIDORI_SECURITY_TRUSTED);
         #ifdef HAVE_GCR
         else if (!midori_tab_get_special (MIDORI_TAB (view)) && tls_cert != NULL)
@@ -1335,6 +1335,7 @@ midori_view_load_committed (MidoriView* view)
         }
         #endif
         else
+#endif
         #endif
             midori_tab_set_security (MIDORI_TAB (view), MIDORI_SECURITY_UNKNOWN);
         #if defined (HAVE_LIBSOUP_2_29_91)
